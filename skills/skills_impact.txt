@@ -1,0 +1,13 @@
+Document: describe what kind of impact could affect you in the world
+
+Impacts:
+
+# Phisical - Basic impact for example if you was hit in a face with a ball you would have a phisical impact
+# Mental - This show of how you see and iterruct with te world, for example if somebody afraid you you would have mental ipact.
+# Energy - This impact is flow based in case somebody hit you with energy beam you wold been damaged
+# Heat - In case you take a sun bases you may burn and have heat impact
+# Cold - In case you decide to swimm in a river you may frost an have cold imact
+# Light - Exposure to intense light can cause a light impact, affecting vision or causing burns
+# Darkness - Prolonged exposure to darkness can cause a darkness impact, leading to disorientation or fear
+
+The gear and magical speals could defence or make impact of the one of several of the following type

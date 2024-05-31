@@ -1,0 +1,47 @@
+{
+    "incident": {
+        "location": "Misfits Bar, City of Memories",
+        "date_time": "01-01-3000 HE",
+        "participants": {
+            "alex": {
+                "role": "Bartender",
+                "background": "Ex-mercenary, participated in artifact hunts, left after incident in the 4th dimension.",
+                "capabilities": [
+                    "Combat skills",
+                    "Possible cybernetic enhancements"
+                ]
+            },
+            "group": "Drunk member of Clan Enhanced Machines"
+        },
+        "event_details": {
+            "initial_interaction": "Drunk dumbs want to order more bear but make this without respect",
+            "escalation": "One of this ass-holes ask alex to be kind",
+            "alex_response": {
+                "actions": [
+                    {
+                        "type": "Physical Restraint",
+                        "description": "Broke the face of this bastard"
+                    },
+                    {
+                        "type": "Use of Enhancements",
+                        "description": "Alex has non letal bullets charged shootgun buld in in left arm"
+                    }
+                ]
+            }
+        },
+        "outcome": {
+            "injuries": "Group has scratches and need medecal aid, all alibe",
+            "resolution": "Medical service take care about the baddies, the clan came to the bar say sorry and pay extra for destorbing Alex",
+            "post_incident_actions": "Alex returned to his duties, maintaining order in the bar."
+        },
+        "analysis": {
+            "skill_assessment": "Alex demonstrated a high level of physical and possibly augmented combat skills, indicative of his mercenary background.",
+            "behavioral_note": "Despite his quiet demeanor, Alex is highly capable and will respond with force if provoked.",
+            "recommendations": "Avoid disruptive behavior in the Misfits Bar. Engage with Alex respectfully, acknowledging his past and capabilities."
+        },
+        "additional_notes": {
+            "witness_statements": "Include any relevant statements from other patrons or staff if available.",
+            "environmental_factors": "Detail any environmental factors that may have influenced the incident."
+        }
+    }
+}

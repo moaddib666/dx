@@ -1,121 +1,62 @@
-Document: Describe the dimantions and how that interrcut with each other
+Dimension-X: Dimensions and Their Interactions
 
-The world have 10 dimentions.
+The world of Dimension-X has 10 dimensions, each with unique characteristics and interactions.
 
-# Common For All
+Common For All Dimensions
 
-In case you lost your health points you are no more a figher, you need medical aid and your firends would transfer you to a safe place, you will be dropped to first dimention and disable until the event finished.
-In cse you lost your energy, you will be dropred to the 1st dimention, you need to spend time to accomulate energy and only after then you are able to refill it and go back to event with new energy, dig into the dimentions or make energy related actions.
+- Health Points: If you lose all health points, you are no longer a fighter. You need medical aid and will be transferred to a safe place, dropping to the 1st dimension and becoming disabled until the event finishes.
+- Energy: If you lose all your energy, you will drop to the 1st dimension. You need to spend time accumulating energy before you can refill it and return to the event, delve into dimensions, or perform energy-related actions.
 
+1st Dimension
 
-# 1st Dimention
+Description: The real world where modern life exists. People build cities and communicate. It is full of energy, and any creature can live here. The time flow is regular, with Earth-like flora and fauna across various biomes. Energy is not spent on standard actions and is accumulated over time. Interaction is limited to the current dimension, with the possibility to dive into the 2nd dimension without energy cost.
 
-## Description:
-The real world basically where ale modern life appared and when people behave, buld their cities communicate. It's full of energy and any creature may live here.
-The timeflow is regular. Has earth like flora and founa with differen bioms.
-Energy not spend on moves and standart actions, more over it's accomulated in time
-Only possible interruct with current dimention
-It's possible to dive into second dimention don't spend energy on transition
+TimeFormula: {basicActionTime} * 1
+EnergyFormula: {currentEnergyStats} + 10 * {TimeFormula}
+PossibleAffectOnDimensions: {current}
+Transitions:
+  - dimension: 2
+    cost: 0
 
-```json
-{
-  "TimeFormula": "{basicActionTime} * 1",
-  "EnergyFormula": "{currentEnergyStats} + 10 * {TimeFormula}",
-  "PossibleAffectOnDimentions": "{current}",
-  "Transitions": [{
-    "dimention": 2,
-    "cost": 0
-  }]
-}
-```
+2nd Dimension
 
-# 2d Dimention
+Description: A mirror of the real world but darker, with all colors gray except for energy flow, artifacts, and blood. The time flow is faster, allowing more actions in the same time. There are no creatures, but it mirrors the biomes and fauna of the 1st dimension. Energy is spent on moves and standard actions and is also spent over time. Interaction is possible with the current dimension and the 1st dimension. Diving into the 3rd dimension costs energy, while exiting to the 1st dimension does not.
 
-## Description:
-The mirror of real world but some dark one, all collors are gray except energy flow, artifacts and blood,
-The timeflow is faster then regular one this means that you can make more action in same time.
-Does not have creatures, mirros bioms and founa from dimention 1.
-Energy spent on moves and standart actions, more over it's spend in time
-Possible interruct with current dimention and dimention below - 1st one.
-It's possible to dive into the third dimention with energy spend.
-Or exit on the first one don't spend energy on transition
+TimeFormula: {basicActionTime} * 1.5
+EnergyFormula: {currentEnergyStats} - 10 * {TimeFormula}
+PossibleAffectOnDimensions: {current}, 1
+Transitions:
+  - dimension: 1
+    cost: 0
+  - dimension: 3
+    cost: 10
 
-```json
-{
-  "TimeFormula": "{basicActionTime} * 1.5",
-  "EnergyFormula": "{currentEnergyStats} - 10 * {TimeFormula}",
-  "PossibleAffectOnDimentions": [{current}, 1],
-  "Transitions": [{
-    "dimention": 1,
-    "cost": 0
-  },{
-    "dimention": 3,
-    "cost": 10
-  }]
-}
-```
+3rd Dimension
 
-# 3d Dimention
+Description: A faded shadow of the 2nd dimension with all colors gray, featuring a fog or black sandstorm. It is a dangerous place where shadows appear and disappear. Lifeless, with non-significant differences from the 1st and 2nd dimensions. Structures like walls and rivers might not exist or behave differently. Energy is spent on moves and standard actions, and is also spent over time. Interaction is possible with the current dimension and the 2nd dimension. Diving into the 4th dimension costs a huge amount of energy, while exiting to the 2nd dimension does not.
 
-## Description:
-The fade shadow of the dimention 2 all collors are gray except energy flow, artifacts and blood, has kind of fog or sandstorm of black sand,
-kind of dengerous place, sometimes shadoows appears from nowhere and disaapear, lifeless.
-The timeflow is faster then regular one this means that you can make more action in same time.
-Does not have creatures, have some non significant differances from 1,2 dimentions strcutures
-for example in case you have a wall on dimention 1 and sime distroued wall on the second on third you have only 1 briack,
-another example is reaver - it coild be not possible to crois it on 1,2 dimentions but on third the watter could disappear free the pass.
+TimeFormula: {basicActionTime} * 2
+EnergyFormula: {currentEnergyStats} - 20 * {TimeFormula}
+PossibleAffectOnDimensions: {current}, 2
+Transitions:
+  - dimension: 2
+    cost: 0
+  - dimension: 4
+    cost: 100
 
-Energy spent on moves and standart actions, more over it's spend in time
-Possible interruct with current dimention and dimention below - 2st one.
-It's possible to dive into the forth dimention with huge energy spend.
-Or exit on the second one don't spend energy on transition
+4th Dimension
 
-```json
-{
-  "TimeFormula": "{basicActionTime} * 2",
-  "EnergyFormula": "{currentEnergyStats} - 20 * {TimeFormula}",
-  "PossibleAffectOnDimentions": [{current}, 2],
-  "Transitions": [{
-    "dimention": 2,
-    "cost": 0
-  },{
-    "dimention": 4,
-    "cost": 100
-  }]
-}
-```
+Description: A fairly dead zone with strong storms that obscure vision. The time flow is faster, allowing more actions in the same time. There are no creatures, and significant differences exist but cannot be easily spotted. Hazards like falling from cliffs or being hit by stones are common. Occasionally, sharp shadows of humanoid creatures with blue glowing eyes are seen. Energy is spent on moves and standard actions, and is also spent over time. Interaction is possible with the current dimension and the 3rd dimension. Diving into the 5th dimension costs an enormous amount of energy, which no one can handle currently, while exiting to the 3rd dimension does not.
 
-# 4d Dimention
+TimeFormula: {basicActionTime} * 2.5
+EnergyFormula: {currentEnergyStats} - 25 * {TimeFormula}
+PossibleAffectOnDimensions: {current}, 3
+Transitions:
+  - dimension: 3
+    cost: 0
+  - dimension: 5
+    cost: 1000
 
-## Description:
-On this period of time it's feirly death, the storm is so strong so that you can't see anything.
-The timeflow is faster then regular one this means that you can make more action in same time.
-Does not have creatures, have significant differances, but you cant spot it.
-You can make a move and been fall from the cliff, or just benn damaged by folling stone.
-Sometime you see the sharp shadow of some humanoid creature with blue glowing eyes, that looking you.
+5th to 10th Dimensions
 
-Energy spent on moves and standart actions, more over it's spend in time
-Possible interruct with current dimention and dimention below - 3st one.
-It's possible to dive into the fifth one dimention with enormous energy spend, no one can handle it for now.
-Or exit on the third one don't spend energy on transition
-
-
-```json
-{
-  "TimeFormula": "{basicActionTime} * 2.5",
-  "EnergyFormula": "{currentEnergyStats} - 25 * {TimeFormula}",
-  "PossibleAffectOnDimentions": [{current}, 3],
-  "Transitions": [{
-    "dimention": 3,
-    "cost": 0
-  },{
-    "dimention": 5,
-    "cost": 1000
-  }]
-}
-```
-
-# 5th to 10th Dimention
-
-## Description:
-Unknown aria nobody been there and everybody who tryed to pass the bariar just dropped to the 1st dimention without energy.
+Description: These dimensions are largely unknown. Everyone who has tried to pass the barrier has been dropped back to the 1st dimension without energy.

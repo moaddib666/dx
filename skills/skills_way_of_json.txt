@@ -1,0 +1,27 @@
+# The way of JSon
+This choise opens tight energy connections increase your abilities and make pissible to blow your anamy with a fire ball or heal your frieds or just create unbreakable barier depends of school you been chousen.
+The drowback of this is that you totaly give up technical staff, you've lost all possibilbities to install augmentation or implants, or use pover gear.
+
+## Schools
+
+Each school has level spells that cost energy and attack or defence from specific impact type
+
+## Fire - (Attacker) (Aria)
+
+## Whater - (Attacker) (Aria) 
+
+## Blood (Attacker) - (Single)
+
+## PureEnergy (Balanced) - (Mixed)
+
+## Dark (Attacker) - (Single)
+
+## Light (Attacker) - (Single)
+
+## Mirrage (Defence) - (Mixed)
+
+## Heal (Defence) - (Mixed)
+
+## Constrcutior (Defence) - (Mixed)
+
+## Summon (Balanced) - (Mixed)

@@ -1,0 +1,22 @@
+Docuemnt: Activities
+
+Name: The duel
+Description: The duel is the fight betweed 2 deffers
+Rules: The initiator need to make offer to start the duel to duelant, the duelant need to respond with agreemant. The fight continues until one of the participants don't lost his health points or don't give up, the give-up also counting in case particiapnt don't move for 2 moves in line main it AFK or left the event.
+Restrcited: After end of the dules some non protected by the speels of technical enhansed things may been stoled from your pocketd, this mark your charracter as thif and anybody cold atak you without your approval.
+Behavior: Before duel charecters make enhancemants and buffs, apply ann possible upgrades. Then the tactic could be defferent depends on the school and skills.
+
+Example1:
+p1 - cast defence skills
+p2 - cast attack skills
+
+if p1 faster then p2 the defance works if not sorry and be luky
+
+Example 2:
+p1 - go to dimantion 2
+p2 - cast freeze skill
+
+if p1 does not have resistance from the skill it would not passed to the dimantion 2 and stuck - be prepared or luckie.
+
+
+

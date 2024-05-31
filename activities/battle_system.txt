@@ -1,0 +1,24 @@
+Docuemnt: Basics
+
+Name: BattleSystem
+Description: The turn based system that allow make actions that may cost Action points and Energy points depends on action.
+
+For 1 turn character can spend his action points to chain actions, almount of action points depends on speed attribure * dimention time enhansmants
+The speed also influance the order of global actions in case you and your opponent cust action that cost same almount of action ponts first would been applied that whos speed skill is bigger.
+Actions may impact the caller or the target depends of the selector.
+You could only perform an action on the creature that in your view and that on the same dimantion or the dimantion above (2->1)
+The action of changing dimantion take all youe action ponts.
+You can also skip the turn.
+Some action may consume energy (flow) you can refill it only on 1 dimention or by using artifacts, battaries.
+All actions apply in battle take action points.
+One more important thing it's that on each action applies modificator by dropping hex dice and apply mdificator on action
+if <8 negative effect if >8 positive effect
+For example:
+Given: Charecter cast fireball
+If: <8
+Then: The rain starts and fireball become colder demage decresed on modificatior values
+Else: >8
+Then: The wind axelerate the spell and it's like a bullet hit the target apply modificator values
+Finally: apply actions changes
+
+The point of this that everysing cold happand in the battle eaven some not expected things 
