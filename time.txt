@@ -1,0 +1,17 @@
+Document: Explain the timeframes and perionds
+
+DateTime Format {name} ({shortName}) - value
+time unit (tu) - elementary time unit
+minute (min) - 120 tu
+hour (h) - 60 min
+sol (sl) - 60 h
+period (pd) - 60 sl 
+quantoum (qm) - 3 pd
+
+EraFromat {name} - {details}
+BAG - Before Active Glow
+AG - Active Glow world event - like cryst born
+HE - Human Era
+
+DEFAULT Date Fomat
+{sol}-{period}-{quantoum} {ERA}

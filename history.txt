@@ -1,0 +1,78 @@
+Document: History for the world, the document explain significant events and describe it's value and define timeframes.
+Format: {sol}-{period}-{quantoum} {TAG} - Event
+Example: 1-1-100_000_000_000_000 BAG - The Start
+
+
+Before the Active Glow (BAG)
+1-01-100_000_000_000_000 BAG - The Beginning: Nothing exists except pure energy - the Flow.
+
+33-01-100_000_000_000 BAG - The Flow starts to concentrate, and the pressure of the Flow increases.
+
+14-01-100_000_000 BAG - The Flow begins forming physical reality.
+
+18-01-10_000_000 BAG - Reality is fuzzy, but the first pieces of matter start connecting into shapes, forming a mega-sphere.
+
+35-01-1_000_000 BAG - The first forms of basic matter start to show rudimentary patterns and structures.
+
+17-01-500_000 BAG - The mega-sphere explodes, freeing material and splitting reality into ten dimensions. The 1st and 10th dimensions are diametrically different and have the most accumulated energy. The energy flows from the borders of the dimensions to the middle.
+
+13-01-400_000 BAG - The dimensions stabilize, and energy flows begin to establish consistent patterns.
+
+30-01-300_000 BAG - The pressure of energy in the 1st dimension increases, stars appear, and spread energy throughout the universe.
+
+08-01-300_000 BAG - Early star systems begin to form, setting the stage for the creation of planets.
+
+29-01-200_000 BAG - The first planets form from exploded stars, accumulating in a spin and arranging into solar systems.
+
+26-01-100_000 BAG - The first primitive forms of life begin to develop on isolated planets.
+
+32-01-50_000 BAG - The first primitive life appears on planets, isolated from each other by billions of solar systems.
+
+25-01-30_000 BAG - Early ecosystems start to develop, with basic plant and animal life emerging.
+
+After the Active Glow (AG)
+01-01-0000 AG - The Anomaly Glow: A period when all stars change their energy from type A to type B (dimensions 1 and 10 change energy), leading to rapid evolution of life.
+
+28-01-100_000 AG - Simple multicellular organisms appear, beginning the diversification of life.
+
+07-01-300_000 AG - Humanoid carbon life appears on planets.
+
+03-01-1_000_000 AG - Early civilizations begin to form, with rudimentary tools and social structures.
+
+Human Era (HE)
+
+10-01-1000 HE - Humanoid societies develop early forms of agriculture and settlement.
+
+20-01-1500 HE - Advanced tool-making and the establishment of early cities.
+
+13-01-2000 HE - Emergence of complex societies, with trade, writing, and organized religions.
+
+12-01-2500 HE - Evolution of humans and animals. Due to the energy flow, some creatures become "Differs" who can see the Flow and accumulate some energy. Not all creatures have this ability.
+
+01-01-2510 HE - Early discoveries of energy manipulation by certain gifted individuals.
+
+22-02-2550 HE - The establishment of the first schools to train individuals in controlling and harnessing the Flow.
+
+15-01-2560 HE - The Chosen One: After thousands of years, JSon, who can accumulate enormous amounts of energy and travel through dimensions, is born. His top dimension is the 3rd one.
+
+16-02-2562 HE - Scientific Boom: Less gifted people become angry and seek ways to break the barriers between dimensions to gain more power through science. Jonathan Casey invents a suit that covers creatures with energy flow, allowing them to travel between dimensions.
+
+30-02-2563 HE - Early experiments with dimension travel begin, leading to new technological advancements.
+
+33-03-2565 HE - Aggressive Countermeasures: The Chosen want to control the manufacture of the gear, claiming it is unnatural and should not be spread, while John wants to give this gift to everyone.
+
+35-01-2566 HE - First Conflict: John invents a weapon to defeat JSon. They meet in the 3rd dimension and fight. John does not realize that the dimension sucks energy from JSon's defenses and fires at him, demonstrating his power. After JSon's death, John realizes he started an endless conflict between groups. He disables the countermeasure and unleashes the full power of his suit. Something unexpected happens: a shadow from the 4th dimension appears, picks up John and the dead JSon, and a massive explosion occurs in the 3rd dimension, replicating as an earthquake in the 1st dimension. This moment changes everything. The unknown creature establishes a new rule: no one can die in the dimensions by violent death. Creatures are dropped to their home realm without consciousness and ability to move for a period, requiring medical aid but remaining 100% alive. This moves all conflicts to the dimensions.
+
+14-03-2567 HE - Recovery and rebuilding efforts begin as societies adapt to the new rules established by the unknown creature.
+
+23-01-2570 HE - Exploration of the dimensions intensifies, with new discoveries and technologies emerging.
+
+36-03-2575 HE - People start discovering undergrounds and strange power places in different dimension levels, collecting artifacts, and improving their science and skills.
+
+27-03-2600 HE - The integration of discovered artifacts into daily life and the development of new societal norms.
+
+01-01-3000 HE - Nowadays, there are three types of humans:
+
+Regular humans without any Flow accumulation capabilities.
+Scientific humans who use science, augmentations, and cybernetics to control the Flow.
+Differs, humans who can control the Flow naturally but cannot use augmentations or implants.
