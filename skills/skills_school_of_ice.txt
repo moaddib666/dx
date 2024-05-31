@@ -1,0 +1,115 @@
+Ice Spells (Way of JSon)
+Rank 9
+Frostbite
+
+Base Damage: 30
+Modificator: Flow Manipulation (1.1)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 4
+Special: 20% chance to slow target (reduces their action points by 1 for next turn)
+Rank 8
+(No spells at this rank as requested)
+
+Rank 7
+Ice Shard
+
+Base Damage: 35
+Modificator: Flow Manipulation (1.2)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 4
+Special: 15% chance to cause bleeding (additional 5 cold damage per turn for 2 turns)
+Rank 6
+Glacial Spike
+
+Base Damage: 45
+Modificator: Flow Manipulation (1.3)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 5
+Special: 25% chance to freeze the target for 1 turn
+Rank 5
+Blizzard Strike
+
+Base Damage: 50
+Modificator: Flow Manipulation (1.4)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 6
+Special: Reduces target's speed by 10% for 3 turns
+Rank 4
+Freezing Ray
+
+Base Damage: 70
+Modificator: Flow Manipulation (1.5)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 6
+Special: 30% chance to reduce target's defense by 20% for 2 turns
+Ice Barrier (Defense)
+
+Defense: Reduces incoming damage by 30%
+Modificator: Flow Manipulation (1.4)
+Impact: Cold
+Duration: 3 turns
+Action Points: 5
+Rank 3
+Permafrost Grasp
+
+Base Damage: 85
+Modificator: Flow Manipulation (1.6)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 7
+Special: 35% chance to immobilize target for 1 turn
+Rank 2
+Glacier Crush
+
+Base Damage: 100
+Modificator: Flow Manipulation (1.7)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 8
+Special: 40% chance to stun target for 1 turn
+Frozen Armor (Defense)
+
+Defense: Reduces incoming damage by 40%
+Modificator: Flow Manipulation (1.6)
+Impact: Cold
+Duration: 4 turns
+Action Points: 7
+Rank 1
+Arctic Blast
+
+Base Damage: 120
+Modificator: Flow Manipulation (1.8)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 9
+Special: 50% chance to inflict deep freeze, reducing target's action points by 2 for 2 turns
+Rank 0
+Absolute Zero
+
+Base Damage: 150
+Modificator: Flow Manipulation (2.0)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 10
+Special: 60% chance to cause instant freeze, immobilizing target for 2 turns
+Frost Dragon's Breath
+
+Base Damage: 130
+Modificator: Flow Manipulation (1.9)
+Impact: Cold
+Area: [1, 1] (Cone attack, 5 cells)
+Action Points: 9
+Special: 45% chance to slow all targets in the cone
+Glacial Cataclysm
+
+Base Damage: 160
+Modificator: Flow Manipulation (2.1)
+Impact: Cold
+Area: [1, 1] (Single Target)
+Action Points: 10
+Special: 70% chance to reduce target's defense by 30% and freeze for 1 turn

@@ -1,0 +1,23 @@
+Character Sheet: Touched Path Of JSon
+
+#Basic Stats:
+Phisical Strength: 10 # influance almount of health
+Mental Strength: 10 # Influance almount of energy
+Luck: 10 # the luck add midificator to the dice drop
+Speed: 10 # influance actin points
+
+#Specific Stats:
+Concentration: Measures the character's focus and ability to maintain spellcasting under pressure.
+Initial Value: 1
+
+Flow Manipulation: Represents the character's skill in shaping and controlling the Flow energy for spellcasting.
+Initial Value: 1
+
+Flow Connection: Indicates the depth of the character's bond with the Flow, affecting the efficiency and strength of their spells.
+Initial Value: 1
+
+Knowledge: Reflects the character's understanding of magical theory, spells, and their applications.
+Initial Value: 1
+
+Flow Resonance: Measures the character's ability to align their own energy with the Flow, enhancing spell potency and reducing energy loss during casting.
+Initial Value: 1

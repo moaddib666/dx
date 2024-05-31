@@ -1,0 +1,56 @@
+Docuemnt: Basics
+
+Name: Rank System
+Description: The ranks is shows your current level of power and influance
+
+Tha rank based on the your expiriance in the world
+
+Rank System
+10 - Only a Human
+Description: Regular individuals with no Flow powers or significant combat training. They live ordinary lives, unaware of the mystical and technological complexities of the higher dimensions.
+Subranks: none
+9 - Novice
+Description: Newly touched by the Flow or just beginning to explore technological enhancements. They possess minimal skills and knowledge, often seeking guidance from more experienced individuals.
+Typical Abilities: Basic Flow manipulation or simple technological enhancements.
+Subranks: 9 -> 9+
+8 - Initiate
+Description: Individuals who have chosen a path (Way of JSon or Way of John) and are learning the basics of their chosen discipline. They are gaining confidence and control over their abilities.
+Typical Abilities: Basic spells or entry-level cybernetic enhancements.
+Subranks: 8 -> 8+ -> 8++
+7 - Apprentice
+Description: Characters who have shown promise and dedication to their path. They have a solid understanding of their abilities and can handle minor challenges independently.
+Typical Abilities: Intermediate spells, moderate combat skills, or improved technological enhancements.
+Subranks: 7 -> 7+ -> 7++ -> 7+++
+6 - Adept
+Description: Skilled individuals who have gained significant experience and mastery over their abilities. They are respected within their communities and can take on challenging tasks.
+Typical Abilities: Advanced spells, proficient combat skills, or high-level cybernetic enhancements.
+Subranks: 6 -> 6+ -> 6++ -> 6+++
+5 - Mercenary
+Description: Highly skilled fighters, often working as hired guns or protectors. They are adept at both combat and survival, with a reputation for getting the job done.
+Typical Abilities: Expert combat skills, strategic use of spells or technology, and robust survival tactics.
+Subranks: 5 -> 5+ -> 5++ -> 5+++
+4 - Veteran
+Description: Experienced warriors and scholars who have faced numerous battles and challenges. They possess deep knowledge and refined skills, often mentoring novices and apprentices.
+Typical Abilities: Mastery of complex spells or cutting-edge technology, leadership qualities, and tactical acumen.
+Subranks: 4 -> 4+ -> 4++ -> 4+++ -> 4++++
+3 - Master
+Description: Elite individuals who have reached the pinnacle of their chosen path. They are renowned for their extraordinary abilities and wisdom, often playing pivotal roles in major events.
+Typical Abilities: Legendary spells or top-tier technological enhancements, unparalleled combat skills, and profound strategic insights.
+Subranks: 3 -> 3+ -> 3++ -> 3+++ -> 3++++
+2 - Grandmaster
+Description: Rare and exceptional figures who have surpassed the limits of ordinary mastery. They are revered for their near-mythical prowess and contributions to their disciplines.
+Typical Abilities: Mythic-level spells or groundbreaking technological innovations, near-immortal combat proficiency, and visionary leadership.
+Subranks: 2 -> 2+ -> 2++ -> 2+++ -> 2++++ -> 2++++
+1 - Legend
+Description: Icons whose deeds and abilities have become the stuff of legend. They are celebrated across dimensions, their names etched into the annals of history.
+Typical Abilities: Epic spells or revolutionary technology, godlike combat abilities, and inspirational influence.
+Subranks: 1 -> 1+ -> 1++ -> 1+++-> 1++++-> 1+++++ -> 1++++++
+0 - God Flow
+Description: Beings who have attained a near-divine connection with the Flow, existing beyond the mortal realm. Their power transcends conventional understanding, capable of reshaping reality itself.
+Typical Abilities: Omnipotent Flow manipulation, reality-altering capabilities, and supreme authority over all dimensions.
+Subranks: 0 -> 0+ -> 0++ -> 0+++-> 0++++-> 0+++++ -> 0++++++ -> 0+++++++ -> 0++++++++
+
+
+On each sub runk you would have additional action points to manage
+On each rank you would have addtional spells/implants available
+On each sub runk you also would have money that you cold spend on additional jevelery, items, etc.

@@ -1,0 +1,117 @@
+Fire Spells (Way of JSon)
+Rank 9
+Spark
+
+Base Damage: 15
+Modificator: Flow Manipulation (1.1)
+Impact: Heat
+Area: [1, 1] (Single Target)
+Action Points: 4
+Special: 20% chance to ignite the target (additional 5 heat damage per turn for 2 turns)
+Rank 8
+(No spells at this rank as requested)
+
+Rank 7
+Ember Burst
+
+Base Damage: 20
+Modificator: Flow Manipulation (1.2)
+Impact: Heat
+Area: [1, 1] (Single Target)
+Action Points: 4
+Special: 15% chance to cause burning (additional 10 heat damage per turn for 2 turns)
+Rank 6
+Flame Wave
+
+Base Damage: 30
+Modificator: Flow Manipulation (1.3)
+Impact: Heat
+Area: [3, 1] (Line attack, 3 cells)
+Action Points: 5
+Special: 25% chance to set all targets in the line on fire (additional 5 heat damage per turn for 2 turns)
+Rank 5
+Inferno Blast
+
+Base Damage: 40
+Modificator: Flow Manipulation (1.4)
+Impact: Heat
+Area: [2, 2] (Area attack, 4 cells)
+Action Points: 6
+Special: 30% chance to reduce targets' defense by 10% for 2 turns
+Rank 4
+Scorching Ray
+
+Base Damage: 55
+Modificator: Flow Manipulation (1.5)
+Impact: Heat
+Area: [1, 1] (Single Target)
+Action Points: 6
+Special: 35% chance to cause severe burns (additional 10 heat damage per turn for 3 turns)
+Blazing Shield (Defense)
+
+Defense: Reduces incoming damage by 30%
+Modificator: Flow Manipulation (1.4)
+Impact: Heat
+Duration: 3 turns
+Action Points: 5
+Special: 20% chance to deal 10 heat damage to attackers
+Rank 3
+Pyroclasm
+
+Base Damage: 70
+Modificator: Flow Manipulation (1.6)
+Impact: Heat
+Area: [3, 3] (Area attack, 9 cells)
+Action Points: 7
+Special: 40% chance to ignite all targets (additional 10 heat damage per turn for 2 turns)
+Rank 2
+Volcanic Eruption
+
+Base Damage: 85
+Modificator: Flow Manipulation (1.7)
+Impact: Heat
+Area: [4, 4] (Area attack, 16 cells)
+Action Points: 8
+Special: 50% chance to reduce targets' speed by 10% for 2 turns
+Molten Armor (Defense)
+
+Defense: Reduces incoming damage by 40%
+Modificator: Flow Manipulation (1.6)
+Impact: Heat
+Duration: 4 turns
+Action Points: 7
+Special: 30% chance to deal 15 heat damage to attackers
+Rank 1
+Meteor Storm
+
+Base Damage: 100
+Modificator: Flow Manipulation (1.8)
+Impact: Heat
+Area: [5, 5] (Area attack, 25 cells)
+Action Points: 9
+Special: 60% chance to cause massive burns (additional 20 heat damage per turn for 3 turns)
+Rank 0
+Hellfire
+
+Base Damage: 120
+Modificator: Flow Manipulation (2.0)
+Impact: Heat
+Area: [6, 6] (Area attack, 36 cells)
+Action Points: 10
+Special: 70% chance to ignite all targets (additional 15 heat damage per turn for 3 turns)
+Dragon's Breath
+
+Base Damage: 110
+Modificator: Flow Manipulation (1.9)
+Impact: Heat
+Area: [5, 1] (Cone attack, 5 cells)
+Action Points: 9
+Special: 50% chance to cause burning (additional 15 heat damage per turn for 3 turns)
+Fiery Cataclysm
+
+Base Damage: 130
+Modificator: Flow Manipulation (2.1)
+Impact: Heat
+Area: [6, 6] (Area attack, 36 cells)
+Action Points: 10
+Special: 80% chance to cause catastrophic burns (additional 20 heat damage per turn for 3 turns)

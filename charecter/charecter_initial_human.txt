@@ -1,0 +1,52 @@
+Character Sheet: Regular Person
+Basic Information
+Name: [Enter Name]
+Age: [Enter Age]
+Gender: [Enter Gender]
+Origin: City of Memories
+Attributes
+Health Points (HP): 10 * {Phisical Strength}
+Energy (Flow): 0 (no initial Flow accumulation capabilities)
+Action Points (AP): 0.5 * {speed} * {dimantionTimeMultiplier}
+Rank: JustHuman
+
+Stats
+Phisical Strength: 10
+Mental Strength: 10
+Luck: 10
+Speed: 10
+
+
+
+Skills
+Basic Combat: 1 (Familiar with simple melee and ranged weapons)
+Survival: 1 (Basic knowledge of surviving in urban and wild environments)
+Crafting: 1 (Ability to create basic tools and items)
+Negotiation: 1 (Basic ability to negotiate and persuade others)
+Stealth: 1 (Basic ability to move unseen and unheard)
+First Aid: 1 (Basic ability to administer medical aid)
+
+Inventory
+
+ETC Knife
+
+Starting Location
+City of Memories: Central Square near the Memorial, a significant historical site where newcomers begin their journey.
+Background
+Description:
+A regular individual with no initial Flow powers.
+Has basic skills that allow them to navigate and survive in the City of Memories.
+Unaware of the mystical aspects of the world until touched by the Flow.
+Path Options After Flow Exposure
+The Way of JSon:
+
+Embrace mystical powers, gaining abilities like fireballs or healing.
+Lose the ability to use technological enhancements.
+The Way of John:
+
+Integrate technological advancements with natural abilities.
+Gain access to cybernetic enhancements and energy manipulation without losing versatility.
+Stay Human:
+
+Remain a regular person without Flow powers.
+Focus on enhancing physical and mental skills through training and equipment.
