@@ -6,9 +6,25 @@
     --deep-purple: #6A5ACD;
     --gunmetal: #2C3539;
     --lime-green: #32CD32;
+    --lime-dark-green: #228B22;
     --crimson-red: #DC143C;
     --glowing-white: #F8F8FF;
 }
+
+a {
+    text-decoration: none;
+    font-style: italic;
+    color: var(--lime-green);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:visited {
+    color: var(--lime-dark-green);
+}
+
 
 body {
     font-family: 'Roboto', sans-serif;

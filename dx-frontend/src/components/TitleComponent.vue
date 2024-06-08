@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="title">
-      Dimension-X
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -41,7 +41,6 @@ export default {
   font-family: 'Orbitron', sans-serif;
   color: #FFFFFF;
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4);
-  text-align: center;
   margin-top: 2vw;
   transition: all 0.3s ease;
 }

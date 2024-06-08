@@ -7,7 +7,7 @@
     <div class="background-layer layer3 blending" :style="layerStyles[2]"></div>
     <div class="background-layer layer4 blending" :style="layerStyles[3]"></div>
     <div class="content">
-      <TitleComponent />
+      <TitleComponent>Dimension-X</TitleComponent>
       <LoginForm :layer="currentLayer" />
     </div>
   </section>

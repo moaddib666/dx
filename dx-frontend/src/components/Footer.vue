@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <p>&copy; 2024 Dimension-X. All rights reserved.</p>
+    <p>&copy; 2024 Dimension-X. All rights reserved. The creator <a href="mailto: moaddib666@gmail.com">moaddib</a></p>
   </footer>
 </template>
 

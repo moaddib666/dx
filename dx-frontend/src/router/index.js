@@ -8,6 +8,7 @@ import Shop from '@/views/Shop.vue';
 import Support from '@/views/Support.vue';
 import FAQ from '@/views/FAQ.vue';
 import RegisterPlay from '@/views/RegisterPlay.vue';
+import ArtGallery from "@/views/ArtGallery.vue";
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/story', name: 'Story', component: Story },
@@ -17,7 +18,8 @@ const routes = [
   { path: '/shop', name: 'Shop', component: Shop },
   { path: '/support', name: 'Support', component: Support },
   { path: '/faq', name: 'FAQ', component: FAQ },
-  { path: '/register', name: 'RegisterPlay', component: RegisterPlay }
+  { path: '/register', name: 'RegisterPlay', component: RegisterPlay },
+  { path: '/art', name: 'ArtGallery', component: ArtGallery }
 ];
 
 // access vue environment variables

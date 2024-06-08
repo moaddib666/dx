@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <Header />
-    <main class="main-content">
-      <HeroSection />
-    </main>
+    <div class="main-content">
+      <router-view />
+    </div>
     <Footer />
   </div>
 </template>

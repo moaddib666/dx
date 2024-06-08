@@ -23,7 +23,7 @@ export default {
         // { text: 'Shop', url: '/shop' },
         // { text: 'Support', url: '/support' },
         { text: 'FAQ', url: '/faq' },
-        // { text: 'Register/Play', url: '/register' }
+        { text: 'Art Gallery', url: '/art/' }
       ]
     };
   }
