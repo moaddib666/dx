@@ -1,0 +1,6 @@
+export const LAYOUT = {
+  CONTAINER_MAX_WIDTH: '1200px',
+  CONTENT_WIDTH: '80%',
+  SECTION_PADDING: '60px 0',
+  ELEMENT_MARGIN: '20px'
+};
