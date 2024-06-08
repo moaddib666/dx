@@ -5,6 +5,7 @@ import json
 source_dir = "./"  # Change this to your specific source directory
 dist_dir = "./dist"
 
+excluded = ["./test", ]
 # Create the dist directory if it doesn't exist
 if not os.path.exists(dist_dir):
     os.makedirs(dist_dir)
@@ -17,7 +18,8 @@ for root, dirs, files in os.walk(source_dir):
     # Skip the dist directory
     if dist_dir in root:
         continue
-
+    if any(i in root for i in excluded):
+        continue
     for file in files:
         file_path = os.path.join(root, file)
         file_ext = os.path.splitext(file)[1].lower()
