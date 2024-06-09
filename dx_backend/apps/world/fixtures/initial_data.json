@@ -1,0 +1,257 @@
+[
+  {
+    "model": "world.dimension",
+    "pk": 1,
+    "fields": {
+      "speed": 1.0,
+      "energy": 100.0,
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.dimension",
+    "pk": 2,
+    "fields": {
+      "speed": 1.5,
+      "energy": 90.0,
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.planet",
+    "pk": "c328a743-d480-4c88-abc1-fcca548febd3",
+    "fields": {
+      "name": "Alpha Prime",
+      "description": "Alpha Prime is a vibrant planet rich in Flow energy, with diverse ecosystems and advanced civilizations.",
+      "image": null,
+      "distance_from_star": 150.0,
+      "diameter": 12742.0,
+      "mass": 5.972e24,
+      "gravity": 9.8,
+      "atmosphere": "Nitrogen-Oxygen",
+      "temperature": 15.0,
+      "number_of_moons": 2,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.planet",
+    "pk": "1310a86c-c725-4c60-a73c-9a2c7ac62b41",
+    "fields": {
+      "name": "Beta Terra",
+      "description": "A planet known for its technological advancements and sprawling urban landscapes.",
+      "image": null,
+      "distance_from_star": 200.0,
+      "diameter": 13982.0,
+      "mass": 6.417e23,
+      "gravity": 3.7,
+      "atmosphere": "Carbon Dioxide",
+      "temperature": -60.0,
+      "number_of_moons": 1,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.continent",
+    "pk": "eaadf9de-d492-4999-86ec-58b331bdc87d",
+    "fields": {
+      "name": "Aegis",
+      "description": "The central continent on Alpha Prime, known for its lush forests and ancient ruins.",
+      "image": null,
+      "planet": "c328a743-d480-4c88-abc1-fcca548febd3",
+      "area": 10000000.0,
+      "population": 500000000,
+      "number_of_countries": 15,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.continent",
+    "pk": "7312f51a-954e-4685-80e9-545ac128c36f",
+    "fields": {
+      "name": "Mechania",
+      "description": "A continent on Beta Terra, dominated by advanced technological cities and industrial zones.",
+      "image": null,
+      "planet": "1310a86c-c725-4c60-a73c-9a2c7ac62b41",
+      "area": 8000000.0,
+      "population": 700000000,
+      "number_of_countries": 20,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.country",
+    "pk": "c96534c9-5196-454a-a3c8-53fbf59c2d0f",
+    "fields": {
+      "name": "Verdant",
+      "description": "A country in Aegis known for its extensive green landscapes and strong connection to the Flow.",
+      "image": null,
+      "continent": "eaadf9de-d492-4999-86ec-58b331bdc87d",
+      "area": 500000.0,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.country",
+    "pk": "92f977f6-c399-44d5-b513-ff853c845273",
+    "fields": {
+      "name": "Techland",
+      "description": "A leading country in Mechania, renowned for its technological innovations and industrial prowess.",
+      "image": null,
+      "continent": "7312f51a-954e-4685-80e9-545ac128c36f",
+      "area": 700000.0,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.city",
+    "pk": "4a57e68e-cd66-46b9-b196-6aff37620804",
+    "fields": {
+      "name": "City of Memories",
+      "description": "The historical city where the famous duel between JSon and John took place. It is a starting point for many newcomers.",
+      "image": null,
+      "country": "c96534c9-5196-454a-a3c8-53fbf59c2d0f",
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.city",
+    "pk": "cb17ea1a-c04f-49c8-9981-52fecca6eaf9",
+    "fields": {
+      "name": "Techno Haven",
+      "description": "A bustling city in Techland, filled with the latest technological marvels and skyscrapers.",
+      "image": null,
+      "country": "92f977f6-c399-44d5-b513-ff853c845273",
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.area",
+    "pk": "41dd2b7d-bb6b-49af-9c98-a2bdd07cf529",
+    "fields": {
+      "name": "Central Square",
+      "description": "The central area in the City of Memories, featuring the famous Memorial.",
+      "image": null,
+      "city": "4a57e68e-cd66-46b9-b196-6aff37620804",
+      "area": 50.0,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.area",
+    "pk": "216dda26-f771-4d5e-b8f1-fd3f78bdedf8",
+    "fields": {
+      "name": "Tech Plaza",
+      "description": "A prominent area in Techno Haven, known for its tech expos and corporate headquarters.",
+      "image": null,
+      "city": "cb17ea1a-c04f-49c8-9981-52fecca6eaf9",
+      "area": 60.0,
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.location",
+    "pk": "2ffbc3ef-48ad-4fcc-80f2-0935a71d1760",
+    "fields": {
+      "name": "Memorial",
+      "description": "A monument in the Central Square of the City of Memories, commemorating the sacrifices of JSon and John.",
+      "image": null,
+      "area": "41dd2b7d-bb6b-49af-9c98-a2bdd07cf529",
+      "is_active": true,
+      "is_public": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.location",
+    "pk": "91b58fa0-d5d7-4f44-8041-6cc30f6866e8",
+    "fields": {
+      "name": "Misfits Pub",
+      "description": "A legendary bar in the City of Memories, known as a gathering place for mercenaries and seekers.",
+      "image": null,
+      "area": "41dd2b7d-bb6b-49af-9c98-a2bdd07cf529",
+      "is_active": true,
+      "is_public": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.location",
+    "pk": "e17b4133-6f90-4d31-baf3-853228eca668",
+    "fields": {
+      "name": "Tech Expo Center",
+      "description": "A state-of-the-art facility in Tech Plaza, hosting various technological exhibitions and conferences.",
+      "image": null,
+      "area": "216dda26-f771-4d5e-b8f1-fd3f78bdedf8",
+      "is_active": true,
+      "is_public": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.sublocation",
+    "pk": "eaa0561b-2166-4073-b7cc-00787d4de47d",
+    "fields": {
+      "name": "Fountain",
+      "description": "A beautiful fountain in the Main Square of the City of Memories, known to enhance the Flow.",
+      "image": null,
+      "location": "2ffbc3ef-48ad-4fcc-80f2-0935a71d1760",
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  },
+  {
+    "model": "world.sublocation",
+    "pk": "e8bb9249-07b2-4a2a-bdaa-3dfc6568fa77",
+    "fields": {
+      "name": "Cyber Cafe",
+      "description": "A popular spot in the Tech Expo Center where tech enthusiasts gather.",
+      "image": null,
+      "location": "e17b4133-6f90-4d31-baf3-853228eca668",
+      "is_active": true,
+      "border_with": [],
+      "created_at": "2024-06-09T00:00:00Z",
+      "updated_at": "2024-06-09T00:00:00Z"
+    }
+  }
+]
