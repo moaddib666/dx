@@ -4,4 +4,4 @@ from apps.client.api.views.openai import OpenAIClientManagementViewSet
 
 
 OpenAIRouter = DefaultRouter()
-OpenAIRouter.register(r'openapi', OpenAIClientManagementViewSet, basename='openai')
+OpenAIRouter.register('', OpenAIClientManagementViewSet, basename='openai')

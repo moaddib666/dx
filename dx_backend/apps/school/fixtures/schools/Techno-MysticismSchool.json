@@ -1,0 +1,105 @@
+{
+  "school": "Techno-Mysticism",
+  "description": "Combines technology with mystical flow manipulation for enhanced abilities.",
+  "ranks": {
+    "9": {
+      "name": "Tech Shield",
+      "type": "Defense",
+      "description": "Reduces incoming damage by 25%.",
+      "modificator": "Flow Manipulation (1.1)",
+      "impact": "Energy",
+      "duration": "3 turns",
+      "action_points": 4,
+      "special": "20% chance to reflect 10% of the damage back to the attacker"
+    },
+    "8": {
+      "name": "No skills at this rank"
+    },
+    "7": {
+      "name": "Arcane Blast",
+      "type": "Attack",
+      "description": "Base Damage: 35",
+      "modificator": "Flow Manipulation (1.2)",
+      "impact": "Mixed (Energy and Elemental)",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 4,
+      "special": "15% chance to drain 10 energy from the target"
+    },
+    "6": {
+      "name": "Etheric Wave",
+      "type": "Attack",
+      "description": "Base Damage: 45",
+      "modificator": "Flow Manipulation (1.3)",
+      "impact": "Energy",
+      "area": "[3, 1] (Line attack, 3 cells)",
+      "action_points": 5,
+      "special": "25% chance to cause energy drain, reducing the target's energy by 5 per turn for 2 turns"
+    },
+    "5": {
+      "name": "Mystic Barrage",
+      "type": "Attack",
+      "description": "Base Damage: 50",
+      "modificator": "Flow Manipulation (1.4)",
+      "impact": "Mixed (Energy and Elemental)",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 6,
+      "special": "Reduces target's defense by 10% for 3 turns"
+    },
+    "4": {
+      "name": "Plasma Surge",
+      "type": "Attack",
+      "description": "Base Damage: 70",
+      "modificator": "Flow Manipulation (1.5)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 6,
+      "special": "30% chance to reduce target's energy by 20% for 2 turns"
+    },
+    "3": {
+      "name": "Energy Pulse",
+      "type": "Attack",
+      "description": "Base Damage: 85",
+      "modificator": "Flow Manipulation (1.6)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 7,
+      "special": "35% chance to paralyze target for 1 turn"
+    },
+    "2": {
+      "name": "Techno Blast",
+      "type": "Attack",
+      "description": "Base Damage: 100",
+      "modificator": "Flow Manipulation (1.7)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 8,
+      "special": "40% chance to stun target for 1 turn"
+    },
+    "1": {
+      "name": "Overload Blade",
+      "type": "Attack",
+      "description": "Base Damage: 120",
+      "modificator": "Flow Manipulation (1.8)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 9,
+      "special": "50% chance to reduce target's action points by 2 for 2 turns"
+    },
+    "0": {
+      "name": "Ultimate Plasma Blade",
+      "type": "Attack",
+      "description": "Base Damage: 150",
+      "modificator": "Flow Manipulation (2.0)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 10,
+      "special": "60% chance to paralyze target for 2 turns"
+    }
+  },
+  "additional_effects": {
+    "augmented_reality_vision": "Increases accuracy by 10%, allowing for critical hits.",
+    "energy_flow_uplinks": "Reduces action point cost by 1 for all techno-mystic attacks.",
+    "mystic_armor": "Reduces incoming elemental damage by 15%.",
+    "enhanced_flow_core": "Increases energy reserves by 20%, allowing for prolonged combat."
+  }
+}

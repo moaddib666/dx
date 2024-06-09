@@ -6,11 +6,11 @@ from rest_framework.response import Response
 from apps.game.services.player import PlayerFactory
 from apps.game.services.player.core import PlayerService
 from apps.player.api.serializers.openapi import OpenaiCharacterSerializer, PlayerInfoSerializer
-from apps.player.models import Character
+from apps.player.models import Player
 
 
-class OpenAICharacterManagementViewSet(viewsets.ModelViewSet):
-    queryset = Character.objects.filter(is_active=True)
+class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
+    queryset = Player.objects.filter(is_active=True)
     serializer_class = OpenaiCharacterSerializer
     permission_classes = [permissions.IsAdminUser]
 
@@ -22,14 +22,14 @@ class OpenAICharacterManagementViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        return Character.objects.filter(owner=user)
+        return Player.objects.filter(owner=user)
 
     @transaction.atomic
     def perform_create(self, serializer):
         user = self.request.user
 
         # Check the limit
-        current_player_count = Character.objects.filter(owner=user).count()
+        current_player_count = Player.objects.filter(owner=user).count()
         if current_player_count >= self.PLAYER_CREATION_LIMIT:
             return Response(
                 {'detail': f'Player creation limit of {self.PLAYER_CREATION_LIMIT} reached.'},
@@ -49,9 +49,9 @@ class OpenAICharacterManagementViewSet(viewsets.ModelViewSet):
     def player_info(self, request):
         user = request.user
         try:
-            player = user.main_character
+            player = user.player
             service = PlayerService(player)
             player_info = service.get_player_info()
             return Response(player_info)
-        except Character.DoesNotExist:
+        except Player.DoesNotExist:
             return Response({"detail": "Player not found."}, status=status.HTTP_404_NOT_FOUND)

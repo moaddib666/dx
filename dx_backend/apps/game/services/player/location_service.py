@@ -1,11 +1,11 @@
-from apps.player.models import Character
+from apps.player.models import Player
 from apps.world.models import Location, City, SubLocation
 
 
 class LocationService:
     home_city_name = 'City of Memories'
 
-    def get_or_create_home_location(self, player: Character) -> Location:
+    def get_or_create_home_location(self, player: Player) -> Location:
         city = City.objects.get(name=self.home_city_name)
         home_location, created = Location.objects.get_or_create(
             name=player.name + "'s Home",

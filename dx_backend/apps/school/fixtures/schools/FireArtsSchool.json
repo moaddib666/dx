@@ -1,0 +1,604 @@
+{
+  "name": "FireArtsSchool",
+  "path": "Path of JSon",
+  "skills": [
+    {
+      "name": "Spark",
+      "grade": 1,
+      "description": "A small spark that ignites the target the skill is built on top of the Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "20% chance to ignite the target (additional 5 heat damage per turn for 2 turns)",
+      "effect": [
+        {
+          "name": "Burn",
+          "chance": 0.2,
+          "durationSeconds": 60,
+          "description": "5 heat damage per turn for 2 turns with 20% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 15,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": false,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 4
+        },
+        {
+          "kind": "Energy",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "name": "Ember Burst",
+      "grade": 2,
+      "description": "A burst of embers that can cause burning, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "15% chance to cause burning (additional 10 heat damage per turn for 2 turns)",
+      "effect": [
+        {
+          "name": "Burn",
+          "chance": 0.15,
+          "durationSeconds": 60,
+          "description": "10 heat damage per turn for 2 turns with 15% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 20,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": false,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 4
+        },
+        {
+          "kind": "Energy",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "name": "Flame Wave",
+      "grade": 3,
+      "description": "A wave of fire that burns targets in a line, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "25% chance to set all targets in the line on fire (additional 5 heat damage per turn for 2 turns)",
+      "effect": [
+        {
+          "name": "Burn",
+          "chance": 0.25,
+          "durationSeconds": 60,
+          "description": "5 heat damage per turn for 2 turns with 25% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 30,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 5
+        },
+        {
+          "kind": "Energy",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "name": "Inferno Blast",
+      "grade": 4,
+      "description": "Creates an inferno that causes severe burns, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "30% chance to reduce targets' defense by 10% for 2 turns",
+      "effect": [
+        {
+          "name": "Defense Reduction",
+          "chance": 0.3,
+          "durationSeconds": 120,
+          "description": "Reduces targets' defense by 10% for 2 turns"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 40,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 6
+        },
+        {
+          "kind": "Energy",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "name": "Scorching Ray",
+      "grade": 5,
+      "description": "A focused ray of intense heat, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "35% chance to cause severe burns (additional 10 heat damage per turn for 3 turns)",
+      "effect": [
+        {
+          "name": "Severe Burn",
+          "chance": 0.35,
+          "durationSeconds": 180,
+          "description": "10 heat damage per turn for 3 turns with 35% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 55,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": false,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 6
+        },
+        {
+          "kind": "Energy",
+          "value": 20
+        }
+      ]
+    },
+    {
+      "name": "Blazing Shield",
+      "grade": 5,
+      "description": "A shield of flames that reduces incoming damage, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the defense by 10%.",
+      "special": "20% chance to deal 10 heat damage to attackers",
+      "effect": [
+        {
+          "name": "Heat Damage",
+          "chance": 0.2,
+          "durationSeconds": 180,
+          "description": "Deals 10 heat damage to attackers with 20% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Defense",
+          "type": "Heat",
+          "formula": {
+            "base": 30,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.1
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": false,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 5
+        },
+        {
+          "kind": "Energy",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "name": "Pyroclasm",
+      "grade": 6,
+      "description": "Unleashes a pyroclasm that engulfs the area in flames, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "40% chance to ignite all targets (additional 10 heat damage per turn for 2 turns)",
+      "effect": [
+        {
+          "name": "Ignite",
+          "chance": 0.4,
+          "durationSeconds": 60,
+          "description": "10 heat damage per turn for 2 turns with 40% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 70,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 7
+        },
+        {
+          "kind": "Energy",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "name": "Volcanic Eruption",
+      "grade": 7,
+      "description": "Causes a volcanic eruption that engulfs a large area in flames, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "50% chance to reduce targets' speed by 10% for 2 turns",
+      "effect": [
+        {
+          "name": "Speed Reduction",
+          "chance": 0.5,
+          "durationSeconds": 120,
+          "description": "Reduces targets' speed by 10% for 2 turns"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 85,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 8
+        },
+        {
+          "kind": "Energy",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "name": "Molten Armor",
+      "grade": 7,
+      "description": "Armor of molten rock that reduces incoming damage, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the defense by 10%.",
+      "special": "30% chance to deal 15 heat damage to attackers",
+      "effect": [
+        {
+          "name": "Heat Damage",
+          "chance": 0.3,
+          "durationSeconds": 240,
+          "description": "Deals 15 heat damage to attackers with 30% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Defense",
+          "type": "Heat",
+          "formula": {
+            "base": 40,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.1
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": false,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 7
+        },
+        {
+          "kind": "Energy",
+          "value": 25
+        }
+      ]
+    },
+    {
+      "name": "Meteor Storm",
+      "grade": 8,
+      "description": "Summons a storm of meteors that devastate a large area, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "60% chance to cause massive burns (additional 20 heat damage per turn for 3 turns)",
+      "effect": [
+        {
+          "name": "Massive Burn",
+          "chance": 0.6,
+          "durationSeconds": 180,
+          "description": "20 heat damage per turn for 3 turns with 60% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 100,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 9
+        },
+        {
+          "kind": "Energy",
+          "value": 35
+        }
+      ]
+    },
+    {
+      "name": "Hellfire",
+      "grade": 9,
+      "description": "Unleashes the flames of the underworld, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "70% chance to ignite all targets (additional 15 heat damage per turn for 3 turns)",
+      "effect": [
+        {
+          "name": "Ignite",
+          "chance": 0.7,
+          "durationSeconds": 180,
+          "description": "15 heat damage per turn for 3 turns with 70% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 120,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 10
+        },
+        {
+          "kind": "Energy",
+          "value": 40
+        }
+      ]
+    },
+    {
+      "name": "Dragon's Breath",
+      "grade": 9,
+      "description": "Emulates the breath of a dragon, spewing fire in a cone, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "50% chance to cause burning (additional 15 heat damage per turn for 3 turns)",
+      "effect": [
+        {
+          "name": "Burning",
+          "chance": 0.5,
+          "durationSeconds": 180,
+          "description": "15 heat damage per turn for 3 turns with 50% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 110,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 9
+        },
+        {
+          "kind": "Energy",
+          "value": 35
+        }
+      ]
+    },
+    {
+      "name": "Fiery Cataclysm",
+      "grade": 10,
+      "description": "Causes a fiery cataclysm that engulfs the area in intense flames, built on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases the damage by 10%.",
+      "special": "80% chance to cause catastrophic burns (additional 20 heat damage per turn for 3 turns)",
+      "effect": [
+        {
+          "name": "Catastrophic Burn",
+          "chance": 0.8,
+          "durationSeconds": 180,
+          "description": "20 heat damage per turn for 3 turns with 80% chance"
+        }
+      ],
+      "impact": [
+        {
+          "kind": "Damage",
+          "type": "Heat",
+          "formula": {
+            "base": 130,
+            "requires": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 5
+              }
+            ],
+            "scaling": [
+              {
+                "stat": "Flow Manipulation",
+                "value": 0.2
+              }
+            ]
+          }
+        }
+      ],
+      "multi_target": true,
+      "cost": [
+        {
+          "kind": "Action Points",
+          "value": 10
+        },
+        {
+          "kind": "Energy",
+          "value": 45
+        }
+      ]
+    }
+  ]
+}

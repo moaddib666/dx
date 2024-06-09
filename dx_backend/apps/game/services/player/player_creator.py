@@ -1,4 +1,4 @@
-from apps.player.models import Character, Rank
+from apps.player.models import Player, Rank
 
 
 class PlayerCreator:
@@ -6,9 +6,9 @@ class PlayerCreator:
     def __init__(self, client):
         self.client = client
 
-    def create_player(self, name: str, age: int, gender: str) -> Character:
-        rank, _ = Rank.objects.get_or_create(name='None', experience_needed=0)
-        player = Character.objects.create(
+    def create_player(self, name: str, age: int, gender: str) -> Player:
+        rank = Rank.objects.filter(grade=0).order_by('experience_needed').first()
+        player = Player.objects.create(
             owner=self.client,
             name=name,
             age=age,
@@ -22,8 +22,8 @@ class PlayerCreator:
             current_active_points=10,
         )
 
-        if not self.client.main_character:
-            self.client.main_character = player
+        if not self.client.player:
+            self.client.player = player
             self.client.save()
 
         return player

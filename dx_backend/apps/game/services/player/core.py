@@ -1,8 +1,8 @@
-from apps.player.models import Character
+from apps.player.models import Player
 
 
 class PlayerService:
-    def __init__(self, player: Character):
+    def __init__(self, player: Player):
         self.player = player
 
     def get_player_info(self):
@@ -21,6 +21,11 @@ class PlayerService:
             'location': {
                 'id': self.player.current_location.id,
                 'name': self.player.current_location.name,
+            },
+            "dimension": {
+                "number": self.player.dimension.id,
+                "speed": self.player.dimension.speed,
+                "energy": self.player.dimension.energy,
             },
             'rank': {
                 'name': self.player.rank.name,

@@ -4,8 +4,7 @@ from apps.player.models import CharacterStatSet
 class PlayerStatsService:
 
     def initialize_stats(self, player):
-        CharacterStatSet.objects.create(
-            character=player,
+        return CharacterStatSet.objects.create(
             health_points=50,
             energy_points=0,
             physical_strength=10,

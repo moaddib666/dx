@@ -41,14 +41,11 @@ base_ranks = [
 
 
 # Define the function to generate ranks
-def generate_ranks(max_experience):
+def generate_ranks(base_experience, factor):
     rank_fixture = []
-    total_steps = sum(rank['sub_ranks'] + 1 for rank in base_ranks)
-    experience_step = max_experience / total_steps
-    current_experience = 0
 
-    def create_rank(name, description, experience_needed):
-        print(f"Creating rank: {name} with {round(experience_needed)} experience.")
+    def create_rank(name, description, experience_needed, grade=0):
+        print(f"Creating rank: {name}, {experience_needed} XP grade {grade}")
         return {
             "model": "player.rank",
             "pk": str(uuid.uuid4()),
@@ -56,27 +53,29 @@ def generate_ranks(max_experience):
                 "created_at": datetime.utcnow().isoformat() + "Z",
                 "updated_at": datetime.utcnow().isoformat() + "Z",
                 "name": name,
+                "grade": grade,
                 "description": description,
-                "experience_needed": round(experience_needed),
+                "experience_needed": experience_needed,
                 "next_rank": None
             }
         }
 
-    # Generate the ranks and sub-ranks
-    for rank in base_ranks:
-        main_rank = create_rank(rank["name"], rank["description"], current_experience)
+    previous_rank_id = None
+    current_experience = base_experience
+    for i, rank in enumerate(base_ranks):
+        main_rank = create_rank(rank["name"], rank["description"], current_experience, grade=i)
         rank_fixture.append(main_rank)
         previous_rank_id = main_rank["pk"]
 
         for j in range(1, rank["sub_ranks"] + 1):
+            current_experience *= factor
             sub_rank_name = f"{rank['name']} {'+' * j}"
-            current_experience += experience_step
-            sub_rank = create_rank(sub_rank_name, f"A more experienced version of {rank['name']}.", current_experience)
+            sub_rank = create_rank(sub_rank_name, f"A more experienced version of {rank['name']}.", current_experience, grade=i)
             rank_fixture[-1]["fields"]["next_rank"] = sub_rank["pk"]
             rank_fixture.append(sub_rank)
             previous_rank_id = sub_rank["pk"]
 
-        current_experience += experience_step
+        current_experience *= factor
 
     # Set the next_rank field correctly
     for i in range(len(rank_fixture) - 1):
@@ -85,15 +84,13 @@ def generate_ranks(max_experience):
     return rank_fixture
 
 
-# Generate the fixture with adjustable max experience required for the highest rank
-max_experience = 10_000_000
-stage_multiplier = 1.5
-
-ranks_fixture = generate_ranks(max_experience)
+# Generate the fixture with geometric growth for experience
+base_experience = 100
+factor = 2
+ranks_fixture = generate_ranks(base_experience, factor)
 
 # Save the fixture to a JSON file
 with open('ranks_fixture.json', 'w') as f:
     json.dump(ranks_fixture, f, indent=2)
 
 # Output the generated fixture for verification
-# print(json.dumps(ranks_fixture, indent=2))

@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.player.api.views.openai import OpenAICharacterManagementViewSet
+from apps.player.api.views.openai import OpenAISchoolsManagementViewSet
 
 
 OpenAIRouter = DefaultRouter()
-OpenAIRouter.register(r'openapi', OpenAICharacterManagementViewSet, basename='openai')
+OpenAIRouter.register('', OpenAISchoolsManagementViewSet, basename='openai')

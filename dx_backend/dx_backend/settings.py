@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django.contrib.sites',
     'allauth',
-
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -51,12 +53,10 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.client',
     'apps.world',
+    'apps.school',
     'apps.player',
     'apps.game',
 
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [

@@ -18,5 +18,7 @@ class PlayerFactory:
         player = self.player_creator.create_player(name, age, gender)
         location = self.location_service.get_or_create_home_location(player)
         self.player_spawner.spawn_player(player, location)
-        self.player_stats.initialize_stats(player)
+        stats = self.player_stats.initialize_stats(player)
+        player.stats = stats
+        player.save()
         return player

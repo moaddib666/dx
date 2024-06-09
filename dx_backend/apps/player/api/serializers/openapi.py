@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.player.models import Character
+from apps.player.models import Player
 
 
 class OpenaiCharacterSerializer(serializers.ModelSerializer):
@@ -11,7 +11,7 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
         return value
 
     class Meta:
-        model = Character
+        model = Player
         fields = ['id', 'name', 'age', 'gender']
 
 

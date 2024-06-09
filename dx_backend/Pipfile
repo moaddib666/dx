@@ -20,5 +20,7 @@ PyJWT = "*"
 pillow = "*"
 django-jet-reboot = "*"
 django-cors-headers = "*"
+pip = "*"
+drf-nested-routers = "*"
 
 [dev-packages]

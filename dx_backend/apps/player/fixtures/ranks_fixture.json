@@ -1,0 +1,639 @@
+[
+  {
+    "model": "player.rank",
+    "pk": "2eed13d5-e206-4175-b0c2-6a8c4aab3873",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633058Z",
+      "updated_at": "2024-06-09T17:10:56.633340Z",
+      "name": "Only a Human",
+      "grade": 0,
+      "description": "Regular individuals with no Flow powers or significant combat training. They live ordinary lives, unaware of the mystical and technological complexities of the higher dimensions.",
+      "experience_needed": 100,
+      "next_rank": "c9a67bf5-76e0-4f89-b06b-2ab1d9aa4a3f"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "c9a67bf5-76e0-4f89-b06b-2ab1d9aa4a3f",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633386Z",
+      "updated_at": "2024-06-09T17:10:56.633390Z",
+      "name": "Novice",
+      "grade": 1,
+      "description": "Newly touched by the Flow or just beginning to explore technological enhancements. They possess minimal skills and knowledge, often seeking guidance from more experienced individuals.",
+      "experience_needed": 200,
+      "next_rank": "b777dcf9-a675-40ae-a097-6de92d3bc640"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b777dcf9-a675-40ae-a097-6de92d3bc640",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633414Z",
+      "updated_at": "2024-06-09T17:10:56.633417Z",
+      "name": "Novice +",
+      "grade": 1,
+      "description": "A more experienced version of Novice.",
+      "experience_needed": 400,
+      "next_rank": "b6a22c23-21c6-43ef-940c-f733d30f7ea2"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b6a22c23-21c6-43ef-940c-f733d30f7ea2",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633499Z",
+      "updated_at": "2024-06-09T17:10:56.633503Z",
+      "name": "Initiate",
+      "grade": 2,
+      "description": "Individuals who have chosen a path (Way of JSon or Way of John) and are learning the basics of their chosen discipline. They are gaining confidence and control over their abilities.",
+      "experience_needed": 800,
+      "next_rank": "db00f98b-e6b3-455f-8c73-4c6c96e28379"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "db00f98b-e6b3-455f-8c73-4c6c96e28379",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633528Z",
+      "updated_at": "2024-06-09T17:10:56.633531Z",
+      "name": "Initiate +",
+      "grade": 2,
+      "description": "A more experienced version of Initiate.",
+      "experience_needed": 1600,
+      "next_rank": "a874fb14-d32e-4562-a9d0-dc96b2bfc4a9"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "a874fb14-d32e-4562-a9d0-dc96b2bfc4a9",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633549Z",
+      "updated_at": "2024-06-09T17:10:56.633551Z",
+      "name": "Initiate ++",
+      "grade": 2,
+      "description": "A more experienced version of Initiate.",
+      "experience_needed": 3200,
+      "next_rank": "9880952b-96a9-4be8-904b-abde414f62ca"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "9880952b-96a9-4be8-904b-abde414f62ca",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633562Z",
+      "updated_at": "2024-06-09T17:10:56.633564Z",
+      "name": "Apprentice",
+      "grade": 3,
+      "description": "Characters who have shown promise and dedication to their path. They have a solid understanding of their abilities and can handle minor challenges independently.",
+      "experience_needed": 6400,
+      "next_rank": "b4c0e32b-f7e5-4966-a278-9ec2101dc9c9"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b4c0e32b-f7e5-4966-a278-9ec2101dc9c9",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633583Z",
+      "updated_at": "2024-06-09T17:10:56.633585Z",
+      "name": "Apprentice +",
+      "grade": 3,
+      "description": "A more experienced version of Apprentice.",
+      "experience_needed": 12800,
+      "next_rank": "e6a5872b-763d-4bcd-8d58-70ca1ba15b9d"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e6a5872b-763d-4bcd-8d58-70ca1ba15b9d",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633597Z",
+      "updated_at": "2024-06-09T17:10:56.633599Z",
+      "name": "Apprentice ++",
+      "grade": 3,
+      "description": "A more experienced version of Apprentice.",
+      "experience_needed": 25600,
+      "next_rank": "564cf0ac-18dc-45fb-91a9-2025c34453ba"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "564cf0ac-18dc-45fb-91a9-2025c34453ba",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633613Z",
+      "updated_at": "2024-06-09T17:10:56.633614Z",
+      "name": "Apprentice +++",
+      "grade": 3,
+      "description": "A more experienced version of Apprentice.",
+      "experience_needed": 51200,
+      "next_rank": "e9f2a239-abcf-43f9-8774-63a28377778b"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e9f2a239-abcf-43f9-8774-63a28377778b",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633624Z",
+      "updated_at": "2024-06-09T17:10:56.633625Z",
+      "name": "Adept",
+      "grade": 4,
+      "description": "Skilled individuals who have gained significant experience and mastery over their abilities. They are respected within their communities and can take on challenging tasks.",
+      "experience_needed": 102400,
+      "next_rank": "228fc563-eafb-4c44-ae31-ca7e2aa3d351"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "228fc563-eafb-4c44-ae31-ca7e2aa3d351",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633636Z",
+      "updated_at": "2024-06-09T17:10:56.633637Z",
+      "name": "Adept +",
+      "grade": 4,
+      "description": "A more experienced version of Adept.",
+      "experience_needed": 204800,
+      "next_rank": "e384002d-329c-4e5c-a7fa-97196e6dc1e2"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e384002d-329c-4e5c-a7fa-97196e6dc1e2",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633646Z",
+      "updated_at": "2024-06-09T17:10:56.633648Z",
+      "name": "Adept ++",
+      "grade": 4,
+      "description": "A more experienced version of Adept.",
+      "experience_needed": 409600,
+      "next_rank": "332d9bfd-c0d6-4407-bf0a-9500f15954d2"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "332d9bfd-c0d6-4407-bf0a-9500f15954d2",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633667Z",
+      "updated_at": "2024-06-09T17:10:56.633669Z",
+      "name": "Adept +++",
+      "grade": 4,
+      "description": "A more experienced version of Adept.",
+      "experience_needed": 819200,
+      "next_rank": "89686a7a-b837-446e-9abe-e5a1840c89b5"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "89686a7a-b837-446e-9abe-e5a1840c89b5",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633683Z",
+      "updated_at": "2024-06-09T17:10:56.633685Z",
+      "name": "Mercenary",
+      "grade": 5,
+      "description": "Highly skilled fighters, often working as hired guns or protectors. They are adept at both combat and survival, with a reputation for getting the job done.",
+      "experience_needed": 1638400,
+      "next_rank": "b70659a5-3968-473a-90ab-bebbf744ec5d"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b70659a5-3968-473a-90ab-bebbf744ec5d",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633700Z",
+      "updated_at": "2024-06-09T17:10:56.633701Z",
+      "name": "Mercenary +",
+      "grade": 5,
+      "description": "A more experienced version of Mercenary.",
+      "experience_needed": 3276800,
+      "next_rank": "355205da-f563-4648-b565-50d5858dabd9"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "355205da-f563-4648-b565-50d5858dabd9",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633710Z",
+      "updated_at": "2024-06-09T17:10:56.633712Z",
+      "name": "Mercenary ++",
+      "grade": 5,
+      "description": "A more experienced version of Mercenary.",
+      "experience_needed": 6553600,
+      "next_rank": "6fbf5f5e-fcf1-41e2-9da6-76a221084a89"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "6fbf5f5e-fcf1-41e2-9da6-76a221084a89",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633721Z",
+      "updated_at": "2024-06-09T17:10:56.633723Z",
+      "name": "Mercenary +++",
+      "grade": 5,
+      "description": "A more experienced version of Mercenary.",
+      "experience_needed": 13107200,
+      "next_rank": "55d24ccb-400e-4300-b44b-7af492a20ef4"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "55d24ccb-400e-4300-b44b-7af492a20ef4",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633744Z",
+      "updated_at": "2024-06-09T17:10:56.633746Z",
+      "name": "Veteran",
+      "grade": 6,
+      "description": "Experienced warriors and scholars who have faced numerous battles and challenges. They possess deep knowledge and refined skills, often mentoring novices and apprentices.",
+      "experience_needed": 26214400,
+      "next_rank": "23bea129-aa0e-4562-b427-1292306ca6ce"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "23bea129-aa0e-4562-b427-1292306ca6ce",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633755Z",
+      "updated_at": "2024-06-09T17:10:56.633756Z",
+      "name": "Veteran +",
+      "grade": 6,
+      "description": "A more experienced version of Veteran.",
+      "experience_needed": 52428800,
+      "next_rank": "2cc1dece-fec1-4615-829c-42a7c3f7b064"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "2cc1dece-fec1-4615-829c-42a7c3f7b064",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633766Z",
+      "updated_at": "2024-06-09T17:10:56.633767Z",
+      "name": "Veteran ++",
+      "grade": 6,
+      "description": "A more experienced version of Veteran.",
+      "experience_needed": 104857600,
+      "next_rank": "062bbf91-127b-4d66-897f-9e561fa3f474"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "062bbf91-127b-4d66-897f-9e561fa3f474",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633776Z",
+      "updated_at": "2024-06-09T17:10:56.633778Z",
+      "name": "Veteran +++",
+      "grade": 6,
+      "description": "A more experienced version of Veteran.",
+      "experience_needed": 209715200,
+      "next_rank": "55fec4cf-8e33-4e32-b300-115fe5467c01"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "55fec4cf-8e33-4e32-b300-115fe5467c01",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633789Z",
+      "updated_at": "2024-06-09T17:10:56.633791Z",
+      "name": "Veteran ++++",
+      "grade": 6,
+      "description": "A more experienced version of Veteran.",
+      "experience_needed": 419430400,
+      "next_rank": "86f049ad-ef6d-47a2-be5a-4568218f114f"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "86f049ad-ef6d-47a2-be5a-4568218f114f",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633800Z",
+      "updated_at": "2024-06-09T17:10:56.633801Z",
+      "name": "Master",
+      "grade": 7,
+      "description": "Elite individuals who have reached the pinnacle of their chosen path. They are renowned for their extraordinary abilities and wisdom, often playing pivotal roles in major events.",
+      "experience_needed": 838860800,
+      "next_rank": "d64e858c-fb3b-44e5-ba8a-d00ac8e35e45"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "d64e858c-fb3b-44e5-ba8a-d00ac8e35e45",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633813Z",
+      "updated_at": "2024-06-09T17:10:56.633814Z",
+      "name": "Master +",
+      "grade": 7,
+      "description": "A more experienced version of Master.",
+      "experience_needed": 1677721600,
+      "next_rank": "400985d8-7861-42ed-b185-d3e22e5298a7"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "400985d8-7861-42ed-b185-d3e22e5298a7",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633824Z",
+      "updated_at": "2024-06-09T17:10:56.633825Z",
+      "name": "Master ++",
+      "grade": 7,
+      "description": "A more experienced version of Master.",
+      "experience_needed": 3355443200,
+      "next_rank": "8b272a93-addd-4e07-bd20-fdf53d7983af"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "8b272a93-addd-4e07-bd20-fdf53d7983af",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633834Z",
+      "updated_at": "2024-06-09T17:10:56.633835Z",
+      "name": "Master +++",
+      "grade": 7,
+      "description": "A more experienced version of Master.",
+      "experience_needed": 6710886400,
+      "next_rank": "a3021496-1a4d-4a7d-b70e-71b431eb27cc"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "a3021496-1a4d-4a7d-b70e-71b431eb27cc",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633845Z",
+      "updated_at": "2024-06-09T17:10:56.633846Z",
+      "name": "Master ++++",
+      "grade": 7,
+      "description": "A more experienced version of Master.",
+      "experience_needed": 13421772800,
+      "next_rank": "ee13d950-3fc2-4deb-93b2-e0434501f227"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "ee13d950-3fc2-4deb-93b2-e0434501f227",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633858Z",
+      "updated_at": "2024-06-09T17:10:56.633859Z",
+      "name": "Grandmaster",
+      "grade": 8,
+      "description": "Rare and exceptional figures who have surpassed the limits of ordinary mastery. They are revered for their near-mythical prowess and contributions to their disciplines.",
+      "experience_needed": 26843545600,
+      "next_rank": "7453b42a-a4f4-46fb-92b7-397e428df0cf"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "7453b42a-a4f4-46fb-92b7-397e428df0cf",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633869Z",
+      "updated_at": "2024-06-09T17:10:56.633870Z",
+      "name": "Grandmaster +",
+      "grade": 8,
+      "description": "A more experienced version of Grandmaster.",
+      "experience_needed": 53687091200,
+      "next_rank": "ca27895d-71bb-4e0b-bce5-fa2d31372540"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "ca27895d-71bb-4e0b-bce5-fa2d31372540",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633879Z",
+      "updated_at": "2024-06-09T17:10:56.633881Z",
+      "name": "Grandmaster ++",
+      "grade": 8,
+      "description": "A more experienced version of Grandmaster.",
+      "experience_needed": 107374182400,
+      "next_rank": "330b877b-7b05-47e1-857e-35aa5ba19b1d"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "330b877b-7b05-47e1-857e-35aa5ba19b1d",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633890Z",
+      "updated_at": "2024-06-09T17:10:56.633891Z",
+      "name": "Grandmaster +++",
+      "grade": 8,
+      "description": "A more experienced version of Grandmaster.",
+      "experience_needed": 214748364800,
+      "next_rank": "41444c2e-7e50-47fb-82ca-09f2d57e99ae"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "41444c2e-7e50-47fb-82ca-09f2d57e99ae",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633901Z",
+      "updated_at": "2024-06-09T17:10:56.633902Z",
+      "name": "Grandmaster ++++",
+      "grade": 8,
+      "description": "A more experienced version of Grandmaster.",
+      "experience_needed": 429496729600,
+      "next_rank": "e1d05e62-72e9-4837-ac8a-2eef1cb17000"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e1d05e62-72e9-4837-ac8a-2eef1cb17000",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633912Z",
+      "updated_at": "2024-06-09T17:10:56.633913Z",
+      "name": "Grandmaster +++++",
+      "grade": 8,
+      "description": "A more experienced version of Grandmaster.",
+      "experience_needed": 858993459200,
+      "next_rank": "e7b6bdab-f13c-4ca1-b9b0-7bea9e230acf"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e7b6bdab-f13c-4ca1-b9b0-7bea9e230acf",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633922Z",
+      "updated_at": "2024-06-09T17:10:56.633924Z",
+      "name": "Legend",
+      "grade": 9,
+      "description": "Icons whose deeds and abilities have become the stuff of legend. They are celebrated across dimensions, their names etched into the annals of history.",
+      "experience_needed": 1717986918400,
+      "next_rank": "be57b889-b769-4bbc-a1f7-40206238cd70"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "be57b889-b769-4bbc-a1f7-40206238cd70",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633933Z",
+      "updated_at": "2024-06-09T17:10:56.633934Z",
+      "name": "Legend +",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 3435973836800,
+      "next_rank": "ad588ff2-2e1e-46a2-ab6a-9e49d9acd68c"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "ad588ff2-2e1e-46a2-ab6a-9e49d9acd68c",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633943Z",
+      "updated_at": "2024-06-09T17:10:56.633944Z",
+      "name": "Legend ++",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 6871947673600,
+      "next_rank": "b7350bc9-05fe-42d1-a0e4-b88b5149eff9"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b7350bc9-05fe-42d1-a0e4-b88b5149eff9",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633953Z",
+      "updated_at": "2024-06-09T17:10:56.633954Z",
+      "name": "Legend +++",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 13743895347200,
+      "next_rank": "e2c6d06f-2c7e-4334-9e3c-1bbe0e8a8461"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "e2c6d06f-2c7e-4334-9e3c-1bbe0e8a8461",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633963Z",
+      "updated_at": "2024-06-09T17:10:56.633964Z",
+      "name": "Legend ++++",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 27487790694400,
+      "next_rank": "6a955460-95ef-4d38-b338-cc438d1e1719"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "6a955460-95ef-4d38-b338-cc438d1e1719",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633973Z",
+      "updated_at": "2024-06-09T17:10:56.633975Z",
+      "name": "Legend +++++",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 54975581388800,
+      "next_rank": "4b941932-4e20-4ea1-8c2d-1d2ce3e84157"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "4b941932-4e20-4ea1-8c2d-1d2ce3e84157",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633984Z",
+      "updated_at": "2024-06-09T17:10:56.633985Z",
+      "name": "Legend ++++++",
+      "grade": 9,
+      "description": "A more experienced version of Legend.",
+      "experience_needed": 109951162777600,
+      "next_rank": "2244ddd2-dfce-489d-a417-b1a402b4553c"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "2244ddd2-dfce-489d-a417-b1a402b4553c",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.633994Z",
+      "updated_at": "2024-06-09T17:10:56.633996Z",
+      "name": "God Flow",
+      "grade": 10,
+      "description": "Beings who have attained a near-divine connection with the Flow, existing beyond the mortal realm. Their power transcends conventional understanding, capable of reshaping reality itself.",
+      "experience_needed": 219902325555200,
+      "next_rank": "ffad3913-9bd7-4250-b18f-46b39c7c762b"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "ffad3913-9bd7-4250-b18f-46b39c7c762b",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634237Z",
+      "updated_at": "2024-06-09T17:10:56.634242Z",
+      "name": "God Flow +",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 439804651110400,
+      "next_rank": "832b2bab-df9b-427f-8f5e-51fdc3deb609"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "832b2bab-df9b-427f-8f5e-51fdc3deb609",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634261Z",
+      "updated_at": "2024-06-09T17:10:56.634262Z",
+      "name": "God Flow ++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 879609302220800,
+      "next_rank": "b301b2aa-fd6f-455c-aed5-abd17e00afec"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "b301b2aa-fd6f-455c-aed5-abd17e00afec",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634272Z",
+      "updated_at": "2024-06-09T17:10:56.634274Z",
+      "name": "God Flow +++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 1759218604441600,
+      "next_rank": "5bcf1537-6c79-4917-8a66-0ab8104620f7"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "5bcf1537-6c79-4917-8a66-0ab8104620f7",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634283Z",
+      "updated_at": "2024-06-09T17:10:56.634284Z",
+      "name": "God Flow ++++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 3518437208883200,
+      "next_rank": "f8152282-d835-4e03-8454-a082525db0e6"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "f8152282-d835-4e03-8454-a082525db0e6",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634298Z",
+      "updated_at": "2024-06-09T17:10:56.634300Z",
+      "name": "God Flow +++++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 7036874417766400,
+      "next_rank": "d3e5c339-7949-4cf5-9052-b4b2c4deffa7"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "d3e5c339-7949-4cf5-9052-b4b2c4deffa7",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634310Z",
+      "updated_at": "2024-06-09T17:10:56.634311Z",
+      "name": "God Flow ++++++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 14073748835532800,
+      "next_rank": "8dce4d56-551f-475d-a31b-02100a8db26a"
+    }
+  },
+  {
+    "model": "player.rank",
+    "pk": "8dce4d56-551f-475d-a31b-02100a8db26a",
+    "fields": {
+      "created_at": "2024-06-09T17:10:56.634321Z",
+      "updated_at": "2024-06-09T17:10:56.634322Z",
+      "name": "God Flow +++++++",
+      "grade": 10,
+      "description": "A more experienced version of God Flow.",
+      "experience_needed": 28147497671065600,
+      "next_rank": null
+    }
+  }
+]

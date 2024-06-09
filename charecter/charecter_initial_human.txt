@@ -8,7 +8,7 @@ Attributes
 Health Points (HP): 10 * {Phisical Strength}
 Energy (Flow): 0 (no initial Flow accumulation capabilities)
 Action Points (AP): 0.5 * {speed} * {dimantionTimeMultiplier}
-Rank: JustHuman
+Rank: 10 - Only a Human
 
 Stats
 Phisical Strength: 10

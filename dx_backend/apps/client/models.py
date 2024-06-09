@@ -43,7 +43,7 @@ class Client(BaseModel, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
-    main_character = models.ForeignKey('player.Character', on_delete=models.SET_NULL, null=True, blank=True,)
+    player = models.OneToOneField('player.Player', on_delete=models.SET_NULL, null=True, blank=True, related_name='client')
 
     objects = ClientManager()
 

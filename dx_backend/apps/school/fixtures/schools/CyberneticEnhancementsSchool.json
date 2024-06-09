@@ -1,0 +1,105 @@
+{
+  "school": "Cybernetic Enhancements",
+  "description": "Focuses on integrating cybernetic enhancements for increased physical power.",
+  "ranks": {
+    "9": {
+      "name": "Strength Augmentation",
+      "type": "Attack",
+      "description": "Base Damage: 30",
+      "modificator": "Flow Manipulation (1.1)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 4,
+      "special": "20% chance to increase user's strength by 5% for 2 turns"
+    },
+    "8": {
+      "name": "No skills at this rank"
+    },
+    "7": {
+      "name": "Cybernetic Punch",
+      "type": "Attack",
+      "description": "Base Damage: 35",
+      "modificator": "Flow Manipulation (1.2)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 4,
+      "special": "15% chance to cause internal damage (additional 5 physical damage per turn for 2 turns)"
+    },
+    "6": {
+      "name": "Neural Disruptor",
+      "type": "Attack",
+      "description": "Base Damage: 45",
+      "modificator": "Flow Manipulation (1.3)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 5,
+      "special": "25% chance to disrupt target's neural system, paralyzing them for 1 turn"
+    },
+    "5": {
+      "name": "Hydraulic Strike",
+      "type": "Attack",
+      "description": "Base Damage: 50",
+      "modificator": "Flow Manipulation (1.4)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 6,
+      "special": "Reduces target's defense by 10% for 3 turns"
+    },
+    "4": {
+      "name": "Power Surge",
+      "type": "Attack",
+      "description": "Base Damage: 70",
+      "modificator": "Flow Manipulation (1.5)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 6,
+      "special": "30% chance to reduce target's energy by 20% for 2 turns"
+    },
+    "3": {
+      "name": "Adaptive Strike",
+      "type": "Attack",
+      "description": "Base Damage: 85",
+      "modificator": "Flow Manipulation (1.6)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 7,
+      "special": "35% chance to paralyze target for 1 turn"
+    },
+    "2": {
+      "name": "System Overload",
+      "type": "Attack",
+      "description": "Base Damage: 100",
+      "modificator": "Flow Manipulation (1.7)",
+      "impact": "Energy",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 8,
+      "special": "40% chance to stun target for 1 turn"
+    },
+    "1": {
+      "name": "Ultimate Strike",
+      "type": "Attack",
+      "description": "Base Damage: 120",
+      "modificator": "Flow Manipulation (1.8)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 9,
+      "special": "50% chance to reduce target's action points by 2 for 2 turns"
+    },
+    "0": {
+      "name": "Full System Assault",
+      "type": "Attack",
+      "description": "Base Damage: 150",
+      "modificator": "Flow Manipulation (2.0)",
+      "impact": "Physical",
+      "area": "[1, 1] (Single Target)",
+      "action_points": 10,
+      "special": "60% chance to paralyze target for 2 turns"
+    }
+  },
+  "additional_effects": {
+    "enhanced_vision": "Increases accuracy by 10%, allowing for critical hits.",
+    "neural_uplinks": "Reduces action point cost by 1 for all implant attacks.",
+    "reinforced_skeleton": "Reduces physical damage taken by 15%.",
+    "energy_core": "Increases energy reserves by 20%, allowing for prolonged combat."
+  }
+}
