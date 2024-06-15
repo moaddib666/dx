@@ -42,3 +42,12 @@ class PlayerInfoSerializer(serializers.Serializer):
     location = LocationSerializer()
     rank = RankSerializer()
     active_effects = serializers.ListField(child=serializers.DictField())
+    fight = serializers.UUIDField(allow_null=True)
+    duel_invitations = serializers.ListField(child=serializers.UUIDField())
+
+
+class PlayerPathSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Player
+        fields = ['path']

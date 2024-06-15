@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'apps.school',
     'apps.player',
     'apps.game',
-
+    'apps.fight',
+    'apps.action',
+    'apps.skills',
 ]
 
 MIDDLEWARE = [
@@ -194,6 +196,15 @@ JET_THEMES = [
 ]
 
 JET_SIDE_MENU_COMPACT = True  # menu is not expandable
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "root": {"handlers": ["console"], "level": "DEBUG"},
+}
 
 try:
     from .settings_local import *

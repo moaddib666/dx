@@ -25,8 +25,9 @@ class Skill(models.Model):
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     description = models.TextField()
     multi_target = models.BooleanField()
-
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='skills', null=True, blank=True)
+
+    # TODO: Add type field to Skill model Attack, Defense, etc.
 
     impact = models.JSONField(default=list)
     cost = models.JSONField(default=list)

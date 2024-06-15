@@ -54,6 +54,10 @@ class Player(BaseModel):
 
     stats = models.OneToOneField('CharacterStatSet', on_delete=models.CASCADE, null=True, blank=True, related_name='character')
 
+    fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True)
+
+    school_slots = models.PositiveIntegerField(default=2)
+
     def __str__(self):
         return self.name
 

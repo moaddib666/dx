@@ -17,4 +17,6 @@ urlpatterns = [
     path('player/', include('apps.player.urls')),
     path('school/', include('apps.school.urls')),
     path('world/', include('apps.world.urls')),
+    path('fight/', include('apps.fight.urls')),
+    path('skills/', include('apps.skills.urls')),
 ]

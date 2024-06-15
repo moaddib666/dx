@@ -1,7 +1,16 @@
+import logging
+from datetime import timedelta
+
+from django.utils import timezone
+
+from apps.game.exceptions import GameLogicException
 from apps.player.models import Player
 
 
 class PlayerService:
+
+    logger = logging.getLogger("game.services.player")
+
     def __init__(self, player: Player):
         self.player = player
 
@@ -30,8 +39,26 @@ class PlayerService:
             'rank': {
                 'name': self.player.rank.name,
                 'experience': self.player.experience,
-                'next_rank_experience': self.player.rank.experience_needed,
+                'grade': self.player.rank.grade,
+                'next_rank_experience': self.player.rank.next_rank.experience_needed,
             },
+            'skills': self.player.learned_skills.values_list('skill__id', flat=True),
+            'schools': self.player.learned_schools.values_list('school__id', flat=True),
+            'path': self.player.path.id if self.player.path else None,
             'active_effects': [],
+            'fight': self.player.fight_id,
+            'duel_invitations': self.player.duel_invitations_received.exclude(
+                is_accepted=True, is_rejected=True, created_at__gte=timezone.now() - timedelta(minutes=5)
+            ).values_list('id', flat=True),
         }
 
+    def notify(self, message: dict):
+        self.logger.info(f"Sending notification to {self.player.name}: {message}")
+
+    def chose_path(self, path):
+        if self.player.path:
+            raise GameLogicException("Player already chose a path")
+        if self.player.rank.grade == 0:
+            raise GameLogicException("Player must reach rank 1 to choose a path")
+        self.player.path = path
+        self.player.save()

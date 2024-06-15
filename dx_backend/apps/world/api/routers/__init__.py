@@ -1,5 +1,5 @@
 from rest_framework_nested import routers
-from apps.world.api.views.openai import OpenAILocationManagementViewSet, OpenAIAreaManagementViewSet, OpenAICityManagementViewSet, OpenAIDimensionManagementViewSet
+from apps.world.api.views.openai import OpenAILocationManagementViewSet, OpenAIAreaManagementViewSet, OpenAICityManagementViewSet, OpenAIDimensionManagementViewSet, PositionManagementViewSet
 
 
 router = routers.SimpleRouter()
@@ -7,4 +7,5 @@ router.register(r'locations', OpenAILocationManagementViewSet, basename='locatio
 router.register(r'areas', OpenAIAreaManagementViewSet, basename='areas')
 router.register(r'cities', OpenAICityManagementViewSet, basename='cities')
 router.register(r'dimensions', OpenAIDimensionManagementViewSet, basename='dimensions')
+router.register(r'position', PositionManagementViewSet, basename='position')
 
