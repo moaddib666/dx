@@ -20,6 +20,9 @@ class Formula(TypedDict):
 
 
 class Impact(TypedDict):
+    """
+    [{"kind": "Damage", "type": "Heat", "formula": {"base": 15, "requires": [{"stat": "Flow Manipulation", "value": 5}], "scaling": [{"stat": "Flow Manipulation", "value": 0.2}]}}]
+    """
     kind: str
     type: str
     formula: Formula

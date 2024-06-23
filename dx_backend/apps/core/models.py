@@ -1,3 +1,5 @@
-from django.db import models
+from enum import StrEnum
 
-# Create your models here.
+
+class ImpactType(StrEnum):
+    pass

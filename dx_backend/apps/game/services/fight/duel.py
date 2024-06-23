@@ -14,7 +14,7 @@ class InvitationService:
     def __init__(self, invitation):
         self.invitation = invitation
         self.player1 = PlayerService(invitation.initiator)
-        self.player2 = PlayerService(invitation.target)
+        self.player2 = PlayerService(invitation.targets)
 
     @classmethod
     def create(cls, player1: PlayerService, player2: PlayerService) -> "Self":
@@ -57,8 +57,8 @@ class InvitationService:
                 'name': invitation.initiator.name,
             },
             'target': {
-                'id': invitation.target.id,
-                'name': invitation.target.name,
+                'id': invitation.targets.id,
+                'name': invitation.targets.name,
             },
             'is_accepted': invitation.is_accepted,
             'is_rejected': invitation.is_rejected,

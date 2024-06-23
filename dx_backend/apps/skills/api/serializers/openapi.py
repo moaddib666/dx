@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
+from apps.school.api.serializers.openapi import OpenaiSkillSerializer
 from apps.skills.models import LearnedSkill, LearnedSchool
 
 
 class LearnedSkillSerializer(serializers.ModelSerializer):
+    skill = OpenaiSkillSerializer()
 
     class Meta:
         model = LearnedSkill
@@ -12,7 +14,6 @@ class LearnedSkillSerializer(serializers.ModelSerializer):
 
 
 class LearnedSchoolSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = LearnedSchool
         fields = ['id', 'player', 'school']

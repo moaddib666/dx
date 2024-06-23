@@ -22,5 +22,6 @@ django-jet-reboot = "*"
 django-cors-headers = "*"
 pip = "*"
 drf-nested-routers = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]

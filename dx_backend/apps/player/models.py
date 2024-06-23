@@ -41,7 +41,15 @@ class Player(BaseModel):
     experience = models.IntegerField()
 
     current_health_points = models.IntegerField()
+    @property
+    def max_health_points(self):
+        return self.stats.health_points
+
     current_energy_points = models.IntegerField()
+    @property
+    def max_energy_points(self):
+        return self.stats.energy_points
+
     current_active_points = models.IntegerField()
 
     place_of_birth = models.ForeignKey("world.Location", on_delete=models.SET_NULL, null=True, blank=True,

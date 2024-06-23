@@ -1,18 +1,24 @@
 import logging
+import uuid
 from datetime import timedelta
 
 from django.utils import timezone
 
+from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.player.models import Player
+from apps.school.models import Skill
+from apps.world.models import Dimension
 
 
 class PlayerService:
-
     logger = logging.getLogger("game.services.player")
 
     def __init__(self, player: Player):
         self.player = player
+
+    def get_max_ap(self):
+        return int(round(self.player.stats.speed * 0.5 * self.player.dimension.speed))
 
     def get_player_info(self):
         self.player.refresh_from_db()
@@ -25,7 +31,7 @@ class PlayerService:
                 'energy': self.player.current_energy_points,
                 'max_energy': self.player.stats.energy_points,
                 'ap': self.player.current_active_points,
-                'max_ap': int(round(self.player.stats.speed * 0.5 * self.player.dimension.speed)),
+                'max_ap': self.get_max_ap(),
             },
             'location': {
                 'id': self.player.current_location.id,
@@ -61,4 +67,45 @@ class PlayerService:
         if self.player.rank.grade == 0:
             raise GameLogicException("Player must reach rank 1 to choose a path")
         self.player.path = path
+        self.player.save()
+
+    def has_skill(self, skill_id: uuid.UUID):
+        try:
+            self.player.learned_skills.get(skill_id=skill_id)
+        except Skill.DoesNotExist:
+            raise GameLogicException("Player does not have skill")
+
+    def get_current_speed(self) -> float:
+        return self.player.stats.speed * self.player.dimension.speed
+
+    def get_stat(self, param: str) -> int:
+        pretty_stat = param.replace(" ", "_").lower()
+        return getattr(self.player.stats, pretty_stat, 0)
+
+    def impacted(self, calculated_impact: CalculatedImpact):
+        self.logger.debug(f"Player {self.player.id} impacted with {calculated_impact}")
+        if self.player.current_health_points <= 0:
+            self.logger.debug(f"Player {self.player.id} is already dead")
+            return
+        if calculated_impact['kind'] == "Damage":
+            self.player.current_health_points -= calculated_impact['value']
+            self.player.save()
+            self.logger.info(f"Player {self.player.id} received {calculated_impact['value']} of {calculated_impact['kind']} damage")
+        else:
+            raise GameLogicException("Unknown impact kind")
+
+    def refill_ap(self):
+        self.player.current_active_points = self.get_max_ap()
+        self.player.save()
+
+    def refill_energy(self):
+        self.player.current_energy_points = self.player.stats.energy_points
+        self.player.save()
+
+    def refill_health(self):
+        self.player.current_health_points = self.player.stats.health_points
+        self.player.save()
+
+    def dimension_shift(self, target_dimension: Dimension):
+        self.player.dimension = target_dimension
         self.player.save()

@@ -21,13 +21,25 @@ class School(BaseModel):
 
 
 class Skill(models.Model):
+    class Types(models.TextChoices):
+        ATTACK = 'attack'
+        DEFENSE = 'defense'
+        HEAL = 'heal'
+        BUFF = 'buff'
+        DEBUFF = 'debuff'
+        UTILITY = 'utility'
+
+    class CostType(models.TextChoices):
+        ENERGY = 'Energy'
+        HEALTH = 'Health'
+        AP = 'Action Points'
+
     name = models.CharField(max_length=100)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     description = models.TextField()
     multi_target = models.BooleanField()
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='skills', null=True, blank=True)
-
-    # TODO: Add type field to Skill model Attack, Defense, etc.
+    type = models.CharField(max_length=10, choices=Types.choices, default=Types.ATTACK)
 
     impact = models.JSONField(default=list)
     cost = models.JSONField(default=list)
@@ -63,3 +75,21 @@ class Skill(models.Model):
                 raise ValidationError({field_name: f'Missing key: {key}'})
             if not isinstance(item[key], value_type):
                 raise ValidationError({field_name: f'Invalid type for key: {key}, expected {value_type.__name__}'})
+
+    def is_defense(self):
+        return self.type == self.Types.DEFENSE
+
+    def is_attack(self):
+        return self.type == self.Types.ATTACK
+
+    def is_buff(self):
+        return self.type == self.Types.BUFF
+
+    def is_debuff(self):
+        return self.type == self.Types.DEBUFF
+
+    def is_heal(self):
+        return self.type == self.Types.HEAL
+
+    def is_utility(self):
+        return self.type == self.Types.UTILITY

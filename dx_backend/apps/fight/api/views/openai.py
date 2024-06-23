@@ -4,12 +4,13 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from apps.fight.api.serializers.openapi import DuelInvitationSerializer, FightSerializer
-from apps.fight.models import DuelInvitation, Fight
+from apps.fight.api.serializers.openapi import DuelInvitationSerializer, FightSerializer, FightTurnActionSerializer, \
+    CurrentFightSerializer
+from apps.fight.models import DuelInvitation, Fight, FightTurnAction
 from apps.game.exceptions import GameLogicException
+from apps.game.services.action.factory import FightActionFactory
 from apps.game.services.fight.duel import InvitationService
 from apps.game.services.fight.fight import FightService
 from apps.game.services.player.core import PlayerService
@@ -89,9 +90,26 @@ class FightViewSet(
             raise GameLogicException("Not in the fight.")
         return fight
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], serializer_class=CurrentFightSerializer)
     def current(self, request):
-        serializer = self.get_serializer(self.get_current_fight())
+        fight = self.get_current_fight()
+
+        side_a = fight.side_a_participants.all()
+        side_b = fight.side_b_participants.all()
+        if request.user.player in side_a:
+            allies = side_a
+            enemies = side_b
+        else:
+            allies = side_b
+            enemies = side_a
+
+        serializer = self.get_serializer(
+            {
+                'fight': fight,
+                'allies': allies.exclude(id=request.user.player.id),
+                'enemies': enemies,
+            }
+        )
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
@@ -120,3 +138,34 @@ class FightViewSet(
         player_service = PlayerService(self.request.user.player)
         FightService(fight).join(player_service, side='b')
         return Response(status=status.HTTP_200_OK, data=FightSerializer(fight).data)
+
+
+class FightActionsViewSet(
+    viewsets.mixins.CreateModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = FightTurnAction.objects.filter()
+    serializer_class = FightTurnActionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        player = user.player
+        fight = player.fight
+        qs = super().get_queryset()
+        return qs.filter(tyrn__fight=fight)
+
+    @transaction.atomic
+    def perform_create(self, serializer):
+        if not self.request.user.player.fight:
+            raise GameLogicException("Not in the fight.")
+        if not self.request.user.player.fight.current_turn:
+            raise GameLogicException("Fight is not started.")
+
+        fight_action = serializer.save(initiator=self.request.user.player,
+                                       turn=self.request.user.player.fight.current_turn)
+
+        action_svc = FightActionFactory().from_action(fight_action)
+        action_svc.check()
+
+        return super().perform_create(serializer)
