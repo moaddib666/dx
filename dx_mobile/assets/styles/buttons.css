@@ -1,0 +1,23 @@
+/* Buttons */
+.primary-btn {
+    background-color: var(--electric-blue);
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.primary-btn:hover {
+    background-color: #1C86EE;
+}
+.secondary-btn {
+    background-color: var(--neon-pink);
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.secondary-btn:hover {
+    background-color: #EE1289;
+}

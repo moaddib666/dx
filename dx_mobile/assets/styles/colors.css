@@ -1,0 +1,12 @@
+/* Colors */
+:root {
+    --electric-blue: #1E90FF;
+    --neon-pink: #FF1493;
+    --cyber-yellow: #FFD700;
+    --dark-slate-gray: #2a2b2b;
+    --deep-purple: #6A5ACD;
+    --gunmetal: #2C3539;
+    --lime-green: #32CD32;
+    --crimson-red: rgba(255, 69, 0, 0.8);
+    --glowing-white: #F8F8FF;
+}

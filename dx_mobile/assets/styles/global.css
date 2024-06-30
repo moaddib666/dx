@@ -1,0 +1,78 @@
+:root {
+    --electric-blue: #1E90FF;
+    --neon-pink: #FF1493;
+    --cyber-yellow: #FFD700;
+    --dark-slate-gray: #2F4F4F;
+    --deep-purple: #6A5ACD;
+    --gunmetal: #2C3539;
+    --lime-green: #32CD32;
+    --lime-dark-green: #228B22;
+    --crimson-red: #DC143C;
+    --glowing-white: #F8F8FF;
+}
+
+a {
+    text-decoration: none;
+    font-style: italic;
+    color: var(--lime-green);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:visited {
+    color: var(--lime-dark-green);
+}
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1e1e1e;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+button {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.primary-btn {
+    background-color: var(--electric-blue);
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.primary-btn:hover {
+    background-color: #1C86EE;
+}
+
+.secondary-btn {
+    background-color: var(--neon-pink);
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.secondary-btn:hover {
+    background-color: #EE1289;
+}
