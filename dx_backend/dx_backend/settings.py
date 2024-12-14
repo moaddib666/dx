@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # "daphne",
     "jet",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'drf_spectacular_sidecar',
     'corsheaders',
+    # 'channels',
     'apps.core',
     'apps.client',
     'apps.world',
@@ -60,6 +62,8 @@ INSTALLED_APPS = [
     'apps.fight',
     'apps.action',
     'apps.skills',
+    'apps.adapters',
+    'apps.adapters.centrifugo',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +101,17 @@ TEMPLATES = [
 WSGI_APPLICATION = "dx_backend.wsgi.application"
 
 
+# ASGI_APPLICATION = "dx_backend.asgi.application"
+
+# Define the Channels layer (you can use Redis for production)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -156,13 +171,15 @@ AUTHENTICATION_BACKENDS = (
 
 SITE_ID = 1
 
+# from dx_backend.openapi.schema import CustomSchemaGenerator
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'dx_backend.openapi.schema.CustomSchemaGenerator',  # Adjust the import path accordingly
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SPECTACULAR_SETTINGS = {
@@ -247,6 +264,9 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+CENTRIFUGO_API_URL = ""
+CENTRIFUGO_API_KEY = ""
 
 try:
     from .settings_local import *

@@ -17,7 +17,7 @@ class ThePath(BaseModel):
 class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    path = models.ManyToManyField(ThePath, null=True, blank=True)
+    path = models.ManyToManyField(ThePath)
 
 
 class Skill(models.Model):

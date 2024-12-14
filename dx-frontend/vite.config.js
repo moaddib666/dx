@@ -8,9 +8,21 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  server: {
+    port: 3000,
+    open: true,
+  },
+  build: {
+    sourcemap: true, // Enable source maps for better error debugging
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  define: {
+      'process.env': process.env
+  },
+
+
 })

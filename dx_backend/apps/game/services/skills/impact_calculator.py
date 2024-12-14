@@ -41,30 +41,22 @@ class SkillImpactService:
         base_damage = formula.get("base", 0)
         required_stats = formula.get("requires", [])
         scaling_factors = formula.get("scaling", [])
-        damage = base_damage
         self.logger.debug(f"Base damage: {base_damage}")
 
-        # Apply penalties for not meeting required stats
-        for stat in required_stats:
-            current_level = self.initiator.get_stat(stat["stat"])
-            required_level = stat["value"]
-            self.logger.debug(
-                f"Checking required stat {stat['stat']}: current level {current_level}, required level {required_level}")
-            if current_level < required_level:
-                penalty_factor = (required_level - current_level) / required_level
-                damage *= (1 - penalty_factor)
-                self.logger.debug(
-                    f"Applied penalty for stat {stat['stat']}: penalty factor {penalty_factor}, new damage {damage}")
+        if len(required_stats) != len(scaling_factors):
+            raise GameLogicException("Improperly configured impact formula")
 
-        # Apply scaling factors
-        for scaling in scaling_factors:
-            scaling_stat = scaling["stat"]
-            scaling_value = scaling["value"]
-            current_level = self.initiator.get_stat(scaling_stat)
-            self.logger.debug(
-                f"Applying scaling factor for stat {scaling_stat}: scaling value {scaling_value}, current level {current_level}")
-            damage *= (1 + scaling_value * current_level)
-            self.logger.debug(f"New damage after scaling: {damage}")
-
-        self.logger.info(f"Final calculated damage: {damage}")
-        return CalculatedImpact(kind=impact['kind'], value=damage)
+        potential_impacts = []
+        for r, s in zip(required_stats, scaling_factors):
+            stat_name = r['stat']
+            stat_value = self.initiator.get_stat(stat_name)
+            required_value = r['value']
+            scaling_factor = s['value']
+            skill_efficiencies = stat_value / required_value if required_value > 0 else 0.01
+            skill_efficiencies *= 1 + (skill_efficiencies - 1) * scaling_factor
+            logging.debug(f"Calculating impact based on stat {r['stat']} Skill efficiencies: {skill_efficiencies}, "
+                          f"scaling factor: {scaling_factor}, resulting value: {skill_efficiencies}")
+            potential_impacts.append(skill_efficiencies)
+        final_impact = base_damage * min(potential_impacts)
+        logging.debug(f"Final impact: {final_impact}")
+        return CalculatedImpact(kind=impact['kind'], value=final_impact)

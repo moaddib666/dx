@@ -7,11 +7,14 @@ class DimensionActionService(BaseService):
         pass
 
     def check(self):
-        if self.action.action_type != self.action.ActionType.dimension_shift:
+        if self.action.action_type != self.action.ActionType.DIMENSION_SHIFT:
             raise GameLogicException("Invalid action type")
 
         if self.action.target_dimension is None:
             raise GameLogicException("No target dimension")
+
+        if self.action.target_dimension.grade > self.initiator.player.rank.grade:
+            raise GameLogicException("Invalid target dimension grade")
 
         if self.initiator.player.dimension_id == self.action.target_dimension:
             raise GameLogicException("Already in target dimension")
@@ -20,12 +23,11 @@ class DimensionActionService(BaseService):
             raise GameLogicException("Invalid target dimension")
 
         if self.action.target_dimension_id > self.initiator.player.dimension_id and self.initiator.player.current_energy_points < 10:
-            raise GameLogicException("Not enough energy")
+            raise GameLogicException(
+                f"Not enough energy current: {self.initiator.player.current_energy_points}, expected: 10")
 
         if self.initiator.player.current_active_points < self.initiator.get_max_ap():
-            raise GameLogicException("Not enough energy")
+            raise GameLogicException(f"Not enough action points {self.initiator.player.current_active_points} expected: {self.initiator.get_max_ap()}")
 
         self.initiator.player.current_active_points = 0
         self.initiator.player.save()
-
-

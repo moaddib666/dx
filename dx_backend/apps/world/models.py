@@ -9,6 +9,7 @@ class Dimension(BaseModel):
 
     speed = models.FloatField()
     energy = models.FloatField()
+    shift_cost = models.IntegerField(default=0)
 
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     is_active = models.BooleanField(default=True)
@@ -27,7 +28,7 @@ class Planet(BaseModel):
     number_of_moons = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self', null=True, blank=True)
+    border_with = models.ManyToManyField('self',)
 
     def __str__(self):
         return self.name
@@ -43,7 +44,7 @@ class Continent(BaseModel):
     number_of_countries = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',  null=True, blank=True)
+    border_with = models.ManyToManyField('self')
 
     def __str__(self):
         return self.name
@@ -57,7 +58,7 @@ class Country(BaseModel):
     area = models.FloatField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',  null=True, blank=True, related_name='border_with_country')
+    border_with = models.ManyToManyField('self',)
 
     def __str__(self):
         return self.name
@@ -70,7 +71,7 @@ class City(BaseModel):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',  null=True, blank=True, related_name='border_with_city')
+    border_with = models.ManyToManyField('self', )
 
     def __str__(self):
         return self.name
@@ -84,7 +85,7 @@ class Area(BaseModel):
     area = models.FloatField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',  null=True, blank=True, related_name='border_with_area')
+    border_with = models.ManyToManyField('self',)
 
     def __str__(self):
         return self.name
@@ -98,7 +99,7 @@ class Location(BaseModel):
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',  null=True, blank=True, related_name='border_with_location')
+    border_with = models.ManyToManyField('self')
 
     def __str__(self):
         return self.name
@@ -111,7 +112,7 @@ class SubLocation(BaseModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self', null=True, blank=True, related_name='border_with_sub_location')
+    border_with = models.ManyToManyField('self')
 
     def __str__(self):
         return self.name

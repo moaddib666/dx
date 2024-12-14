@@ -1,6 +1,7 @@
 import logging
 from typing import TYPE_CHECKING, Self
 
+from apps.core.bus.base import GameEvent
 from apps.game.exceptions import GameLogicException
 from apps.game.services.player.core import PlayerService
 
@@ -65,12 +66,13 @@ class InvitationService:
             'fight': invitation.fight_id,
         }
 
-    def _create_event(self, invitation):
+    def _create_event(self, invitation) -> GameEvent:
         # TODO: implement message bus
-        return {
-            'type': 'duel_invitation',
-            'data': self._serialize_invitation(invitation),
-        }
+        return GameEvent.create(
+            name="invitation",
+            category="duel",
+            data=self._serialize_invitation(invitation),
+        )
 
     def reject(self):
         if self.invitation.is_accepted:

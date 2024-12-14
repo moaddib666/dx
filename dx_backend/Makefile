@@ -12,3 +12,7 @@ remove-db:
 	rm db.sqlite3
 re-init-db: remove-db migrate load-fixtures
 	python manage.py createsuperuser
+redis:
+	docker-compose up -d redis
+gateway:
+	docker-compose up -d gateway

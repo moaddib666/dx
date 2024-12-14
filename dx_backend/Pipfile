@@ -23,5 +23,7 @@ django-cors-headers = "*"
 pip = "*"
 drf-nested-routers = "*"
 djangorestframework-simplejwt = "*"
+pydantic = "*"
+channels-redis = "*"
 
 [dev-packages]

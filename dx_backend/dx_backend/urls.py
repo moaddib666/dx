@@ -30,4 +30,5 @@ urlpatterns = [
     path('fight/', include('apps.fight.urls')),
     path('skills/', include('apps.skills.urls')),
     path('action/', include('apps.action.urls')),
+    path('adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]

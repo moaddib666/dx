@@ -1,5 +1,8 @@
+import uuid
+
 from rest_framework import serializers
 
+from apps.core.models import AttributeType
 from apps.player.models import Player
 
 
@@ -35,19 +38,24 @@ class RankSerializer(serializers.Serializer):
     next_rank_experience = serializers.IntegerField()
 
 
+class AttributeSerializer(serializers.Serializer):
+    name = serializers.ChoiceField(choices=[attr for attr in AttributeType])
+    current = serializers.IntegerField()
+    max = serializers.IntegerField()
+
+
 class PlayerInfoSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField(max_length=255)
-    stats = CharacterStatsSerializer()
-    location = LocationSerializer()
-    rank = RankSerializer()
-    active_effects = serializers.ListField(child=serializers.DictField())
-    fight = serializers.UUIDField(allow_null=True)
+    id = serializers.UUIDField(default=uuid.uuid4)
+    name = serializers.CharField(max_length=100)
+    rank_grade = serializers.IntegerField()
+    attributes = AttributeSerializer(many=True)
+    dimension = serializers.IntegerField()
+    location = serializers.UUIDField()
+    fight = serializers.UUIDField()
     duel_invitations = serializers.ListField(child=serializers.UUIDField())
 
 
 class PlayerPathSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Player
         fields = ['path']

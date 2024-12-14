@@ -34,6 +34,7 @@ export default {
 .header {
   background-color: var(--dark-slate-gray);
   padding: 10px 0;
+  z-index: 50;
 }
 
 .navbar ul {
@@ -53,4 +54,5 @@ export default {
 .navbar a:hover {
   color: var(--cyber-yellow);
 }
+
 </style>

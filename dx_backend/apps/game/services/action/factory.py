@@ -1,3 +1,4 @@
+from apps.core.models import PlayerActionType
 from apps.fight.models import FightTurnAction
 from apps.game.services.action.dimension_action import DimensionActionService
 from apps.game.services.action.skill_action import SkillActionService
@@ -11,8 +12,8 @@ class ActionFactory:
 class FightActionFactory:
 
     mapping = {
-        FightTurnAction.ActionType.use_skill: SkillActionService,
-        FightTurnAction.ActionType.dimension_shift: DimensionActionService,
+        PlayerActionType.USE_SKILL: SkillActionService,
+        PlayerActionType.DIMENSION_SHIFT: DimensionActionService,
     }
 
     def from_action(self, action: FightTurnAction):

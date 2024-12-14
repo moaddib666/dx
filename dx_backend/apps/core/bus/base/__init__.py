@@ -1,0 +1,88 @@
+import time
+import uuid
+from enum import StrEnum
+from inspect import isabstract
+
+from pydantic import BaseModel, Field
+
+from ..registry import EventsRegistry, DEFAULT_EVENT_REGISTRY
+
+
+class GameEventData(BaseModel):
+    pass
+
+
+class EventCategory(StrEnum):
+    PLAYER = "player"
+    LOCATION = "location"
+    FIGHT = "fight"
+    GAME = "game"
+
+
+class EventDirection(StrEnum):
+    PRODUCED = "player"
+    CONSUMED = "server"
+
+
+class GameEvent(BaseModel):
+    name: str
+    timestamp: int = Field(default_factory=time.time)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    category: EventCategory = EventCategory.GAME
+    data: GameEventData = None
+
+    __produced__: bool = False
+    __consumed__: bool = False
+    ___registry___: EventsRegistry = DEFAULT_EVENT_REGISTRY
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if isabstract(cls):
+            return
+
+        if cls.is_consumed():
+            cls.___registry___.register_consumed(cls)
+        if cls.is_produced():
+            cls.___registry___.register_produced(cls)
+
+    @classmethod
+    def is_produced(cls) -> bool:
+        return cls.__produced__
+
+    @classmethod
+    def is_consumed(cls) -> bool:
+        return cls.__consumed__
+
+    @property
+    def full_event_name(self) -> str:
+        return f"{self.category}.{self.name}"
+
+    @classmethod
+    def create(cls, category: str, name: str, data: GameEventData) -> "GameEvent":
+        return cls(
+            id=uuid.uuid4(),
+            timestamp=time.time(),
+            category=category,
+            name=name,
+            data=data,
+        )
+
+
+class ProducedMixin:
+    __produced__ = True
+
+
+class ConsumedMixin:
+    __consumed__ = True
+
+
+class FightEvent(GameEvent):
+    category: EventCategory = EventCategory.FIGHT
+
+
+class PlayerEvent(GameEvent):
+    category: EventCategory = EventCategory.PLAYER
+
+
+class LocationEvent(GameEvent):
+    category: EventCategory = EventCategory.LOCATION

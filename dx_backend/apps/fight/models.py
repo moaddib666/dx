@@ -1,6 +1,7 @@
 from django.db import models
 
 from apps.action.models import PlayerAction
+from apps.core.models import FightSide, FIGHT_TURN_DURATION_SECONDS
 from apps.core.utils.models import BaseModel
 
 
@@ -24,18 +25,27 @@ class Fight(BaseModel):
     side_a_participants = models.ManyToManyField('player.Player', related_name='fights_side_a', blank=True)
     side_b_participants = models.ManyToManyField('player.Player', related_name='fights_side_b', blank=True)
 
-    current_turn = models.ForeignKey('fight.FightTurn', on_delete=models.CASCADE, null=True, blank=True, related_name='active_fight')
+    current_turn = models.ForeignKey('fight.FightTurn', on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name='active_fight')
+
+    def get_player_side(self, player):
+        if player in self.side_a_participants.all():
+            return FightSide.ATTACKER
+        if player in self.side_b_participants.all():
+            return FightSide.DEFENDER
+        return None
+
 
 class FightTurn(BaseModel):
     fight = models.ForeignKey('fight.Fight', on_delete=models.CASCADE, related_name='turns')
     is_finished = models.BooleanField(default=False)
 
+    @property
+    def duration(self) -> int:
+        return FIGHT_TURN_DURATION_SECONDS
+
 
 class FightTurnAction(PlayerAction):
-
-    class ActionType(models.TextChoices):
-        use_skill = 'use_skill'
-        dimension_shift = 'dimension_shift'
 
     turn = models.ForeignKey('fight.FightTurn', on_delete=models.CASCADE, related_name='actions')
     order = models.PositiveIntegerField(blank=True, null=True)

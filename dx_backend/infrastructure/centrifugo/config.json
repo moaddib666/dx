@@ -1,0 +1,52 @@
+{
+  "token_hmac_secret_key": "your_secret_key",
+  "api_key": "your_api_key",
+  "admin_password": "admin_password",
+  "admin_secret": "admin_secret",
+  "allowed_origins": [
+    "*"
+  ],
+  "log_level": "debug",
+  "namespaces": [
+    {
+      "name": "fight",
+      "presence": true,
+      "history_size": 100,
+      "history_ttl": "300s",
+      "force_recovery": true,
+      "publish": false,
+      "proxy_publish": false
+    },
+    {
+      "name": "player",
+      "presence": true,
+      "history_size": 100,
+      "history_ttl": "300s",
+      "force_recovery": true,
+      "publish": false,
+      "proxy_publish": false
+    },
+    {
+      "name": "player_actions",
+      "presence": true,
+      "history_size": 100,
+      "history_ttl": "300s",
+      "force_recovery": true,
+      "proxy_publish": true
+    }
+  ],
+  "proxy_http_headers": [
+    "User-Agent",
+    "Cookie",
+    "Authorization",
+    "TestHeader",
+    "X-Real-Ip",
+    "X-Forwarded-For",
+    "X-Request-Id"
+  ],
+  "proxy_connect_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/connect/",
+  "proxy_publish_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/publish/",
+  "proxy_subscribe_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/subscribe/",
+  "port": "8050",
+  "internal_port": "8060"
+}

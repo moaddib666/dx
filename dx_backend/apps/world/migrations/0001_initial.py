@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         null=True,
-                        related_name="border_with_city",
+                        
                         to="world.city",
                     ),
                 ),
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         null=True,
-                        related_name="border_with_area",
+                        
                         to="world.area",
                     ),
                 ),
@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         null=True,
-                        related_name="border_with_country",
+                        
                         to="world.country",
                     ),
                 ),
@@ -215,7 +215,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         null=True,
-                        related_name="border_with_location",
+                        
                         to="world.location",
                     ),
                 ),
@@ -296,7 +296,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         null=True,
-                        related_name="border_with_sub_location",
+                        
                         to="world.sublocation",
                     ),
                 ),

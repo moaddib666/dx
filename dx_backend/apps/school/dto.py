@@ -2,6 +2,8 @@ from typing import List
 
 from typing_extensions import TypedDict
 
+from apps.core.models import ImpactType, ImpactViolationType
+
 
 class StatRequirement(TypedDict):
     stat: str
@@ -23,8 +25,8 @@ class Impact(TypedDict):
     """
     [{"kind": "Damage", "type": "Heat", "formula": {"base": 15, "requires": [{"stat": "Flow Manipulation", "value": 5}], "scaling": [{"stat": "Flow Manipulation", "value": 0.2}]}}]
     """
-    kind: str
-    type: str
+    kind: ImpactType
+    type: ImpactViolationType
     formula: Formula
 
 

@@ -10,6 +10,7 @@ from apps.fight.api.serializers.openapi import DuelInvitationSerializer, FightSe
     CurrentFightSerializer
 from apps.fight.models import DuelInvitation, Fight, FightTurnAction
 from apps.game.exceptions import GameLogicException
+from apps.game.helpers import get_brief_info
 from apps.game.services.action.factory import FightActionFactory
 from apps.game.services.fight.duel import InvitationService
 from apps.game.services.fight.fight import FightService
@@ -102,12 +103,12 @@ class FightViewSet(
         else:
             allies = side_b
             enemies = side_a
-
+        # TODO: get info from service
         serializer = self.get_serializer(
             {
                 'fight': fight,
-                'allies': allies.exclude(id=request.user.player.id),
-                'enemies': enemies,
+                'allies': [get_brief_info(a) for a in allies.exclude(id=request.user.player.id)],
+                'enemies': [get_brief_info(e) for e in enemies],
             }
         )
         return Response(serializer.data)

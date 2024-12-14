@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Organization, Rank, Player, CharacterStatSet
+from .models import Organization, Rank, Player, Stat
 
 
 @admin.register(Organization)
@@ -23,7 +23,7 @@ class CharacterAdmin(admin.ModelAdmin):
     list_filter = ('gender', 'rank', 'organization')
 
 
-@admin.register(CharacterStatSet)
+@admin.register(Stat)
 class CharacterStatsAdmin(admin.ModelAdmin):
-    list_display = ('character', 'health_points', 'energy_points', 'physical_strength', 'mental_strength')
-    search_fields = ('character__name',)
+    list_display = ('player', 'name', 'value')
+    search_fields = ('name', 'player__name', 'player__id')

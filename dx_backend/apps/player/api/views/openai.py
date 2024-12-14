@@ -52,7 +52,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
             player = user.player
             service = PlayerService(player)
             player_info = service.get_player_info()
-            return Response(player_info)
+            return Response(data=player_info.dict())
         except Player.DoesNotExist:
             return Response({"detail": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
 

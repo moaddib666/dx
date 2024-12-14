@@ -4,3 +4,20 @@
     margin: 0 auto;
     padding: 0 20px;
 }
+
+.layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vertical-layout {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.horizontal-layout {
+    display: flex;
+    align-items: flex-start;
+}

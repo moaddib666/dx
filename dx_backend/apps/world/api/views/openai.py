@@ -102,7 +102,7 @@ class OpenAIDimensionManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGam
 
         return qs.filter(
             id__in=[current_user_dimension.id, current_user_dimension+1, current_user_dimension-1],
-            grade__lte=player.rank.grade
+            grade__lte=player.rank_grade.grade
         )
 
     @action(detail=False, methods=['get'])

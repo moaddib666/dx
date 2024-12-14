@@ -1,3 +1,4 @@
+import copy
 import json
 
 from django.conf import settings
@@ -6,9 +7,11 @@ from django.utils.deprecation import MiddlewareMixin
 
 class LogRequestResponseMiddleware(MiddlewareMixin):
 
+    body: bytes
+
     def process_request(self, request):
-        # if settings.DEBUG:
-        #     self.log_request(request)
+        if settings.DEBUG:
+            self.body = copy.deepcopy(request.body)
         return None
 
     def process_response(self, request, response):
@@ -21,15 +24,15 @@ class LogRequestResponseMiddleware(MiddlewareMixin):
         print(f"Method: {request.method}")
         print(f"Path: {request.get_full_path()}")
         print(f"Headers: {self.format_headers(request.headers)}")
-        if request.body:
+        if self.body:
             try:
-                print(f"Body: {json.dumps(json.loads(request.body), indent=4)}")
+                print(f"Body: {json.dumps(json.loads(self.body), indent=4)}")
             except json.JSONDecodeError:
                 print(f"Body: {request.body.decode('utf-8')}")
         print("-------------------")
 
     def log_response(self, request, response):
-        if response.status_code <= 400 or response.status_code > 500:
+        if response.status_code < 400 or response.status_code > 500:
             return
         self.log_request(request)
         print("----- Response -----")

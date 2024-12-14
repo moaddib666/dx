@@ -1,60 +1,31 @@
 import logging
+
 from django.db import transaction
-from apps.fight.models import Fight, FightTurn, FightTurnAction
+from django.utils import timezone
+
+from apps.action.models import DiceRollResult
+from apps.core.models import PlayerStat, PlayerActionType
+from apps.fight.models import FightTurn, FightTurnAction
 from apps.game.exceptions import GameLogicException
+from apps.game.services.notifier.fight import FightNotifier
 from apps.game.services.player.core import PlayerService
 from apps.game.services.rand_dice import DiceService
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
 
 
-class FightPlayerService:
-    logger = logging.getLogger("game.services.fight")
-
-    def __init__(self, fight: Fight):
-        self.fight = fight
-
-    def process_current_turn(self):
-        self.logger.info(f"Processing current turn for fight {self.fight.id}")
-        TurnProcessorService(self.fight.current_turn).process()
-
-    def fill_up_players_ap(self):
-        self.logger.info(f"Filling up players AP for fight {self.fight.id}")
-        for participant in (
-                self.fight.side_b_participants.all()
-                | self.fight.side_a_participants.all()
-                        .filter(current_health_points__gt=0)
-        ):
-            player = PlayerService(participant)
-            player.refill_ap()
-            self.logger.debug(f"Refilled AP for player {participant.id}")
-
-    def spawn_turn(self):
-        self.logger.info(f"Spawning new turn for fight {self.fight.id}")
-        previous_turn = self.fight.current_turn
-        previous_turn.refresh_from_db()
-        if previous_turn and not previous_turn.is_finished:
-            self.logger.error(f"Previous turn {previous_turn.id} is not finished")
-            raise GameLogicException("Previous turn is not finished")
-        turn = FightTurn.objects.create(fight=self.fight)
-        self.fight.current_turn = turn
-        self.fight.save()
-        self.logger.info(f"Spawned new turn {turn.id} for fight {self.fight.id}")
-        self.fill_up_players_ap()
-
-    @transaction.atomic
-    def process(self):
-        self.logger.info(f"Processing fight {self.fight.id}")
-        if self.fight.current_turn:
-            self.process_current_turn()
-        self.spawn_turn()
-
-
 class TurnProcessorService:
     logger = logging.getLogger("game.services.turn_processor")
+    notifier: FightNotifier
 
-    def __init__(self, turn: FightTurn):
+    def __init__(self, turn: FightTurn, notifier: FightNotifier):
         self.turn = turn
+        self.notifier = notifier
+
+    def ready_to_processing(self) -> bool:
+        time_left = self.turn.created_at + timezone.timedelta(seconds=self.turn.duration) - timezone.now()
+        self.logger.debug(f"Time left for turn {self.turn.id}: {time_left.total_seconds()}")
+        return int(time_left.total_seconds()) <= 0
 
     def check(self):
         self.logger.info(f"Checking turn {self.turn.id}")
@@ -90,20 +61,28 @@ class TurnProcessorService:
         actions = self.turn.actions.all().select_for_update()
         for action in actions:
             initiator = PlayerService(action.initiator)
-            if action.action_type == FightTurnAction.ActionType.dimension_shift:
-                initiator.dimension_shift(action.target_dimension)
+            if action.action_type == PlayerActionType.DIMENSION_SHIFT:
+                r = initiator.dimension_shift(action)
                 self.logger.debug(f"Processed dimension shift action {action.id} for turn {self.turn.id}")
+                self.notifier.send_action_result(action, [r])
                 continue
-            if action.action_type == FightTurnAction.ActionType.use_skill:
+            if action.action_type == PlayerActionType.USE_SKILL:
+                # TODO: refactor this so that calculated impact receive player
                 calculated_impacts = SkillImpactService(action.skill, initiator).calculate_impact()
-                multiplier = DiceService(initiator.player, initiator.get_stat("luck")).calculate_multiplier()
+                multiplier = DiceService(initiator.player, initiator.get_stat(PlayerStat.LUCK)).multiplier_roll()
+                dice_result = DiceRollResult.objects.create(
+                    dice_side=multiplier.dice_side,
+                    multiplier=multiplier.multiplier,
+                    outcome=multiplier.outcome
+                )
                 for calculated_impact in calculated_impacts:
-                    calculated_impact['value'] = int(calculated_impact['value'] * multiplier[1])
+                    calculated_impact['value'] = int(calculated_impact['value'] * multiplier.multiplier)
                     self.logger.debug(
                         f"Calculated impact damage {calculated_impact['value']} for action {action.id} in turn {self.turn.id}")
                     for target in action.targets.all():
                         target_player = PlayerService(target)
-                        target_player.impacted(calculated_impact)
+                        rs = target_player.impacted(action, calculated_impact, dice_result)
+                        self.notifier.send_action_result(action, rs)
                         self.logger.debug(
                             f"Applied impact to target player {target.id} from action {action.id} in turn {self.turn.id}")
         self.turn.is_finished = True

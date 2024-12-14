@@ -21,7 +21,7 @@ class PlayerSkillsService:
             raise GameLogicException('Player already has this skill')
 
     def check_if_max_skills_reached(self, player):
-        max_skills = 3 + player.rank.grade  # TODO: refine this formula
+        max_skills = 3 + player.rank_grade.grade  # TODO: refine this formula
         if player.learned_skills.count() >= max_skills:
             raise GameLogicException('Player has reached the maximum number of skills')
 
@@ -31,7 +31,7 @@ class PlayerSkillsService:
             raise GameLogicException('Player does not have the required school')
 
     def check_if_player_has_required_level(self, player, skill):
-        if player.rank.grade < skill.grade:
+        if player.rank_grade.grade < skill.grade:
             raise GameLogicException('Player does not have the required level')
 
     def _add_skill_to_player(self, player, skill) -> LearnedSkill:
