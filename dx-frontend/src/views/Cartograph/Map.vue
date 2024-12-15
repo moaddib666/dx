@@ -17,6 +17,12 @@
       <button @click="exportMap">Export</button>
       <input ref="importInput" style="display:none" type="file" @change="importMap">
       <button @click="$refs.importInput.click()">Import</button>
+      <div>
+        <label for="floor-select">Floor:</label>
+        <span>{{ currentFloor }}</span>
+        <button @click="switchFloor(currentFloor +1)">Up</button>
+        <button @click="switchFloor(currentFloor -1)">Down</button>
+      </div>
     </div>
 
 
@@ -27,12 +33,22 @@
       <div v-for="cell in selectedCells" :key="cell.id">
         <p><strong>Room:</strong> {{ cell.name }}</p>
         <p><strong>Position:</strong> ({{ cell.grid_x }}, {{ cell.grid_y }})</p>
-        <p><strong>Floor:</strong> {{ cell.floor }}</p>
+        <p><strong>Floor:</strong> {{ cell.grid_z }}</p>
       </div>
 
       <div v-if="selectedCells.length > 0">
         <button @click="deleteSelectedRooms">Delete Selected Room(s)</button>
         <button @click="deleteAllConnections">Delete All Connections</button>
+      </div>
+
+      <div v-if="selectedCells.length === 1">
+        <label for="room-type">Room Type:</label>
+        <select id="room-type" v-model="selectedCells[0].type" @change="updateRoom">
+          <option v-for="type in Object.values(RoomType)" :key="type" :value="type.value">{{ type.label }}</option>
+        </select>
+
+        <button @click="makeStairs(true)">Add Stairs Down</button>
+        <button @click="makeStairs(false)">Add Stairs Up</button>
       </div>
 
       <div v-if="selectedCells.length === 2">
@@ -45,7 +61,7 @@
 </template>
 
 <script>
-import MapData from "@/utils/mapData";
+import MapData, {RoomType} from "@/utils/mapData";
 
 export default {
   data() {
@@ -63,20 +79,52 @@ export default {
     };
   },
   computed: {
+    RoomType() {
+      return RoomType
+    },
     filteredRooms() {
-      return this.mapData.rooms.filter((room) => room.floor === this.currentFloor);
+      return this.mapData.rooms.filter((room) => room.grid_z === this.currentFloor);
     },
     filteredConnections() {
-      return this.mapData.connections.filter((connection) => {
-        const startRoom = this.getRoomById(connection.room_a);
-        const endRoom = this.getRoomById(connection.room_b);
-        return startRoom.floor === this.currentFloor && endRoom.floor === this.currentFloor;
-      });
+      return this.mapData.getValidConnections(this.currentFloor);
+    },
+    filteredVerticalConnections() {
+      return this.mapData.getValidVerticalConnections(this.currentFloor);
+      // return this.mapData.verticalConnections.filter((connection) => {
+      //   const startRoom = this.getRoomById(connection.room_a);
+      //   const endRoom = this.getRoomById(connection.room_b);
+      //   return startRoom.grid_z === this.currentFloor || endRoom.grid_z === this.currentFloor;
+      // });
     },
   },
   methods: {
+    updateRoom() {
+      const updatedRoom = this.selectedCells[0];
+      this.mapData.updateRoom(updatedRoom);
+      this.drawCanvas();
+    },
+    switchFloor(floor) {
+      this.currentFloor = floor;
+      this.drawCanvas();
+    },
+    makeStairs(down) {
+      if (this.selectedCells.length !== 1) {
+        alert("Select a single room to add stairs");
+        return;
+      }
+
+      const updatedRoom = this.selectedCells[0];
+      const currentFloor = updatedRoom.grid_z;
+      const targetFloor = down ? currentFloor - 1 : currentFloor + 1;
+
+      const targetRoom = this.mapData.createRoomIfNotExists(updatedRoom.name, updatedRoom.grid_x, updatedRoom.grid_y, targetFloor);
+      console.log("Adding stairs between", updatedRoom, targetRoom);
+      const connection = {room_a: updatedRoom.id, room_b: targetRoom.id};
+      this.mapData.addVerticalConnection(connection);
+      this.drawCanvas();
+    },
     exportMap() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.mapData));
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(this.mapData.toJSON());
       const dlAnchor = document.createElement('a');
       dlAnchor.setAttribute('href', dataStr);
       dlAnchor.setAttribute('download', 'map_export.json');
@@ -159,7 +207,18 @@ export default {
         this.drawRoom(ctx, room);
       });
 
+      // Draw vertical connections
+      this.filteredVerticalConnections.forEach((connection) => {
+        const startRoom = this.getRoomById(connection.room_a);
+        const endRoom = this.getRoomById(connection.room_b);
+        const visibleRoom = startRoom.grid_z === this.currentFloor ? startRoom : endRoom;
+        const invisibleRoom = startRoom.grid_z === this.currentFloor ? endRoom : startRoom;
+        this.drawStairs(ctx, visibleRoom, visibleRoom.grid_z > invisibleRoom.grid_z);
+      });
+
+
       ctx.restore();
+      this.drawCompass(ctx);
     },
     drawGrid(ctx) {
       const canvas = this.$refs.mapCanvas;
@@ -213,21 +272,136 @@ export default {
       const x = room.grid_x * this.cellSize;
       const y = room.grid_y * this.cellSize;
 
-      // Room Rectangle
-      ctx.fillStyle = this.selectedCells.includes(room) ? "yellow" : "lightblue";
-      ctx.fillRect(x + 10, y + 10, this.cellSize - 20, this.cellSize - 20);
+      // Room Dimensions and Rounded Corners
+      const rectX = x + 10;
+      const rectY = y + 10;
+      const rectWidth = this.cellSize - 20;
+      const rectHeight = this.cellSize - 20;
+      const cornerRadius = 10;
+
+      // Gradient Fill
+      const gradient = ctx.createLinearGradient(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+
+      // Update gradient based on selection and room type
+      // FIXME:
+      // room.type === RoomType.DEFAULT.value // Dark gray + slightly lighter dark gray
+      // room.type === RoomType.START.value // Green + Light green
+      // room.type === RoomType.END.value // Blue + Light blue
+      // room.type === RoomType.BOSS.value // Red + Light red
+      // room.type === RoomType.HUB.value // Raspberry + Light raspberry
+      //
+
+      // Update gradient based on selection and room type
+      if (this.selectedCells.includes(room)) {
+        // Selected rooms: Gold to Dark Orange gradient
+        gradient.addColorStop(0, "#FFD700"); // Gold
+        gradient.addColorStop(1, "#FF8C00"); // Dark Orange
+      } else {
+        switch (room.type) {
+          case RoomType.DEFAULT.value:
+            gradient.addColorStop(0, "#333333"); // Dark Gray
+            gradient.addColorStop(1, "#555555"); // Slightly Lighter Gray
+            break;
+
+          case RoomType.START.value:
+            gradient.addColorStop(0, "#228B22"); // Forest Green
+            gradient.addColorStop(1, "#32CD32"); // Lime Green
+            break;
+
+          case RoomType.END.value:
+            gradient.addColorStop(0, "#1E90FF"); // Dodger Blue
+            gradient.addColorStop(1, "#87CEFA"); // Light Sky Blue
+            break;
+
+          case RoomType.BOSS.value:
+            gradient.addColorStop(0, "#8B0000"); // Dark Red
+            gradient.addColorStop(1, "#FF6347"); // Tomato Red
+            break;
+
+          case RoomType.HUB.value:
+            gradient.addColorStop(0, "#8B008B"); // Dark Magenta
+            gradient.addColorStop(1, "#DA70D6"); // Orchid
+            break;
+
+          default:
+            // Fallback for unknown types
+            gradient.addColorStop(0, "#444"); // Dark Gray
+            gradient.addColorStop(1, "#666"); // Medium Gray
+            break;
+        }
+      }
+
+// Apply the gradient fill style
+      ctx.fillStyle = gradient;
+
+
+      // Draw Rounded Rectangle
+      ctx.beginPath();
+      ctx.moveTo(rectX + cornerRadius, rectY);
+      ctx.lineTo(rectX + rectWidth - cornerRadius, rectY);
+      ctx.quadraticCurveTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + cornerRadius);
+      ctx.lineTo(rectX + rectWidth, rectY + rectHeight - cornerRadius);
+      ctx.quadraticCurveTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - cornerRadius, rectY + rectHeight);
+      ctx.lineTo(rectX + cornerRadius, rectY + rectHeight);
+      ctx.quadraticCurveTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - cornerRadius);
+      ctx.lineTo(rectX, rectY + cornerRadius);
+      ctx.quadraticCurveTo(rectX, rectY, rectX + cornerRadius, rectY);
+      ctx.closePath();
+      ctx.fill();
 
       // Room Border
-      ctx.strokeStyle = "#004080";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(x + 10, y + 10, this.cellSize - 20, this.cellSize - 20);
+      ctx.strokeStyle = this.selectedCells.includes(room) ? "#FF4500" : "#666"; // Orange for selected, gray otherwise
+      ctx.lineWidth = 3;
+      ctx.stroke();
 
-      // Room Name
-      ctx.fillStyle = "black";
-      ctx.font = "14px Arial";
+      // Room Name (with shadow)
+      ctx.fillStyle = "#FFF"; // White text for contrast
+      ctx.font = "bold 14px Arial";
       ctx.textAlign = "center";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+      ctx.shadowBlur = 4;
       ctx.fillText(room.name, x + this.cellSize / 2, y + this.cellSize / 2 + 5);
+
+      // Reset shadow
+      ctx.shadowBlur = 0;
     },
+
+    drawStairs(ctx, room, down) {
+      console.log("Drawing stairs", {room, down});
+      const x = room.grid_x * this.cellSize;
+      const y = room.grid_y * this.cellSize;
+
+      const radius = 10; // Radius of the circle
+      const circleX = x + this.cellSize - radius - 10; // Align to right with padding
+      const circleY = down
+          ? y + this.cellSize - radius - 10 // Bottom-right corner for down
+          : y + radius + 10; // Top-right corner for up
+
+      // Draw circle
+      ctx.fillStyle = down ? "#FF4500" : "#32CD32"; // Bright red for down, green for up
+      ctx.beginPath();
+      ctx.arc(circleX, circleY, radius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+
+      // Add arrow indicator
+      ctx.fillStyle = "#FFF"; // White arrow for contrast
+      ctx.beginPath();
+      if (down) {
+        // Downward arrow inside the circle
+        ctx.moveTo(circleX - 5, circleY - 3); // Top left
+        ctx.lineTo(circleX + 5, circleY - 3); // Top right
+        ctx.lineTo(circleX, circleY + 5); // Bottom center
+      } else {
+        // Upward arrow inside the circle
+        ctx.moveTo(circleX - 5, circleY + 3); // Bottom left
+        ctx.lineTo(circleX + 5, circleY + 3); // Bottom right
+        ctx.lineTo(circleX, circleY - 5); // Top center
+      }
+      ctx.closePath();
+      ctx.fill();
+    },
+
     drawConnection(ctx, startRoom, endRoom) {
       const startX = startRoom.grid_x * this.cellSize + this.cellSize / 2;
       const startY = startRoom.grid_y * this.cellSize + this.cellSize / 2;
@@ -262,10 +436,7 @@ export default {
         this.isDragging = true;
         this.lastMouse = {x: event.clientX, y: event.clientY};
       } else {
-        const existingRoom = this.mapData.rooms.find(
-            (room) => room.grid_x === gridX && room.grid_y === gridY && room.floor === this.currentFloor
-        );
-
+        const existingRoom = this.mapData.getRoomByCoords(gridX, gridY, this.currentFloor);
         if (existingRoom) {
           // Handle room selection
           if (event.shiftKey) {
@@ -280,16 +451,7 @@ export default {
           }
         } else {
           // Handle empty cell: create a new room
-          const newRoom = {
-            id: Date.now(),
-            name: `Room ${this.mapData.rooms.length + 1}`,
-            type: "normal",
-            grid_x: gridX,
-            grid_y: gridY,
-            floor: this.currentFloor,
-          };
-          this.mapData.addRoom(newRoom);
-
+          const newRoom = this.mapData.createRoomIfNotExists(`Room ${this.mapData.rooms.length + 1}`, gridX, gridY, this.currentFloor);
           // Connect to the last active room if available
           if (this.lastActiveRoom && this.isAdjacent(this.lastActiveRoom, newRoom)) {
             this.mapData.addConnection({
@@ -364,6 +526,67 @@ export default {
     getRoomById(id) {
       return MapData.getRoomById(id);
     },
+    drawCompass(ctx) {
+      const canvas = this.$refs.mapCanvas;
+
+      const compassRadius = 60; // Larger compass radius for clarity
+      const padding = 30; // Padding from edges
+
+      // Compass center position (fixed bottom-right corner)
+      const centerX = canvas.width - compassRadius - padding;
+      const centerY = canvas.height - compassRadius - padding;
+
+      // Draw compass outer circle
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, compassRadius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = "#1E1E2E"; // Dark background
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#FFF"; // White border
+      ctx.stroke();
+
+      // Compass star (4 main points)
+      ctx.fillStyle = "#000"; // Black star
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - compassRadius + 10); // Top point
+      ctx.lineTo(centerX + 8, centerY); // Center-right
+      ctx.lineTo(centerX, centerY + compassRadius - 10); // Bottom point
+      ctx.lineTo(centerX - 8, centerY); // Center-left
+      ctx.closePath();
+      ctx.fill();
+
+      // Compass star (intermediate diagonal points)
+      ctx.beginPath();
+      ctx.moveTo(centerX - compassRadius / 2, centerY); // Left middle
+      ctx.lineTo(centerX, centerY - 8); // Top middle
+      ctx.lineTo(centerX + compassRadius / 2, centerY); // Right middle
+      ctx.lineTo(centerX, centerY + 8); // Bottom middle
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw cardinal directions (N, E, S, W)
+      ctx.fillStyle = "#FFF"; // White text for visibility
+      ctx.font = "bold 18px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // North
+      ctx.fillText("N", centerX, centerY - compassRadius + 20);
+      // East
+      ctx.fillText("E", centerX + compassRadius - 20, centerY);
+      // South
+      ctx.fillText("S", centerX, centerY + compassRadius - 20);
+      // West
+      ctx.fillText("W", centerX - compassRadius + 20, centerY);
+
+      // Add smaller inner circle for aesthetics
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, compassRadius / 3, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = "#333"; // Dark gray for inner circle
+      ctx.fill();
+    },
   },
   mounted() {
     const canvas = this.$refs.mapCanvas;
@@ -402,8 +625,8 @@ canvas {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: white;
-  border: 1px solid #ddd;
+  background: #222; /* Dark background */
+  border: 1px solid #444;
   padding: 5px;
   border-radius: 5px;
 }
