@@ -55,6 +55,7 @@ export default {
       lastMouse: {x: 0, y: 0}, // Last mouse position for dragging
       cellSize: 80, // Size of each grid cell
       selectedCells: [], // Currently selected cells
+      lastActiveRoom: null, // Track the last created or selected room
     };
   },
   computed: {
@@ -130,23 +131,51 @@ export default {
     },
     drawGrid(ctx) {
       const canvas = this.$refs.mapCanvas;
-      const gridSize = this.cellSize;
+      const cellSize = this.cellSize;
 
-      ctx.strokeStyle = "#e0e0e0";
+      ctx.strokeStyle = "#b8ea7c"; // Light green grid lines
       ctx.lineWidth = 0.5;
 
-      for (let x = 0; x < canvas.width / this.scale; x += gridSize) {
+      // Center the grid around (0, 0)
+      const halfWidth = canvas.width / (2 * this.scale);
+      const halfHeight = canvas.height / (2 * this.scale);
+
+      const minX = -Math.ceil(halfWidth / cellSize) * cellSize;
+      const maxX = Math.ceil(halfWidth / cellSize) * cellSize;
+      const minY = -Math.ceil(halfHeight / cellSize) * cellSize;
+      const maxY = Math.ceil(halfHeight / cellSize) * cellSize;
+
+      // Draw vertical lines (X-axis)
+      for (let x = minX; x <= maxX; x += cellSize) {
         ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height / this.scale);
+        ctx.moveTo(x, minY);
+        ctx.lineTo(x, maxY);
         ctx.stroke();
       }
-      for (let y = 0; y < canvas.height / this.scale; y += gridSize) {
+
+      // Draw horizontal lines (Y-axis)
+      for (let y = minY; y <= maxY; y += cellSize) {
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width / this.scale, y);
+        ctx.moveTo(minX, y);
+        ctx.lineTo(maxX, y);
         ctx.stroke();
       }
+
+      // Draw axes (0,0 reference lines)
+      ctx.strokeStyle = "#ffa500"; // Orange for axes
+      ctx.lineWidth = 1;
+
+      // X-axis
+      ctx.beginPath();
+      ctx.moveTo(minX, 0);
+      ctx.lineTo(maxX, 0);
+      ctx.stroke();
+
+      // Y-axis
+      ctx.beginPath();
+      ctx.moveTo(0, minY);
+      ctx.lineTo(0, maxY);
+      ctx.stroke();
     },
     drawRoom(ctx, room) {
       const x = room.grid_x * this.cellSize;
@@ -181,8 +210,14 @@ export default {
       ctx.lineTo(endX, endY);
       ctx.stroke();
     },
-    handleCanvasMouseDown(event) {
+    isAdjacent(roomA, roomB) {
+      const dx = Math.abs(roomA.grid_x - roomB.grid_x);
+      const dy = Math.abs(roomA.grid_y - roomB.grid_y);
 
+      // Rooms are adjacent if they share a side or corner (dx <= 1 and dy <= 1)
+      return dx <= 1 && dy <= 1;
+    },
+    handleCanvasMouseDown(event) {
       const canvas = this.$refs.mapCanvas;
       const rect = canvas.getBoundingClientRect();
       const mouseX = (event.clientX - rect.left - this.pan.x) / this.scale;
@@ -192,11 +227,9 @@ export default {
       const gridY = Math.floor(mouseY / this.cellSize);
 
       if (this.dragMode || event.button === 1) {
-        // Dragging mode: start dragging
         this.isDragging = true;
         this.lastMouse = {x: event.clientX, y: event.clientY};
       } else {
-        // Interaction mode
         const existingRoom = this.mapData.rooms.find(
             (room) => room.grid_x === gridX && room.grid_y === gridY && room.floor === this.currentFloor
         );
@@ -204,15 +237,14 @@ export default {
         if (existingRoom) {
           // Handle room selection
           if (event.shiftKey) {
-            // Multi-select with Shift
             if (this.selectedCells.includes(existingRoom)) {
-              this.selectedCells = this.selectedCells.filter((room) => room !== existingRoom);
+              this.selectedCells = this.selectedCells.filter((r) => r !== existingRoom);
             } else if (this.selectedCells.length < 2) {
               this.selectedCells.push(existingRoom);
             }
           } else {
-            // Single select
             this.selectedCells = [existingRoom];
+            this.lastActiveRoom = existingRoom; // Update last active room
           }
         } else {
           // Handle empty cell: create a new room
@@ -226,28 +258,16 @@ export default {
           };
           this.mapData.addRoom(newRoom);
 
-          // Automatically connect to adjacent rooms
-          const adjacentOffsets = [
-            [0, -1],
-            [1, -1],
-            [1, 0],
-            [1, 1],
-            [0, 1],
-            [-1, 1],
-            [-1, 0],
-            [-1, -1],
-          ];
-          adjacentOffsets.forEach(([dx, dy]) => {
-            const adjacentRoom = this.mapData.rooms.find(
-                (room) =>
-                    room.grid_x === gridX + dx &&
-                    room.grid_y === gridY + dy &&
-                    room.floor === this.currentFloor
-            );
-            if (adjacentRoom) {
-              this.mapData.addConnection({room_a: newRoom.id, room_b: adjacentRoom.id});
-            }
-          });
+          // Connect to the last active room if available
+          if (this.lastActiveRoom && this.isAdjacent(this.lastActiveRoom, newRoom)) {
+            this.mapData.addConnection({
+              room_a: newRoom.id,
+              room_b: this.lastActiveRoom.id,
+            });
+          }
+
+          // Update last active room
+          this.lastActiveRoom = newRoom;
 
           this.drawCanvas();
         }
