@@ -14,7 +14,11 @@
     <div id="control-panel">
       <button @click="resetMap">New Map</button>
       <button @click="toggleDragMode">{{ dragMode ? "Interaction Mode" : "Drag Mode" }}</button>
+      <button @click="exportMap">Export</button>
+      <input ref="importInput" style="display:none" type="file" @change="importMap">
+      <button @click="$refs.importInput.click()">Import</button>
     </div>
+
 
     <!-- Cell Details -->
     <div id="details-panel">
@@ -71,6 +75,34 @@ export default {
     },
   },
   methods: {
+    exportMap() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.mapData));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute('href', dataStr);
+      dlAnchor.setAttribute('download', 'map_export.json');
+      dlAnchor.click();
+    },
+    importMap(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        console.log(e.target);
+        try {
+          const data = JSON.parse(e.target.result);
+          this.mapData.clear();
+          this.mapData.fromJSON(data);
+          this.drawCanvas();
+        } catch (err) {
+          console.error("Error parsing JSON file", err);
+          alert("Error parsing JSON file");
+        }
+      };
+      reader.readAsText(file);
+      // empty the input value to allow the same file to be selected again
+      event.target.value = "";
+    },
     deleteSelectedRooms() {
       // Delete all selected rooms
       this.selectedCells.forEach((room) => {
