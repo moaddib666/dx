@@ -1,4 +1,72 @@
 import {reactive} from "vue";
+import EnemyIconPath from "@/assets/map/enemy.png";
+import ChestIconPath from "@/assets/map/chest.png";
+import GateIconPath from "@/assets/map/gate.png";
+import ShopIconPath from "@/assets/map/shop.png";
+import NPCIconPath from "@/assets/map/npc.png";
+import TrapIconPath from "@/assets/map/trap.png";
+import PuzzleIconPath from "@/assets/map/puzzle.png";
+import DeathIconPath from "@/assets/map/death.png";
+import QuestIconPath from "@/assets/map/quest.png";
+
+const EnemyIcon = new Image();
+EnemyIcon.src = EnemyIconPath;
+const ChestIcon = new Image();
+ChestIcon.src = ChestIconPath;
+const GateIcon = new Image();
+GateIcon.src = GateIconPath;
+const ShopIcon = new Image();
+ShopIcon.src = ShopIconPath;
+const NPCIcon = new Image();
+NPCIcon.src = NPCIconPath;
+const TrapIcon = new Image();
+TrapIcon.src = TrapIconPath;
+const PuzzleIcon = new Image();
+PuzzleIcon.src = PuzzleIconPath;
+const DeathIcon = new Image();
+DeathIcon.src = DeathIconPath;
+const QuestIcon = new Image();
+QuestIcon.src = QuestIconPath;
+
+
+const RoomLabel = {
+    ENEMY: {value: "enemy", label: "Enemy",},
+    CHEST: {value: "chest", label: "Chest",},
+    GATE: {value: "gate", label: "Gate",},
+    SHOP: {value: "shop", label: "Shop",},
+    NPC: {value: "npc", label: "NPC",},
+    TRAP: {value: "trap", label: "Trap",},
+    PUZZLE: {value: "puzzle", label: "Puzzle",},
+    DEATH: {value: "death", label: "Death",},
+    QUEST: {value: "quest", label: "Quest",},
+
+    getIcon(value) {
+        switch (value) {
+            case "enemy":
+                return EnemyIcon;
+            case "chest":
+                return ChestIcon;
+            case "gate":
+                return GateIcon;
+            case "shop":
+                return ShopIcon;
+            case "npc":
+                return NPCIcon;
+            case "trap":
+                return TrapIcon;
+            case "puzzle":
+                return PuzzleIcon;
+            case "death":
+                return DeathIcon;
+            case "quest":
+                return QuestIcon;
+            default:
+                return undefined;
+        }
+    }
+};
+
+
 
 const MapData = reactive({
     rooms: [],
@@ -134,8 +202,9 @@ function createRoomDTO({id, name, type, grid_x, grid_y, grid_z}) {
         grid_x: grid_x || 0,
         grid_y: grid_y || 0,
         grid_z: grid_z || 0,
+        label: "",
     };
 }
 
-export {RoomType, MapData, createRoomDTO};
+export {RoomType, MapData, createRoomDTO, RoomLabel};
 export default MapData;

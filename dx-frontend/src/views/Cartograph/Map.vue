@@ -46,7 +46,10 @@
         <select id="room-type" v-model="selectedCells[0].type" @change="updateRoom">
           <option v-for="type in Object.values(RoomType)" :key="type" :value="type.value">{{ type.label }}</option>
         </select>
-
+        <label for="room-label">Room Label:</label>
+        <select id="room-label" v-model="selectedCells[0].label" @change="updateRoom">
+          <option v-for="label in Object.values(RoomLabel)" :key="label" :value="label.value">{{ label.label }}</option>
+        </select>
         <button @click="makeStairs(true)">Add Stairs Down</button>
         <button @click="makeStairs(false)">Add Stairs Up</button>
       </div>
@@ -61,7 +64,7 @@
 </template>
 
 <script>
-import MapData, {RoomType} from "@/utils/mapData";
+import MapData, {RoomLabel, RoomType} from "@/utils/mapData";
 
 export default {
   data() {
@@ -79,6 +82,9 @@ export default {
     };
   },
   computed: {
+    RoomLabel() {
+      return RoomLabel
+    },
     RoomType() {
       return RoomType
     },
@@ -279,88 +285,98 @@ export default {
       const rectHeight = this.cellSize - 20;
       const cornerRadius = 10;
 
-      // Gradient Fill
-      const gradient = ctx.createLinearGradient(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+      // Check if an icon is set for the room
+      const icon = RoomLabel.getIcon(room.label);
 
-      // Update gradient based on selection and room type
-      // FIXME:
-      // room.type === RoomType.DEFAULT.value // Dark gray + slightly lighter dark gray
-      // room.type === RoomType.START.value // Green + Light green
-      // room.type === RoomType.END.value // Blue + Light blue
-      // room.type === RoomType.BOSS.value // Red + Light red
-      // room.type === RoomType.HUB.value // Raspberry + Light raspberry
-      //
+      if (icon !== undefined && icon.complete) {
+        // Use the icon as the background
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(rectX + cornerRadius, rectY);
+        ctx.lineTo(rectX + rectWidth - cornerRadius, rectY);
+        ctx.quadraticCurveTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + cornerRadius);
+        ctx.lineTo(rectX + rectWidth, rectY + rectHeight - cornerRadius);
+        ctx.quadraticCurveTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - cornerRadius, rectY + rectHeight);
+        ctx.lineTo(rectX + cornerRadius, rectY + rectHeight);
+        ctx.quadraticCurveTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - cornerRadius);
+        ctx.lineTo(rectX, rectY + cornerRadius);
+        ctx.quadraticCurveTo(rectX, rectY, rectX + cornerRadius, rectY);
+        ctx.closePath();
+        ctx.clip();
 
-      // Update gradient based on selection and room type
-      if (this.selectedCells.includes(room)) {
-        // Selected rooms: Gold to Dark Orange gradient
-        gradient.addColorStop(0, "#FFD700"); // Gold
-        gradient.addColorStop(1, "#FF8C00"); // Dark Orange
+        // Draw the icon scaled to fit the room
+        ctx.drawImage(icon, rectX, rectY, rectWidth, rectHeight);
+        ctx.restore();
       } else {
-        switch (room.type) {
-          case RoomType.DEFAULT.value:
-            gradient.addColorStop(0, "#333333"); // Dark Gray
-            gradient.addColorStop(1, "#555555"); // Slightly Lighter Gray
-            break;
+        // Gradient Fill if no icon is set
+        const gradient = ctx.createLinearGradient(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
 
-          case RoomType.START.value:
-            gradient.addColorStop(0, "#228B22"); // Forest Green
-            gradient.addColorStop(1, "#32CD32"); // Lime Green
-            break;
+        if (this.selectedCells.includes(room)) {
+          gradient.addColorStop(0, "#FFD700"); // Gold
+          gradient.addColorStop(1, "#FF8C00"); // Dark Orange
+        } else {
+          switch (room.type) {
+            case RoomType.DEFAULT.value:
+              gradient.addColorStop(0, "#333333"); // Dark Gray
+              gradient.addColorStop(1, "#555555"); // Slightly Lighter Gray
+              break;
 
-          case RoomType.END.value:
-            gradient.addColorStop(0, "#1E90FF"); // Dodger Blue
-            gradient.addColorStop(1, "#87CEFA"); // Light Sky Blue
-            break;
+            case RoomType.START.value:
+              gradient.addColorStop(0, "#228B22"); // Forest Green
+              gradient.addColorStop(1, "#32CD32"); // Lime Green
+              break;
 
-          case RoomType.BOSS.value:
-            gradient.addColorStop(0, "#8B0000"); // Dark Red
-            gradient.addColorStop(1, "#FF6347"); // Tomato Red
-            break;
+            case RoomType.END.value:
+              gradient.addColorStop(0, "#1E90FF"); // Dodger Blue
+              gradient.addColorStop(1, "#87CEFA"); // Light Sky Blue
+              break;
 
-          case RoomType.HUB.value:
-            gradient.addColorStop(0, "#8B008B"); // Dark Magenta
-            gradient.addColorStop(1, "#DA70D6"); // Orchid
-            break;
+            case RoomType.BOSS.value:
+              gradient.addColorStop(0, "#8B0000"); // Dark Red
+              gradient.addColorStop(1, "#FF6347"); // Tomato Red
+              break;
 
-          default:
-            // Fallback for unknown types
-            gradient.addColorStop(0, "#444"); // Dark Gray
-            gradient.addColorStop(1, "#666"); // Medium Gray
-            break;
+            case RoomType.HUB.value:
+              gradient.addColorStop(0, "#8B008B"); // Dark Magenta
+              gradient.addColorStop(1, "#DA70D6"); // Orchid
+              break;
+
+            default:
+              gradient.addColorStop(0, "#444"); // Dark Gray
+              gradient.addColorStop(1, "#666"); // Medium Gray
+              break;
+          }
         }
+
+        ctx.fillStyle = gradient;
+
+        // Draw Rounded Rectangle
+        ctx.beginPath();
+        ctx.moveTo(rectX + cornerRadius, rectY);
+        ctx.lineTo(rectX + rectWidth - cornerRadius, rectY);
+        ctx.quadraticCurveTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + cornerRadius);
+        ctx.lineTo(rectX + rectWidth, rectY + rectHeight - cornerRadius);
+        ctx.quadraticCurveTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - cornerRadius, rectY + rectHeight);
+        ctx.lineTo(rectX + cornerRadius, rectY + rectHeight);
+        ctx.quadraticCurveTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - cornerRadius);
+        ctx.lineTo(rectX, rectY + cornerRadius);
+        ctx.quadraticCurveTo(rectX, rectY, rectX + cornerRadius, rectY);
+        ctx.closePath();
+        ctx.fill();
       }
-
-// Apply the gradient fill style
-      ctx.fillStyle = gradient;
-
-
-      // Draw Rounded Rectangle
-      ctx.beginPath();
-      ctx.moveTo(rectX + cornerRadius, rectY);
-      ctx.lineTo(rectX + rectWidth - cornerRadius, rectY);
-      ctx.quadraticCurveTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + cornerRadius);
-      ctx.lineTo(rectX + rectWidth, rectY + rectHeight - cornerRadius);
-      ctx.quadraticCurveTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - cornerRadius, rectY + rectHeight);
-      ctx.lineTo(rectX + cornerRadius, rectY + rectHeight);
-      ctx.quadraticCurveTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - cornerRadius);
-      ctx.lineTo(rectX, rectY + cornerRadius);
-      ctx.quadraticCurveTo(rectX, rectY, rectX + cornerRadius, rectY);
-      ctx.closePath();
-      ctx.fill();
 
       // Room Border
       ctx.strokeStyle = this.selectedCells.includes(room) ? "#FF4500" : "#666"; // Orange for selected, gray otherwise
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Room Name (with shadow)
+      // Room Name
       ctx.fillStyle = "#FFF"; // White text for contrast
-      ctx.font = "bold 14px Arial";
+      ctx.font = "bold 10px Arial";
       ctx.textAlign = "center";
       ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
       ctx.shadowBlur = 4;
-      ctx.fillText(room.name, x + this.cellSize / 2, y + this.cellSize / 2 + 5);
+      ctx.fillText(room.name, x + this.cellSize / 2, y + this.cellSize * 0.9);
 
       // Reset shadow
       ctx.shadowBlur = 0;
