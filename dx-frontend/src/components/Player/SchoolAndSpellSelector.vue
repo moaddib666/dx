@@ -24,6 +24,7 @@
           v-for="school in schools"
           :key="school.id"
           class="spell-group"
+
       >
         <div v-if="selectedSchools.includes(school.id)">
           <h3>{{ school.name }}</h3>
@@ -41,9 +42,9 @@
                   @mouseleave="hideTooltip"
               >
                 <span v-if="tooltipSpell === spell.id" class="tooltip">{{ spell.description }}</span>
-              </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
       <p v-if="selectedSpells.length >= 5" class="spell-limit-warning">
@@ -52,7 +53,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -78,7 +78,6 @@ export default {
   },
   computed: {
     filteredSpells() {
-      // Filter spells by selected schools
       return this.spells.filter(spell => this.selectedSchools.includes(spell.school));
     },
   },
@@ -102,7 +101,6 @@ export default {
       }
     },
     getSpellsForSchool(schoolId) {
-      // Get spells for a specific school
       return this.spells.filter(spell => spell.school === schoolId);
     },
     showTooltip(spell) {
@@ -123,17 +121,18 @@ export default {
   border-radius: 8px;
   background-color: #222;
   color: #fff;
+  height: 50vh; /* Ensures the component takes the full height */
 }
 
 /* School List */
-.school-list,
-.spell-list {
+.school-list {
   flex: 1;
   padding: 10px;
   border: 1px solid #444;
   border-radius: 8px;
   background-color: #333;
-  overflow-y: auto;
+  overflow-y: auto; /* Independent scroll */
+  max-height: 100%; /* Prevents overflow into the page */
 }
 
 h2 {
@@ -177,7 +176,17 @@ h2 {
   color: #ddd;
 }
 
-/* Spells */
+/* Spell List */
+.spell-list {
+  flex: 2;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #333;
+  overflow-y: auto; /* Independent scroll */
+  max-height: 100%; /* Prevents overflow into the page */
+}
+
 .spell-group {
   margin-bottom: 20px;
 }
