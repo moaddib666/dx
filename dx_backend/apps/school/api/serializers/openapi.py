@@ -15,6 +15,9 @@ class OpenaiSkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
         fields = "__all__"
+        read_only_fields = ('id', "school")
+
+
 
 
 class OpenaiPathSerializer(serializers.ModelSerializer):

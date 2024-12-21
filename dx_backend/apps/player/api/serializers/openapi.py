@@ -59,3 +59,70 @@ class PlayerPathSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ['path']
+
+
+from rest_framework import serializers
+
+
+class BioSerializer(serializers.Serializer):
+    age = serializers.IntegerField()
+    gender = serializers.ChoiceField(choices=["Male", "Female", "Other"])
+    appearance = serializers.CharField()
+    background = serializers.CharField()
+
+
+class StatSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    value = serializers.IntegerField()
+
+
+class ModificatorSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+
+
+class ItemSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    type = serializers.CharField()
+
+
+class SchoolSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    level = serializers.IntegerField()
+
+
+class SpellSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField()
+    school = serializers.UUIDField()
+    level = serializers.IntegerField()
+
+
+class PlayerTemplateSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    tags = serializers.ListField(child=serializers.CharField(), default=[])
+    bio = BioSerializer()
+    rank = serializers.IntegerField()
+    path = serializers.UUIDField(allow_null=True)
+    stats = StatSerializer(many=True, default=[])
+    modificators = ModificatorSerializer(many=True, default=[])
+    items = ItemSerializer(many=True, default=[])
+    schools = SchoolSerializer(many=True, default=[])
+    spells = SpellSerializer(many=True, default=[])
+
+
+class PlayerTemplateValidationSerializer(serializers.Serializer):
+    max_stats_points_count = serializers.IntegerField()
+    max_modificators_count = serializers.IntegerField()
+    max_items_count = serializers.IntegerField()
+    max_spells_count = serializers.IntegerField()
+    max_rank_grade = serializers.IntegerField()
+    max_schools_count = serializers.IntegerField()
+
+
+class PlayerTemplateFullSerializer(serializers.Serializer):
+    data = PlayerTemplateSerializer()
+    validation = PlayerTemplateValidationSerializer()

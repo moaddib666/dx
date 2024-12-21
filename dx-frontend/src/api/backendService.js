@@ -1,5 +1,5 @@
 import store from '@/store';
-import { Configuration, PlayerApi, SkillsApi, FightApi } from '@/api/dx-backend';
+import {Configuration, FightApi, PlayerApi, SchoolApi, SkillsApi} from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
     basePath: import.meta.env.VITE_API_BASE_URL,
@@ -9,5 +9,5 @@ export const GameApiConfig = new Configuration({
 export const PlayerGameApi = new PlayerApi(GameApiConfig);
 export const SkillsGameApi = new SkillsApi(GameApiConfig);
 export const FightGameApi = new FightApi(GameApiConfig);
-
+export const SchoolGameApi = new SchoolApi(GameApiConfig);
 

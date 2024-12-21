@@ -12,15 +12,17 @@ from apps.school.dto import Impact, Cost, Effect
 class ThePath(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    icon = models.ImageField(upload_to='icons/path/', null=True, blank=True)
 
 
 class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     path = models.ManyToManyField(ThePath)
+    icon = models.ImageField(upload_to='icons/school/', null=True, blank=True)
 
 
-class Skill(models.Model):
+class Skill(BaseModel):
     class Types(models.TextChoices):
         ATTACK = 'attack'
         DEFENSE = 'defense'
@@ -33,7 +35,7 @@ class Skill(models.Model):
         ENERGY = 'Energy'
         HEALTH = 'Health'
         AP = 'Action Points'
-
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     description = models.TextField()
@@ -41,9 +43,14 @@ class Skill(models.Model):
     school = models.ForeignKey(School, on_delete=models.CASCADE, related_name='skills', null=True, blank=True)
     type = models.CharField(max_length=10, choices=Types.choices, default=Types.ATTACK)
 
-    impact = models.JSONField(default=list)
-    cost = models.JSONField(default=list)
-    effect = models.JSONField(default=list)
+    impact = models.JSONField(default=list, help_text='A list of dictionaries representing the impact of the skill.',
+                              verbose_name='Impact', blank=False)
+    cost = models.JSONField(default=list, help_text='A list of dictionaries representing the cost of the skill.',
+                            verbose_name='Cost', blank=False)
+    effect = models.JSONField(default=list, help_text='A list of dictionaries representing the effects of the skill.',
+                              verbose_name='Effect', blank=True)
+
+    icon = models.ImageField(upload_to='icons/skill/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -55,6 +62,10 @@ class Skill(models.Model):
         ordering = ['grade', ]
 
     def clean(self):
+        """
+        Ensures that fields are either empty lists or lists of dictionaries conforming to a specified TypedDict.
+        """
+        super().clean()
         self.validate_json_field(self.impact, Impact, 'impact')
         self.validate_json_field(self.cost, Cost, 'cost')
         self.validate_json_field(self.effect, Effect, 'effect')
@@ -73,8 +84,16 @@ class Skill(models.Model):
         for key, value_type in typed_dict.__annotations__.items():
             if key not in item:
                 raise ValidationError({field_name: f'Missing key: {key}'})
+            # FIXME: This is a hack to avoid infinite recursion
+            if key == 'formula':
+                # self.validate_typed_dict(item[key], value_type, field_name)
+                continue
             if not isinstance(item[key], value_type):
-                raise ValidationError({field_name: f'Invalid type for key: {key}, expected {value_type.__name__}'})
+                try:
+                    item[key] = value_type(item[key])
+                except ValueError as err:
+                    raise ValidationError(
+                        {field_name: f'Invalid type for key: {key}, expected {value_type.__name__}'}) from err
 
     def is_defense(self):
         return self.type == self.Types.DEFENSE

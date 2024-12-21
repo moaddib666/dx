@@ -1,8 +1,8 @@
 <template>
   <line
       :x1="start.grid_x * cellSize + cellSize / 2"
-      :x2="end.grid_x * cellSize + cellSize / 2"
       :y1="start.grid_y * cellSize + cellSize / 2"
+      :x2="end.grid_x * cellSize + cellSize / 2"
       :y2="end.grid_y * cellSize + cellSize / 2"
       stroke="black"
   />

@@ -1,5 +1,6 @@
 # urls.py
-
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
@@ -30,5 +31,11 @@ urlpatterns = [
     path('fight/', include('apps.fight.urls')),
     path('skills/', include('apps.skills.urls')),
     path('action/', include('apps.action.urls')),
+    path('items/', include('apps.items.urls')),
+    path('currency/', include('apps.currency.urls')),
+    path('modificators/', include('apps.modificators.urls')),
     path('adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

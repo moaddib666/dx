@@ -4,10 +4,10 @@
         v-for="path in paths"
         :key="path.id"
         :class="['path-card', { selected: selectedPath === path.id }]"
-        tabindex="0"
         @click="selectPath(path.id)"
         @keydown.enter="selectPath(path.id)"
         @keydown.space.prevent="selectPath(path.id)"
+        tabindex="0"
     >
       <img :alt="`${path.name} Icon`" :src="path.icon" class="path-icon"/>
       <div class="path-details">

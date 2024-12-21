@@ -1,7 +1,7 @@
 <template>
   <div
-      :style="{ top: room.grid_y * cellSize + 'px', left: room.grid_x * cellSize + 'px' }"
       class="room"
+      :style="{ top: room.grid_y * cellSize + 'px', left: room.grid_x * cellSize + 'px' }"
   >
     <div class="room-name">{{ room.name }}</div>
     <!-- Directional Arrows -->
@@ -9,8 +9,8 @@
         v-for="(offset, direction) in directions"
         :key="direction"
         :class="['arrow', direction]"
-        :style="getArrowStyle(direction)"
         @click="handleAction(direction)"
+        :style="getArrowStyle(direction)"
     ></div>
   </div>
 </template>

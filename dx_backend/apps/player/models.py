@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from apps.core.models import PlayerStat
+from apps.core.models import PlayerStat, GenderEnum
 from apps.core.utils.models import BaseModel
 
 
@@ -26,10 +26,6 @@ class Rank(BaseModel):
 
 
 class Player(BaseModel):
-    class GenderEnum(models.TextChoices):
-        MALE = 'Male', 'Male'
-        FEMALE = 'Female', 'Female'
-        OTHER = 'Other', 'Other'
     owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_players')
     name = models.CharField(max_length=255)
     age = models.PositiveIntegerField(validators=[MinValueValidator(18), MaxValueValidator(200)])

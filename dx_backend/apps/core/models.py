@@ -17,6 +17,12 @@ class DjangoChoicesMixin:
         return cls.choices()[0][0]
 
 
+class GenderEnum(DjangoChoicesMixin, StrEnum):
+    MALE = 'Male'
+    FEMALE = 'Female'
+    OTHER = 'Other'
+
+
 class PlayerActionType(DjangoChoicesMixin, StrEnum):
     USE_SKILL = "USE_SKILL"
     USE_ITEM = "USE_ITEM"
@@ -106,6 +112,11 @@ class PlayerStat(DjangoChoicesMixin, StrEnum):
     CHARISMA = "Charisma"  # Ability to influence others and maintain relationships
 
 
+class PlayerStatHolder(BaseModel):
+    name: PlayerStat
+    value: int
+
+
 class AttributeType(DjangoChoicesMixin, StrEnum):
     HEALTH = "Health"
     ENERGY = "Energy"
@@ -137,6 +148,143 @@ class RankInfo(BaseModel):
     grade: int
     current_experience: int
     next_rank_experience: int
+
+
+class PlayerBio(BaseModel):
+    age: int
+    gender: GenderEnum
+    appearance: str
+    background: str
+
+
+class PlayerTemplateValidator(BaseModel):
+    max_stats_points_count: int
+    max_modificators_count: int
+    max_items_count: int
+    max_spells_count: int
+    max_rank_grade: int
+    max_schools_count: int
+
+
+class PlayerGenericData(BaseModel):
+    """
+    {
+      "name": "Zena",
+      "tags": ["clever", "intelligent"],
+      "bio": {
+        "age": 25,
+        "gender": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+        "appearance": "Tall, dark hair, green eyes",
+        "background": "Zena is a young magician who has been studying the flow for the past 5 years. She is a quick learner and has a natural talent for manipulating the flow. She is currently on a quest to find the lost artifacts of the ancient flow masters."
+      },
+      "rank": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+      "path": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+      "stats": [
+        {
+          //      "PHYSICAL_STRENGTH": 10,
+          //      "MENTAL_STRENGTH": 10,
+          //      "LUCK": 12,
+          //      "SPEED": 15,
+          //      "CONCENTRATION": 10,
+          //      "FLOW_MANIPULATION": 8,
+          //      "FLOW_CONNECTION": 7,
+          //      "KNOWLEDGE": 10,
+          //      "FLOW_RESONANCE": 6,
+          //      "CHARISMA": 7
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "PHYSICAL_STRENGTH",
+          "value": 10
+        }
+      ],
+      "modificators": [
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Moralist"
+        }
+      ],
+      "currencyTokens": [
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Generic Token",
+          "value": 10
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Dark Token",
+          "value": 1
+        }
+      ],
+      "items": [
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Touched with the fow dagger",
+          "type": "weapon"
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Magnetic Shield",
+          "type": "armor"
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Small Flow Artifact",
+          "type": "artifact"
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Small Flow Artifact",
+          "type": "artifact"
+        }
+      ],
+      "shools": [
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Magician Basics",
+          "level": 1
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Flow Manipulation",
+          "level": 1
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Flow Connection",
+          "level": 1
+        }
+      ],
+      "spells": [
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Flow Shield",
+          "school": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "level": 1
+        },
+        {
+          "id": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "name": "Flow Accumulation",
+          "school": "b1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b",
+          "level": 1
+        }
+      ]
+    }
+
+    """
+    name: str
+    tags: list[str]
+    bio: PlayerBio
+    rank: int
+    path: Optional[uuid.UUID]
+    stats: list[PlayerStatHolder]
+    modificators: list[uuid.UUID]
+    items: list[uuid.UUID]
+    schools: list[uuid.UUID]
+    spells: list[uuid.UUID]
+
+
+class PlayerTemplate(BaseModel):
+    data: PlayerGenericData
+    validation: PlayerTemplateValidator
 
 
 class FullPlayerInfo(BaseModel):

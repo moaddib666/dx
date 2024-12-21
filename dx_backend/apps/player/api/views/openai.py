@@ -5,7 +5,9 @@ from rest_framework.response import Response
 
 from apps.game.services.player import PlayerFactory
 from apps.game.services.player.core import PlayerService
-from apps.player.api.serializers.openapi import OpenaiCharacterSerializer, PlayerInfoSerializer, PlayerPathSerializer
+from apps.game.services.player.template import PlayerTemplateService
+from apps.player.api.serializers.openapi import OpenaiCharacterSerializer, PlayerInfoSerializer, PlayerPathSerializer, \
+    PlayerTemplateFullSerializer
 from apps.player.models import Player
 
 
@@ -68,3 +70,9 @@ class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
             return Response({"detail": "Path chosen."})
         except Player.DoesNotExist:
             return Response({"detail": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], serializer_class=PlayerTemplateFullSerializer, authentication_classes=[])
+    def player_template(self, request):
+        svc = PlayerTemplateService(0)
+        template = svc.create_template()
+        return Response(data=template.dict())
