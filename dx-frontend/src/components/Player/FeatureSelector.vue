@@ -6,31 +6,14 @@
     <!-- Feature Cards Scrollable Container -->
     <div class="features-container">
       <div
-          v-for="(feature, key) in features"
-          :key="key"
-          :class="['feature-card', { selected: selectedFeatures.includes(key) }]"
-          @click="toggleFeature(key)"
+          v-for="feature in modificators"
+          :key="feature.id"
+          :class="['feature-card', { selected: selectedModificators.includes(feature.id) }]"
+          @click="toggleFeature(feature.id)"
       >
         <h3 class="feature-name">{{ feature.name }}</h3>
         <p class="feature-description">{{ feature.description }}</p>
       </div>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div class="navigation-buttons">
-      <button
-          class="back-button"
-          @click="$emit('back')"
-      >
-        Back
-      </button>
-      <button
-          :disabled="selectedFeatures.length < 2"
-          class="next-button"
-          @click="submitSelection"
-      >
-        Next
-      </button>
     </div>
   </div>
 </template>
@@ -39,35 +22,48 @@
 export default {
   name: "FeatureSelector",
   props: {
-    features: {
-      type: Object,
+    modificators: {
+      type: Array,
       required: true,
     },
-    selected: {
+    selectedModificators: {
       type: Array,
       default: () => [],
+    },
+    setPlayerModificators: {
+      type: Function,
+      required: true,
+    },
+    maxModificators: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
     return {
-      selectedFeatures: [...this.selected], // Initialize with pre-selected features
+      localSelected: [...this.selectedModificators], // Local state for selected modificators
     };
   },
   methods: {
-    toggleFeature(featureKey) {
-      if (this.selectedFeatures.includes(featureKey)) {
-        this.selectedFeatures = this.selectedFeatures.filter((key) => key !== featureKey);
-      } else if (this.selectedFeatures.length < 2) {
-        this.selectedFeatures.push(featureKey);
+    toggleFeature(featureId) {
+      if (this.localSelected.includes(featureId)) {
+        this.localSelected = this.localSelected.filter((id) => id !== featureId);
+      } else if (this.localSelected.length < this.maxModificators) {
+        this.localSelected.push(featureId);
       }
+      this.setPlayerModificators(this.localSelected);
     },
-    submitSelection() {
-      this.$emit("next", this.selectedFeatures);
+  },
+  watch: {
+    selectedModificators: {
+      immediate: true,
+      handler(newValue) {
+        this.localSelected = [...newValue]; // Sync local state with prop
+      },
     },
   },
 };
 </script>
-
 <style scoped>
 .feature-selector {
   padding: 20px;

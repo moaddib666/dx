@@ -1,5 +1,5 @@
 from apps.core.models import PlayerGenericData, PlayerTemplateValidator, PlayerBio, PlayerStatHolder, PlayerTemplate, \
-    GenderEnum
+    GenderEnum, PlayerStat
 
 
 class PlayerTemplateService:
@@ -8,7 +8,9 @@ class PlayerTemplateService:
 
     @staticmethod
     def get_stats_template() -> list[PlayerStatHolder]:
-        return []
+        return [
+            PlayerStatHolder(name=stat, value=0) for stat in PlayerStat
+        ]
 
     def create_template(self) -> PlayerTemplate:
         """
@@ -46,7 +48,7 @@ class PlayerTemplateService:
         # TODO: add scaling by level
         return PlayerTemplateValidator(
             max_rank_grade=self.rank,
-            max_stats_points_count=100,
+            max_stats_points_count=len(self.get_stats_template()) * 10,
             max_modificators_count=2,
             max_items_count=1,
             max_spells_count=1,

@@ -14,12 +14,19 @@ class ThePath(BaseModel):
     description = models.TextField()
     icon = models.ImageField(upload_to='icons/path/', null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.name}'
 
 class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     path = models.ManyToManyField(ThePath)
     icon = models.ImageField(upload_to='icons/school/', null=True, blank=True)
+    is_default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
 
 
 class Skill(BaseModel):
@@ -35,6 +42,7 @@ class Skill(BaseModel):
         ENERGY = 'Energy'
         HEALTH = 'Health'
         AP = 'Action Points'
+
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])

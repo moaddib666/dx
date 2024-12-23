@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Tech-Enhanced Agility
+    grade: 9
+    description: "Boosts an ally’s speed and evasion using tech implants."
+    multi_target: false
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Speed
+        formula:
+          base: 0
+          requires:
+            - stat: Speed
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Evasion Boost
+        chance: 0.2
+        durationSeconds: 120
+        description: Increases speed and dodge chance by 10% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Empowering Pulse
+    grade: 8
+    description: "Emits a pulse that enhances an ally's physical strength temporarily."
+    multi_target: false
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Strength Enhancement
+        chance: 0.25
+        durationSeconds: 180
+        description: Increases ally's physical strength by 15% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Tactical Shielding
+    grade: 7
+    description: "Deploys a tactical shield that provides damage resistance to an ally."
+    multi_target: false
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Shield Buff
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces incoming damage by 20% for 3 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Group Empowerment
+    grade: 6
+    description: "Grants a boost to all allies' combat effectiveness."
+    multi_target: true
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Group Buff
+        chance: 0.35
+        durationSeconds: 240
+        description: Increases all allies' physical strength and speed by 10% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Reflex Stimulator
+    grade: 5
+    description: "Stimulates an ally's reflexes, increasing their dodge and critical hit chances."
+    multi_target: false
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Speed
+        formula:
+          base: 0
+          requires:
+            - stat: Speed
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Reflex Boost
+        chance: 0.3
+        durationSeconds: 240
+        description: Increases dodge and critical hit chance by 15% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Offensive Surge
+    grade: 3
+    description: "Enhances allies' offensive capabilities for a limited time."
+    multi_target: true
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 22
+    effect:
+      - name: Offensive Buff
+        chance: 0.4
+        durationSeconds: 180
+        description: Increases allies' physical damage by 20% for 3 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Precision Targeting
+    grade: 1
+    description: "Provides allies with increased accuracy and damage output."
+    multi_target: true
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Accuracy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 28
+    effect:
+      - name: Accuracy Buff
+        chance: 0.5
+        durationSeconds: 240
+        description: Increases allies' accuracy and damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Tech Infusion
+    grade: 0
+    description: "Infuses allies with technological enhancements for unmatched combat power."
+    multi_target: true
+    school: aa531c7f-97ce-4fba-8752-84c90b7cbfdb
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 50
+    effect:
+      - name: Total Enhancement
+        chance: 0.6
+        durationSeconds: 180
+        description: Increases all allies' physical strength, speed, and defense by 20% for 3 turns.

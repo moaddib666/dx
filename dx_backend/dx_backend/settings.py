@@ -275,6 +275,8 @@ CENTRIFUGO_API_KEY = ""
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+SERIALIZATION_MODULES = {"openai": "apps.core.serializers.openai"}
+
 try:
     from .settings_local import *
 except ImportError:

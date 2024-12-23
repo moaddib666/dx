@@ -1,36 +1,39 @@
 <template>
   <div class="action-points-component">
-    <h2>Allocate Action Points</h2>
-    <p>Distribute your action points across the available characteristics.</p>
+    <h2>Allocate Stat Points</h2>
+    <p>Distribute your points across the available characteristics.</p>
 
     <div class="characteristics-container">
       <div
-          v-for="(char, key) in characteristics"
-          :key="key"
+          v-for="stat in stats"
+          :key="stat.name"
           class="characteristic-item"
       >
-        <img :alt="char.name" :src="char.image" class="characteristic-image"/>
+<!--        <img :alt="stat.name" :src="stat.image" class="characteristic-image" />-->
         <div class="characteristic-details">
-          <h3>{{ char.name }}</h3>
-          <p>{{ char.description }}</p>
+          <h3>{{ stat.name }}</h3>
+          <p>{{ stat.description }}</p>
           <div class="action-bar">
-            <div :style="{ width: baseValues[key] + '%' }" class="base-bar"></div>
             <div
-                :style="{ width: allocatedPoints[key] * 10 + '%' }"
+                :style="{ width: baseValue + '%' }"
+                class="base-bar"
+            ></div>
+            <div
+                :style="{ width: (allocatedPoints[stat.name] || 0) * 10 + '%' }"
                 class="allocated-bar"
             ></div>
           </div>
           <div class="actions">
             <button
-                :disabled="allocatedPoints[key] <= 0"
-                @click="decreasePoint(key)"
+                :disabled="!(allocatedPoints[stat.name] > 0)"
+                @click="decreasePoint(stat.name)"
             >
               -
             </button>
-            <span>{{ allocatedPoints[key] }}</span>
+            <span>{{ allocatedPoints[stat.name] || 0 }}</span>
             <button
                 :disabled="remainingPoints <= 0"
-                @click="increasePoint(key)"
+                @click="increasePoint(stat.name)"
             >
               +
             </button>
@@ -42,7 +45,13 @@
     <!-- Footer Controls -->
     <div class="footer-controls">
       <button class="reset-button" @click="resetPoints">Reset</button>
-      <button :disabled="remainingPoints <= 0" class="auto-button" @click="autoAllocate">Auto Allocate</button>
+      <button
+          :disabled="remainingPoints <= 0"
+          class="auto-button"
+          @click="autoAllocate"
+      >
+        Auto Allocate
+      </button>
       <p>Remaining Points: {{ remainingPoints }}</p>
     </div>
   </div>
@@ -52,33 +61,30 @@
 export default {
   name: "ActionPointsComponent",
   props: {
-    characteristics: {
-      type: Object,
+    stats: {
+      type: Array, // Array of objects with 'name', 'description', and optionally 'image'
       required: true,
+    },
+    currentPlayerStats: { // TODO: integrate this prop into the component so that it auto-allocates points if currentPlayerStats is not empty
+      type: Array, // Array of objects with 'name' and 'value'
+      default: () => [],
     },
     totalPoints: {
       type: Number,
       default: 100,
     },
-    baseValues: {
-      type: Object,
-      default: () => ({
-        PHYSICAL_STRENGTH: 10,
-        MENTAL_STRENGTH: 10,
-        LUCK: 10,
-        SPEED: 10,
-        CONCENTRATION: 10,
-        FLOW_MANIPULATION: 10,
-        FLOW_CONNECTION: 10,
-        KNOWLEDGE: 10,
-        FLOW_RESONANCE: 10,
-        CHARISMA: 10,
-      }),
+    setPlayerStats: {
+      type: Function, // Function to set the player's stats as an array of { name, value }
+      required: true,
+    },
+    baseValue: {
+      type: Number,
+      default: 10, // Default base value for each stat
     },
   },
   data() {
     return {
-      allocatedPoints: {}, // Tracks allocated points for each characteristic
+      allocatedPoints: {}, // Tracks allocated points per characteristic
     };
   },
   computed: {
@@ -90,27 +96,24 @@ export default {
     },
   },
   methods: {
-    increasePoint(key) {
+    increasePoint(statName) {
       if (this.remainingPoints > 0) {
-        this.allocatedPoints[key] = (this.allocatedPoints[key] || 0) + 1;
+        this.allocatedPoints[statName] = (this.allocatedPoints[statName] || 0) + 1;
+        this.updatePlayerStats();
       }
     },
-    decreasePoint(key) {
-      if (this.allocatedPoints[key] > 0) {
-        this.allocatedPoints[key] -= 1;
+    decreasePoint(statName) {
+      if (this.allocatedPoints[statName] > 0) {
+        this.allocatedPoints[statName] -= 1;
+        this.updatePlayerStats();
       }
     },
     resetPoints() {
-      this.allocatedPoints = Object.keys(this.characteristics).reduce(
-          (obj, key) => {
-            obj[key] = 0;
-            return obj;
-          },
-          {}
-      );
+      this.allocatedPoints = {};
+      this.updatePlayerStats();
     },
     autoAllocate() {
-      const keys = Object.keys(this.characteristics);
+      const keys = this.stats.map((stat) => stat.name);
       let pointsToAllocate = this.remainingPoints;
 
       while (pointsToAllocate > 0) {
@@ -122,11 +125,18 @@ export default {
         }
       }
     },
+    updatePlayerStats() {
+      // Convert allocated points to the expected player stats format
+      const updatedStats = this.stats.map((stat) => ({
+        name: stat.name,
+        value: (this.allocatedPoints[stat.name] || 0),
+      }));
+      this.setPlayerStats(updatedStats);
+    },
   },
   created() {
-    // Initialize allocated points
-    this.allocatedPoints = Object.keys(this.characteristics).reduce((obj, key) => {
-      obj[key] = 0;
+    this.allocatedPoints = this.currentPlayerStats.reduce((obj, stat) => {
+      obj[stat.name] = stat.value;
       return obj;
     }, {});
   },

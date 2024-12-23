@@ -108,8 +108,8 @@ class PlayerStat(DjangoChoicesMixin, StrEnum):
     FLOW_CONNECTION = "Flow Connection"  # Depth of bond with the Flow, affecting spell efficiency
     KNOWLEDGE = "Knowledge"  # Understanding of magical theory and applications
     FLOW_RESONANCE = "Flow Resonance"  # Ability to align with the Flow, enhancing spell potency
-    KHARMA = "Kharma"  # Balance of good and bad deeds, affecting luck and fate
     CHARISMA = "Charisma"  # Ability to influence others and maintain relationships
+
 
 
 class PlayerStatHolder(BaseModel):

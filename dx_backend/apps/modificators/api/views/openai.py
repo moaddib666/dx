@@ -1,4 +1,6 @@
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from apps.modificators.api.serializers.openapi import ModificatorSerializer, PlayerModificatorSerializer
 from apps.modificators.models import Modificator, PlayerModificator
@@ -10,6 +12,12 @@ class OpenAIWorldModificatorsViewSet(
 
     serializer_class = ModificatorSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[])
+    def get_all_modificators(self, request):
+        modificators = self.get_queryset()
+        serializer = ModificatorSerializer(modificators, many=True, context=self.get_serializer_context())
+        return Response(serializer.data)
 
 
 class OpenAIPlayerModificatorsViewSet(

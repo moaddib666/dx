@@ -18,10 +18,10 @@ class OpenAIPathManagementViewSet(viewsets.ReadOnlyModelViewSet):
             return qs
         return qs.filter(school__path=user.player.path)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],)
     def get_all_paths(self, request):
         paths = ThePath.objects.all()
-        serializer = OpenaiPathSerializer(paths, many=True)
+        serializer = OpenaiPathSerializer(paths, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
 
 
@@ -41,19 +41,20 @@ class OpenAISchoolManagementViewSet(viewsets.ReadOnlyModelViewSet):
         context['path_id'] = self.kwargs.get('path_pk')
         return context
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[])
     def get_all_schools(self, request, path_pk=None):
         schools = School.objects.all()
-        serializer = OpenaiSchoolSerializer(schools, many=True)
+        serializer = OpenaiSchoolSerializer(schools, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],)
     def get_all_skills(self, request, school_pk=None):
         skills = Skill.objects.all()
-        serializer = OpenaiSkillSerializer(skills, many=True)
+        serializer = OpenaiSkillSerializer(skills, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser], serializer_class=OpenaiSkillSerializer)
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser],
+            serializer_class=OpenaiSkillSerializer)
     def create_skill(self, request, *args, **kwargs):
         school = self.get_object()
         serializer = self.get_serializer(data=request.data, context=self.get_serializer_context())

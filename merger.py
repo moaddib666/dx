@@ -5,7 +5,7 @@ import json
 source_dir = "./"  # Change this to your specific source directory
 dist_dir = "./dist"
 
-excluded = ["./test", ]
+excluded = ["./test", "./dx-frontend", "./dx_backend", "./dx_mobile"]
 # Create the dist directory if it doesn't exist
 if not os.path.exists(dist_dir):
     os.makedirs(dist_dir)
@@ -31,7 +31,12 @@ for root, dirs, files in os.walk(source_dir):
             with open(file_path, "r") as f:
                 content = f.read()
                 if file_ext == ".json":
-                    content = json.dumps(json.loads(content), indent=4)
+                    try:
+                        loaded_content = json.loads(content)
+                        content = json.dumps(loaded_content, indent=4)
+                    except:
+                        print("fail to get content from json", file_path)
+
 
             header = f"File: {file}\n{'=' * 20}\n"
             folder_contents[folder].append(header + content + "\n")

@@ -26,16 +26,23 @@ export default {
       type: Array,
       required: true,
     },
+    selectedPathId: {
+      type: Number,
+      default: null,
+    },
+    setPlayerPathId: {
+      type: Function,
+      required: true,
+    },
   },
-  data() {
-    return {
-      selectedPath: null, // Currently selected path ID
-    };
+  computed: {
+    selectedPath() {
+      return this.selectedPathId;
+    },
   },
   methods: {
     selectPath(pathId) {
-      this.selectedPath = pathId;
-      this.$emit("path-selected", pathId); // Emit the selected path ID to the parent
+      this.setPlayerPathId(pathId);
     },
   },
 };

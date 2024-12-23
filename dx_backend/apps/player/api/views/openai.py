@@ -71,8 +71,8 @@ class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
         except Player.DoesNotExist:
             return Response({"detail": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], serializer_class=PlayerTemplateFullSerializer, authentication_classes=[])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[], serializer_class=PlayerTemplateFullSerializer, )
     def player_template(self, request):
-        svc = PlayerTemplateService(0)
+        svc = PlayerTemplateService(9)
         template = svc.create_template()
-        return Response(data=template.dict())
+        return Response(data=template.model_dump())

@@ -1,63 +1,99 @@
 <template>
   <div v-if="schools && spells" class="school-and-spell-selector">
+    <!-- Description Section -->
+<!--    <div class="description">-->
+<!--      <h2>Guidance</h2>-->
+<!--      <p>-->
+<!--        As a Yang Seeker, you can align with up to <strong>{{ maxSchools }}</strong> schools of knowledge and harness the power of <strong>{{ maxSpells }}</strong> spells. Each school represents a unique philosophy and mastery over the Flow, shaping your abilities and your destiny.-->
+<!--        Choose carefully—your selections will define your path, enhance your strengths, and unlock your potential to face the challenges ahead. The balance you create will determine your success in this ever-shifting world.-->
+<!--      </p>-->
+<!--    </div>-->
+
     <!-- School List -->
-    <div class="school-list">
+    <div class="school-list" v-if="chosenPath">
       <h2>Schools</h2>
       <div
-          v-for="school in schools"
+          v-for="school in filteredSchools"
           :key="school.id"
           :class="['school-item', { selected: selectedSchools.includes(school.id) }]"
           @click="toggleSchool(school.id)"
       >
-        <img :alt="school.name" :src="school.icon" class="school-icon"/>
-        <div class="school-details">
-          <h3>{{ school.name }}</h3>
-          <p>{{ school.description }}</p>
+        <div v-if="!school.is_default" class="default-school-label">
+          <img :alt="school.name" :src="school.icon" class="school-icon" />
+          <div class="school-details">
+            <h3>{{ school.name }}</h3>
+            <p>{{ school.description }}</p>
+          </div>
         </div>
       </div>
+    </div>
+    <div v-else class="placeholder">
+      <p>Select a path to view schools and spells.</p>
     </div>
 
     <!-- Spell List -->
     <div v-if="selectedSchools.length > 0" class="spell-list">
       <h2>Spells</h2>
       <div
-          v-for="school in schools"
+          v-for="school in selectedSchoolsDetails"
           :key="school.id"
           class="spell-group"
-
       >
-        <div v-if="selectedSchools.includes(school.id)">
-          <h3>{{ school.name }}</h3>
-          <div class="spell-group-list">
+        <h3>{{ school.name }}</h3>
+        <div class="spell-group-list">
+          <div
+              v-for="spell in getSpellsForSchool(school.id)"
+              :key="spell.id"
+              :class="['spell-item', { disabled: spell.grade < playerRank, selected: selectedSpells.includes(spell.id) }]"
+              @click="spell.grade < playerRank ? null : toggleSpell(spell.id)"
+          >
+            <span>{{ spell.name }}</span>
             <div
-                v-for="spell in getSpellsForSchool(school.id)"
-                :key="spell.id"
-                :class="['spell-item', { disabled: spell.grade > 1, selected: selectedSpells.includes(spell.id) }]"
-                @click="spell.grade > 1 ? null : toggleSpell(spell.id)"
+                class="spell-hover"
+                @mouseenter="tooltipSpell = spell.id"
+                @mouseleave="tooltipSpell = null"
             >
-              <span>{{ spell.name }}</span>
-              <div
-                  class="spell-hover"
-                  @mouseenter="showTooltip(spell)"
-                  @mouseleave="hideTooltip"
+              <span
+                  v-if="tooltipSpell === spell.id"
+                  class="tooltip"
               >
-                <span v-if="tooltipSpell === spell.id" class="tooltip">{{ spell.description }}</span>
+                {{ spell.description }}
+              </span>
             </div>
           </div>
         </div>
-        </div>
       </div>
-      <p v-if="selectedSpells.length >= 5" class="spell-limit-warning">
-        Only 5 active spells can be selected.
+      <p v-if="selectedSpells.length >= maxSpells" class="spell-limit-warning">
+        Only {{maxSpells}} active spells can be selected.
       </p>
     </div>
   </div>
+
 </template>
 
 <script>
 export default {
   name: "SchoolAndSpellSelector",
   props: {
+    maxSpells: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+    maxSchools: {
+      type: Number,
+      required: true,
+      default: 1,
+    },
+    chosenPath: {
+      type: String,
+      required: true,
+    },
+    playerRank: {
+      type: Number,
+      required: true,
+      default: 9,
+    },
     schools: {
       type: Array,
       required: true,
@@ -68,46 +104,65 @@ export default {
       required: true,
       default: () => [],
     },
+    selectedSchools: {
+      type: Array,
+      default: () => [],
+    },
+    selectedSpells: {
+      type: Array,
+      default: () => [],
+    },
+    setPlayerSchools: {
+      type: Function,
+      required: true,
+    },
+    setPlayerSpells: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
-      selectedSchools: [], // Tracks selected school IDs
-      selectedSpells: [], // Tracks selected spell IDs
-      tooltipSpell: null, // Tracks spell being hovered for tooltip
+      tooltipSpell: null, // Tracks hovered spell ID for tooltips
     };
   },
   computed: {
-    filteredSpells() {
-      return this.spells.filter(spell => this.selectedSchools.includes(spell.school));
+    filteredSchools() {
+      // Filters schools by the chosen path
+      return this.schools.filter((school) => school.path.includes(this.chosenPath));
+    },
+    selectedSchoolsDetails() {
+      // Returns details of selected schools
+      return this.filteredSchools.filter((school) =>
+          this.selectedSchools.includes(school.id)
+      );
     },
   },
   methods: {
     toggleSchool(schoolId) {
+      let updatedSchools;
       if (this.selectedSchools.includes(schoolId)) {
-        this.selectedSchools = this.selectedSchools.filter(id => id !== schoolId);
-        // Remove spells from deselected schools
-        this.selectedSpells = this.selectedSpells.filter(
-            spellId => this.filteredSpells.some(spell => spell.id === spellId)
-        );
-      } else if (this.selectedSchools.length < 2) {
-        this.selectedSchools.push(schoolId);
+        updatedSchools = this.selectedSchools.filter((id) => id !== schoolId);
+      } else if (this.selectedSchools.length < this.maxSchools) {
+        updatedSchools = [...this.selectedSchools, schoolId];
+      } else {
+        return;
       }
+      this.setPlayerSchools(updatedSchools);
     },
     toggleSpell(spellId) {
+      let updatedSpells;
       if (this.selectedSpells.includes(spellId)) {
-        this.selectedSpells = this.selectedSpells.filter(id => id !== spellId);
-      } else if (this.selectedSpells.length < 5) {
-        this.selectedSpells.push(spellId);
+        updatedSpells = this.selectedSpells.filter((id) => id !== spellId);
+      } else if (this.selectedSpells.length < this.maxSpells) {
+        updatedSpells = [...this.selectedSpells, spellId];
+      } else {
+        return;
       }
+      this.setPlayerSpells(updatedSpells);
     },
     getSpellsForSchool(schoolId) {
-      return this.spells.filter(spell => spell.school === schoolId);
-    },
-    showTooltip(spell) {
-      this.tooltipSpell = spell.id;
-    },
-    hideTooltip() {
-      this.tooltipSpell = null;
+      return this.spells.filter((spell) => spell.school === schoolId);
     },
   },
 };
@@ -121,9 +176,13 @@ export default {
   border-radius: 8px;
   background-color: #222;
   color: #fff;
-  height: 50vh; /* Ensures the component takes the full height */
+  height: 50vh;
 }
 
+
+.placeholder {
+  text-align: center;
+}
 /* School List */
 .school-list {
   flex: 1;
@@ -257,4 +316,25 @@ h2 {
   color: #f44336;
   text-align: center;
 }
+
+.description {
+  text-align: center;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #ddd;
+  display: flex;
+  flex: 1;
+}
+
+.description p {
+  margin: 5px 0;
+}
+
+.description strong {
+  color: #4caf50;
+}
+
 </style>

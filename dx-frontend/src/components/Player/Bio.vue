@@ -5,13 +5,26 @@
       <!-- Name -->
       <div class="form-group">
         <label for="name">Name</label>
-        <input id="name" v-model="bio.name" placeholder="Enter character name" required type="text"/>
+        <input
+            id="name"
+            v-model="bio.name"
+            placeholder="Enter character name"
+            required
+            type="text"
+        />
       </div>
 
       <!-- Age -->
       <div class="form-group">
         <label for="age">Age</label>
-        <input id="age" v-model="bio.age" min="1" placeholder="Enter character age" required type="number"/>
+        <input
+            id="age"
+            v-model.number="bio.age"
+            min="1"
+            placeholder="Enter character age"
+            required
+            type="number"
+        />
       </div>
 
       <!-- Gender -->
@@ -19,31 +32,35 @@
         <label for="gender">Gender</label>
         <select id="gender" v-model="bio.gender" required>
           <option disabled value="">Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
         </select>
       </div>
 
       <!-- Appearance -->
       <div class="form-group">
         <label for="appearance">Appearance</label>
-        <textarea id="appearance" v-model="bio.appearance" placeholder="Describe the character's appearance"></textarea>
+        <textarea
+            id="appearance"
+            v-model="bio.appearance"
+            placeholder="Describe the character's appearance"
+        ></textarea>
       </div>
 
       <!-- Background -->
       <div class="form-group">
         <label for="background">Background</label>
-        <textarea id="background" v-model="bio.background" placeholder="Provide the character's background"></textarea>
-      </div>
-
-      <!-- Submit -->
-      <div class="form-actions">
-        <button type="submit">Save & Next</button>
+        <textarea
+            id="background"
+            v-model="bio.background"
+            placeholder="Provide the character's background"
+        ></textarea>
       </div>
     </form>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -69,19 +86,58 @@ export default {
       type: String,
       default: "",
     },
+    setPlayerName: {
+      type: Function,
+      required: true,
+    },
+    setPlayerAge: {
+      type: Function,
+      required: true,
+    },
+    setPlayerGender: {
+      type: Function,
+      required: true,
+    },
+    setPlayerAppearance: {
+      type: Function,
+      required: true,
+    },
+    setPlayerBackground: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
     return {
-      bio: {...this.data}, // Initialize with data from props
+      bio: {
+        name: this.name,
+        age: this.age,
+        gender: this.gender,
+        appearance: this.appearance,
+        background: this.background,
+      },
     };
+  },
+  watch: {
+    bio: {
+      deep: true,
+      handler(newBio) {
+        this.setPlayerName(newBio.name);
+        this.setPlayerAge(newBio.age);
+        this.setPlayerGender(newBio.gender);
+        this.setPlayerAppearance(newBio.appearance);
+        this.setPlayerBackground(newBio.background);
+      },
+    },
   },
   methods: {
     submitBio() {
-      this.$emit("next", this.bio); // Emit the bio data to the parent component
+      this.$emit("next");
     },
   },
 };
 </script>
+
 
 <style scoped>
 .bio-component {
