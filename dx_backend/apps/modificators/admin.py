@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Modificator, StatModificator, PlayerModificator
+from .models import Modificator, StatModificator, CharacterModificator
 
 
 class StatModificatorInline(admin.TabularInline):
@@ -31,15 +31,15 @@ class ModificatorAdmin(admin.ModelAdmin):
     icon_display.short_description = "Icon Status"
 
 
-@admin.register(PlayerModificator)
-class PlayerModificatorAdmin(admin.ModelAdmin):
-    list_display = ('player', 'modificator')
-    list_filter = ('player', 'modificator')
-    search_fields = ('player__name', 'modificator__name')  # Assuming `Player` and `Modificator` have `name` fields
+@admin.register(CharacterModificator)
+class CharacterModificatorAdmin(admin.ModelAdmin):
+    list_display = ('character', 'modificator')
+    list_filter = ('character', 'modificator')
+    search_fields = ('character__name', 'modificator__name')  # Assuming `Character` and `Modificator` have `name` fields
     readonly_fields = ('id', 'created_at', 'updated_at')  # Assuming BaseModel includes these fields
     fieldsets = (
         (None, {
-            'fields': ('player', 'modificator')
+            'fields': ('character', 'modificator')
         }),
         ('Metadata', {
             'fields': ('id', 'created_at', 'updated_at')
@@ -51,7 +51,7 @@ class PlayerModificatorAdmin(admin.ModelAdmin):
 class StatModificatorAdmin(admin.ModelAdmin):
     list_display = ('modificator', 'stat', 'value')
     list_filter = ('modificator', 'stat')
-    search_fields = ('modificator__name', 'stat__name')  # Assuming `PlayerStat` has a `name` field
+    search_fields = ('modificator__name', 'stat__name')  # Assuming `CharacterStat` has a `name` field
     readonly_fields = ('id', 'created_at', 'updated_at')  # Assuming BaseModel includes these fields
     fieldsets = (
         (None, {

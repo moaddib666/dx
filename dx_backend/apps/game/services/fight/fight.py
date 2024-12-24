@@ -4,14 +4,14 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from apps.adapters.protocol.sender import Sender
-from apps.core.bus.events.fight.produced import PlayerNewTurnGameEvent
+from apps.core.bus.events.fight.produced import CharacterNewTurnGameEvent
 from apps.core.models import CurrentTurn, FIGHT_TURN_DURATION_SECONDS
 from apps.fight.models import Fight, FightTurn
 from apps.game.exceptions import GameLogicException
 from apps.game.services.fight.duel import InvitationService
 from apps.game.services.fight.processor import TurnProcessorService
 from apps.game.services.notifier.fight import FightNotifier
-from apps.game.services.player.core import PlayerService
+from apps.game.services.character.core import CharacterService
 
 
 class FightService:
@@ -24,23 +24,23 @@ class FightService:
         return cls.create(
             participants_a=[],
             participants_b=[],
-            initiator=invitation.player1,
-            target=invitation.player2,
+            initiator=invitation.character1,
+            target=invitation.character2,
         )
 
     @classmethod
-    def create(cls, participants_a: [PlayerService], participants_b: [PlayerService], initiator: PlayerService,
-               target: PlayerService, is_open=True):
+    def create(cls, participants_a: [CharacterService], participants_b: [CharacterService], initiator: CharacterService,
+               target: CharacterService, is_open=True):
         fight = Fight.objects.create(
-            initiator=initiator.player,
-            target=target.player,
+            initiator=initiator.character,
+            target=target.character,
             is_open=is_open,
         )
-        fight.side_a_participants.add(initiator.player, *[p.player for p in participants_a])
-        fight.side_b_participants.add(target.player, *[p.player for p in participants_b])
+        fight.side_a_participants.add(initiator.character, *[p.main_character for p in participants_a])
+        fight.side_b_participants.add(target.character, *[p.main_character for p in participants_b])
         for p in participants_a + participants_b + [initiator, target]:
-            p.player.fight = fight
-            p.player.save()
+            p.main_character.fight = fight
+            p.main_character.save()
         cls.logger.info(f'Fight created {fight}')
         return cls(fight)
 
@@ -55,10 +55,10 @@ class FightService:
         )
         self.fight.save()
 
-    def leave(self, player_service):
-        self.logger.info(f'Player {player_service.player} is leaving fight {self.fight}')
-        self.fight.side_a_participants.remove(player_service.player)
-        self.fight.side_b_participants.remove(player_service.player)
+    def leave(self, character_service):
+        self.logger.info(f'Character {character_service.main_character} is leaving fight {self.fight}')
+        self.fight.side_a_participants.remove(character_service.main_character)
+        self.fight.side_b_participants.remove(character_service.main_character)
 
         if not self.fight.side_a_participants.exists() or not self.fight.side_b_participants.exists():
             self.end()
@@ -69,7 +69,7 @@ class FightService:
         self.fight.save()
         return self.fight
 
-    def join(self, player_service, side):
+    def join(self, character_service, side):
 
         if self.fight.is_ended:
             raise GameLogicException('Fight is already ended')
@@ -77,19 +77,19 @@ class FightService:
             raise GameLogicException('Fight is not open')
 
         if side == 'a':  # TODO: make enum with sides Attacker and Defender
-            self.fight.side_a_participants.add(player_service.player)
+            self.fight.side_a_participants.add(character_service.main_character)
         else:
-            self.fight.side_b_participants.add(player_service.player)
-        self.logger.info(f'Player {player_service.player} joined fight {self.fight} on side {side}')
+            self.fight.side_b_participants.add(character_service.main_character)
+        self.logger.info(f'Character {character_service.main_character} joined fight {self.fight} on side {side}')
         self.fight.save()
 
-    def refresh_player(self, player: PlayerService):
-        self.logger.info(f'Refreshing player {player} in fight {self.fight}')
+    def refresh_character(self, character: CharacterService):
+        self.logger.info(f'Refreshing character {character} in fight {self.fight}')
         self.notifier.send_participant(
-            player.get_id(),
-            PlayerNewTurnGameEvent.create_event(
+            character.get_id(),
+            CharacterNewTurnGameEvent.create_event(
                 self.serialize_current_turn(),
-                player.get_player_info(),
+                character.get_character_info(),
             )
         )
 
@@ -106,17 +106,17 @@ class FightService:
     def process_current_turn(self):
         self.logger.info(f"Processing current turn for fight {self.fight.id}")
 
-    def prepare_players(self):
-        self.logger.info(f"Filling up players AP for fight {self.fight.id}")
+    def prepare_characters(self):
+        self.logger.info(f"Filling up characters AP for fight {self.fight.id}")
         for participant in (
                 self.get_participants()
         ):
 
-            player = PlayerService(participant)
-            if not player.is_knocked_out():
-                player.refill_ap()
-                self.logger.debug(f"Refilled AP for player {participant.id}")
-            self.refresh_player(player)
+            character = CharacterService(participant)
+            if not character.is_knocked_out():
+                character.refill_ap()
+                self.logger.debug(f"Refilled AP for character {participant.id}")
+            self.refresh_character(character)
 
     def spawn_turn(self):
         self.logger.info(f"Spawning new turn for fight {self.fight.id}")
@@ -129,7 +129,7 @@ class FightService:
         self.fight.current_turn = turn
         self.fight.save()
         self.logger.info(f"Spawned new turn {turn.id} for fight {self.fight.id}")
-        self.prepare_players()
+        self.prepare_characters()
 
     @transaction.atomic
     def process(self):

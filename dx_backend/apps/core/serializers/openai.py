@@ -149,7 +149,7 @@ class ModificatorPresentor(ModelPresentor):
         Provide a description of the Modificator model.
         """
         self.stream.write(
-            f"Model: {self.model.__name__}. Represents game modificators that alter player stats or abilities.\n"
+            f"Model: {self.model.__name__}. Represents game modificators that alter character stats or abilities.\n"
         )
 
     def describe_instance(self, instance):

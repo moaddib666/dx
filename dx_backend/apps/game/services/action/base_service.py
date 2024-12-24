@@ -1,15 +1,15 @@
 import abc
 
-from apps.action.models import PlayerAction
-from apps.game.services.player.core import PlayerService
+from apps.action.models import CharacterAction
+from apps.game.services.character.core import CharacterService
 
 
 class BaseService(abc.ABC):
-    action: PlayerAction
-    initiator: PlayerService
-    target: list[PlayerService]
+    action: CharacterAction
+    initiator: CharacterService
+    target: list[CharacterService]
 
-    def __init__(self, action: PlayerAction, initiator: PlayerService, targets: list[PlayerService]):
+    def __init__(self, action: CharacterAction, initiator: CharacterService, targets: list[CharacterService]):
         self.action = action
         self.initiator = initiator
         self.target = targets

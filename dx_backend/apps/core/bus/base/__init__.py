@@ -13,14 +13,14 @@ class GameEventData(BaseModel):
 
 
 class EventCategory(StrEnum):
-    PLAYER = "player"
+    PLAYER = "character"
     LOCATION = "location"
     FIGHT = "fight"
     GAME = "game"
 
 
 class EventDirection(StrEnum):
-    PRODUCED = "player"
+    PRODUCED = "character"
     CONSUMED = "server"
 
 
@@ -80,7 +80,7 @@ class FightEvent(GameEvent):
     category: EventCategory = EventCategory.FIGHT
 
 
-class PlayerEvent(GameEvent):
+class CharacterEvent(GameEvent):
     category: EventCategory = EventCategory.PLAYER
 
 

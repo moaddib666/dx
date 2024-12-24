@@ -41,7 +41,7 @@ class Item(BaseModel):
     canonical = models.BooleanField(default=False)
 
 
-class PlayerItem(BaseModel):
-    player = models.ForeignKey('player.Player', on_delete=models.CASCADE, related_name='equipped_items')
+class CharacterItem(BaseModel):
+    character = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='equipped_items')
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=1)

@@ -1,9 +1,9 @@
 from enum import StrEnum
 
 
-class PlayerStatPresenter:
+class CharacterStatPresenter:
     """
-    Service to present player stats with a name and description based on stat values.
+    Service to present character stats with a name and description based on stat values.
     """
 
     def __init__(self, stats: type[StrEnum]):
@@ -25,13 +25,13 @@ class PlayerStatPresenter:
 
     def present_stat(self, stat_value: str) -> dict:
         """
-        Accepts a player stat value and returns a dictionary representing a PlayerStatItem.
+        Accepts a character stat value and returns a dictionary representing a CharacterStatItem.
 
         Args:
-            stat_value (str): The value of the player stat (e.g., "Physical Strength").
+            stat_value (str): The value of the character stat (e.g., "Physical Strength").
 
         Returns:
-            dict: A PlayerStatItem containing 'Name' and 'Description'.
+            dict: A CharacterStatItem containing 'Name' and 'Description'.
         """
         if stat_value not in self.STAT_DESCRIPTIONS:
             return {
@@ -46,13 +46,13 @@ class PlayerStatPresenter:
 
     def prest_as_list(self) -> list:
         """
-        Accepts a list of player stats and returns a list of dictionaries representing PlayerStatItems.
+        Accepts a list of character stats and returns a list of dictionaries representing CharacterStatItems.
 
         Args:
-            stats (list): A list of player stats.
+            stats (list): A list of character stats.
 
         Returns:
-            list: A list of PlayerStatItems containing 'Name' and 'Description'.
+            list: A list of CharacterStatItems containing 'Name' and 'Description'.
         """
         return [self.present_stat(stat) for stat in self.stats]
 

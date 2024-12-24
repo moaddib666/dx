@@ -1,30 +1,30 @@
 from django.core.management.base import BaseCommand, CommandError
-from apps.game.services.player.core import PlayerService
-from apps.game.services.player.leveling import LevelingService
-from apps.player.models import Player
+from apps.game.services.character.core import CharacterService
+from apps.game.services.character.leveling import LevelingService
+from apps.character.models import Character
 
 
 class Command(BaseCommand):
-    help = 'Add experience to a player'
+    help = 'Add experience to a character'
 
     def add_arguments(self, parser):
-        parser.add_argument('player_id', type=str, help='The ID of the player to add experience to')
+        parser.add_argument('character_id', type=str, help='The ID of the character to add experience to')
         parser.add_argument('experience', type=int, help='The amount of experience to add')
 
     def handle(self, *args, **kwargs):
-        player_id = kwargs['player_id']
+        character_id = kwargs['character_id']
         experience = kwargs['experience']
 
         try:
-            player = Player.objects.get(pk=player_id)
-        except Player.DoesNotExist as e:
-            raise CommandError('Player with ID "%s" does not exist' % player_id) from e
+            character = Character.objects.get(pk=character_id)
+        except Character.DoesNotExist as e:
+            raise CommandError('Character with ID "%s" does not exist' % character_id) from e
 
-        player_service = PlayerService(player)
-        leveling_service = LevelingService(player)
+        character_service = CharacterService(character)
+        leveling_service = LevelingService(character)
         try:
             leveling_service.add_experience(experience)
         except Exception as e:
-            raise CommandError('Failed to add experience to player "%s": %s' % (player_id, e)) from e
+            raise CommandError('Failed to add experience to character "%s": %s' % (character_id, e)) from e
         self.stdout.write(
-            self.style.SUCCESS('Successfully added %s experience to player "%s"' % (experience, player_id)))
+            self.style.SUCCESS('Successfully added %s experience to character "%s"' % (experience, character_id)))

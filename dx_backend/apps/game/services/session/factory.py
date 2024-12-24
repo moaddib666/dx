@@ -1,5 +1,5 @@
 from django.db import transaction
-from apps.player.models import Player
+from apps.character.models import Character
 from apps.game.models import Session
 
 
@@ -9,9 +9,9 @@ class GameSessionFactory:
         self.client = client
 
     @transaction.atomic
-    def create_session(self, player: Player) -> Session:
+    def create_session(self, character: Character) -> Session:
         session = Session.objects.create(
-            player=player,
+            character=character,
             client=self.client,
         )
         return session

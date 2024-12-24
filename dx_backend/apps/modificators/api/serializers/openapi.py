@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.modificators.models import Modificator, StatModificator, PlayerModificator
+from apps.modificators.models import Modificator, StatModificator, CharacterModificator
 
 
 class StatModificatorSerializer(serializers.ModelSerializer):
@@ -57,10 +57,10 @@ class ModificatorSerializer(serializers.ModelSerializer):
         return instance
 
 
-class PlayerModificatorSerializer(serializers.ModelSerializer):
+class CharacterModificatorSerializer(serializers.ModelSerializer):
     modificator = ModificatorSerializer()
 
     class Meta:
-        model = PlayerModificator
-        fields = ['id', 'player', 'modificator']
+        model = CharacterModificator
+        fields = ['id', 'character', 'modificator']
         read_only_fields = ['id']

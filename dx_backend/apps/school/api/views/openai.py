@@ -16,7 +16,7 @@ class OpenAIPathManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        return qs.filter(school__path=user.player.path)
+        return qs.filter(school__path=user.character.path)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],)
     def get_all_paths(self, request):
@@ -34,7 +34,7 @@ class OpenAISchoolManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = School.objects.all()
         if user.is_superuser:
             return qs
-        return qs.filter(path=user.player.path)
+        return qs.filter(path=user.character.path)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -74,7 +74,7 @@ class OpenAISkillManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = Skill.objects.filter(school__id=school_id)
         if user.is_superuser:
             return qs
-        return qs.filter(school__path=user.player.path, grade__lte=user.player.grade)
+        return qs.filter(school__path=user.character.path, grade__lte=user.character.grade)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

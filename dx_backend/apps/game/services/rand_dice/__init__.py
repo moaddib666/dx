@@ -8,7 +8,7 @@ from typing import Protocol
 from apps.core.models import RollOutcome, DiceRollResult
 
 
-class PlayerProtocol(Protocol):
+class CharacterProtocol(Protocol):
 
     @property
     def id(self) -> str:
@@ -18,18 +18,18 @@ class PlayerProtocol(Protocol):
 class DiceService:
     logger = logging.getLogger("game.services.dice")
 
-    def __init__(self, player: PlayerProtocol, luck: int, sides: int = 6, base_luck: int = 5):
-        self.player = player
+    def __init__(self, character: CharacterProtocol, luck: int, sides: int = 6, base_luck: int = 5):
+        self.character = character
         self.luck = luck
         self.sides = sides
         self.min_value = 1
         self.base_luck = base_luck
-        self.random_gen = self.create_random_gen_for_player()
-        self.logger.debug(f"Created dice service d{sides} for player {self.player.id} with luck {self.luck}")
+        self.random_gen = self.create_random_gen_for_character()
+        self.logger.debug(f"Created dice service d{sides} for character {self.character.id} with luck {self.luck}")
 
-    def create_random_gen_for_player(self):
-        # Create a unique seed based on the player's unique ID and possibly other factors
-        unique_string = str(self.player.id) + str(self.luck + time.time())
+    def create_random_gen_for_character(self):
+        # Create a unique seed based on the character's unique ID and possibly other factors
+        unique_string = str(self.character.id) + str(self.luck + time.time())
         seed = int(hashlib.md5(unique_string.encode()).hexdigest(), 16) % (2 ** 32 - 1)
         return random.Random(seed)
 
@@ -40,12 +40,12 @@ class DiceService:
         luck_adjustment = (self.luck - self.base_luck) / self.base_luck * 1.3
         adjusted_roll = base_roll + (luck_adjustment * self.random_gen.randint(0, 1))
         adjusted_roll = max(self.min_value, min(self.sides, round(adjusted_roll)))
-        self.logger.debug(f"Player {self.player.id} rolled {adjusted_roll} luck adjustment {luck_adjustment}")
+        self.logger.debug(f"Character {self.character.id} rolled {adjusted_roll} luck adjustment {luck_adjustment}")
         return adjusted_roll
 
     def _calculate_multiplier(self) -> tuple[int, float, RollOutcome]:
         """
-        The multiplier is calculated as follows and adjusted by player's luck:
+        The multiplier is calculated as follows and adjusted by character's luck:
         - minValue  - Critical Fail (0.5) from the base value
         - maxValue  - Critical Success (2) from the base value
         - from middle - 1/2 to minValue of the base value - Bad luck (0.75)
@@ -70,20 +70,20 @@ class DiceService:
 
     def multiplier_roll(self) -> DiceRollResult:
         roll, multiplier, outcome = self._calculate_multiplier()
-        self.logger.debug(f"Player {self.player.id} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
+        self.logger.debug(f"Character {self.character.id} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
         return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
 
 
 if __name__ == '__main__':
     def check_luck(luck: int, sides: int, count: int = 10_000):
         """
-        Check the luck of the player
+        Check the luck of the character
         """
         print(f"\n------------------------------------------\n"
-              f"Checking luck for player with luck {luck} and dice with {sides} sides",
+              f"Checking luck for character with luck {luck} and dice with {sides} sides",
               "\n------------------------------------------")
-        player = type("Player", (), {"id": "player_id"})
-        dice_service = DiceService(player, luck, sides)
+        character = type("Character", (), {"id": "character_id"})
+        dice_service = DiceService(character, luck, sides)
         outcome_results = Counter()
 
         for _ in range(count):

@@ -6,21 +6,21 @@ class GroupsNameResolver:
         return self.delimiter.join([self.label, *[str(arg) for arg in args]])
 
 
-class PlayerGroupsNameResolver(GroupsNameResolver):
-    label = "player"
+class CharacterGroupsNameResolver(GroupsNameResolver):
+    label = "character"
 
-    def construct_player_online_group_name(self):
+    def construct_character_online_group_name(self):
         return self.construct_group_name("online")
 
-    def construct_player_online_id_group_name(self, player_id: str):
-        return self.construct_group_name("online", player_id)
+    def construct_character_online_id_group_name(self, character_id: str):
+        return self.construct_group_name("online", character_id)
 
 
-class PlayerActionGroupsNameResolver(GroupsNameResolver):
-    label = "player_actions"
+class CharacterActionGroupsNameResolver(GroupsNameResolver):
+    label = "character_actions"
 
-    def construct_player_action_group_name(self, player_id: str):
-        return self.construct_group_name(player_id)
+    def construct_character_action_group_name(self, character_id: str):
+        return self.construct_group_name(character_id)
 
 
 class FightGroupsNameResolver(GroupsNameResolver):

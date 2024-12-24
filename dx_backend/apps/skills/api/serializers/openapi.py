@@ -9,12 +9,12 @@ class LearnedSkillSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LearnedSkill
-        fields = ['id', 'player', 'skill']
-        read_only_fields = ['id', 'player']
+        fields = ['id', 'character', 'skill']
+        read_only_fields = ['id', 'character']
 
 
 class LearnedSchoolSerializer(serializers.ModelSerializer):
     class Meta:
         model = LearnedSchool
-        fields = ['id', 'player', 'school']
-        read_only_fields = ['id', 'player']
+        fields = ['id', 'character', 'school']
+        read_only_fields = ['id', 'character']

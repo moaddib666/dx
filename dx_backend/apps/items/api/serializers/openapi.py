@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.items.models import Item, PlayerItem
+from apps.items.models import Item, CharacterItem
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -11,10 +11,10 @@ class ItemSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class PlayerItemSerializer(serializers.ModelSerializer):
+class CharacterItemSerializer(serializers.ModelSerializer):
     item = ItemSerializer()
 
     class Meta:
-        model = PlayerItem
-        fields = ['id', 'player', 'item', 'amount']
-        read_only_fields = ['id', 'player']
+        model = CharacterItem
+        fields = ['id', 'character', 'item', 'amount']
+        read_only_fields = ['id', 'character']

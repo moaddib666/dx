@@ -1,18 +1,18 @@
 from apps.core.bus.base import GameEventData, FightEvent, ConsumedMixin
-from apps.core.models import CurrentTurn, FullPlayerInfo
+from apps.core.models import CurrentTurn, FullCharacterInfo
 
 
-class PlayerExample1GameEventData(GameEventData):
+class CharacterExample1GameEventData(GameEventData):
     field1: str
 
 
-class PlayerExample1GameEvent(ConsumedMixin, FightEvent):
-    data: PlayerExample1GameEventData
+class CharacterExample1GameEvent(ConsumedMixin, FightEvent):
+    data: CharacterExample1GameEventData
 
 
-class PlayerExample2GameEventData(GameEventData):
+class CharacterExample2GameEventData(GameEventData):
     field2: str
 
 
-class PlayerExample2GameEvent(ConsumedMixin, FightEvent):
-    data: PlayerExample2GameEventData
+class CharacterExample2GameEvent(ConsumedMixin, FightEvent):
+    data: CharacterExample2GameEventData

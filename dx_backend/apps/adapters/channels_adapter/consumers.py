@@ -7,7 +7,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from apps.adapters.channels_adapter.name_resolver import FightGroupsNameResolver
 from apps.fight.models import Fight
 from apps.game.services.fight.fight import FightService
-from apps.player.models import Player
+from apps.character.models import Character
 
 
 class AuthenticatedWebsocketConsumer(AsyncWebsocketConsumer):
@@ -17,8 +17,8 @@ class AuthenticatedWebsocketConsumer(AsyncWebsocketConsumer):
     def get_user(self):
         return self.scope["user"]
 
-    def get_player(self):
-        return self.get_user().player
+    def get_character(self):
+        return self.get_user().main_character
 
     async def authenticate(self):
         if not self.get_user().is_authenticated:
@@ -29,7 +29,7 @@ class AuthenticatedWebsocketConsumer(AsyncWebsocketConsumer):
 class FightConsumer(AuthenticatedWebsocketConsumer):
     fight: Fight
     fight_side: str
-    participant: Player
+    participant: Character
 
     __service__: FightService
 
@@ -51,11 +51,11 @@ class FightConsumer(AuthenticatedWebsocketConsumer):
         )
 
     @sync_to_async
-    def fill_player_info(self):
-        player = self.get_player()
-        fight = player.fight
-        side = "a" if player in fight.side_a_participants.all() else "b"
-        return player, fight, side
+    def fill_character_info(self):
+        character = self.get_character()
+        fight = character.fight
+        side = "a" if character in fight.side_a_participants.all() else "b"
+        return character, fight, side
 
     async def connect(self):
         try:
@@ -64,8 +64,8 @@ class FightConsumer(AuthenticatedWebsocketConsumer):
             self.logger.warning(f"Websocket connection failed: {e}")
             return
 
-        player, fight, side = await self.fill_player_info()
-        self.participant = player
+        character, fight, side = await self.fill_character_info()
+        self.participant = character
         self.fight = fight
         self.fight_side = side
 
@@ -78,7 +78,7 @@ class FightConsumer(AuthenticatedWebsocketConsumer):
     @sync_to_async
     def say_hello(self):
         self.__service__ = FightService(self.fight)
-        self.__service__.refresh_player(self.participant)
+        self.__service__.refresh_character(self.participant)
 
     async def disconnect(self, close_code):
         for group_name in self.available_groups():

@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
-from apps.currency.api.serializers.openapi import PlayerCurrencySerializer, CurrencyTokenSerializer
-from apps.currency.models import PlayerCurrency, CurrencyToken
+from apps.currency.api.serializers.openapi import CharacterCurrencySerializer, CurrencyTokenSerializer
+from apps.currency.models import CharacterCurrency, CurrencyToken
 
 
 class OpenAIWorldCurrencyTokensViewSet(
@@ -12,16 +12,16 @@ class OpenAIWorldCurrencyTokensViewSet(
     permission_classes = [permissions.IsAdminUser]
 
 
-class OpenAIPlayerCurrencyTokensViewSet(
+class OpenAICharacterCurrencyTokensViewSet(
     viewsets.mixins.ListModelMixin,
     viewsets.mixins.RetrieveModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = PlayerCurrency.objects.filter()
-    serializer_class = PlayerCurrencySerializer
+    queryset = CharacterCurrency.objects.filter()
+    serializer_class = CharacterCurrencySerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        return qs.filter(player=user.player)
+        return qs.filter(character=user.character)

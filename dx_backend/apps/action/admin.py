@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import PlayerAction, ActionImpact, DiceRollResult
+from .models import CharacterAction, ActionImpact, DiceRollResult
 
-@admin.register(PlayerAction)
-class PlayerActionAdmin(admin.ModelAdmin):
+@admin.register(CharacterAction)
+class CharacterActionAdmin(admin.ModelAdmin):
     list_display = ('action_type', 'initiator', 'skill', 'target_dimension', 'target_location')
     list_filter = ('action_type', 'initiator')
     search_fields = ('initiator__name', 'targets__name')

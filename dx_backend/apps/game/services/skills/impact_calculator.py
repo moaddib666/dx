@@ -1,7 +1,7 @@
 import logging
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
-from apps.game.services.player.core import PlayerService
+from apps.game.services.character.core import CharacterService
 from apps.school.dto import Impact
 from apps.school.models import Skill
 from typing import List, Dict, Any
@@ -10,12 +10,12 @@ from typing import List, Dict, Any
 class SkillImpactService:
     logger = logging.getLogger("game.services.skill_impact")
 
-    def __init__(self, skill: Skill, player: PlayerService):
-        self.initiator = player
+    def __init__(self, skill: Skill, character: CharacterService):
+        self.initiator = character
         self.skill = skill
 
     def calculate_impact(self) -> List[CalculatedImpact]:
-        self.logger.info(f"Calculating impact for skill {self.skill.id} used by player {self.initiator.player.id}")
+        self.logger.info(f"Calculating impact for skill {self.skill.id} used by character {self.initiator.character.id}")
 
         if self.skill.type != Skill.Types.ATTACK:
             self.logger.error("Only attack skills supported for now")

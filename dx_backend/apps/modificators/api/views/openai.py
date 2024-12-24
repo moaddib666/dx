@@ -2,8 +2,8 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.modificators.api.serializers.openapi import ModificatorSerializer, PlayerModificatorSerializer
-from apps.modificators.models import Modificator, PlayerModificator
+from apps.modificators.api.serializers.openapi import ModificatorSerializer, CharacterModificatorSerializer
+from apps.modificators.models import Modificator, CharacterModificator
 
 
 class OpenAIWorldModificatorsViewSet(
@@ -20,16 +20,16 @@ class OpenAIWorldModificatorsViewSet(
         return Response(serializer.data)
 
 
-class OpenAIPlayerModificatorsViewSet(
+class OpenAICharacterModificatorsViewSet(
     viewsets.mixins.ListModelMixin,
     viewsets.mixins.RetrieveModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = PlayerModificator.objects.filter()
-    serializer_class = PlayerModificatorSerializer
+    queryset = CharacterModificator.objects.filter()
+    serializer_class = CharacterModificatorSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        return qs.filter(player=user.player)
+        return qs.filter(character=user.character)

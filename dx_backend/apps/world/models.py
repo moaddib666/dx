@@ -1,7 +1,9 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.db.models import Model
 
 from apps.core.utils.models import BaseModel
-from django.db import models
 
 
 class Dimension(BaseModel):
@@ -28,7 +30,7 @@ class Planet(BaseModel):
     number_of_moons = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',)
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -44,7 +46,7 @@ class Continent(BaseModel):
     number_of_countries = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self')
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -58,7 +60,7 @@ class Country(BaseModel):
     area = models.FloatField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',)
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -71,7 +73,7 @@ class City(BaseModel):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self', )
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -85,7 +87,7 @@ class Area(BaseModel):
     area = models.FloatField()
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self',)
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -99,7 +101,7 @@ class Location(BaseModel):
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self')
+    border_with = models.ManyToManyField('self', blank=True)
 
     def __str__(self):
         return self.name
@@ -112,7 +114,71 @@ class SubLocation(BaseModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-    border_with = models.ManyToManyField('self')
-
     def __str__(self):
         return self.name
+
+
+# TODO: REFINE THI APPROACH
+
+class Position(Model):
+    """
+    The position is minimal unit of the world.
+     It represents 1 cell in the grid
+     In common scenario it could be the room, street part, tunnel, etc.
+     On the positions game objects can be placed like characters, items, etc.
+     The position can be connected with other positions.
+     The position is part of the sub-location example: SubLocation is the building, Position is the room.
+
+    """
+    id = models.UUIDField(primary_key=True)
+    grid_x = models.BigIntegerField(default=0)
+    grid_y = models.BigIntegerField(default=0)
+    grid_z = models.BigIntegerField(default=0)
+    sub_location = models.ForeignKey(SubLocation, on_delete=models.CASCADE)
+    labels = models.JSONField(default=list)
+
+    class Meta:
+        unique_together = ('grid_x', 'grid_y', 'grid_z')
+        indexes = [
+            models.Index(fields=['grid_x', 'grid_y', 'grid_z'])
+        ]
+
+
+class PositionConnection(models.Model):
+    position_from = models.ForeignKey(
+        'Position', on_delete=models.CASCADE, related_name='position_from'
+    )
+    position_to = models.ForeignKey(
+        'Position', on_delete=models.CASCADE, related_name='position_to'
+    )
+    is_active = models.BooleanField(default=True)
+    is_public = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['position_from', 'position_to'],
+                name='unique_position_connection',
+                condition=models.Q(position_from__lt=models.F('position_to'))
+            ),
+            models.UniqueConstraint(
+                fields=['position_to', 'position_from'],
+                name='unique_position_connection_reversed',
+                condition=models.Q(position_to__lt=models.F('position_from'))
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['position_from', 'position_to']),
+            models.Index(fields=['position_to', 'position_from']),
+        ]
+
+    def clean(self):
+        # Ensure position_from and position_to are not the same
+        if self.position_from == self.position_to:
+            raise ValidationError("position_from and position_to cannot be the same.")
+
+    def save(self, *args, **kwargs):
+        # Enforce consistent ordering for uniqueness
+        if self.position_from.id > self.position_to.id:
+            self.position_from, self.position_to = self.position_to, self.position_from
+        super().save(*args, **kwargs)

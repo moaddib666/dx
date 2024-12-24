@@ -9,10 +9,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from apps.adapters.centrifugo.api.serializers import ConnectSerializer, PublishSerializer, SubscribeSerializer
-from apps.adapters.name_resolver import PlayerGroupsNameResolver, FightGroupsNameResolver, \
-    PlayerActionGroupsNameResolver
+from apps.adapters.name_resolver import CharacterGroupsNameResolver, FightGroupsNameResolver, \
+    CharacterActionGroupsNameResolver
 from apps.game.services.fight.fight import FightService
-from apps.game.services.player.core import PlayerService
+from apps.game.services.character.core import CharacterService
 
 
 class JWTCookieAuthentication(JWTAuthentication):
@@ -30,8 +30,8 @@ class CentrifugoViewSet(viewsets.ViewSet):
         JWTCookieAuthentication
     ]
 
-    p_name_resolver = PlayerGroupsNameResolver
-    a_name_resolver = PlayerActionGroupsNameResolver
+    p_name_resolver = CharacterGroupsNameResolver
+    a_name_resolver = CharacterActionGroupsNameResolver
     f_name_resolver = FightGroupsNameResolver
 
     @extend_schema(request=ConnectSerializer, responses={200: dict})
@@ -39,37 +39,37 @@ class CentrifugoViewSet(viewsets.ViewSet):
     def connect(self, request):
         serializer = ConnectSerializer(data=request.data)
 
-        player = request.user.player
-        if not player:
-            return Response({"detail": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
+        character = request.user.main_character
+        if not character:
+            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
         if serializer.is_valid():
-            player_svc = PlayerService(player)
-            player_id = player_svc.get_id()
+            character_svc = CharacterService(character)
+            character_id = character_svc.get_id()
             channels = []
 
-            player_name_resolver = self.p_name_resolver()
+            character_name_resolver = self.p_name_resolver()
             action_name_resolver = self.a_name_resolver()
 
-            channels.append(player_name_resolver.construct_player_online_group_name())  # player::online
+            channels.append(character_name_resolver.construct_character_online_group_name())  # character::online
             channels.append(
-                player_name_resolver.construct_player_online_id_group_name(player_id))  # player::online::<player_id>
+                character_name_resolver.construct_character_online_id_group_name(character_id))  # character::online::<character_id>
             channels.append(
-                action_name_resolver.construct_player_action_group_name(player_id))  # player_action::<player_id>
-            if player_svc.in_fight():
-                fight_id = player_svc.get_fight_id()
-                fight_team = player_svc.get_fight_team()
+                action_name_resolver.construct_character_action_group_name(character_id))  # character_action::<character_id>
+            if character_svc.in_fight():
+                fight_id = character_svc.get_fight_id()
+                fight_team = character_svc.get_fight_team()
                 fight_name_resolver = self.f_name_resolver()
                 channels.append(fight_name_resolver.construct_fight_group_name(fight_id))  # fight::<fight_id>
                 channels.append(fight_name_resolver.construct_fight_side_group_name(fight_id,
                                                                                     fight_team))  # fight::<fight_id>::<fight_team>
                 channels.append(fight_name_resolver.construct_participant_group_name(fight_id,
-                                                                                     player_id))  # fight::<fight_id>::participant::<player_id>
+                                                                                     character_id))  # fight::<fight_id>::participant::<character_id>
 
             response_data = {
                 "result": {
-                    "user": player_id,
+                    "user": character_id,
                     "info": {
-                        "name": player_svc.player.name,  # Example user information
+                        "name": character_svc.character.name,  # Example user information
                     },
                     "channels": channels
                 }
@@ -85,11 +85,11 @@ class CentrifugoViewSet(viewsets.ViewSet):
             payload = serializer.validated_data['data']
 
             event = GameEvent.parse_raw(payload)
-            if event.full_event_name == "player.refresh":
-                player = PlayerService(request.user.player)
-                if player.in_fight():
-                    fight_svc = FightService(player.player.fight)
-                    fight_svc.refresh_player(player)
+            if event.full_event_name == "character.refresh":
+                character = CharacterService(request.user.main_character)
+                if character.in_fight():
+                    fight_svc = FightService(character.character.fight)
+                    fight_svc.refresh_character(character)
 
             # Implement your logic here to handle the publish event
 

@@ -4,11 +4,11 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.action.models import DiceRollResult
-from apps.core.models import PlayerStat, PlayerActionType
+from apps.core.models import CharacterStats, CharacterActionType
 from apps.fight.models import FightTurn, FightTurnAction
 from apps.game.exceptions import GameLogicException
 from apps.game.services.notifier.fight import FightNotifier
-from apps.game.services.player.core import PlayerService
+from apps.game.services.character.core import CharacterService
 from apps.game.services.rand_dice import DiceService
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
@@ -41,14 +41,14 @@ class TurnProcessorService:
         skills = actions.filter(action_type=FightTurnAction.ActionType.use_skill).order_by('initiator')
 
         time_taken = 0
-        player: PlayerService | None = None
+        character: CharacterService | None = None
         for action in skills:
             skill = action.skill
             skill_require_ap = SkillCostService(skill).get_ap_cost()
-            if not player or player.player.pk != action.initiator_id:
-                player = PlayerService(action.initiator)
+            if not character or character.character.pk != action.initiator_id:
+                character = CharacterService(action.initiator)
                 time_taken = 0
-            time_taken += skill_require_ap * 100 / player.get_current_speed()
+            time_taken += skill_require_ap * 100 / character.get_current_speed()
             action.order = time_taken
             action.save()
             self.logger.debug(f"Set order {action.order} for action {action.id} in turn {self.turn.id}")
@@ -60,16 +60,16 @@ class TurnProcessorService:
         self.logger.info(f"Playing actions for turn {self.turn.id}")
         actions = self.turn.actions.all().select_for_update()
         for action in actions:
-            initiator = PlayerService(action.initiator)
-            if action.action_type == PlayerActionType.DIMENSION_SHIFT:
+            initiator = CharacterService(action.initiator)
+            if action.action_type == CharacterActionType.DIMENSION_SHIFT:
                 r = initiator.dimension_shift(action)
                 self.logger.debug(f"Processed dimension shift action {action.id} for turn {self.turn.id}")
                 self.notifier.send_action_result(action, [r])
                 continue
-            if action.action_type == PlayerActionType.USE_SKILL:
-                # TODO: refactor this so that calculated impact receive player
+            if action.action_type == CharacterActionType.USE_SKILL:
+                # TODO: refactor this so that calculated impact receive character
                 calculated_impacts = SkillImpactService(action.skill, initiator).calculate_impact()
-                multiplier = DiceService(initiator.player, initiator.get_stat(PlayerStat.LUCK)).multiplier_roll()
+                multiplier = DiceService(initiator.character, initiator.get_stat(CharacterStats.LUCK)).multiplier_roll()
                 dice_result = DiceRollResult.objects.create(
                     dice_side=multiplier.dice_side,
                     multiplier=multiplier.multiplier,
@@ -80,11 +80,11 @@ class TurnProcessorService:
                     self.logger.debug(
                         f"Calculated impact damage {calculated_impact['value']} for action {action.id} in turn {self.turn.id}")
                     for target in action.targets.all():
-                        target_player = PlayerService(target)
-                        rs = target_player.impacted(action, calculated_impact, dice_result)
+                        target_character = CharacterService(target)
+                        rs = target_character.impacted(action, calculated_impact, dice_result)
                         self.notifier.send_action_result(action, rs)
                         self.logger.debug(
-                            f"Applied impact to target player {target.id} from action {action.id} in turn {self.turn.id}")
+                            f"Applied impact to target character {target.id} from action {action.id} in turn {self.turn.id}")
         self.turn.is_finished = True
         self.turn.save()
         self.logger.info(f"Turn {self.turn.id} is finished")

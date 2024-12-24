@@ -9,7 +9,7 @@ class CurrencyToken(BaseModel):
     icon = models.ImageField(upload_to='icons/currency/', null=True, blank=True)
 
 
-class PlayerCurrency(BaseModel):
-    player = models.ForeignKey('player.Player', on_delete=models.CASCADE, related_name='tokens')
+class CharacterCurrency(BaseModel):
+    character = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='tokens')
     currency = models.ForeignKey(CurrencyToken, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=0)

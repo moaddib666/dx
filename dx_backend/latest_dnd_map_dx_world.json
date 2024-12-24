@@ -1,0 +1,4902 @@
+{
+    "rooms": [
+        {
+            "id": 1734275056032,
+            "name": "Room 7",
+            "type": "hub",
+            "grid_x": 5,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275065061,
+            "name": "Room 8",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275065563,
+            "name": "Room 9",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275079860,
+            "name": "Room 10",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275080297,
+            "name": "Room 11",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275081962,
+            "name": "Room 12",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275082667,
+            "name": "Room 13",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275083649,
+            "name": "Room 14",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275084556,
+            "name": "Room 15",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275086144,
+            "name": "Room 16",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275086812,
+            "name": "Room 17",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275088357,
+            "name": "Room 18",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 3,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275093018,
+            "name": "Room 19",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275093526,
+            "name": "Room 20",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275094024,
+            "name": "Room 21",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734275104993,
+            "name": "Room 22",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275105402,
+            "name": "Room 23",
+            "type": "default",
+            "grid_x": -2,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275106715,
+            "name": "Room 24",
+            "type": "default",
+            "grid_x": -3,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275107860,
+            "name": "Room 25",
+            "type": "default",
+            "grid_x": -4,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275115465,
+            "name": "Room 26",
+            "type": "default",
+            "grid_x": -2,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275116232,
+            "name": "Room 27",
+            "type": "default",
+            "grid_x": -2,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275116741,
+            "name": "Room 28",
+            "type": "default",
+            "grid_x": -2,
+            "grid_y": 6,
+            "grid_z": 0,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734275122503,
+            "name": "Room 29",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275122882,
+            "name": "Room 30",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275124900,
+            "name": "Room 31",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275125494,
+            "name": "Room 32",
+            "type": "start",
+            "grid_x": 0,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275144786,
+            "name": "Room 33",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 2,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275145650,
+            "name": "Room 34",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275147328,
+            "name": "Room 35",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275152282,
+            "name": "Room 36",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275154132,
+            "name": "Room 37",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275154893,
+            "name": "Room 38",
+            "type": "start",
+            "grid_x": 3,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275215878,
+            "name": "Room 33",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 0,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275216249,
+            "name": "Room 34",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275218795,
+            "name": "Room 35",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275221938,
+            "name": "Room 36",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 0,
+            "grid_z": 0,
+            "label": "quest"
+        },
+        {
+            "id": 1734275222357,
+            "name": "Room 37",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": -1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275228181,
+            "name": "Room 38",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": -2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275229026,
+            "name": "Room 39",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275230713,
+            "name": "Room 40",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": -3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275247330,
+            "name": "Room 41",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": -1,
+            "grid_z": 0,
+            "label": "quest"
+        },
+        {
+            "id": 1734275247605,
+            "name": "Room 42",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275253540,
+            "name": "Room 43",
+            "type": "start",
+            "grid_x": 2,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275254565,
+            "name": "Room 44",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": -2,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734275286031,
+            "name": "Room 45",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 0,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275373622,
+            "name": "Room 46",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275374291,
+            "name": "Room 47",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": -5,
+            "grid_z": 0,
+            "label": "npc"
+        },
+        {
+            "id": 1734275374886,
+            "name": "Room 48",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": -4,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275385941,
+            "name": "Room 49",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275391027,
+            "name": "Room 50",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275394701,
+            "name": "Room 51",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": -7,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734275431750,
+            "name": "Room 52",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": -5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275853298,
+            "name": "Room 53",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275859788,
+            "name": "Room 53",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734275865045,
+            "name": "Room 55",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": -3,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275870377,
+            "name": "Room 56",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": -4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275895467,
+            "name": "Room 57",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275898305,
+            "name": "Room 58",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275900283,
+            "name": "Room 59",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -7,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734275903748,
+            "name": "Room 60",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275906103,
+            "name": "Room 61",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -6,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275909937,
+            "name": "Room 62",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275911837,
+            "name": "Room 63",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275914190,
+            "name": "Room 64",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -4,
+            "grid_z": 0,
+            "label": "death"
+        },
+        {
+            "id": 1734275943959,
+            "name": "Room 65",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275957663,
+            "name": "Room 66",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275964427,
+            "name": "Room 67",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 0,
+            "grid_z": 0,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734275968030,
+            "name": "Room 68",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275973446,
+            "name": "Room 69",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275975992,
+            "name": "Room 70",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275979781,
+            "name": "Room 71",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -2,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734275982775,
+            "name": "Room 72",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -3,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734275984358,
+            "name": "Room 73",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": -3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275995744,
+            "name": "Room 74",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734275996960,
+            "name": "Room 75",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -5,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276003006,
+            "name": "Room 76",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 0,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276005885,
+            "name": "Room 77",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276010649,
+            "name": "Room 78",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": -1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276015112,
+            "name": "Room 79",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 0,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276017137,
+            "name": "Room 80",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 0,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276018717,
+            "name": "Room 81",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "npc"
+        },
+        {
+            "id": 1734276021589,
+            "name": "Room 82",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276026653,
+            "name": "Room 82",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276043910,
+            "name": "Room 84",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276046202,
+            "name": "Room 85",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276046764,
+            "name": "Room 86",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276056815,
+            "name": "Room 87",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276068965,
+            "name": "Room 88",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 3,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276073951,
+            "name": "Room 89",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 4,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734276098572,
+            "name": "Room 90",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276100753,
+            "name": "Room 91",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276102797,
+            "name": "Room 92",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276104774,
+            "name": "Room 93",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276105358,
+            "name": "Room 94",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276114433,
+            "name": "Room 95",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 1,
+            "grid_z": 0,
+            "label": "quest"
+        },
+        {
+            "id": 1734276117644,
+            "name": "Room 96",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 1,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276128174,
+            "name": "Room 97",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 2,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276128863,
+            "name": "Room 98",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276131995,
+            "name": "Room 99",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276133718,
+            "name": "Room 100",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 4,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276171987,
+            "name": "Room 101",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276188285,
+            "name": "Room 102",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276190264,
+            "name": "Room 103",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 6,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276191833,
+            "name": "Room 104",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276194870,
+            "name": "Room 105",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276204307,
+            "name": "Room 106",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734276215597,
+            "name": "Room 107",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276220655,
+            "name": "Room 108",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276222827,
+            "name": "Room 109",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 8,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276224938,
+            "name": "Room 110",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276229033,
+            "name": "Room 111",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 9,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276233751,
+            "name": "Room 112",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 8,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276235438,
+            "name": "Room 113",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 9,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276241491,
+            "name": "Room 113",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276254698,
+            "name": "Room 115",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "quest"
+        },
+        {
+            "id": 1734276255684,
+            "name": "Room 116",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276256453,
+            "name": "Room 117",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276258051,
+            "name": "Room 118",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 6,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276259424,
+            "name": "Room 119",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 6,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276265844,
+            "name": "Room 120",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 6,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276267420,
+            "name": "Room 121",
+            "type": "hub",
+            "grid_x": 12,
+            "grid_y": 7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276346295,
+            "name": "Room 122",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": -2,
+            "grid_z": -1,
+            "label": "trap"
+        },
+        {
+            "id": 1734276352221,
+            "name": "Room 123",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276360334,
+            "name": "Room 124",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276374191,
+            "name": "Room 124",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -2,
+            "grid_z": -2
+        },
+        {
+            "id": 1734276385638,
+            "name": "Room 126",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": -1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276386459,
+            "name": "Room 127",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 0,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276387498,
+            "name": "Room 128",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 1,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276390979,
+            "name": "Room 129",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276392725,
+            "name": "Room 130",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276399221,
+            "name": "Room 131",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276408820,
+            "name": "Room 132",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276409793,
+            "name": "Room 133",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276415264,
+            "name": "Room 134",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 5,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276416050,
+            "name": "Room 135",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 5,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276424351,
+            "name": "Room 136",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 3,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276428464,
+            "name": "Room 137",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276428941,
+            "name": "Room 138",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276430884,
+            "name": "Room 139",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276432551,
+            "name": "Room 140",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 5,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276436810,
+            "name": "Room 141",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 6,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276445855,
+            "name": "Room 142",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 7,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276447258,
+            "name": "Room 143",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 6,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276463789,
+            "name": "Room 144",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276464359,
+            "name": "Room 145",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276471516,
+            "name": "Room 146",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276474137,
+            "name": "Room 147",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276476888,
+            "name": "Room 148",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276500384,
+            "name": "Room 149",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276515505,
+            "name": "Room 150",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276517935,
+            "name": "Room 151",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 11,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276519894,
+            "name": "Room 152",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276520943,
+            "name": "Room 153",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 11,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276522031,
+            "name": "Room 154",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276523065,
+            "name": "Room 155",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276531436,
+            "name": "Room 156",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276533746,
+            "name": "Room 157",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276536349,
+            "name": "Room 158",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276538464,
+            "name": "Room 159",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276539539,
+            "name": "Room 160",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 8,
+            "grid_z": -1,
+            "label": "chest"
+        },
+        {
+            "id": 1734276545143,
+            "name": "Room 161",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276545920,
+            "name": "Room 162",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276547202,
+            "name": "Room 163",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276548185,
+            "name": "Room 164",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276550532,
+            "name": "Room 165",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 13,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276555769,
+            "name": "Room 166",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276561993,
+            "name": "Room 167",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276563560,
+            "name": "Room 168",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276564311,
+            "name": "Room 169",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 11,
+            "grid_z": -1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734276565706,
+            "name": "Room 170",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276568870,
+            "name": "Room 171",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276574944,
+            "name": "Room 172",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276579424,
+            "name": "Room 173",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 10,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276579987,
+            "name": "Room 174",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "npc"
+        },
+        {
+            "id": 1734276612727,
+            "name": "Room 175",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 10,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276617212,
+            "name": "Room 176",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276653465,
+            "name": "Room 177",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276654302,
+            "name": "Room 178",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276655262,
+            "name": "Room 179",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276657522,
+            "name": "Room 180",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276668568,
+            "name": "Room 181",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 7,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276669371,
+            "name": "Room 182",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 6,
+            "grid_z": -1,
+            "label": "shop"
+        },
+        {
+            "id": 1734276685845,
+            "name": "Room 183",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276729150,
+            "name": "Room 184",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276737138,
+            "name": "Room 185",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276755747,
+            "name": "Room 176",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 10,
+            "grid_z": -2
+        },
+        {
+            "id": 1734276821609,
+            "name": "Room 187",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 2,
+            "grid_z": -1,
+            "label": "trap"
+        },
+        {
+            "id": 1734276826013,
+            "name": "Room 188",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 2,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276827429,
+            "name": "Room 189",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 1,
+            "grid_z": -1,
+            "label": "gate"
+        },
+        {
+            "id": 1734276835705,
+            "name": "Room 190",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 0,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276840683,
+            "name": "Room 190",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 0,
+            "grid_z": -2
+        },
+        {
+            "id": 1734276842761,
+            "name": "Room 192",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 0,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276845330,
+            "name": "Room 193",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 0,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276845716,
+            "name": "Room 194",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 0,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276858723,
+            "name": "Room 195",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": -1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276860103,
+            "name": "Room 196",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": -1,
+            "grid_z": -1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734276860965,
+            "name": "Room 197",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": -1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276864187,
+            "name": "Room 198",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276864723,
+            "name": "Room 199",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": -3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276865189,
+            "name": "Room 200",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": -4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276873394,
+            "name": "Room 201",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": -4,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276873933,
+            "name": "Room 202",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": -4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276874413,
+            "name": "Room 203",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276874878,
+            "name": "Room 204",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276878354,
+            "name": "Room 205",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276878921,
+            "name": "Room 206",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276881029,
+            "name": "Room 207",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -2,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276881489,
+            "name": "Room 208",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276883024,
+            "name": "Room 209",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": -2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276895160,
+            "name": "Room 209",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": -2,
+            "grid_z": -2
+        },
+        {
+            "id": 1734276920441,
+            "name": "Room 211",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276921284,
+            "name": "Room 212",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 1,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276922702,
+            "name": "Room 213",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": 1,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276928308,
+            "name": "Room 214",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": 2,
+            "grid_z": -1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734276928829,
+            "name": "Room 215",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276929317,
+            "name": "Room 216",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276933847,
+            "name": "Room 217",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 5,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276941048,
+            "name": "Room 218",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276945635,
+            "name": "Room 219",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 3,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276946140,
+            "name": "Room 220",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276948248,
+            "name": "Room 221",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276950844,
+            "name": "Room 222",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 5,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276960414,
+            "name": "Room 222",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276969302,
+            "name": "Room 224",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276971672,
+            "name": "Room 225",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 7,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734276973292,
+            "name": "Room 226",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 8,
+            "grid_z": 0
+        },
+        {
+            "id": 1734276978408,
+            "name": "Room 226",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734276993933,
+            "name": "Room 228",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 8,
+            "grid_z": -1,
+            "label": "trap"
+        },
+        {
+            "id": 1734277008484,
+            "name": "Room 229",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277011335,
+            "name": "Room 230",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277021093,
+            "name": "Room 231",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277021678,
+            "name": "Room 232",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277024606,
+            "name": "Room 233",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277028181,
+            "name": "Room 234",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277050682,
+            "name": "Room 235",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 7,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277051237,
+            "name": "Room 236",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 6,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277064551,
+            "name": "Room 237",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 6,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277066028,
+            "name": "Room 238",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 6,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277076094,
+            "name": "Room 239",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 6,
+            "grid_z": -1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734277076844,
+            "name": "Room 240",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 6,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277088147,
+            "name": "Room 241",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 7,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277089452,
+            "name": "Room 242",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277090765,
+            "name": "Room 243",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 8,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277093752,
+            "name": "Room 244",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277096398,
+            "name": "Room 245",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 10,
+            "grid_z": -1,
+            "label": "npc"
+        },
+        {
+            "id": 1734277105488,
+            "name": "Room 246",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277110402,
+            "name": "Room 247",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277111294,
+            "name": "Room 248",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277131433,
+            "name": "Room 249",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 11,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277145826,
+            "name": "Room 250",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 10,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277213169,
+            "name": "Room 251",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277214496,
+            "name": "Room 252",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 12,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277216199,
+            "name": "Room 253",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277225710,
+            "name": "Room 254",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 10,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277227728,
+            "name": "Room 255",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 9,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277230915,
+            "name": "Room 256",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277231695,
+            "name": "Room 257",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 7,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277239211,
+            "name": "Room 258",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 9,
+            "grid_z": -1,
+            "label": "death"
+        },
+        {
+            "id": 1734277243118,
+            "name": "Room 259",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 11,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277249261,
+            "name": "Room 259",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734277316652,
+            "name": "Room 261",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 13,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277319959,
+            "name": "Room 262",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 13,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277320657,
+            "name": "Room 263",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 13,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277324362,
+            "name": "Room 264",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 13,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277326275,
+            "name": "Room 265",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 12,
+            "grid_z": -1,
+            "label": "death"
+        },
+        {
+            "id": 1734277334893,
+            "name": "Room 266",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 12,
+            "grid_z": -1,
+            "label": "quest"
+        },
+        {
+            "id": 1734277343526,
+            "name": "Room 267",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 13,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277452574,
+            "name": "Room 268",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 14,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277455124,
+            "name": "Room 269",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 14,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277460419,
+            "name": "Room 270",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 14,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277462010,
+            "name": "Room 271",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 14,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277463817,
+            "name": "Room 272",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 14,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277466547,
+            "name": "Room 273",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 14,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277468692,
+            "name": "Room 274",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 14,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277472953,
+            "name": "Room 275",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 13,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277476073,
+            "name": "Room 276",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 12,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277528973,
+            "name": "Room 277",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277540397,
+            "name": "Room 277",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734277706456,
+            "name": "Room 279",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 7,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277709951,
+            "name": "Room 280",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 8,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277711773,
+            "name": "Room 281",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277714961,
+            "name": "Room 282",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277720872,
+            "name": "Room 283",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 8,
+            "grid_z": -1,
+            "label": "trap"
+        },
+        {
+            "id": 1734277723729,
+            "name": "Room 284",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 8,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277832800,
+            "name": "Room 285",
+            "type": "default",
+            "grid_x": 10,
+            "grid_y": 1,
+            "grid_z": -1,
+            "label": "gate"
+        },
+        {
+            "id": 1734277833347,
+            "name": "Room 286",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 1,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277836918,
+            "name": "Room 287",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277837495,
+            "name": "Room 288",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277837938,
+            "name": "Room 289",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277842304,
+            "name": "Room 290",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277842775,
+            "name": "Room 291",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277844493,
+            "name": "Room 292",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 4,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277853568,
+            "name": "Room 293",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277854416,
+            "name": "Room 294",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277888190,
+            "name": "Room 295",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 2,
+            "grid_z": -1,
+            "label": "enemy"
+        },
+        {
+            "id": 1734277888828,
+            "name": "Room 296",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 2,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277890171,
+            "name": "Room 297",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 3,
+            "grid_z": -1
+        },
+        {
+            "id": 1734277890958,
+            "name": "Room 298",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 3,
+            "grid_z": -1,
+            "label": "npc"
+        },
+        {
+            "id": 1734278012941,
+            "name": "Room 299",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -3,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278015464,
+            "name": "Room 300",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": -4,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278047836,
+            "name": "Room 301",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": -3,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278049611,
+            "name": "Room 302",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": -3,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278050247,
+            "name": "Room 303",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": -3,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278069051,
+            "name": "Room 304",
+            "type": "default",
+            "grid_x": 17,
+            "grid_y": 0,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278070492,
+            "name": "Room 305",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": 0,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278072795,
+            "name": "Room 306",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": 0,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278078854,
+            "name": "Room 307",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": -1,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278080358,
+            "name": "Room 308",
+            "type": "default",
+            "grid_x": 19,
+            "grid_y": -1,
+            "grid_z": -2,
+            "label": "trap"
+        },
+        {
+            "id": 1734278080989,
+            "name": "Room 309",
+            "type": "default",
+            "grid_x": 20,
+            "grid_y": -1,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278081412,
+            "name": "Room 310",
+            "type": "default",
+            "grid_x": 21,
+            "grid_y": -1,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278083598,
+            "name": "Room 311",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": -2,
+            "grid_z": -2,
+            "label": "trap"
+        },
+        {
+            "id": 1734278085420,
+            "name": "Room 312",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": -3,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278086226,
+            "name": "Room 313",
+            "type": "default",
+            "grid_x": 18,
+            "grid_y": -4,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278141295,
+            "name": "Room 314",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 12,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278143722,
+            "name": "Room 315",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 13,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278145878,
+            "name": "Room 316",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 13,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278148607,
+            "name": "Room 317",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 12,
+            "grid_z": -2,
+            "label": "trap"
+        },
+        {
+            "id": 1734278151864,
+            "name": "Room 318",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278154222,
+            "name": "Room 319",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 10,
+            "grid_z": -2,
+            "label": "death"
+        },
+        {
+            "id": 1734278158906,
+            "name": "Room 320",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278171440,
+            "name": "Room 320",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734278182620,
+            "name": "Room 322",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 11,
+            "grid_z": -1
+        },
+        {
+            "id": 1734278194338,
+            "name": "Room 322",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 11,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278222118,
+            "name": "Room 324",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 10,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278250728,
+            "name": "Room 325",
+            "type": "boss",
+            "grid_x": 10,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278256863,
+            "name": "Room 326",
+            "type": "end",
+            "grid_x": 9,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278273648,
+            "name": "Room 327",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 5,
+            "grid_z": 0,
+            "label": "npc"
+        },
+        {
+            "id": 1734278280233,
+            "name": "Room 328",
+            "type": "default",
+            "grid_x": 12,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278281088,
+            "name": "Room 329",
+            "type": "default",
+            "grid_x": 13,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278283788,
+            "name": "Room 330",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278285101,
+            "name": "Room 331",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 3,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278285956,
+            "name": "Room 332",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 3,
+            "grid_z": 0,
+            "label": "trap"
+        },
+        {
+            "id": 1734278288253,
+            "name": "Room 333",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 4,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278289902,
+            "name": "Room 334",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 5,
+            "grid_z": 0,
+            "label": "gate"
+        },
+        {
+            "id": 1734278297963,
+            "name": "Room 335",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278299273,
+            "name": "Room 336",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278301444,
+            "name": "Room 337",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 8,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278304408,
+            "name": "Room 338",
+            "type": "default",
+            "grid_x": 14,
+            "grid_y": 9,
+            "grid_z": 0,
+            "label": "enemy"
+        },
+        {
+            "id": 1734278313742,
+            "name": "Room 339",
+            "type": "default",
+            "grid_x": 15,
+            "grid_y": 9,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278315849,
+            "name": "Room 340",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 8,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278317632,
+            "name": "Room 341",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 7,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278318586,
+            "name": "Room 342",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 6,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278319471,
+            "name": "Room 343",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 5,
+            "grid_z": 0
+        },
+        {
+            "id": 1734278320312,
+            "name": "Room 344",
+            "type": "default",
+            "grid_x": 16,
+            "grid_y": 4,
+            "grid_z": 0,
+            "label": "chest"
+        },
+        {
+            "id": 1734278386677,
+            "name": "Room 345",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278388548,
+            "name": "Room 346",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 12,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278389300,
+            "name": "Room 347",
+            "type": "default",
+            "grid_x": 11,
+            "grid_y": 13,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278395077,
+            "name": "Room 348",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 11,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278395917,
+            "name": "Room 349",
+            "type": "default",
+            "grid_x": 9,
+            "grid_y": 12,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278396694,
+            "name": "Room 350",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 12,
+            "grid_z": -2
+        },
+        {
+            "id": 1734278397267,
+            "name": "Room 351",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 11,
+            "grid_z": -2,
+            "label": "chest"
+        },
+        {
+            "id": 1734278850850,
+            "name": "Room 43",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": -1,
+            "grid_z": 1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734278852785,
+            "name": "Room 38",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 5,
+            "grid_z": 1,
+            "label": "gate"
+        },
+        {
+            "id": 1734278855538,
+            "name": "Room 32",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 6,
+            "grid_z": 1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734278891026,
+            "name": "Room 355",
+            "type": "hub",
+            "grid_x": 3,
+            "grid_y": 3,
+            "grid_z": 1,
+            "label": "npc"
+        },
+        {
+            "id": 1734278921040,
+            "name": "Room 356",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 4,
+            "grid_z": 1,
+            "label": "npc"
+        },
+        {
+            "id": 1734278931420,
+            "name": "Room 357",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": 2,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278933454,
+            "name": "Room 358",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 1,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278934236,
+            "name": "Room 359",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 0,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278941936,
+            "name": "Room 360",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 1,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278942566,
+            "name": "Room 361",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 0,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278943264,
+            "name": "Room 362",
+            "type": "default",
+            "grid_x": 3,
+            "grid_y": -1,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278958821,
+            "name": "Room 363",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 3,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278959670,
+            "name": "Room 364",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 4,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278963572,
+            "name": "Room 365",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 5,
+            "grid_z": 1,
+            "label": "npc"
+        },
+        {
+            "id": 1734278964644,
+            "name": "Room 366",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 6,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278965255,
+            "name": "Room 367",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 7,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278966042,
+            "name": "Room 368",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 6,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278990953,
+            "name": "Room 369",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": -1,
+            "grid_z": 1
+        },
+        {
+            "id": 1734278991605,
+            "name": "Room 370",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": -2,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279014500,
+            "name": "Room 371",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 5,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279015742,
+            "name": "Room 372",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 5,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279018548,
+            "name": "Room 373",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 4,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279019622,
+            "name": "Room 374",
+            "type": "default",
+            "grid_x": 2,
+            "grid_y": 4,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279039601,
+            "name": "Room 375",
+            "type": "default",
+            "grid_x": 1,
+            "grid_y": 2,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279056922,
+            "name": "Room 376",
+            "type": "default",
+            "grid_x": 4,
+            "grid_y": 2,
+            "grid_z": 1
+        },
+        {
+            "id": 1734279063205,
+            "name": "Room 377",
+            "type": "default",
+            "grid_x": 5,
+            "grid_y": 2,
+            "grid_z": 1,
+            "label": "trap"
+        },
+        {
+            "id": 1734279063822,
+            "name": "Room 378",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 2,
+            "grid_z": 1,
+            "label": "chest"
+        },
+        {
+            "id": 1734286176085,
+            "name": "Room 379",
+            "type": "default",
+            "grid_x": 6,
+            "grid_y": 7,
+            "grid_z": -1,
+            "label": "trap"
+        },
+        {
+            "id": 1734286177206,
+            "name": "Room 380",
+            "type": "default",
+            "grid_x": 7,
+            "grid_y": 6,
+            "grid_z": -1,
+            "label": "gate"
+        },
+        {
+            "id": 1734286178757,
+            "name": "Room 381",
+            "type": "default",
+            "grid_x": 8,
+            "grid_y": 5,
+            "grid_z": -1,
+            "label": "quest"
+        },
+        {
+            "id": 1734286760132,
+            "name": "Room 382",
+            "type": "start",
+            "grid_x": 0,
+            "grid_y": 1,
+            "grid_z": 1,
+            "label": ""
+        },
+        {
+            "id": 1734286761886,
+            "name": "Room 383",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 0,
+            "grid_z": 1,
+            "label": "puzzle"
+        },
+        {
+            "id": 1734286804063,
+            "name": "Room 384",
+            "type": "default",
+            "grid_x": -1,
+            "grid_y": 1,
+            "grid_z": 1,
+            "label": "npc"
+        },
+        {
+            "id": 1734286804653,
+            "name": "Room 385",
+            "type": "default",
+            "grid_x": 0,
+            "grid_y": 0,
+            "grid_z": 1,
+            "label": "npc"
+        }
+    ],
+    "connections": [
+        {
+            "room_a": 1734275065061,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734275065563,
+            "room_b": 1734275065061
+        },
+        {
+            "room_a": 1734275079860,
+            "room_b": 1734275065061
+        },
+        {
+            "room_a": 1734275080297,
+            "room_b": 1734275079860
+        },
+        {
+            "room_a": 1734275081962,
+            "room_b": 1734275080297
+        },
+        {
+            "room_a": 1734275082667,
+            "room_b": 1734275081962
+        },
+        {
+            "room_a": 1734275083649,
+            "room_b": 1734275082667
+        },
+        {
+            "room_a": 1734275084556,
+            "room_b": 1734275083649
+        },
+        {
+            "room_a": 1734275086144,
+            "room_b": 1734275084556
+        },
+        {
+            "room_a": 1734275086812,
+            "room_b": 1734275086144
+        },
+        {
+            "room_a": 1734275088357,
+            "room_b": 1734275086812
+        },
+        {
+            "room_a": 1734275093018,
+            "room_b": 1734275088357
+        },
+        {
+            "room_a": 1734275093526,
+            "room_b": 1734275093018
+        },
+        {
+            "room_a": 1734275094024,
+            "room_b": 1734275093526
+        },
+        {
+            "room_a": 1734275065563,
+            "room_b": 1734275094024
+        },
+        {
+            "room_a": 1734275104993,
+            "room_b": 1734275086812
+        },
+        {
+            "room_a": 1734275105402,
+            "room_b": 1734275104993
+        },
+        {
+            "room_a": 1734275106715,
+            "room_b": 1734275105402
+        },
+        {
+            "room_a": 1734275107860,
+            "room_b": 1734275106715
+        },
+        {
+            "room_a": 1734275115465,
+            "room_b": 1734275105402
+        },
+        {
+            "room_a": 1734275116232,
+            "room_b": 1734275115465
+        },
+        {
+            "room_a": 1734275116741,
+            "room_b": 1734275116232
+        },
+        {
+            "room_a": 1734275122503,
+            "room_b": 1734275083649
+        },
+        {
+            "room_a": 1734275122882,
+            "room_b": 1734275122503
+        },
+        {
+            "room_a": 1734275124900,
+            "room_b": 1734275122882
+        },
+        {
+            "room_a": 1734275125494,
+            "room_b": 1734275124900
+        },
+        {
+            "room_a": 1734275144786,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734275145650,
+            "room_b": 1734275144786
+        },
+        {
+            "room_a": 1734275147328,
+            "room_b": 1734275145650
+        },
+        {
+            "room_a": 1734275152282,
+            "room_b": 1734275147328
+        },
+        {
+            "room_a": 1734275154132,
+            "room_b": 1734275152282
+        },
+        {
+            "room_a": 1734275154893,
+            "room_b": 1734275154132
+        },
+        {
+            "room_a": 1734275215878,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734275216249,
+            "room_b": 1734275215878
+        },
+        {
+            "room_a": 1734275218795,
+            "room_b": 1734275216249
+        },
+        {
+            "room_a": 1734275221938,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734275222357,
+            "room_b": 1734275221938
+        },
+        {
+            "room_a": 1734275228181,
+            "room_b": 1734275222357
+        },
+        {
+            "room_a": 1734275229026,
+            "room_b": 1734275228181
+        },
+        {
+            "room_a": 1734275230713,
+            "room_b": 1734275228181
+        },
+        {
+            "room_a": 1734275247330,
+            "room_b": 1734275216249
+        },
+        {
+            "room_a": 1734275247605,
+            "room_b": 1734275247330
+        },
+        {
+            "room_a": 1734275253540,
+            "room_b": 1734275247605
+        },
+        {
+            "room_a": 1734275254565,
+            "room_b": 1734275247605
+        },
+        {
+            "room_a": 1734275286031,
+            "room_b": 1734275065563
+        },
+        {
+            "room_a": 1734275216249,
+            "room_b": 1734275286031
+        },
+        {
+            "room_a": 1734275373622,
+            "room_b": 1734275229026
+        },
+        {
+            "room_a": 1734275374291,
+            "room_b": 1734275373622
+        },
+        {
+            "room_a": 1734275374886,
+            "room_b": 1734275374291
+        },
+        {
+            "room_a": 1734275374886,
+            "room_b": 1734275230713
+        },
+        {
+            "room_a": 1734275385941,
+            "room_b": 1734275374886
+        },
+        {
+            "room_a": 1734275391027,
+            "room_b": 1734275385941
+        },
+        {
+            "room_a": 1734275394701,
+            "room_b": 1734275391027
+        },
+        {
+            "room_a": 1734275431750,
+            "room_b": 1734275399375
+        },
+        {
+            "room_a": 1734275431750,
+            "room_b": 1734275391027
+        },
+        {
+            "room_a": 1734275865045,
+            "room_b": 1734275853298
+        },
+        {
+            "room_a": 1734275870377,
+            "room_b": 1734275865045
+        },
+        {
+            "room_a": 1734275431750,
+            "room_b": 1734275870377
+        },
+        {
+            "room_a": 1734275895467,
+            "room_b": 1734275373622
+        },
+        {
+            "room_a": 1734275898305,
+            "room_b": 1734275895467
+        },
+        {
+            "room_a": 1734275900283,
+            "room_b": 1734275898305
+        },
+        {
+            "room_a": 1734275903748,
+            "room_b": 1734275898305
+        },
+        {
+            "room_a": 1734275906103,
+            "room_b": 1734275903748
+        },
+        {
+            "room_a": 1734275909937,
+            "room_b": 1734275906103
+        },
+        {
+            "room_a": 1734275911837,
+            "room_b": 1734275909937
+        },
+        {
+            "room_a": 1734275914190,
+            "room_b": 1734275911837
+        },
+        {
+            "room_a": 1734275222357,
+            "room_b": 1734275943959
+        },
+        {
+            "room_a": 1734275943959,
+            "room_b": 1734275957663
+        },
+        {
+            "room_a": 1734275964427,
+            "room_b": 1734275957663
+        },
+        {
+            "room_a": 1734275968030,
+            "room_b": 1734275957663
+        },
+        {
+            "room_a": 1734275973446,
+            "room_b": 1734275957663
+        },
+        {
+            "room_a": 1734275975992,
+            "room_b": 1734275973446
+        },
+        {
+            "room_a": 1734275979781,
+            "room_b": 1734275975992
+        },
+        {
+            "room_a": 1734275982775,
+            "room_b": 1734275979781
+        },
+        {
+            "room_a": 1734275984358,
+            "room_b": 1734275982775
+        },
+        {
+            "room_a": 1734275968030,
+            "room_b": 1734275984358
+        },
+        {
+            "room_a": 1734275995744,
+            "room_b": 1734275982775
+        },
+        {
+            "room_a": 1734275996960,
+            "room_b": 1734275995744
+        },
+        {
+            "room_a": 1734276003006,
+            "room_b": 1734275964427
+        },
+        {
+            "room_a": 1734276005885,
+            "room_b": 1734276003006
+        },
+        {
+            "room_a": 1734276010649,
+            "room_b": 1734276005885
+        },
+        {
+            "room_a": 1734276015112,
+            "room_b": 1734276003006
+        },
+        {
+            "room_a": 1734276017137,
+            "room_b": 1734276015112
+        },
+        {
+            "room_a": 1734276018717,
+            "room_b": 1734276017137
+        },
+        {
+            "room_a": 1734276021589,
+            "room_b": 1734276018717
+        },
+        {
+            "room_a": 1734276043910,
+            "room_b": 1734276018717
+        },
+        {
+            "room_a": 1734276046202,
+            "room_b": 1734276043910
+        },
+        {
+            "room_a": 1734276046764,
+            "room_b": 1734276046202
+        },
+        {
+            "room_a": 1734276056815,
+            "room_b": 1734276046764
+        },
+        {
+            "room_a": 1734276068965,
+            "room_b": 1734276056815
+        },
+        {
+            "room_a": 1734276073951,
+            "room_b": 1734276068965
+        },
+        {
+            "room_a": 1734276098572,
+            "room_b": 1734276068965
+        },
+        {
+            "room_a": 1734276100753,
+            "room_b": 1734276098572
+        },
+        {
+            "room_a": 1734276102797,
+            "room_b": 1734276100753
+        },
+        {
+            "room_a": 1734276104774,
+            "room_b": 1734276102797
+        },
+        {
+            "room_a": 1734276105358,
+            "room_b": 1734276104774
+        },
+        {
+            "room_a": 1734276105358,
+            "room_b": 1734276046764
+        },
+        {
+            "room_a": 1734276114433,
+            "room_b": 1734276102797
+        },
+        {
+            "room_a": 1734276117644,
+            "room_b": 1734276114433
+        },
+        {
+            "room_a": 1734276117644,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734276128174,
+            "room_b": 1734275056032
+        },
+        {
+            "room_a": 1734276128863,
+            "room_b": 1734276128174
+        },
+        {
+            "room_a": 1734276131995,
+            "room_b": 1734276128863
+        },
+        {
+            "room_a": 1734276133718,
+            "room_b": 1734276131995
+        },
+        {
+            "room_a": 1734276098572,
+            "room_b": 1734276133718
+        },
+        {
+            "room_a": 1734276171987,
+            "room_b": 1734276131995
+        },
+        {
+            "room_a": 1734276188285,
+            "room_b": 1734276171987
+        },
+        {
+            "room_a": 1734276190264,
+            "room_b": 1734276188285
+        },
+        {
+            "room_a": 1734276191833,
+            "room_b": 1734276190264
+        },
+        {
+            "room_a": 1734276194870,
+            "room_b": 1734276191833
+        },
+        {
+            "room_a": 1734276204307,
+            "room_b": 1734276190264
+        },
+        {
+            "room_a": 1734276215597,
+            "room_b": 1734276171987
+        },
+        {
+            "room_a": 1734276220655,
+            "room_b": 1734276215597
+        },
+        {
+            "room_a": 1734276222827,
+            "room_b": 1734276220655
+        },
+        {
+            "room_a": 1734276224938,
+            "room_b": 1734276222827
+        },
+        {
+            "room_a": 1734276229033,
+            "room_b": 1734276222827
+        },
+        {
+            "room_a": 1734276233751,
+            "room_b": 1734276220655
+        },
+        {
+            "room_a": 1734276235438,
+            "room_b": 1734276233751
+        },
+        {
+            "room_a": 1734276254698,
+            "room_b": 1734276220655
+        },
+        {
+            "room_a": 1734276255684,
+            "room_b": 1734276254698
+        },
+        {
+            "room_a": 1734276256453,
+            "room_b": 1734276255684
+        },
+        {
+            "room_a": 1734276258051,
+            "room_b": 1734276256453
+        },
+        {
+            "room_a": 1734276259424,
+            "room_b": 1734276258051
+        },
+        {
+            "room_a": 1734276265844,
+            "room_b": 1734276259424
+        },
+        {
+            "room_a": 1734276267420,
+            "room_b": 1734276265844
+        },
+        {
+            "room_a": 1734275859788,
+            "room_b": 1734276346295
+        },
+        {
+            "room_a": 1734276352221,
+            "room_b": 1734276346295
+        },
+        {
+            "room_a": 1734276360334,
+            "room_b": 1734276352221
+        },
+        {
+            "room_a": 1734276385638,
+            "room_b": 1734276360334
+        },
+        {
+            "room_a": 1734276386459,
+            "room_b": 1734276385638
+        },
+        {
+            "room_a": 1734276387498,
+            "room_b": 1734276386459
+        },
+        {
+            "room_a": 1734276390979,
+            "room_b": 1734276387498
+        },
+        {
+            "room_a": 1734276392725,
+            "room_b": 1734276387498
+        },
+        {
+            "room_a": 1734276399221,
+            "room_b": 1734276390979
+        },
+        {
+            "room_a": 1734276408820,
+            "room_b": 1734276399221
+        },
+        {
+            "room_a": 1734276409793,
+            "room_b": 1734276399221
+        },
+        {
+            "room_a": 1734276415264,
+            "room_b": 1734276409793
+        },
+        {
+            "room_a": 1734276416050,
+            "room_b": 1734276409793
+        },
+        {
+            "room_a": 1734276424351,
+            "room_b": 1734276408820
+        },
+        {
+            "room_a": 1734276428464,
+            "room_b": 1734276424351
+        },
+        {
+            "room_a": 1734276428941,
+            "room_b": 1734276428464
+        },
+        {
+            "room_a": 1734276430884,
+            "room_b": 1734276428941
+        },
+        {
+            "room_a": 1734276432551,
+            "room_b": 1734276430884
+        },
+        {
+            "room_a": 1734276436810,
+            "room_b": 1734276432551
+        },
+        {
+            "room_a": 1734276445855,
+            "room_b": 1734276436810
+        },
+        {
+            "room_a": 1734276447258,
+            "room_b": 1734276445855
+        },
+        {
+            "room_a": 1734276415264,
+            "room_b": 1734276447258
+        },
+        {
+            "room_a": 1734276463789,
+            "room_b": 1734276445855
+        },
+        {
+            "room_a": 1734276464359,
+            "room_b": 1734276463789
+        },
+        {
+            "room_a": 1734276471516,
+            "room_b": 1734276464359
+        },
+        {
+            "room_a": 1734276474137,
+            "room_b": 1734276471516
+        },
+        {
+            "room_a": 1734276476888,
+            "room_b": 1734276474137
+        },
+        {
+            "room_a": 1734276445855,
+            "room_b": 1734276476888
+        },
+        {
+            "room_a": 1734276500384,
+            "room_b": 1734276476888
+        },
+        {
+            "room_a": 1734276515505,
+            "room_b": 1734276500384
+        },
+        {
+            "room_a": 1734276517935,
+            "room_b": 1734276515505
+        },
+        {
+            "room_a": 1734276519894,
+            "room_b": 1734276517935
+        },
+        {
+            "room_a": 1734276520943,
+            "room_b": 1734276519894
+        },
+        {
+            "room_a": 1734276522031,
+            "room_b": 1734276520943
+        },
+        {
+            "room_a": 1734276523065,
+            "room_b": 1734276522031
+        },
+        {
+            "room_a": 1734276464359,
+            "room_b": 1734276523065
+        },
+        {
+            "room_a": 1734276531436,
+            "room_b": 1734276522031
+        },
+        {
+            "room_a": 1734276533746,
+            "room_b": 1734276531436
+        },
+        {
+            "room_a": 1734276536349,
+            "room_b": 1734276533746
+        },
+        {
+            "room_a": 1734276538464,
+            "room_b": 1734276536349
+        },
+        {
+            "room_a": 1734276539539,
+            "room_b": 1734276538464
+        },
+        {
+            "room_a": 1734276545143,
+            "room_b": 1734276531436
+        },
+        {
+            "room_a": 1734276545920,
+            "room_b": 1734276545143
+        },
+        {
+            "room_a": 1734276547202,
+            "room_b": 1734276545920
+        },
+        {
+            "room_a": 1734276548185,
+            "room_b": 1734276547202
+        },
+        {
+            "room_a": 1734276550532,
+            "room_b": 1734276548185
+        },
+        {
+            "room_a": 1734276555769,
+            "room_b": 1734276548185
+        },
+        {
+            "room_a": 1734276561993,
+            "room_b": 1734276555769
+        },
+        {
+            "room_a": 1734276563560,
+            "room_b": 1734276561993
+        },
+        {
+            "room_a": 1734276564311,
+            "room_b": 1734276563560
+        },
+        {
+            "room_a": 1734276565706,
+            "room_b": 1734276564311
+        },
+        {
+            "room_a": 1734276568870,
+            "room_b": 1734276565706
+        },
+        {
+            "room_a": 1734276574944,
+            "room_b": 1734276568870
+        },
+        {
+            "room_a": 1734276579424,
+            "room_b": 1734276574944
+        },
+        {
+            "room_a": 1734276579987,
+            "room_b": 1734276579424
+        },
+        {
+            "room_a": 1734276612727,
+            "room_b": 1734276241491
+        },
+        {
+            "room_a": 1734276617212,
+            "room_b": 1734276612727
+        },
+        {
+            "room_a": 1734276653465,
+            "room_b": 1734276574944
+        },
+        {
+            "room_a": 1734276654302,
+            "room_b": 1734276653465
+        },
+        {
+            "room_a": 1734276655262,
+            "room_b": 1734276654302
+        },
+        {
+            "room_a": 1734276657522,
+            "room_b": 1734276655262
+        },
+        {
+            "room_a": 1734276668568,
+            "room_b": 1734276657522
+        },
+        {
+            "room_a": 1734276669371,
+            "room_b": 1734276668568
+        },
+        {
+            "room_a": 1734276669371,
+            "room_b": 1734276416050
+        },
+        {
+            "room_a": 1734276685845,
+            "room_b": 1734276657522
+        },
+        {
+            "room_a": 1734276685845,
+            "room_b": 1734276579987
+        },
+        {
+            "room_a": 1734276729150,
+            "room_b": 1734276579987
+        },
+        {
+            "room_a": 1734276737138,
+            "room_b": 1734276729150
+        },
+        {
+            "room_a": 1734276617212,
+            "room_b": 1734276737138
+        },
+        {
+            "room_a": 1734276821609,
+            "room_b": 1734276026653
+        },
+        {
+            "room_a": 1734276826013,
+            "room_b": 1734276821609
+        },
+        {
+            "room_a": 1734276827429,
+            "room_b": 1734276826013
+        },
+        {
+            "room_a": 1734276835705,
+            "room_b": 1734276827429
+        },
+        {
+            "room_a": 1734276842761,
+            "room_b": 1734276835705
+        },
+        {
+            "room_a": 1734276845330,
+            "room_b": 1734276842761
+        },
+        {
+            "room_a": 1734276845716,
+            "room_b": 1734276845330
+        },
+        {
+            "room_a": 1734276858723,
+            "room_b": 1734276845716
+        },
+        {
+            "room_a": 1734276860103,
+            "room_b": 1734276858723
+        },
+        {
+            "room_a": 1734276860965,
+            "room_b": 1734276860103
+        },
+        {
+            "room_a": 1734276864187,
+            "room_b": 1734276860965
+        },
+        {
+            "room_a": 1734276864723,
+            "room_b": 1734276864187
+        },
+        {
+            "room_a": 1734276865189,
+            "room_b": 1734276864723
+        },
+        {
+            "room_a": 1734276873394,
+            "room_b": 1734276865189
+        },
+        {
+            "room_a": 1734276873933,
+            "room_b": 1734276873394
+        },
+        {
+            "room_a": 1734276874413,
+            "room_b": 1734276873933
+        },
+        {
+            "room_a": 1734276874878,
+            "room_b": 1734276874413
+        },
+        {
+            "room_a": 1734276878354,
+            "room_b": 1734276874878
+        },
+        {
+            "room_a": 1734276878921,
+            "room_b": 1734276878354
+        },
+        {
+            "room_a": 1734276881029,
+            "room_b": 1734276878921
+        },
+        {
+            "room_a": 1734276881489,
+            "room_b": 1734276881029
+        },
+        {
+            "room_a": 1734276883024,
+            "room_b": 1734276881489
+        },
+        {
+            "room_a": 1734276920441,
+            "room_b": 1734276827429
+        },
+        {
+            "room_a": 1734276921284,
+            "room_b": 1734276920441
+        },
+        {
+            "room_a": 1734276922702,
+            "room_b": 1734276921284
+        },
+        {
+            "room_a": 1734276928308,
+            "room_b": 1734276922702
+        },
+        {
+            "room_a": 1734276928829,
+            "room_b": 1734276928308
+        },
+        {
+            "room_a": 1734276929317,
+            "room_b": 1734276928829
+        },
+        {
+            "room_a": 1734276933847,
+            "room_b": 1734276929317
+        },
+        {
+            "room_a": 1734276941048,
+            "room_b": 1734276929317
+        },
+        {
+            "room_a": 1734276945635,
+            "room_b": 1734276941048
+        },
+        {
+            "room_a": 1734276946140,
+            "room_b": 1734276945635
+        },
+        {
+            "room_a": 1734276948248,
+            "room_b": 1734276946140
+        },
+        {
+            "room_a": 1734276950844,
+            "room_b": 1734276948248
+        },
+        {
+            "room_a": 1734276969302,
+            "room_b": 1734276960414
+        },
+        {
+            "room_a": 1734276971672,
+            "room_b": 1734276969302
+        },
+        {
+            "room_a": 1734276973292,
+            "room_b": 1734276971672
+        },
+        {
+            "room_a": 1734276993933,
+            "room_b": 1734276978408
+        },
+        {
+            "room_a": 1734277008484,
+            "room_b": 1734276993933
+        },
+        {
+            "room_a": 1734277011335,
+            "room_b": 1734277008484
+        },
+        {
+            "room_a": 1734277021093,
+            "room_b": 1734277011335
+        },
+        {
+            "room_a": 1734277021678,
+            "room_b": 1734277021093
+        },
+        {
+            "room_a": 1734277024606,
+            "room_b": 1734277021678
+        },
+        {
+            "room_a": 1734277028181,
+            "room_b": 1734277024606
+        },
+        {
+            "room_a": 1734276993933,
+            "room_b": 1734277028181
+        },
+        {
+            "room_a": 1734277050682,
+            "room_b": 1734276993933
+        },
+        {
+            "room_a": 1734277051237,
+            "room_b": 1734277050682
+        },
+        {
+            "room_a": 1734277064551,
+            "room_b": 1734277051237
+        },
+        {
+            "room_a": 1734277066028,
+            "room_b": 1734277051237
+        },
+        {
+            "room_a": 1734277076094,
+            "room_b": 1734277066028
+        },
+        {
+            "room_a": 1734277076844,
+            "room_b": 1734277076094
+        },
+        {
+            "room_a": 1734276933847,
+            "room_b": 1734277076844
+        },
+        {
+            "room_a": 1734277088147,
+            "room_b": 1734277076844
+        },
+        {
+            "room_a": 1734277089452,
+            "room_b": 1734277088147
+        },
+        {
+            "room_a": 1734277090765,
+            "room_b": 1734277089452
+        },
+        {
+            "room_a": 1734277093752,
+            "room_b": 1734277090765
+        },
+        {
+            "room_a": 1734277096398,
+            "room_b": 1734277093752
+        },
+        {
+            "room_a": 1734277105488,
+            "room_b": 1734277096398
+        },
+        {
+            "room_a": 1734277110402,
+            "room_b": 1734277105488
+        },
+        {
+            "room_a": 1734277111294,
+            "room_b": 1734277110402
+        },
+        {
+            "room_a": 1734277111294,
+            "room_b": 1734277089452
+        },
+        {
+            "room_a": 1734277131433,
+            "room_b": 1734277105488
+        },
+        {
+            "room_a": 1734277131433,
+            "room_b": 1734277110402
+        },
+        {
+            "room_a": 1734277145826,
+            "room_b": 1734277111294
+        },
+        {
+            "room_a": 1734277213169,
+            "room_b": 1734277105488
+        },
+        {
+            "room_a": 1734277214496,
+            "room_b": 1734277213169
+        },
+        {
+            "room_a": 1734277216199,
+            "room_b": 1734277214496
+        },
+        {
+            "room_a": 1734277225710,
+            "room_b": 1734277216199
+        },
+        {
+            "room_a": 1734277227728,
+            "room_b": 1734277225710
+        },
+        {
+            "room_a": 1734277230915,
+            "room_b": 1734277227728
+        },
+        {
+            "room_a": 1734277231695,
+            "room_b": 1734277230915
+        },
+        {
+            "room_a": 1734277239211,
+            "room_b": 1734277225710
+        },
+        {
+            "room_a": 1734277243118,
+            "room_b": 1734277225710
+        },
+        {
+            "room_a": 1734277316652,
+            "room_b": 1734277214496
+        },
+        {
+            "room_a": 1734277319959,
+            "room_b": 1734277316652
+        },
+        {
+            "room_a": 1734277320657,
+            "room_b": 1734277319959
+        },
+        {
+            "room_a": 1734277324362,
+            "room_b": 1734277320657
+        },
+        {
+            "room_a": 1734277326275,
+            "room_b": 1734277324362
+        },
+        {
+            "room_a": 1734277334893,
+            "room_b": 1734277320657
+        },
+        {
+            "room_a": 1734277343526,
+            "room_b": 1734277213169
+        },
+        {
+            "room_a": 1734277452574,
+            "room_b": 1734277343526
+        },
+        {
+            "room_a": 1734277455124,
+            "room_b": 1734277343526
+        },
+        {
+            "room_a": 1734277460419,
+            "room_b": 1734277455124
+        },
+        {
+            "room_a": 1734277462010,
+            "room_b": 1734277460419
+        },
+        {
+            "room_a": 1734277463817,
+            "room_b": 1734277462010
+        },
+        {
+            "room_a": 1734277466547,
+            "room_b": 1734277463817
+        },
+        {
+            "room_a": 1734277468692,
+            "room_b": 1734277466547
+        },
+        {
+            "room_a": 1734277472953,
+            "room_b": 1734277468692
+        },
+        {
+            "room_a": 1734277476073,
+            "room_b": 1734277472953
+        },
+        {
+            "room_a": 1734277528973,
+            "room_b": 1734277476073
+        },
+        {
+            "room_a": 1734277706456,
+            "room_b": 1734277064551
+        },
+        {
+            "room_a": 1734277709951,
+            "room_b": 1734277706456
+        },
+        {
+            "room_a": 1734277711773,
+            "room_b": 1734277709951
+        },
+        {
+            "room_a": 1734277714961,
+            "room_b": 1734277711773
+        },
+        {
+            "room_a": 1734277720872,
+            "room_b": 1734277714961
+        },
+        {
+            "room_a": 1734277723729,
+            "room_b": 1734277720872
+        },
+        {
+            "room_a": 1734276685845,
+            "room_b": 1734277723729
+        },
+        {
+            "room_a": 1734277833347,
+            "room_b": 1734277832800
+        },
+        {
+            "room_a": 1734277836918,
+            "room_b": 1734277833347
+        },
+        {
+            "room_a": 1734277837495,
+            "room_b": 1734277836918
+        },
+        {
+            "room_a": 1734277837938,
+            "room_b": 1734277837495
+        },
+        {
+            "room_a": 1734277842304,
+            "room_b": 1734277837938
+        },
+        {
+            "room_a": 1734277842775,
+            "room_b": 1734277842304
+        },
+        {
+            "room_a": 1734277844493,
+            "room_b": 1734277842775
+        },
+        {
+            "room_a": 1734277853568,
+            "room_b": 1734277844493
+        },
+        {
+            "room_a": 1734277854416,
+            "room_b": 1734277853568
+        },
+        {
+            "room_a": 1734277854416,
+            "room_b": 1734276821609
+        },
+        {
+            "room_a": 1734277888190,
+            "room_b": 1734277854416
+        },
+        {
+            "room_a": 1734277888828,
+            "room_b": 1734277888190
+        },
+        {
+            "room_a": 1734277890171,
+            "room_b": 1734277888828
+        },
+        {
+            "room_a": 1734277890958,
+            "room_b": 1734277890171
+        },
+        {
+            "room_a": 1734278012941,
+            "room_b": 1734276374191
+        },
+        {
+            "room_a": 1734278015464,
+            "room_b": 1734278012941
+        },
+        {
+            "room_a": 1734278047836,
+            "room_b": 1734276895160
+        },
+        {
+            "room_a": 1734278049611,
+            "room_b": 1734278047836
+        },
+        {
+            "room_a": 1734278050247,
+            "room_b": 1734278049611
+        },
+        {
+            "room_a": 1734278069051,
+            "room_b": 1734276840683
+        },
+        {
+            "room_a": 1734278070492,
+            "room_b": 1734278069051
+        },
+        {
+            "room_a": 1734278072795,
+            "room_b": 1734278070492
+        },
+        {
+            "room_a": 1734278078854,
+            "room_b": 1734278069051
+        },
+        {
+            "room_a": 1734278080358,
+            "room_b": 1734278078854
+        },
+        {
+            "room_a": 1734278080989,
+            "room_b": 1734278080358
+        },
+        {
+            "room_a": 1734278081412,
+            "room_b": 1734278080989
+        },
+        {
+            "room_a": 1734278083598,
+            "room_b": 1734278078854
+        },
+        {
+            "room_a": 1734278085420,
+            "room_b": 1734278083598
+        },
+        {
+            "room_a": 1734278086226,
+            "room_b": 1734278085420
+        },
+        {
+            "room_a": 1734278141295,
+            "room_b": 1734277249261
+        },
+        {
+            "room_a": 1734278143722,
+            "room_b": 1734278141295
+        },
+        {
+            "room_a": 1734278145878,
+            "room_b": 1734278143722
+        },
+        {
+            "room_a": 1734278148607,
+            "room_b": 1734278145878
+        },
+        {
+            "room_a": 1734278151864,
+            "room_b": 1734278148607
+        },
+        {
+            "room_a": 1734278154222,
+            "room_b": 1734278151864
+        },
+        {
+            "room_a": 1734278158906,
+            "room_b": 1734278151864
+        },
+        {
+            "room_a": 1734278182620,
+            "room_b": 1734278171440
+        },
+        {
+            "room_a": 1734278222118,
+            "room_b": 1734278194338
+        },
+        {
+            "room_a": 1734278256863,
+            "room_b": 1734278250728
+        },
+        {
+            "room_a": 1734278273648,
+            "room_b": 1734278250728
+        },
+        {
+            "room_a": 1734278280233,
+            "room_b": 1734278273648
+        },
+        {
+            "room_a": 1734278281088,
+            "room_b": 1734278280233
+        },
+        {
+            "room_a": 1734278283788,
+            "room_b": 1734278281088
+        },
+        {
+            "room_a": 1734278285101,
+            "room_b": 1734278283788
+        },
+        {
+            "room_a": 1734278285956,
+            "room_b": 1734278285101
+        },
+        {
+            "room_a": 1734278288253,
+            "room_b": 1734278285956
+        },
+        {
+            "room_a": 1734278289902,
+            "room_b": 1734278288253
+        },
+        {
+            "room_a": 1734278297963,
+            "room_b": 1734278289902
+        },
+        {
+            "room_a": 1734278299273,
+            "room_b": 1734278297963
+        },
+        {
+            "room_a": 1734278301444,
+            "room_b": 1734278299273
+        },
+        {
+            "room_a": 1734278304408,
+            "room_b": 1734278301444
+        },
+        {
+            "room_a": 1734278222118,
+            "room_b": 1734278304408
+        },
+        {
+            "room_a": 1734278313742,
+            "room_b": 1734278304408
+        },
+        {
+            "room_a": 1734278315849,
+            "room_b": 1734278313742
+        },
+        {
+            "room_a": 1734278317632,
+            "room_b": 1734278315849
+        },
+        {
+            "room_a": 1734278318586,
+            "room_b": 1734278317632
+        },
+        {
+            "room_a": 1734278319471,
+            "room_b": 1734278318586
+        },
+        {
+            "room_a": 1734278320312,
+            "room_b": 1734278319471
+        },
+        {
+            "room_a": 1734278386677,
+            "room_b": 1734277540397
+        },
+        {
+            "room_a": 1734278388548,
+            "room_b": 1734278386677
+        },
+        {
+            "room_a": 1734278389300,
+            "room_b": 1734278388548
+        },
+        {
+            "room_a": 1734278395077,
+            "room_b": 1734276755747
+        },
+        {
+            "room_a": 1734278395917,
+            "room_b": 1734278395077
+        },
+        {
+            "room_a": 1734278396694,
+            "room_b": 1734278395917
+        },
+        {
+            "room_a": 1734278397267,
+            "room_b": 1734278396694
+        },
+        {
+            "room_a": 1734278921040,
+            "room_b": 1734278891026
+        },
+        {
+            "room_a": 1734278852785,
+            "room_b": 1734278921040
+        },
+        {
+            "room_a": 1734278931420,
+            "room_b": 1734278891026
+        },
+        {
+            "room_a": 1734278933454,
+            "room_b": 1734278931420
+        },
+        {
+            "room_a": 1734278934236,
+            "room_b": 1734278933454
+        },
+        {
+            "room_a": 1734278934236,
+            "room_b": 1734278850850
+        },
+        {
+            "room_a": 1734278941936,
+            "room_b": 1734278931420
+        },
+        {
+            "room_a": 1734278942566,
+            "room_b": 1734278941936
+        },
+        {
+            "room_a": 1734278943264,
+            "room_b": 1734278942566
+        },
+        {
+            "room_a": 1734278943264,
+            "room_b": 1734278850850
+        },
+        {
+            "room_a": 1734278958821,
+            "room_b": 1734278891026
+        },
+        {
+            "room_a": 1734278959670,
+            "room_b": 1734278958821
+        },
+        {
+            "room_a": 1734278963572,
+            "room_b": 1734278959670
+        },
+        {
+            "room_a": 1734278964644,
+            "room_b": 1734278963572
+        },
+        {
+            "room_a": 1734278965255,
+            "room_b": 1734278964644
+        },
+        {
+            "room_a": 1734278966042,
+            "room_b": 1734278965255
+        },
+        {
+            "room_a": 1734278855538,
+            "room_b": 1734278966042
+        },
+        {
+            "room_a": 1734278966042,
+            "room_b": 1734278963572
+        },
+        {
+            "room_a": 1734278964644,
+            "room_b": 1734278855538
+        },
+        {
+            "room_a": 1734278965255,
+            "room_b": 1734278855538
+        },
+        {
+            "room_a": 1734278963572,
+            "room_b": 1734278855538
+        },
+        {
+            "room_a": 1734278990953,
+            "room_b": 1734278934236
+        },
+        {
+            "room_a": 1734278991605,
+            "room_b": 1734278990953
+        },
+        {
+            "room_a": 1734278943264,
+            "room_b": 1734278991605
+        },
+        {
+            "room_a": 1734278934236,
+            "room_b": 1734278943264
+        },
+        {
+            "room_a": 1734278990953,
+            "room_b": 1734278850850
+        },
+        {
+            "room_a": 1734278991605,
+            "room_b": 1734278850850
+        },
+        {
+            "room_a": 1734279014500,
+            "room_b": 1734278921040
+        },
+        {
+            "room_a": 1734279015742,
+            "room_b": 1734278921040
+        },
+        {
+            "room_a": 1734279018548,
+            "room_b": 1734278921040
+        },
+        {
+            "room_a": 1734279019622,
+            "room_b": 1734278921040
+        },
+        {
+            "room_a": 1734279039601,
+            "room_b": 1734278958821
+        },
+        {
+            "room_a": 1734279039601,
+            "room_b": 1734278933454
+        },
+        {
+            "room_a": 1734279056922,
+            "room_b": 1734278891026
+        },
+        {
+            "room_a": 1734279063205,
+            "room_b": 1734279056922
+        },
+        {
+            "room_a": 1734279063822,
+            "room_b": 1734279063205
+        },
+        {
+            "room_a": 1734275088357,
+            "room_b": 1734275082667
+        },
+        {
+            "room_a": 1734277832800,
+            "room_b": 1734276392725
+        },
+        {
+            "room_a": 1734286176085,
+            "room_b": 1734276657522
+        },
+        {
+            "room_a": 1734286177206,
+            "room_b": 1734286176085
+        },
+        {
+            "room_a": 1734286178757,
+            "room_b": 1734286177206
+        },
+        {
+            "room_a": 1734286760132,
+            "room_b": 1734279039601
+        },
+        {
+            "room_a": 1734286761886,
+            "room_b": 1734286760132
+        },
+        {
+            "room_a": 1734286804063,
+            "room_b": 1734286763591
+        },
+        {
+            "room_a": 1734286804653,
+            "room_b": 1734286804063
+        },
+        {
+            "room_a": 1734286804653,
+            "room_b": 1734286760132
+        },
+        {
+            "room_a": 1734286760132,
+            "room_b": 1734286804063
+        },
+        {
+            "room_a": 1734286804063,
+            "room_b": 1734286761886
+        },
+        {
+            "room_a": 1734286804653,
+            "room_b": 1734286761886
+        }
+    ],
+    "virtualConnections": [
+        {
+            "room_a": 1734275853298,
+            "room_b": 1734275859788
+        },
+        {
+            "room_a": 1734276021589,
+            "room_b": 1734276026653
+        },
+        {
+            "room_a": 1734276235438,
+            "room_b": 1734276241491
+        },
+        {
+            "room_a": 1734276360334,
+            "room_b": 1734276374191
+        },
+        {
+            "room_a": 1734276617212,
+            "room_b": 1734276755747
+        },
+        {
+            "room_a": 1734276835705,
+            "room_b": 1734276840683
+        },
+        {
+            "room_a": 1734276835705,
+            "room_b": 1734276840683
+        },
+        {
+            "room_a": 1734276883024,
+            "room_b": 1734276895160
+        },
+        {
+            "room_a": 1734276950844,
+            "room_b": 1734276960414
+        },
+        {
+            "room_a": 1734276973292,
+            "room_b": 1734276978408
+        },
+        {
+            "room_a": 1734277243118,
+            "room_b": 1734277249261
+        },
+        {
+            "room_a": 1734277528973,
+            "room_b": 1734277540397
+        },
+        {
+            "room_a": 1734278158906,
+            "room_b": 1734278171440
+        },
+        {
+            "room_a": 1734278182620,
+            "room_b": 1734278194338
+        },
+        {
+            "room_a": 1734275253540,
+            "room_b": 1734278850850
+        },
+        {
+            "room_a": 1734275154893,
+            "room_b": 1734278852785
+        },
+        {
+            "room_a": 1734275125494,
+            "room_b": 1734278855538
+        },
+        {
+            "room_a": 1734277890958,
+            "room_b": 1734285765370
+        }
+    ]
+}

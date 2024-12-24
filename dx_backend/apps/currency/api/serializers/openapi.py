@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.currency.models import CurrencyToken, PlayerCurrency
+from apps.currency.models import CurrencyToken, CharacterCurrency
 
 
 class CurrencyTokenSerializer(serializers.ModelSerializer):
@@ -10,10 +10,10 @@ class CurrencyTokenSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class PlayerCurrencySerializer(serializers.ModelSerializer):
+class CharacterCurrencySerializer(serializers.ModelSerializer):
     currency = CurrencyTokenSerializer()
 
     class Meta:
-        model = PlayerCurrency
-        fields = ['id', 'player', 'currency', 'amount']
-        read_only_fields = ['id', 'player', 'currency', 'amount']
+        model = CharacterCurrency
+        fields = ['id', 'character', 'currency', 'amount']
+        read_only_fields = ['id', 'character', 'currency', 'amount']

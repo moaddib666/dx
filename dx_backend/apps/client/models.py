@@ -1,5 +1,3 @@
-import uuid
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
@@ -29,7 +27,6 @@ class ClientManager(BaseUserManager):
 
 
 class Client(BaseModel, AbstractBaseUser, PermissionsMixin):
-
     class ClientProvider(models.TextChoices):
         openai = 'openai', 'OpenAI'
         google = 'google', 'Google'
@@ -43,7 +40,8 @@ class Client(BaseModel, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
 
-    player = models.OneToOneField('player.Player', on_delete=models.SET_NULL, null=True, blank=True, related_name='client')
+    main_character = models.OneToOneField('character.Character', on_delete=models.SET_NULL, null=True, blank=True,
+                                          related_name='client')
 
     objects = ClientManager()
 

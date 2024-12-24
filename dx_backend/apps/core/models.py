@@ -23,7 +23,7 @@ class GenderEnum(DjangoChoicesMixin, StrEnum):
     OTHER = 'Other'
 
 
-class PlayerActionType(DjangoChoicesMixin, StrEnum):
+class CharacterActionType(DjangoChoicesMixin, StrEnum):
     USE_SKILL = "USE_SKILL"
     USE_ITEM = "USE_ITEM"
     DIMENSION_SHIFT = "DIMENSION_SHIFT"
@@ -88,6 +88,22 @@ class ImpactViolationType(DjangoChoicesMixin, StrEnum):
     NONE = "None"  # No violation, e.g., healing or buffing
 
 
+class DirectionEnum(DjangoChoicesMixin, StrEnum):
+    NORTHWEST = "North-West"
+    NORTH = "North"
+    NORTH_EAST = "North-East"
+
+    EAST = "East"
+    WEST = "West"
+
+    SOUTH_WEST = "South-West"
+    SOUTH = "South"
+    SOUTH_EAST = "South-East"
+
+    UP = "Up"
+    DOWN = "Down"
+
+
 class LifePath(DjangoChoicesMixin, StrEnum):
     PATH_OF_TECH = "Tech"
     PATH_OF_MAGIC = "Magic"
@@ -98,7 +114,7 @@ class CalculatedImpact(BaseModel):
     value: int
 
 
-class PlayerStat(DjangoChoicesMixin, StrEnum):
+class CharacterStats(DjangoChoicesMixin, StrEnum):
     PHYSICAL_STRENGTH = "Physical Strength"  # Influences health and physical damage
     MENTAL_STRENGTH = "Mental Strength"  # Influences energy and mental resilience
     LUCK = "Luck"  # Adds a modifier to various outcomes
@@ -111,9 +127,8 @@ class PlayerStat(DjangoChoicesMixin, StrEnum):
     CHARISMA = "Charisma"  # Ability to influence others and maintain relationships
 
 
-
-class PlayerStatHolder(BaseModel):
-    name: PlayerStat
+class CharacterStatHolder(BaseModel):
+    name: CharacterStats
     value: int
 
 
@@ -129,7 +144,7 @@ class AttributeHolder(BaseModel):
     max: int
 
 
-class BriefPlayerInfo(BaseModel):
+class BriefCharacterInfo(BaseModel):
     id: uuid.UUID
     name: str
     attributes: list[AttributeHolder]
@@ -150,14 +165,14 @@ class RankInfo(BaseModel):
     next_rank_experience: int
 
 
-class PlayerBio(BaseModel):
+class CharacterBio(BaseModel):
     age: int
     gender: GenderEnum
     appearance: str
     background: str
 
 
-class PlayerTemplateValidator(BaseModel):
+class CharacterTemplateValidator(BaseModel):
     max_stats_points_count: int
     max_modificators_count: int
     max_items_count: int
@@ -166,7 +181,7 @@ class PlayerTemplateValidator(BaseModel):
     max_schools_count: int
 
 
-class PlayerGenericData(BaseModel):
+class CharacterGenericData(BaseModel):
     """
     {
       "name": "Zena",
@@ -272,22 +287,22 @@ class PlayerGenericData(BaseModel):
     """
     name: str
     tags: list[str]
-    bio: PlayerBio
+    bio: CharacterBio
     rank: int
     path: Optional[uuid.UUID]
-    stats: list[PlayerStatHolder]
+    stats: list[CharacterStatHolder]
     modificators: list[uuid.UUID]
     items: list[uuid.UUID]
     schools: list[uuid.UUID]
-    spells: list[uuid.UUID]
+    spells: list[int]
 
 
-class PlayerTemplate(BaseModel):
-    data: PlayerGenericData
-    validation: PlayerTemplateValidator
+class CharacterTemplate(BaseModel):
+    data: CharacterGenericData
+    validation: CharacterTemplateValidator
 
 
-class FullPlayerInfo(BaseModel):
+class FullCharacterInfo(BaseModel):
     id: uuid.UUID
     name: str
     rank_grade: int
@@ -296,9 +311,9 @@ class FullPlayerInfo(BaseModel):
     # path: LifePath
 
     dimension: int
-    location: uuid.UUID
-
-    fight: uuid.UUID
+    # location: uuid.UUID
+    position: uuid.UUID
+    fight: Optional[uuid.UUID]
     duel_invitations: list[uuid.UUID]
 
 
@@ -333,7 +348,7 @@ class TurnFinished(BaseModel):
 
 
 class ActionModel(BaseModel):
-    action_type: PlayerActionType
+    action_type: CharacterActionType
     initiator_id: uuid.UUID
 
     skill_id: Optional[int]

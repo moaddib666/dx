@@ -1,7 +1,7 @@
 import abc
 
 from apps.game.exceptions import GameLogicException
-from apps.player.models import Player
+from apps.character.models import Character
 from apps.school.dto import Cost
 from apps.school.models import Skill
 
@@ -13,53 +13,53 @@ class SpecificCostService(abc.ABC):
         self.value = value
 
     @abc.abstractmethod
-    def validate(self, player: Player) -> bool:
+    def validate(self, character: Character) -> bool:
         pass
 
     @abc.abstractmethod
-    def perform_apply(self, player: Player):
+    def perform_apply(self, character: Character):
         pass
 
-    def apply(self, player: Player):
-        if not self.validate(player):
+    def apply(self, character: Character):
+        if not self.validate(character):
             raise GameLogicException(f"Not enough {self.point_type} points")
-        self.perform_apply(player)
+        self.perform_apply(character)
 
 
 class EnergyCostService(SpecificCostService):
     point_type = "energy"
-    def validate(self, player: Player) -> bool:
-        return player.current_energy_points >= self.value
+    def validate(self, character: Character) -> bool:
+        return character.current_energy_points >= self.value
 
-    def perform_apply(self, player: Player):
-        if not self.validate(player):
+    def perform_apply(self, character: Character):
+        if not self.validate(character):
             raise GameLogicException("Not enough energy points")
-        player.current_energy_points -= self.value
-        player.save()
+        character.current_energy_points -= self.value
+        character.save()
 
 
 class HealthCostService(SpecificCostService):
     point_type = "health"
-    def validate(self, player: Player) -> bool:
-        return player.current_health_points >= self.value
+    def validate(self, character: Character) -> bool:
+        return character.current_health_points >= self.value
 
-    def perform_apply(self, player: Player):
-        if not self.validate(player):
+    def perform_apply(self, character: Character):
+        if not self.validate(character):
             raise GameLogicException("Not enough health points")
-        player.current_health_points -= self.value
-        player.save()
+        character.current_health_points -= self.value
+        character.save()
 
 
 class ActionPointsCostService(SpecificCostService):
     point_type = "action points"
-    def validate(self, player: Player) -> bool:
-        return player.current_active_points >= self.value
+    def validate(self, character: Character) -> bool:
+        return character.current_active_points >= self.value
 
-    def perform_apply(self, player: Player):
-        if not self.validate(player):
+    def perform_apply(self, character: Character):
+        if not self.validate(character):
             raise GameLogicException("Not enough action points")
-        player.current_active_points -= self.value
-        player.save()
+        character.current_active_points -= self.value
+        character.save()
 
 
 class SkillCostService:
@@ -75,14 +75,14 @@ class SkillCostService:
     def resolve(self, cost: Cost) -> SpecificCostService:
         return self.mapping[cost["kind"]](cost["value"])
 
-    def validate(self, player: Player) -> bool:
+    def validate(self, character: Character) -> bool:
         for cost in self.skill.cost:
-            if not self.resolve(cost).validate(player):
+            if not self.resolve(cost).validate(character):
                 raise GameLogicException(f"Not enough {self.mapping[cost['kind']]} points")
 
-    def apply(self, player):
+    def apply(self, character):
         for cost in self.skill.cost:
-            self.resolve(cost).apply(player)
+            self.resolve(cost).apply(character)
 
     def get_energy_cost(self):
         for cost in self.skill.cost:

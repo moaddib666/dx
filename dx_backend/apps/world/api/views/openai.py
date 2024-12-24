@@ -2,9 +2,9 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.core.api.utils.player import GenericGameViewSet
+from apps.character.models import Character
+from apps.core.api.utils.character import GenericGameViewSet
 from apps.game.services.location import LocationService
-from apps.player.models import Player
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
     PositionSerializer
 from apps.world.models import Location, Area, City, Dimension
@@ -20,7 +20,7 @@ class OpenAICityManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameView
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        current_user_location = user.player.current_location
+        current_user_location = user.character.current_location
         aria = current_user_location.area
         city = aria.city
         return qs.filter(id__in=[city.id, *city.border_with.values_list('id', flat=True)])
@@ -28,7 +28,7 @@ class OpenAICityManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameView
     @action(detail=False, methods=['get'])
     def current(self, request):
         user = request.user
-        current_user_location = user.player.current_location
+        current_user_location = user.main_character.current_location
         aria = current_user_location.area
         city = aria.city
         data = CitySerializer(city).data
@@ -45,22 +45,23 @@ class OpenAILocationManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGame
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        current_user_location = user.player.current_location
-        return qs.filter(id__in=[current_user_location.id, *current_user_location.border_with.values_list('id', flat=True)])
+        current_user_location = user.character.current_location
+        return qs.filter(
+            id__in=[current_user_location.id, *current_user_location.border_with.values_list('id', flat=True)])
 
     @action(detail=False, methods=['get'])
     def current(self, request):
-        player = self.get_player()
-        current_user_location = player.current_location
+        character = self.get_character()
+        current_user_location = character.current_location
         data = LocationSerializer(current_user_location).data
         return Response(data)
 
-    @action(detail=True, methods=['post'], serializer_class=None, permission_classes=[permissions.IsAuthenticated],)
+    @action(detail=True, methods=['post'], serializer_class=None, permission_classes=[permissions.IsAuthenticated], )
     def change(self, request, pk=None):
-        player = self.get_player()
+        character = self.get_character()
         new_location = self.get_object()
         service = LocationService()
-        service.change_player_location(player, new_location)
+        service.change_character_location(character, new_location)
         return Response(data=LocationSerializer(new_location).data)
 
 
@@ -74,14 +75,14 @@ class OpenAIAreaManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameView
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        current_user_location = user.player.current_location
+        current_user_location = user.character.current_location
         aria = current_user_location.area
         return qs.filter(id__in=[aria.id, *aria.border_with.values_list('id', flat=True)])
 
     @action(detail=False, methods=['get'])
     def current(self, request):
         user = request.user
-        current_user_location = user.player.current_location
+        current_user_location = user.main_character.current_location
         aria = current_user_location.area
         data = AreaSerializer(aria).data
         return Response(data)
@@ -97,29 +98,33 @@ class OpenAIDimensionManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGam
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        player = user.player
-        current_user_dimension = player.dimension
+        character = user.character
+        current_user_dimension = character.dimension
 
         return qs.filter(
-            id__in=[current_user_dimension.id, current_user_dimension+1, current_user_dimension-1],
-            grade__lte=player.rank_grade.grade
+            id__in=[current_user_dimension.id, current_user_dimension + 1, current_user_dimension - 1],
+            grade__lte=character.rank_grade.grade
         )
 
     @action(detail=False, methods=['get'])
     def current(self, request):
-        player = self.get_player()
-        current_user_dimension = player.dimension
+        character = self.get_character()
+        current_user_dimension = character.dimension
         data = DimensionSerializer(current_user_dimension).data
         return Response(data)
 
 
 class PositionManagementViewSet(GenericGameViewSet):
-    queryset = Player.objects.filter(is_active=True)
+    queryset = Character.objects.filter(is_active=True)
     serializer_class = PositionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['get'])
     def current(self, request):
-        player = self.get_player()
-        serializer = self.get_serializer(player)
+        """Return the current position of the character and possible movements."""
+        character = self.get_character()  # Assume this fetches the character
+        position = character.position  # Assume the character has a related Position object
+
+        # Serialize the position details
+        serializer = self.get_serializer(position)
         return Response(data=serializer.data)

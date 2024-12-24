@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CurrencyToken, PlayerCurrency
+from .models import CurrencyToken, CharacterCurrency
 
 
 @admin.register(CurrencyToken)
@@ -23,15 +23,15 @@ class CurrencyTokenAdmin(admin.ModelAdmin):
     icon_display.short_description = "Icon Status"
 
 
-@admin.register(PlayerCurrency)
-class PlayerCurrencyAdmin(admin.ModelAdmin):
-    list_display = ('player', 'currency', 'amount')
-    list_filter = ('player', 'currency')
-    search_fields = ('player__name', 'currency__name')  # Assuming Player and CurrencyToken have `name` fields
+@admin.register(CharacterCurrency)
+class CharacterCurrencyAdmin(admin.ModelAdmin):
+    list_display = ('character', 'currency', 'amount')
+    list_filter = ('character', 'currency')
+    search_fields = ('character__name', 'currency__name')  # Assuming Character and CurrencyToken have `name` fields
     readonly_fields = ('id', 'created_at', 'updated_at')  # Assuming BaseModel includes these fields
     fieldsets = (
         (None, {
-            'fields': ('player', 'currency', 'amount')
+            'fields': ('character', 'currency', 'amount')
         }),
         ('Metadata', {
             'fields': ('id', 'created_at', 'updated_at')

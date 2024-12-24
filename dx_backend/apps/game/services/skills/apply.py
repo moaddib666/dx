@@ -63,7 +63,7 @@ class SkillService:
 # Example usage
 skill_service = SkillService(game_data["skills"], game_data["stats"])
 
-# Process action done by player (example: using Fireball skill)
+# Process action done by character (example: using Fireball skill)
 skill_name = "Fireball"
 damage = skill_service.calculate_damage(skill_name)
 print(f"Damage for {skill_name}: {damage}")

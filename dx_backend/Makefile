@@ -1,7 +1,7 @@
 re-init-migrations: remove-migrations migrations migrate load-fixtures
 
 remove-migrations:
-	find . -path "apps/*/migrations/*.py" -not -name "__init__.py" -delete
+	find . -path "./apps/*/migrations/*.py" -not -name "__init__.py" -delete
 migrations:
 	python manage.py makemigrations
 load-fixtures:

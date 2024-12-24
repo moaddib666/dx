@@ -14,7 +14,7 @@ from apps.game.helpers import get_brief_info
 from apps.game.services.action.factory import FightActionFactory
 from apps.game.services.fight.duel import InvitationService
 from apps.game.services.fight.fight import FightService
-from apps.game.services.player.core import PlayerService
+from apps.game.services.character.core import CharacterService
 
 
 class DuelInvitationViewSet(
@@ -36,15 +36,15 @@ class DuelInvitationViewSet(
 
     def get_queryset(self):
         user = self.request.user
-        player = user.player
+        character = user.character
         qs = super().get_queryset()
-        return qs.filter(target=player)
+        return qs.filter(target=character)
 
     @transaction.atomic
     def perform_create(self, serializer):
-        player1_service = PlayerService(self.request.user.player)
-        player2_service = PlayerService(serializer.validated_data['target'])
-        InvitationService.create(player1_service, player2_service).invite()
+        character1_service = CharacterService(self.request.user.character)
+        character2_service = CharacterService(serializer.validated_data['target'])
+        InvitationService.create(character1_service, character2_service).invite()
 
     @action(detail=True, methods=['post'], serializer_class=None)
     @transaction.atomic
@@ -55,7 +55,7 @@ class DuelInvitationViewSet(
         fight_svc = FightService.create_from_duel_invitation(service)
         invitation.fight = fight_svc.fight
         invitation.save()
-        service.notify_players()
+        service.notify_characters()
         return Response(status=status.HTTP_200_OK, data=DuelInvitationSerializer(invitation).data)
 
     @action(detail=True, methods=['post'])
@@ -75,9 +75,9 @@ class FightViewSet(
 
     def get_queryset(self):
         user = self.request.user
-        player = user.player
+        character = user.character
         qs = super().get_queryset()
-        return qs.filter(side_a_participants=player) | qs.filter(side_b_participants=player)
+        return qs.filter(side_a_participants=character) | qs.filter(side_b_participants=character)
 
     # TODO: implement fight list in current location
     # TODO: implement duel list in current location
@@ -85,8 +85,8 @@ class FightViewSet(
 
     def get_current_fight(self) -> Fight:
         user = self.request.user
-        player = user.player
-        fight = player.fight
+        character = user.character
+        fight = character.fight
         if not fight:
             raise GameLogicException("Not in the fight.")
         return fight
@@ -97,7 +97,7 @@ class FightViewSet(
 
         side_a = fight.side_a_participants.all()
         side_b = fight.side_b_participants.all()
-        if request.user.player in side_a:
+        if request.user.main_character in side_a:
             allies = side_a
             enemies = side_b
         else:
@@ -107,7 +107,7 @@ class FightViewSet(
         serializer = self.get_serializer(
             {
                 'fight': fight,
-                'allies': [get_brief_info(a) for a in allies.exclude(id=request.user.player.id)],
+                'allies': [get_brief_info(a) for a in allies.exclude(id=request.user.main_character.id)],
                 'enemies': [get_brief_info(e) for e in enemies],
             }
         )
@@ -122,22 +122,22 @@ class FightViewSet(
     @action(detail=True, methods=['post'])
     def leave(self, request, pk=None):
         fight = self.get_current_fight()
-        player_service = PlayerService(self.request.user.player)
-        FightService(fight).leave(player_service)
+        character_service = CharacterService(self.request.user.character)
+        FightService(fight).leave(character_service)
         return Response(status=status.HTTP_200_OK, data=FightSerializer(fight).data)
 
     @action(detail=True, methods=['post'])
     def join_to_attacker_side(self, request, pk=None):
         fight = self.get_object()
-        player_service = PlayerService(self.request.user.player)
-        FightService(fight).join(player_service, side='a')
+        character_service = CharacterService(self.request.user.character)
+        FightService(fight).join(character_service, side='a')
         return Response(status=status.HTTP_200_OK, data=FightSerializer(fight).data)
 
     @action(detail=True, methods=['post'])
     def join_to_defender_side(self, request, pk=None):
         fight = self.get_object()
-        player_service = PlayerService(self.request.user.player)
-        FightService(fight).join(player_service, side='b')
+        character_service = CharacterService(self.request.user.character)
+        FightService(fight).join(character_service, side='b')
         return Response(status=status.HTTP_200_OK, data=FightSerializer(fight).data)
 
 
@@ -151,20 +151,20 @@ class FightActionsViewSet(
 
     def get_queryset(self):
         user = self.request.user
-        player = user.player
-        fight = player.fight
+        character = user.character
+        fight = character.fight
         qs = super().get_queryset()
         return qs.filter(tyrn__fight=fight)
 
     @transaction.atomic
     def perform_create(self, serializer):
-        if not self.request.user.player.fight:
+        if not self.request.user.character.fight:
             raise GameLogicException("Not in the fight.")
-        if not self.request.user.player.fight.current_turn:
+        if not self.request.user.character.fight.current_turn:
             raise GameLogicException("Fight is not started.")
 
-        fight_action = serializer.save(initiator=self.request.user.player,
-                                       turn=self.request.user.player.fight.current_turn)
+        fight_action = serializer.save(initiator=self.request.user.character,
+                                       turn=self.request.user.character.fight.current_turn)
 
         action_svc = FightActionFactory().from_action(fight_action)
         action_svc.check()

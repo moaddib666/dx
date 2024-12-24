@@ -1,24 +1,24 @@
 import uuid
 
 from apps.core.bus.base import GameEventData, FightEvent, ProducedMixin
-from apps.core.models import CurrentTurn, FullPlayerInfo, ActionModel, ActionImpactModel
+from apps.core.models import CurrentTurn, FullCharacterInfo, ActionModel, ActionImpactModel
 
 
-class PlayerNewTurnGameEventData(GameEventData):
+class CharacterNewTurnGameEventData(GameEventData):
     current_turn: CurrentTurn
-    player_info: FullPlayerInfo
+    character_info: FullCharacterInfo
 
 
-class PlayerNewTurnGameEvent(ProducedMixin, FightEvent):
-    data: PlayerNewTurnGameEventData
-    name: str = "player_turn_init"
+class CharacterNewTurnGameEvent(ProducedMixin, FightEvent):
+    data: CharacterNewTurnGameEventData
+    name: str = "character_turn_init"
 
     @classmethod
-    def create_event(cls, current_turn: CurrentTurn, player_info: FullPlayerInfo) -> "PlayerNewTurnGameEvent":
+    def create_event(cls, current_turn: CurrentTurn, character_info: FullCharacterInfo) -> "CharacterNewTurnGameEvent":
         return cls(
-            data=PlayerNewTurnGameEventData(
+            data=CharacterNewTurnGameEventData(
                 current_turn=current_turn,
-                player_info=player_info,
+                character_info=character_info,
             )
         )
 

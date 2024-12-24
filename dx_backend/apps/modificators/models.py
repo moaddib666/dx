@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.core.models import PlayerStat
+from apps.core.models import CharacterStats
 from apps.core.utils.models import BaseModel
 
 
@@ -12,10 +12,9 @@ class Modificator(BaseModel):
 
 class StatModificator(BaseModel):
     modificator = models.ForeignKey(Modificator, on_delete=models.CASCADE)
-    stat = models.CharField(max_length=255, choices=PlayerStat.choices(), default=PlayerStat.PHYSICAL_STRENGTH)
+    stat = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
     value = models.IntegerField(default=0)
 
-
-class PlayerModificator(BaseModel):
-    player = models.ForeignKey('player.Player', on_delete=models.CASCADE, related_name='modificators')
+class CharacterModificator(BaseModel):
+    character = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='modificators')
     modificator = models.ForeignKey(Modificator, on_delete=models.CASCADE)

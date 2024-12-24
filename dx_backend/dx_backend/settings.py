@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'apps.client',
     'apps.world',
     'apps.school',
-    'apps.player',
+    'apps.character',
     'apps.game',
     'apps.fight',
     'apps.action',
