@@ -31,6 +31,7 @@
       <h3>Selected Cells</h3>
       <div v-if="selectedCells.length === 0">No cells selected</div>
       <div v-for="cell in selectedCells" :key="cell.id">
+        <p><strong>Id:</strong> {{ cell.id }}</p>
         <p><strong>Room:</strong> {{ cell.name }}</p>
         <p><strong>Position:</strong> ({{ cell.grid_x }}, {{ cell.grid_y }})</p>
         <p><strong>Floor:</strong> {{ cell.grid_z }}</p>

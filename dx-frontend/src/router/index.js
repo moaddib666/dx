@@ -15,6 +15,7 @@ import FightView from "@/views/Game/Fight.vue";
 import CharacterSubmit from "@/views/Player/CharacterSubmit.vue";
 import CharacterView from "@/views/Cartograph/Map.vue";
 import DiceTest from "@/views/DiceTest.vue";
+import LocationView from "@/views/Game/Location.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
@@ -31,7 +32,8 @@ const routes = [
     {path: '/register', name: 'RegisterPlay', component: RegisterPlay, meta: {requiresAuth: false}},
     {path: '/art', name: 'ArtGallery', component: ArtGallery, meta: {requiresAuth: false}},
     // TODO: Add route group here /game/* for game routes that require authentication
-    {path: '/game', name: 'Game', component: FightView, meta: {requiresAuth: true}},
+    {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
+    {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}}
 ];
 

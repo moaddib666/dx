@@ -57,7 +57,7 @@ import BioComponent from "@/components/Player/Bio.vue";
 import FeatureSelector from "@/components/Player/FeatureSelector.vue";
 import ActionPointAllocator from "@/components/Player/ActionPointsComponent.vue";
 import SchoolAndSpellSelector from "@/components/Player/SchoolAndSpellSelector.vue";
-import {CoreGameApi, ModificatorsGameApi, PlayerGameApi, SchoolGameApi} from "@/api/backendService.js";
+import {CharacterGameApi, CoreGameApi, ModificatorsGameApi, SchoolGameApi} from "@/api/backendService.js";
 import CharacterReview from "@/components/Player/CharacterReview.vue";
 import CharacterTool from "@/components/Player/Transfer.vue";
 import GlassButton from "@/components/btn/Glass.vue";
@@ -239,12 +239,19 @@ export default {
         this.currentStep -= 1;
       }
     },
-    finishCreation() {
+    async finishCreation() {
       // Handle character creation completion
       console.log("Character Creation Finished", this.steps.map(step => step.data));
+      try {
+        await this.submitCharacter();
+        await this.getPlayerTemplate();
+        this.currentStep = 0;
+      } catch (error) {
+        console.error(error);
+      }
     },
     async getPlayerTemplate() {
-      this.playerData = (await PlayerGameApi.playerPlayerTemplateRetrieve()).data;
+      this.playerData = (await CharacterGameApi.characterCharacterTemplateRetrieve()).data;
     },
     async getPlayerPaths() {
       this.availablePaths = (await SchoolGameApi.schoolPathsGetAllPathsRetrieve()).data;
@@ -261,6 +268,9 @@ export default {
     async getPlayerSchools() {
       this.availableSchools = (await SchoolGameApi.schoolSchoolsGetAllSchoolsRetrieve()).data;
     },
+    async submitCharacter() {
+      await CharacterGameApi.characterImportCharacterCreate(this.playerData.data);
+    }
   },
 };
 </script>

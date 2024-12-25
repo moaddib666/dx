@@ -70,7 +70,7 @@
 
 <script>
 
-import {FightGameApi, PlayerGameApi, SkillsGameApi} from "@/api/backendService.js";
+import {CharacterGameApi, FightGameApi, SkillsGameApi} from "@/api/backendService.js";
 import PlayerComponent from "@/components/Game/Fight/PlayerComponent.vue";
 import EnemyComponent from "@/components/Game/Fight/EnemyComponent.vue";
 import EnemyBlockComponent from "@/components/Game/Fight/EnemyBlockComponent.vue";
@@ -86,6 +86,7 @@ import {ActionTypeEnum} from "@/api/dx-backend/index";
 import {Fight} from "@/models/Fight";
 import CountDown from "@/components/Game/Fight/CountDown.vue";
 import {Turn} from "@/models/Turn";
+
 export default {
   name: 'FightView',
   components: {
@@ -228,7 +229,7 @@ export default {
       this.awaitingTurnResults = !this.player.hasUnusedActionPoints()
     });
     Promise.all([
-      PlayerGameApi.playerPlayerInfoRetrieve()
+      CharacterGameApi.playerPlayerInfoRetrieve()
           .then(response => {
             this.player = new Player(response.data);
             this.awaitingTurnResults = !this.player.hasUnusedActionPoints()
