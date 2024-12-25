@@ -1,10 +1,10 @@
-from django.utils.html import format_html
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
-from django.contrib import messages
-from .models import Organization, Rank, Character, Stat, CharacterBiography
+from django.utils.html import format_html
+
+from .models import Organization, Rank, Character, CharacterBiography
 
 
 class BulkChangeAvatarForm(forms.Form):
@@ -58,27 +58,70 @@ class CharacterBiographyInline(admin.StackedInline):
     avatar_preview.short_description = "Avatar Preview"
 
 
+class SubLocationFilter(admin.SimpleListFilter):
+    """
+    Custom filter for filtering by sublocation.
+    """
+    title = 'SubLocation'
+    parameter_name = 'position__sublocation'
+
+    def lookups(self, request, model_admin):
+        sublocations = set(
+            obj.position.sub_location for obj in Character.objects.select_related('position__sub_location') if
+            obj.position)
+        return [(s.id, s.name) for s in sublocations]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(position__sub_location_id=self.value())
+        return queryset
+
+
+class GridZFilter(admin.SimpleListFilter):
+    """
+    Custom filter for filtering by grid_z.
+    """
+    title = 'Grid Z'
+    parameter_name = 'position__grid_z'
+
+    def lookups(self, request, model_admin):
+        grid_z_values = set(obj.position.grid_z for obj in Character.objects.select_related('position') if obj.position)
+        return [(z, f'Grid Z: {z}') for z in grid_z_values]
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(position__grid_z=self.value())
+        return queryset
+
+
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
     """
     Admin interface for Character with integrated CharacterBiography.
     """
     list_display = (
-        'name', 'pictogram', 'get_age', 'get_gender', 'rank',
+        'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
         'current_health_points', 'current_energy_points',
-        'organization', 'is_active'
+        'organization', 'is_active', 'npc'
     )
     search_fields = ('name', 'biography__background', 'biography__appearance')
-    list_filter = ('biography__gender', 'rank', 'organization', 'is_active')
+    # list_filter = ('biography__gender', 'rank', 'organization', 'is_active', 'npc')
+    list_filter = (
+    'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter)
+
+    # TODO add multichoise filter by: position__sublocation, position__grid_z, organization
+
     inlines = [CharacterBiographyInline]
-    actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_change_organization', 'duplicate_character', 'bulk_change_avatar']
+    actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_change_organization', 'duplicate_character',
+               'bulk_change_avatar', 'bulk_set_npc']
 
     def pictogram(self, obj):
         """
         Displays the avatar image in the list view.
         """
         if obj.biography and obj.biography.avatar:
-            return format_html('<img src="{}" style="height: 50px; width: 50px; border-radius: 50%;" />', obj.biography.avatar.url)
+            return format_html('<img src="{}" style="height: 50px; width: 50px; border-radius: 50%;" />',
+                               obj.biography.avatar.url)
         return "No Image"
 
     pictogram.short_description = "Avatar"
@@ -105,6 +148,11 @@ class CharacterAdmin(admin.ModelAdmin):
         updated = queryset.update(is_active=True)
         self.message_user(request, f"{updated} character(s) set as active.")
 
+    @admin.action(description='Set selected characters as NPC')
+    def bulk_set_npc(self, request, queryset):
+        updated = queryset.update(npc=True)
+        self.message_user(request, f"{updated} character(s) set as NPC.")
+
     @admin.action(description='Set selected characters as Inactive')
     def bulk_set_inactive(self, request, queryset):
         updated = queryset.update(is_active=False)
@@ -117,6 +165,30 @@ class CharacterAdmin(admin.ModelAdmin):
         """
         selected = queryset.values_list('id', flat=True)
         return redirect(f'{reverse("admin:bulk_change_organization_view")}?ids={",".join(map(str, selected))}')
+
+    @admin.action(description='Duplicate selected character(s)')
+    def duplicate_character(self, request, queryset):
+        """
+        Duplicate selected characters with "Copy: {InitialName}" as the new name.
+        """
+        for character in queryset:
+            new_character = Character.objects.get(pk=character.pk)
+            new_character.pk = None  # Reset primary key to create a new instance
+            new_character.name = f"Copy: {character.name}"  # Rename duplicated character
+            new_character.save()
+
+            # Duplicate biography if exists
+            if character.biography:
+                CharacterBiography.objects.create(
+                    character=new_character,
+                    age=character.biography.age,
+                    gender=character.biography.gender,
+                    background=character.biography.background,
+                    appearance=character.biography.appearance,
+                    avatar=character.biography.avatar
+                )
+
+        self.message_user(request, f"{queryset.count()} character(s) duplicated successfully.")
 
     @admin.action(description='Change Avatar for selected characters')
     def bulk_change_avatar(self, request, queryset):
@@ -132,8 +204,10 @@ class CharacterAdmin(admin.ModelAdmin):
         """
         urls = super().get_urls()
         custom_urls = [
-            path('bulk_change_avatar/', self.admin_site.admin_view(self.bulk_change_avatar_view), name='bulk_change_avatar_view'),
-            path('bulk_change_organization/', self.admin_site.admin_view(self.bulk_change_organization_view), name='bulk_change_organization_view'),
+            path('bulk_change_avatar/', self.admin_site.admin_view(self.bulk_change_avatar_view),
+                 name='bulk_change_avatar_view'),
+            path('bulk_change_organization/', self.admin_site.admin_view(self.bulk_change_organization_view),
+                 name='bulk_change_organization_view'),
         ]
         return custom_urls + urls
 

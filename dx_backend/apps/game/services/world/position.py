@@ -2,10 +2,11 @@ import json
 import logging
 import uuid
 from abc import abstractmethod
-from typing import Any
+from typing import Any, List, Dict
 
 from django.db import transaction, IntegrityError
 
+from apps.character.models import Character
 from apps.world.models import Position, PositionConnection
 
 
@@ -72,10 +73,12 @@ class PositionLoader:
 
         rooms = data.get("rooms", [])
         connections = data.get("connections", [])
+        virtualConnections = data.get("virtualConnections", [])
 
         with transaction.atomic():
             self._load_positions(rooms)
             self._load_connections(connections)
+            self._load_connections(virtualConnections)
             self.reporter.report()
 
     def _load_positions(self, rooms):
@@ -126,7 +129,7 @@ class PositionLoader:
                 continue
 
             try:
-                pc, _ = PositionConnection.objects.create(
+                pc = PositionConnection.objects.create(
                     position_from=position_from,
                     position_to=position_to,
                     is_active=True,
@@ -138,3 +141,74 @@ class PositionLoader:
                     f"Connection between {position_from} and {position_to} failed. {str(e)}",
                     exc_info=True
                 )
+
+
+class JsonDumper:
+    logger = logging.getLogger(__name__)
+
+    def __init__(self, output_file_path):
+        self.output_file_path = output_file_path
+
+    def dump(self):
+        data = {
+            "rooms": self._dump_positions(),
+            "connections": self._dump_connections(vertical=False),
+            "virtualConnections": self._dump_connections(vertical=True),
+            "characters": self._dump_characters(),
+        }
+
+        with open(self.output_file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+
+        self.logger.info(f"Data successfully dumped to {self.output_file_path}")
+
+    def _dump_characters(self) -> Dict[str, List[Any]]:
+        self.logger.info("Dumping characters")
+        characters = Character.objects.filter(is_active=True)
+        mapping = {}
+        self.logger.info(f"Found {characters.count()} characters")
+        for character in characters:
+            char_serialized = {
+                "id": str(character.pk),
+                "name": character.name,
+                "npc": character.npc,
+            }
+            mapping.setdefault(str(character.position_id), []).append(char_serialized)
+            self.logger.debug(f"Character {character.pk} dumped to {character.position_id}")
+        self.logger.info("Characters dumped")
+        return mapping
+
+    def _dump_positions(self) -> List[Dict[str, Any]]:
+        positions = Position.objects.all()
+        rooms = []
+
+        for position in positions:
+            room_data = {
+                "id": str(position.pk),  # Serialize UUID as string
+                "grid_x": position.grid_x,
+                "grid_y": position.grid_y,
+                "grid_z": position.grid_z,
+                "type": position.labels[0] if position.labels else "unknown",
+                "label": position.labels[1] if len(position.labels) > 1 else "regular",
+                "name": position.labels[2] if len(position.labels) > 2 else "unknown",
+            }
+            rooms.append(room_data)
+
+        return rooms
+
+    def _dump_connections(self, vertical=False) -> List[Dict[str, Any]]:
+        connections = PositionConnection.objects.filter(is_active=True)
+        connection_list = []
+
+        for connection in connections:
+            if vertical and not connection.is_vertical():
+                continue
+            if not vertical and connection.is_vertical():
+                continue
+            connection_data = {
+                "room_a": str(connection.position_from.pk),
+                "room_b": str(connection.position_to.pk),
+            }
+            connection_list.append(connection_data)
+
+        return connection_list

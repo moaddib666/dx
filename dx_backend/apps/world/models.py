@@ -118,8 +118,6 @@ class SubLocation(BaseModel):
         return self.name
 
 
-# TODO: REFINE THI APPROACH
-
 class Position(Model):
     """
     The position is minimal unit of the world.
@@ -137,11 +135,20 @@ class Position(Model):
     sub_location = models.ForeignKey(SubLocation, on_delete=models.CASCADE)
     labels = models.JSONField(default=list)
 
+    image = models.ImageField(upload_to='positions/', null=True, blank=True)
+
+    @property
+    def coordinates(self) -> str:
+        return f"{self.grid_x}x{self.grid_y}x{self.grid_z}"
+
     class Meta:
         unique_together = ('grid_x', 'grid_y', 'grid_z')
         indexes = [
             models.Index(fields=['grid_x', 'grid_y', 'grid_z'])
         ]
+
+    def __str__(self):
+        return f"{self.sub_location.name} - {self.coordinates}"
 
 
 class PositionConnection(models.Model):
@@ -151,8 +158,15 @@ class PositionConnection(models.Model):
     position_to = models.ForeignKey(
         'Position', on_delete=models.CASCADE, related_name='position_to'
     )
+    is_locked = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
+
+    def is_vertical(self):
+        return self.position_to.grid_z != self.position_from.grid_z
+
+    def is_horizontal(self):
+        return self.position_to.grid_z == self.position_from.grid_z
 
     class Meta:
         constraints = [

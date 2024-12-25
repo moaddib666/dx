@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Connections for Position {{ position.id }}</h1>
+<h3>Current Position</h3>
+<p>Grid: ({{ position.grid_x }}, {{ position.grid_y }}, {{ position.grid_z }})</p>
+
+<h3>Existing Connections</h3>
+<table>
+    <thead>
+        <tr>
+            <th>To Position</th>
+            <th>Direction</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for connection in connections %}
+        <tr>
+            <td>{{ connection.position_to }}</td>
+            <td>
+                {% if connection.position_to.grid_x < position.grid_x and connection.position_to.grid_y < position.grid_y %}
+                ↖ North-West
+                {% elif connection.position_to.grid_x == position.grid_x and connection.position_to.grid_y < position.grid_y %}
+                ↑ North
+                {% elif connection.position_to.grid_x > position.grid_x and connection.position_to.grid_y < position.grid_y %}
+                ↗ North-East
+                {% elif connection.position_to.grid_x > position.grid_x and connection.position_to.grid_y == position.grid_y %}
+                → East
+                {% elif connection.position_to.grid_x < position.grid_x and connection.position_to.grid_y == position.grid_y %}
+                ← West
+                {% elif connection.position_to.grid_x < position.grid_x and connection.position_to.grid_y > position.grid_y %}
+                ↙ South-West
+                {% elif connection.position_to.grid_x == position.grid_x and connection.position_to.grid_y > position.grid_y %}
+                ↓ South
+                {% elif connection.position_to.grid_x > position.grid_x and connection.position_to.grid_y > position.grid_y %}
+                ↘ South-East
+                {% elif connection.position_to.grid_z > position.grid_z %}
+                ⮝ Stairs Up
+                {% elif connection.position_to.grid_z < position.grid_z %}
+                ⮟ Stairs Down
+                {% endif %}
+            </td>
+            <td><a href="#">Edit Connection</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Nearby Rooms</h3>
+<ul>
+    {% for nearby in nearby_positions %}
+    <li>
+        <a href="{{ nearby.get_admin_url }}">{{ nearby }}</a> (Grid: {{ nearby.grid_x }}, {{ nearby.grid_y }}, {{ nearby.grid_z }})
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'admin:world_position_changelist' %}">Back to Positions</a>
+{% endblock %}

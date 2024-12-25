@@ -64,10 +64,16 @@ from apps.core.models import DirectionEnum
 
 class PositionConnectionSerializer(serializers.ModelSerializer):
     direction = serializers.SerializerMethodField()
+    to_position = serializers.SerializerMethodField()
+
+    def get_to_position(self, obj):
+        if obj.position_from == self.context.get('current_position'):
+            return obj.position_to.id
+        return obj.position_from.id
 
     class Meta:
         model = PositionConnection
-        fields = ('position_from', 'position_to', 'is_active', 'is_public', 'direction')
+        fields = ('to_position', 'is_active', 'is_public', 'direction', "is_locked")
 
     def get_direction(self, obj):
         """Compute the direction based on the current position's role."""
@@ -88,28 +94,53 @@ class PositionConnectionSerializer(serializers.ModelSerializer):
         dz = target.grid_z - current_position.grid_z
 
         # Map grid differences to directions using DirectionEnum
+        # FIXME: Fix Coordinates to Direction mapping
         direction_map = {
-            (-1, 1, 0): DirectionEnum.NORTHWEST,
-            (0, 1, 0): DirectionEnum.NORTH,
-            (1, 1, 0): DirectionEnum.NORTH_EAST,
+            (-1, -1, 0): DirectionEnum.NORTHWEST,
+
+            (0, -1, 0): DirectionEnum.NORTH,
+
+            (1, -1, 0): DirectionEnum.NORTH_EAST,
+
             (1, 0, 0): DirectionEnum.EAST,
+
             (-1, 0, 0): DirectionEnum.WEST,
-            (-1, -1, 0): DirectionEnum.SOUTH_WEST,
-            (0, -1, 0): DirectionEnum.SOUTH,
-            (1, -1, 0): DirectionEnum.SOUTH_EAST,
+
+            (-1, 1, 0): DirectionEnum.SOUTH_WEST,
+
+            (0, 1, 0): DirectionEnum.SOUTH,
+            (1, 1, 0): DirectionEnum.SOUTH_EAST,
+
             (0, 0, 1): DirectionEnum.UP,
             (0, 0, -1): DirectionEnum.DOWN,
         }
+        # direction_map = {
+        #     (-1, 1, 0): DirectionEnum.NORTHWEST,
+        #     (0, 1, 0): DirectionEnum.NORTH,
+        #     (1, 1, 0): DirectionEnum.NORTH_EAST,
+        #     (1, 0, 0): DirectionEnum.EAST,
+        #     (-1, 0, 0): DirectionEnum.WEST,
+        #     (-1, -1, 0): DirectionEnum.SOUTH_WEST,
+        #     (0, -1, 0): DirectionEnum.SOUTH,
+        #     (1, -1, 0): DirectionEnum.SOUTH_EAST,
+        #
+        #     (0, 0, 1): DirectionEnum.UP,
+        #     (0, 0, -1): DirectionEnum.DOWN,
+        # }
 
         return direction_map.get((dx, dy, dz), None)
 
 
 class PositionSerializer(serializers.ModelSerializer):
     connections = serializers.SerializerMethodField()
+    location = serializers.UUIDField(source='sub_location.location_id')
+    characters = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = Position
-        fields = ('id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', 'labels', 'connections')
+        fields = (
+        'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters', "image")
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""
@@ -123,3 +154,27 @@ class PositionSerializer(serializers.ModelSerializer):
             context={'current_position': obj}  # Pass the current position to the connection serializer
         )
         return serializer.data
+
+    def get_characters(self, obj):
+        """Retrieve all characters in the current position."""
+        return [character.id for character in obj.characters.all()]
+
+    def get_image(self, obj):
+        """Retrieve the background of the current position."""
+        # if obj.image return obj.image.url if not take sub_location.image if not take location.image if not take area.image if not take city.image
+        image = None
+        if obj.image:
+            image = obj.image.url
+        elif obj.sub_location.image:
+            image = obj.sub_location.image.url
+        elif obj.sub_location.location.image:
+            image = obj.sub_location.location.image.url
+        elif obj.sub_location.location.area.image:
+            image = obj.sub_location.location.area.image.url
+        elif obj.sub_location.location.area.city.image:
+            image = obj.sub_location.location.area.city.image.url
+        # the image url must be extended with context from the seraializer this bihaveior is standard in the rest framework
+        if image:
+            request = self.context.get('request')
+            return request.build_absolute_uri(image)
+        return image

@@ -56,6 +56,7 @@ class CharacterService:
             duel_invitations=self.character.duel_invitations_received.exclude(
                 is_accepted=True, is_rejected=True, created_at__gte=timezone.now() - timedelta(minutes=5)
             ).values_list('id', flat=True),
+
         )
 
     def notify(self, message: GameEvent):

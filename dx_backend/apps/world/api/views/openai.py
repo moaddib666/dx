@@ -7,7 +7,7 @@ from apps.core.api.utils.character import GenericGameViewSet
 from apps.game.services.location import LocationService
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
     PositionSerializer
-from apps.world.models import Location, Area, City, Dimension
+from apps.world.models import Location, Area, City, Dimension, Position
 
 
 class OpenAICityManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
@@ -121,10 +121,44 @@ class PositionManagementViewSet(GenericGameViewSet):
 
     @action(detail=False, methods=['get'])
     def current(self, request):
-        """Return the current position of the character and possible movements."""
+        """
+        Return the current position of the character and possible movements.
+        """
+        #   {
+        #     "location": uuid,
+        #     "sub_location": uuid,
+        #     "position": uuid,
+        #     "characters": [ uuid, uuid, ... ],
+        #     "connections": [
+        #         {
+        #             "direction": "NORTH",
+        #             "position": uuid
+        #         },
+        #         {
+        #             "direction": "SOUTH",
+        #             "position": uuid
+        #         },
+        #         ...]
+        #
+        # }
+        #
+        #  # "gameobjects": [ uuid, uuid, ... ] # TODO: implement game objects id, type, interface
+
         character = self.get_character()  # Assume this fetches the character
         position = character.position  # Assume the character has a related Position object
 
         # Serialize the position details
-        serializer = self.get_serializer(position)
+        serializer = self.get_serializer(position, context=self.get_serializer_context())
         return Response(data=serializer.data)
+
+    @action(detail=True, methods=['post'], serializer_class=None, permission_classes=[permissions.IsAuthenticated])
+    def move_to_position(self, request, pk=None):
+        character = self.get_character()
+        new_position = Position.objects.get(pk=pk)
+
+        # Validata the movement
+        # Schedule the movement to be executed in when turn ends
+
+        character.position = new_position
+        character.save()
+        return Response(data=PositionSerializer(new_position, context=self.get_serializer_context()).data)

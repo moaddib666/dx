@@ -14,7 +14,7 @@ class GenericGameViewSet(viewsets.GenericViewSet):
     def get_character(self) -> "Character":
         if not hasattr(self.request, 'user'):
             raise GameException('User not found in request')
-        if not hasattr(self.request.user, 'character'):
+        if not hasattr(self.request.user, 'main_character'):
             raise GameException('Character not found in request user')
         character = self.request.user.main_character
         if not character:
