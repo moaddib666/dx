@@ -25,5 +25,6 @@ drf-nested-routers = "*"
 djangorestframework-simplejwt = "*"
 pydantic = "*"
 channels-redis = "*"
+psycopg2-binary = "*"
 
 [dev-packages]

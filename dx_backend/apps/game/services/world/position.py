@@ -146,21 +146,31 @@ class PositionLoader:
 class JsonDumper:
     logger = logging.getLogger(__name__)
 
-    def __init__(self, output_file_path):
+    def __init__(self, output_file_path, context=None):
         self.output_file_path = output_file_path
+        self.context = context
 
     def dump(self):
-        data = {
+        data = self.as_dict()
+
+        with open(self.output_file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+
+        self.logger.info(f"Data successfully dumped to {self.output_file_path}")
+
+    def as_dict(self) -> dict:
+        return {
             "rooms": self._dump_positions(),
             "connections": self._dump_connections(vertical=False),
             "virtualConnections": self._dump_connections(vertical=True),
             "characters": self._dump_characters(),
         }
 
-        with open(self.output_file_path, 'w') as file:
-            json.dump(data, file, indent=4)
-
-        self.logger.info(f"Data successfully dumped to {self.output_file_path}")
+    def _build_url(self, url: str) -> str:
+        if not self.context or 'request' not in self.context:
+            return url
+        request = self.context['request']
+        return request.build_absolute_uri(url)
 
     def _dump_characters(self) -> Dict[str, List[Any]]:
         self.logger.info("Dumping characters")
@@ -168,10 +178,15 @@ class JsonDumper:
         mapping = {}
         self.logger.info(f"Found {characters.count()} characters")
         for character in characters:
+            avatar = None
+            if character.biography and character.biography.avatar:
+                avatar = self._build_url(character.biography.avatar.url)
+
             char_serialized = {
                 "id": str(character.pk),
                 "name": character.name,
                 "npc": character.npc,
+                "avatar": avatar,
             }
             mapping.setdefault(str(character.position_id), []).append(char_serialized)
             self.logger.debug(f"Character {character.pk} dumped to {character.position_id}")

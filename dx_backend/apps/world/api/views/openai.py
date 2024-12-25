@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from apps.character.models import Character
 from apps.core.api.utils.character import GenericGameViewSet
 from apps.game.services.location import LocationService
+from apps.game.services.world.position import JsonDumper
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
     PositionSerializer
 from apps.world.models import Location, Area, City, Dimension, Position
@@ -162,3 +163,11 @@ class PositionManagementViewSet(GenericGameViewSet):
         character.position = new_position
         character.save()
         return Response(data=PositionSerializer(new_position, context=self.get_serializer_context()).data)
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
+    def map(self, request):
+        """
+        Return the map of the current location.
+        """
+        svc = JsonDumper(None, context=self.get_serializer_context())
+        return Response(data=svc.as_dict())
