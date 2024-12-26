@@ -16,6 +16,7 @@ import CharacterSubmit from "@/views/Player/CharacterSubmit.vue";
 import CharacterView from "@/views/Cartograph/Map.vue";
 import DiceTest from "@/views/DiceTest.vue";
 import LocationView from "@/views/Game/Location.vue";
+import Register from "@/views/Register.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
@@ -29,12 +30,12 @@ const routes = [
     {path: '/shop', name: 'Shop', component: Shop, meta: {requiresAuth: false}},
     {path: '/support', name: 'Support', component: Support, meta: {requiresAuth: false}},
     {path: '/faq', name: 'FAQ', component: FAQ, meta: {requiresAuth: false}},
-    {path: '/register', name: 'RegisterPlay', component: RegisterPlay, meta: {requiresAuth: false}},
     {path: '/art', name: 'ArtGallery', component: ArtGallery, meta: {requiresAuth: false}},
     // TODO: Add route group here /game/* for game routes that require authentication
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
     {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
-    {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}}
+    {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},
+    {path: '/register', name: 'Register', component: Register, meta: {requiresAuth: false}},
 ];
 
 // access vue environment variables

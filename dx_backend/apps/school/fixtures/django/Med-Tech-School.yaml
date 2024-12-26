@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Nano-Heal
+    grade: 9
+    description: "Deploys nanotechnology to heal minor injuries."
+    multi_target: false
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Connection
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Regeneration
+        chance: 0.2
+        durationSeconds: 120
+        description: Restores 5 health points per turn for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Emergency Repair
+    grade: 8
+    description: "Quickly restores health to stabilize a critical ally."
+    multi_target: false
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Health Surge
+        chance: 0.25
+        durationSeconds: 60
+        description: Instantly restores 10 additional health points.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Medical Field
+    grade: 7
+    description: "Generates a field that heals allies over time."
+    multi_target: true
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Energy
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Connection
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Group Healing
+        chance: 0.3
+        durationSeconds: 120
+        description: Restores 5 health points per turn to all allies for 3 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Shielded Recovery
+    grade: 6
+    description: "Heals an ally while providing a temporary protective shield."
+    multi_target: false
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 60
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Protective Healing
+        chance: 0.35
+        durationSeconds: 180
+        description: Reduces incoming damage by 20% for 2 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Stimulant Injection
+    grade: 5
+    description: "Increases an ally's energy regeneration temporarily."
+    multi_target: false
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: buff
+    impact:
+      - kind: Buff
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Energy Boost
+        chance: 0.3
+        durationSeconds: 180
+        description: Increases energy regeneration by 10 points per turn for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Regenerative Protocol
+    grade: 3
+    description: "Applies an advanced healing protocol to restore health and stamina."
+    multi_target: true
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 70
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Advanced Healing
+        chance: 0.4
+        durationSeconds: 180
+        description: Restores health and provides 5 energy per turn for 3 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Emergency Field Unit
+    grade: 1
+    description: "Deploys a field unit that heals and shields nearby allies."
+    multi_target: true
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 90
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 25
+    effect:
+      - name: Group Shield and Heal
+        chance: 0.5
+        durationSeconds: 240
+        description: Heals all allies and reduces incoming damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: MedTech Overdrive
+    grade: 0
+    description: "Activates a powerful healing system to restore massive health and provide shields."
+    multi_target: true
+    school: b125adff-1ee0-44f9-bb81-3298c5315001
+    type: heal
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Total Healing
+        chance: 0.6
+        durationSeconds: 180
+        description: Restores health, reduces incoming damage by 20%, and provides 10 energy per turn for 3 turns.

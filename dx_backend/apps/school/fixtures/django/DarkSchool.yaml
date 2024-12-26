@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Shadow Bolt
+    grade: 9
+    description: "Fires a bolt of dark energy to harm the target."
+    multi_target: false
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: attack
+    impact:
+      - kind: Damage
+        type: Darkness
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Shadow Mark
+        chance: 0.2
+        durationSeconds: 120
+        description: Increases the damage the target receives from dark abilities by 5% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Veil of Darkness
+    grade: 8
+    description: "Cloaks the caster in darkness, reducing the chance to be hit."
+    multi_target: false
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: buff
+    impact:
+      - kind: Buff
+        type: Dodge
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Concealment
+        chance: 0.25
+        durationSeconds: 180
+        description: Increases dodge chance by 10% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Dark Grasp
+    grade: 7
+    description: "Conjures dark tendrils to immobilize and damage the target."
+    multi_target: false
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: attack
+    impact:
+      - kind: Damage
+        type: Darkness
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Manipulation
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Immobilize
+        chance: 0.3
+        durationSeconds: 120
+        description: Prevents the target from moving for 1 turn.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Shadow Shield
+    grade: 6
+    description: "Creates a shield of darkness to absorb incoming damage."
+    multi_target: false
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: defense
+    impact:
+      - kind: Defense
+        type: Darkness
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Damage Absorption
+        chance: 0.35
+        durationSeconds: 180
+        description: Absorbs 20% of incoming damage for 2 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Curse of Weakness
+    grade: 5
+    description: "Places a debilitating curse on the target, reducing their effectiveness."
+    multi_target: false
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: debuff
+    impact:
+      - kind: Debuff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Weakness
+        chance: 0.35
+        durationSeconds: 180
+        description: Reduces the target's strength and speed by 15% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Abyssal Howl
+    grade: 3
+    description: "Unleashes a wave of dark energy that frightens and damages enemies."
+    multi_target: true
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: attack
+    impact:
+      - kind: Damage
+        type: Darkness
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 22
+    effect:
+      - name: Fear
+        chance: 0.4
+        durationSeconds: 120
+        description: Reduces enemies' accuracy and speed by 15% for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Dark Empowerment
+    grade: 1
+    description: "Empowers allies with the strength of darkness."
+    multi_target: true
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: buff
+    impact:
+      - kind: Buff
+        type: Darkness
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 30
+    effect:
+      - name: Shadow Strength
+        chance: 0.5
+        durationSeconds: 240
+        description: Increases allies' dark damage and reduces energy costs by 10% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Midnight Cataclysm
+    grade: 0
+    description: "Unleashes an apocalyptic burst of darkness to obliterate enemies."
+    multi_target: true
+    school: 700de899-6ea2-4afd-a9c8-a8c6386a7470
+    type: attack
+    impact:
+      - kind: Damage
+        type: Darkness
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Total Eclipse
+        chance: 0.6
+        durationSeconds: 180
+        description: Reduces enemies' speed and energy regeneration by 20% for 3 turns.

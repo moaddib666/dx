@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Drone Deployment
+    grade: 9
+    description: "Deploys a small drone to assist in combat, dealing damage over time."
+    multi_target: false
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 25
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 6
+    effect:
+      - name: Continuous Attack
+        chance: 0.2
+        durationSeconds: 180
+        description: Drone deals 5 damage per turn for 3 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Repair Module
+    grade: 8
+    description: "Summons a robotic repair unit to restore health over time."
+    multi_target: false
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: heal
+    impact:
+      - kind: Heal
+        type: Energy
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Regeneration
+        chance: 0.25
+        durationSeconds: 120
+        description: Restores 5 health per turn for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Sentry Mode
+    grade: 7
+    description: "Activates a sentry turret that targets enemies in its range."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 35
+          requires:
+            - stat: Physical Strength
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Area Suppression
+        chance: 0.25
+        durationSeconds: 120
+        description: Reduces enemies' speed by 10% while sentry is active.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Shield Bot
+    grade: 6
+    description: "Deploys a shield bot that absorbs damage for allies."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Damage Absorption
+        chance: 0.3
+        durationSeconds: 180
+        description: Absorbs 20% of incoming damage for 2 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Overclocking
+    grade: 5
+    description: "Temporarily increases the power of all active robots."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: buff
+    impact:
+      - kind: Buff
+        type: Speed
+        formula:
+          base: 0
+          requires:
+            - stat: Speed
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Power Surge
+        chance: 0.25
+        durationSeconds: 240
+        description: Increases robot damage and defense by 15% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Tactical Drone Swarm
+    grade: 3
+    description: "Releases a swarm of drones to attack multiple enemies."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 25
+    effect:
+      - name: Drone Suppression
+        chance: 0.35
+        durationSeconds: 120
+        description: Reduces target's defense by 15% for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Automated Repair Bay
+    grade: 1
+    description: "Summons an automated system that heals and buffs allies."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: heal
+    impact:
+      - kind: Heal
+        type: Energy
+        formula:
+          base: 70
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 30
+    effect:
+      - name: Healing Buff
+        chance: 0.5
+        durationSeconds: 240
+        description: Restores health and increases defense by 10% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Mech Cataclysm
+    grade: 0
+    description: "Unleashes a devastating robotic assault that targets all enemies."
+    multi_target: true
+    school: 8a7ca417-1cfa-4369-9eaf-c6a6bc433f01
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 50
+    effect:
+      - name: Cataclysmic Strike
+        chance: 0.6
+        durationSeconds: 120
+        description: Reduces all enemies' speed by 20% and defense by 15% for 2 turns.

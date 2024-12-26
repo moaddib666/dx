@@ -8,25 +8,44 @@
     <div class="background-layer layer4 blending" :style="layerStyles[3]"></div>
     <div class="content">
       <TitleComponent>Dimension-X</TitleComponent>
-      <LoginForm :layer="currentLayer" />
+      <LandingButtonGroup>
+        <LandingButton :action="signInAction">Register</LandingButton>
+        <LandingButton :action="logInAction">Log In</LandingButton>
+        <LandingButton :action="chatAction">Chat with AI</LandingButton>
+      </LandingButtonGroup>
+      <!--      <LoginForm :layer="currentLayer" />-->
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import LoginForm from "@/components/LoginForm.vue";
+import {ref, computed} from 'vue';
 import TitleComponent from "@/components/TitleComponent.vue";
+import LandingButton from "@/components/btn/LandingButton.vue";
+import LandingButtonGroup from "@/components/btn/LandingButtonGroup.vue";
+import {useRouter} from "vue-router";
 
 const opacity1 = ref(1);
 const opacity2 = ref(1);
 const opacity3 = ref(1);
 const saturation4 = ref(100);
 const currentLayer = ref(0);
+const router = useRouter();
+const chatAction = () => {
+  window.open('https://chatgpt.com/g/g-VIcO0L3rg-dimension-x-game-architect', '_blank');
+};
+const signInAction = () => {
+  // FIXME: Redirect to register page
 
+  router.push({name: 'Register'});
+};
+const logInAction = () => {
+  // FIXME: Redirect to login page
+  router.push({name: 'Login'});
+}
 const getMousePosition = (event) => {
-  const { clientX, currentTarget } = event;
-  const { offsetWidth } = currentTarget;
+  const {clientX, currentTarget} = event;
+  const {offsetWidth} = currentTarget;
   return clientX / offsetWidth;
 };
 
@@ -37,7 +56,7 @@ const calculateSaturation = (zone, percentage) => {
 
 const handleMouseMove = (event) => {
   const percentage = getMousePosition(event);
-  const { zone, zonePercentageValue } = getZones(percentage, 4);
+  const {zone, zonePercentageValue} = getZones(percentage, 4);
 
   opacity1.value = calculateZoneOpacity(0, zone, zonePercentageValue);
   opacity2.value = calculateZoneOpacity(1, zone, zonePercentageValue);
@@ -50,7 +69,7 @@ const getZones = (percentage, zoneCount) => {
   const zonePercentage = 1 / zoneCount;
   const zone = Math.floor(percentage / zonePercentage);
   const zonePercentageValue = 1 - (percentage - zone * zonePercentage) / zonePercentage;
-  return { zone, zonePercentageValue };
+  return {zone, zonePercentageValue};
 };
 
 const calculateZoneOpacity = (zone, currentZone, opacity) => {
@@ -59,10 +78,10 @@ const calculateZoneOpacity = (zone, currentZone, opacity) => {
 };
 
 const layerStyles = computed(() => [
-  { opacity: opacity1.value, transition: 'opacity 1s ease' },
-  { opacity: opacity2.value, transition: 'opacity 1s ease' },
-  { opacity: opacity3.value, transition: 'opacity 1s ease' },
-  { filter: `saturate(${saturation4.value}%)`, transition: 'filter 1s ease' },
+  {opacity: opacity1.value, transition: 'opacity 1s ease'},
+  {opacity: opacity2.value, transition: 'opacity 1s ease'},
+  {opacity: opacity3.value, transition: 'opacity 1s ease'},
+  {filter: `saturate(${saturation4.value}%)`, transition: 'filter 1s ease'},
 ]);
 </script>
 

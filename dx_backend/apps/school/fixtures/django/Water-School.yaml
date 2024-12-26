@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Aqua Burst
+    grade: 9
+    description: "Releases a concentrated burst of water to damage a target."
+    multi_target: false
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: attack
+    impact:
+      - kind: Damage
+        type: Water
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Wet
+        chance: 0.2
+        durationSeconds: 120
+        description: Reduces target's speed by 5% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Ice Shard
+    grade: 8
+    description: "Fires a shard of ice that pierces defenses and slows the target."
+    multi_target: false
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: attack
+    impact:
+      - kind: Damage
+        type: Ice
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Manipulation
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Freeze
+        chance: 0.25
+        durationSeconds: 120
+        description: Reduces target's speed by 10% for 2 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Healing Rain
+    grade: 7
+    description: "Summons a rainstorm that heals allies over time."
+    multi_target: true
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: heal
+    impact:
+      - kind: Heal
+        type: Water
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Regeneration
+        chance: 0.3
+        durationSeconds: 180
+        description: Restores 5 health points per turn for 3 turns to all allies.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Water Shield
+    grade: 6
+    description: "Encases an ally in a shield of water, reducing incoming damage."
+    multi_target: false
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: defense
+    impact:
+      - kind: Defense
+        type: Water
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Damage Reduction
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces incoming damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Frost Nova
+    grade: 5
+    description: "Unleashes a burst of ice around the caster, damaging and slowing enemies."
+    multi_target: true
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: attack
+    impact:
+      - kind: Damage
+        type: Ice
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 16
+    effect:
+      - name: Chill
+        chance: 0.35
+        durationSeconds: 180
+        description: Reduces enemies' speed by 15% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Aqua Surge
+    grade: 3
+    description: "Enhances allies' energy and strength with the Flow of water."
+    multi_target: true
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: buff
+    impact:
+      - kind: Buff
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Energy Boost
+        chance: 0.4
+        durationSeconds: 180
+        description: Increases energy regeneration and physical strength by 15% for 3 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Tidal Wave
+    grade: 1
+    description: "Summons a massive tidal wave that damages and drenches enemies."
+    multi_target: true
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: attack
+    impact:
+      - kind: Damage
+        type: Water
+        formula:
+          base: 90
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 25
+    effect:
+      - name: Drenched
+        chance: 0.5
+        durationSeconds: 240
+        description: Reduces enemies' speed by 20% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Arctic Maelstrom
+    grade: 0
+    description: "Unleashes a devastating storm of ice and water to devastate enemies."
+    multi_target: true
+    school: 2be5bff8-4d58-45b9-b995-49a59950a3ac
+    type: attack
+    impact:
+      - kind: Damage
+        type: Water
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Freeze and Slow
+        chance: 0.6
+        durationSeconds: 180
+        description: Freezes enemies for 1 turn and reduces speed by 25% for 3 turns.

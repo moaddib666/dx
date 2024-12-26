@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Radiant Burst
+    grade: 9
+    description: "Releases a flash of radiant energy to harm and disorient a target."
+    multi_target: false
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Light
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Blind
+        chance: 0.2
+        durationSeconds: 120
+        description: Reduces the target's accuracy by 10% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Protective Aura
+    grade: 8
+    description: "Casts a shield of light around an ally, reducing damage taken."
+    multi_target: false
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: defense
+    impact:
+      - kind: Defense
+        type: Light
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Light Shield
+        chance: 0.25
+        durationSeconds: 180
+        description: Reduces incoming damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Healing Light
+    grade: 7
+    description: "Channels radiant energy to restore health to a single ally."
+    multi_target: false
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: heal
+    impact:
+      - kind: Heal
+        type: Light
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Healing Over Time
+        chance: 0.3
+        durationSeconds: 120
+        description: Restores 5 health per turn for 2 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Lightwave
+    grade: 6
+    description: "Sends a wave of radiant energy to damage and purify enemies."
+    multi_target: true
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Light
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Manipulation
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Purify
+        chance: 0.3
+        durationSeconds: 0
+        description: Removes one debuff from all affected allies.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Radiant Surge
+    grade: 5
+    description: "Empowers an ally with radiant energy, increasing their effectiveness."
+    multi_target: false
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: buff
+    impact:
+      - kind: Buff
+        type: Light
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 16
+    effect:
+      - name: Light Empowerment
+        chance: 0.35
+        durationSeconds: 180
+        description: Increases the ally's accuracy and light-based damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Blinding Flash
+    grade: 3
+    description: "Unleashes a flash of radiant energy to blind and damage all enemies."
+    multi_target: true
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Light
+        formula:
+          base: 60
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Blinding
+        chance: 0.4
+        durationSeconds: 120
+        description: Reduces enemies' accuracy by 20% for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Sacred Glow
+    grade: 1
+    description: "Generates a protective aura that heals and buffs nearby allies."
+    multi_target: true
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: heal
+    impact:
+      - kind: Heal
+        type: Light
+        formula:
+          base: 70
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 28
+    effect:
+      - name: Group Heal and Buff
+        chance: 0.5
+        durationSeconds: 240
+        description: Heals allies and increases their defense by 10% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Radiant Cataclysm
+    grade: 0
+    description: "Unleashes a devastating burst of light energy to obliterate enemies and heal allies."
+    multi_target: true
+    school: b62dfea2-3e38-47f3-989b-5c075001b54d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Light
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Cataclysmic Light
+        chance: 0.6
+        durationSeconds: 180
+        description: Heals allies for 10% of their max health and purifies all debuffs.

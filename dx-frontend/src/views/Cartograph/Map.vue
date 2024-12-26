@@ -23,8 +23,53 @@
         <button @click="switchFloor(currentFloor +1)">Up</button>
         <button @click="switchFloor(currentFloor -1)">Down</button>
       </div>
+      <button @click="syncAdminMapData">Sync</button>
     </div>
 
+    <div id="loader" v-if="loading">
+      <h2>Loading...</h2>
+    </div>
+
+    <!-- Characters Panel -->
+    <div id="character-panel" v-if="selectedCells.length === 1 && charactersInRoom.length > 0">
+      <div>
+        <h3>Players:</h3>
+        <div v-if="playersInRoom.length > 0">
+          <div
+              v-for="player in playersInRoom"
+              :key="player.id"
+              class="character-row"
+              @click="onCharacterClick(player.id)"
+          >
+            <div class="avatar-placeholder">
+              <img :src="player.avatar" :alt="player.name + ' avatar'" />
+            </div>
+            <span class="character-name">{{ player.name }}</span>
+          </div>
+        </div>
+        <div v-else>
+          <p>No players in this room</p>
+        </div>
+      </div>
+
+      <div>
+        <h3>NPCs:</h3>
+        <div v-if="npcsInRoom.length > 0">
+          <div
+              v-for="npc in npcsInRoom"
+              :key="npc.id"
+              class="character-row"
+              @click="onCharacterClick(npc.id)"
+          >
+            <div class="avatar-placeholder"></div>
+            <span class="character-name">{{ npc.name }}</span>
+          </div>
+        </div>
+        <div v-else>
+          <p>No NPCs in this room</p>
+        </div>
+      </div>
+    </div>
 
     <!-- Cell Details -->
     <div id="details-panel">
@@ -66,6 +111,7 @@
 
 <script>
 import MapData, {RoomLabel, RoomType} from "@/utils/mapData";
+import {WorldGameApi} from "@/api/backendService.js";
 
 export default {
   data() {
@@ -80,9 +126,20 @@ export default {
       cellSize: 80, // Size of each grid cell
       selectedCells: [], // Currently selected cells
       lastActiveRoom: null, // Track the last created or selected room
+      loading: false,
     };
   },
   computed: {
+    charactersInRoom() {
+      if (this.selectedCells.length !== 1) return [];
+      return this.mapData.getCharactersInRoom(this.selectedCells[0]);
+    },
+    playersInRoom() {
+      return this.charactersInRoom.filter((character) => !character.npc);
+    },
+    npcsInRoom() {
+      return this.charactersInRoom.filter((character) => character.npc);
+    },
     RoomLabel() {
       return RoomLabel
     },
@@ -97,14 +154,30 @@ export default {
     },
     filteredVerticalConnections() {
       return this.mapData.getValidVerticalConnections(this.currentFloor);
-      // return this.mapData.verticalConnections.filter((connection) => {
-      //   const startRoom = this.getRoomById(connection.room_a);
-      //   const endRoom = this.getRoomById(connection.room_b);
-      //   return startRoom.grid_z === this.currentFloor || endRoom.grid_z === this.currentFloor;
-      // });
     },
   },
   methods: {
+    onCharacterClick(characterId) {
+      console.log("Character clicked:", characterId);
+      // Replace with your action logic
+      alert(`Character ID: ${characterId}`);
+    },
+    async syncAdminMapData() {
+      try {
+        this.loading = true;
+        const data = (await (WorldGameApi.worldPositionMapRetrieve())).data;
+        console.log({data});
+        this.mapData.clear();
+        this.mapData.fromJSON(data);
+        this.drawCanvas();
+      } catch (err) {
+        console.error("Error parsing JSON file", err);
+        alert("Error parsing JSON file");
+      } finally {
+        this.loading = false;
+      }
+
+    },
     updateRoom() {
       const updatedRoom = this.selectedCells[0];
       this.mapData.updateRoom(updatedRoom);
@@ -212,6 +285,7 @@ export default {
       // Draw rooms
       this.filteredRooms.forEach((room) => {
         this.drawRoom(ctx, room);
+        this.drawRoomCharacters(ctx, room);
       });
 
       // Draw vertical connections
@@ -382,7 +456,54 @@ export default {
       // Reset shadow
       ctx.shadowBlur = 0;
     },
+    drawRoomCharacters(ctx, room) {
+      const characters = this.mapData.getCharactersInRoom(room);
 
+      const npcCount = characters.filter((character) => character.npc).length;
+      const playerCount = characters.length - npcCount; // Total characters minus NPCs
+
+      if (npcCount === 0 && playerCount === 0) return; // Nothing to draw if no characters
+
+      const x = room.grid_x * this.cellSize + this.cellSize / 2; // Center X of the room
+      const y = room.grid_y * this.cellSize + this.cellSize / 2; // Center Y of the room
+
+      const circleRadius = 15; // Base radius for both indicators
+      const spacing = 25; // Spacing between the two indicators
+
+      // NPC Indicator
+      if (npcCount > 0) {
+        const npcX = x - spacing; // Left position for NPC indicator
+        ctx.fillStyle = "rgb(255, 127, 80)"; // Coral color for NPCs
+        ctx.beginPath();
+        ctx.arc(npcX, y, circleRadius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+
+        // NPC Count Text
+        ctx.fillStyle = "#FFF"; // White text
+        ctx.font = "bold 14px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(npcCount, npcX, y);
+      }
+
+      // Player Indicator
+      if (playerCount > 0) {
+        const playerX = x + spacing; // Right position for Player indicator
+        ctx.fillStyle = "rgb(50, 205, 50)"; // Lime green color for Players
+        ctx.beginPath();
+        ctx.arc(playerX, y, circleRadius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+
+        // Player Count Text
+        ctx.fillStyle = "#FFF"; // White text
+        ctx.font = "bold 14px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(playerCount, playerX, y);
+      }
+    },
     drawStairs(ctx, room, down) {
       console.log("Drawing stairs", {room, down});
       const x = room.grid_x * this.cellSize;
@@ -418,7 +539,6 @@ export default {
       ctx.closePath();
       ctx.fill();
     },
-
     drawConnection(ctx, startRoom, endRoom) {
       const startX = startRoom.grid_x * this.cellSize + this.cellSize / 2;
       const startY = startRoom.grid_y * this.cellSize + this.cellSize / 2;
@@ -625,6 +745,52 @@ export default {
 </script>
 
 <style>
+#character-panel {
+  position: absolute;
+  bottom: 40px;
+  left: 10px;
+  width: 250px;
+  background: #222; /* Dark background */
+  color: white;
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-height: calc(100% - 300px); /* Make it fit the screen */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+h3 {
+  margin-bottom: 10px;
+}
+
+.character-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}
+
+.character-row:hover {
+  background: #444; /* Highlight on hover */
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  background: #666; /* Placeholder color */
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.character-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
 #map-container {
   position: relative;
   width: 100%;
@@ -675,4 +841,15 @@ canvas {
   background: #555;
 }
 
+#loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #222; /* Dark background */
+  color: white; /* White text */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 </style>

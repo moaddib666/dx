@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Energy Bolt
+    grade: 9
+    description: "Launches a concentrated bolt of pure energy at a target."
+    multi_target: false
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Energized
+        chance: 0.2
+        durationSeconds: 120
+        description: Increases caster's energy regeneration by 5 points per turn for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Kinetic Barrier
+    grade: 8
+    description: "Generates a barrier of kinetic energy to protect against attacks."
+    multi_target: false
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: defense
+    impact:
+      - kind: Defense
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Energy Shield
+        chance: 0.25
+        durationSeconds: 180
+        description: Reduces energy-based damage by 15% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Static Discharge
+    grade: 7
+    description: "Releases a burst of static energy, damaging nearby enemies."
+    multi_target: true
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Manipulation
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Paralysis
+        chance: 0.3
+        durationSeconds: 120
+        description: Reduces enemies' action points by 1 for 1 turn.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Energy Infusion
+    grade: 6
+    description: "Enhances an ally's energy capacity and regeneration."
+    multi_target: false
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: buff
+    impact:
+      - kind: Buff
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Enhanced Energy
+        chance: 0.35
+        durationSeconds: 180
+        description: Increases energy regeneration by 10 points per turn for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Energy Overload
+    grade: 5
+    description: "Channels an overload of energy into a powerful attack."
+    multi_target: false
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 60
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Overcharge
+        chance: 0.3
+        durationSeconds: 120
+        description: Increases caster's energy-based damage by 10% for 2 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Energy Surge
+    grade: 3
+    description: "Empowers all allies with increased energy reserves and output."
+    multi_target: true
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: buff
+    impact:
+      - kind: Buff
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 22
+    effect:
+      - name: Group Energy Boost
+        chance: 0.4
+        durationSeconds: 180
+        description: Increases energy regeneration and reduces energy cost of abilities by 10% for 3 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Energy Wave
+    grade: 1
+    description: "Unleashes a wave of pure energy to damage all enemies in a radius."
+    multi_target: true
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 90
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 28
+    effect:
+      - name: Energized
+        chance: 0.5
+        durationSeconds: 240
+        description: Reduces enemies' energy reserves by 15% for 2 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Energy Cataclysm
+    grade: 0
+    description: "Releases a devastating explosion of pure energy, damaging all enemies and replenishing allies."
+    multi_target: true
+    school: bb92d487-102d-462c-acf5-d176a26f9ad0
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Cataclysmic Energy
+        chance: 0.6
+        durationSeconds: 180
+        description: Restores 10 energy per turn to all allies and reduces energy cost by 20% for 3 turns.

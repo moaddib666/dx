@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Phantom Strike
+    grade: 9
+    description: "Creates an illusory attack to harm and disorient the target."
+    multi_target: false
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: attack
+    impact:
+      - kind: Damage
+        type: Psychic
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 5
+    effect:
+      - name: Disorient
+        chance: 0.2
+        durationSeconds: 120
+        description: Reduces the target's accuracy by 10% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Mirror Image
+    grade: 8
+    description: "Creates duplicates of the caster to confuse attackers."
+    multi_target: false
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: buff
+    impact:
+      - kind: Buff
+        type: Dodge
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Duplication
+        chance: 0.25
+        durationSeconds: 180
+        description: Increases dodge chance by 15% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Illusory Terrain
+    grade: 7
+    description: "Creates a mirage to obscure the battlefield and disorient enemies."
+    multi_target: true
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: debuff
+    impact:
+      - kind: Debuff
+        type: Accuracy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Manipulation
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Obscuration
+        chance: 0.3
+        durationSeconds: 120
+        description: Reduces enemies' accuracy by 15% for 2 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Veil of Invisibility
+    grade: 6
+    description: "Casts invisibility on an ally, making them untargetable for a short time."
+    multi_target: false
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: buff
+    impact:
+      - kind: Buff
+        type: Dodge
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Invisibility
+        chance: 0.35
+        durationSeconds: 120
+        description: Makes an ally untargetable for 2 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Mirage Surge
+    grade: 5
+    description: "Enhances the entire team’s ability to evade and confuse enemies."
+    multi_target: true
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: buff
+    impact:
+      - kind: Buff
+        type: Dodge
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 16
+    effect:
+      - name: Mirage Effect
+        chance: 0.4
+        durationSeconds: 240
+        description: Increases allies' dodge chance and reduces incoming damage by 10% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Shattered Mind
+    grade: 3
+    description: "Overwhelms enemies with illusions, damaging and disrupting their actions."
+    multi_target: true
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: attack
+    impact:
+      - kind: Damage
+        type: Psychic
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Mind Disruption
+        chance: 0.4
+        durationSeconds: 120
+        description: Reduces enemies' action points by 1 for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Phantom Army
+    grade: 1
+    description: "Summons an illusory army to confuse and debilitate enemies."
+    multi_target: true
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: debuff
+    impact:
+      - kind: Debuff
+        type: Accuracy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 28
+    effect:
+      - name: Total Confusion
+        chance: 0.5
+        durationSeconds: 240
+        description: Reduces enemies' accuracy and speed by 20% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Mirage Cataclysm
+    grade: 0
+    description: "Unleashes a devastating illusion that confuses, damages, and debilitates enemies."
+    multi_target: true
+    school: 962bd011-7908-414f-bdd5-083db28ee763
+    type: attack
+    impact:
+      - kind: Damage
+        type: Psychic
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Illusion Overload
+        chance: 0.6
+        durationSeconds: 180
+        description: Reduces enemies' accuracy by 25% and action points by 2 for 3 turns.

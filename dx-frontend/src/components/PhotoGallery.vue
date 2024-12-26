@@ -13,6 +13,7 @@
 
 <script>
 import TitleComponent from '@/components/TitleComponent.vue';
+import {GalleryGameApi} from "@/api/backendService.js";
 
 export default {
   data() {
@@ -27,10 +28,9 @@ export default {
     this.loadPhotos();
   },
   methods: {
-    loadPhotos() {
-      // Use Vite's import.meta.glob to dynamically load images
-      const importImages = import.meta.glob('@/assets/images/gallery/*.{png,jpg,jpeg,webp}');
-      this.photos = Object.keys(importImages).map(path => path.replace(/^@/, ''));
+    async loadPhotos() {
+      const artObjects = (await GalleryGameApi.galleryWorldList()).data;
+      this.photos = artObjects.map(artObject => artObject.image);
     }
   }
 }

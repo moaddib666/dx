@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Summon Wolf Spirit
+    grade: 9
+    description: "Summons a wolf spirit to attack a single target."
+    multi_target: false
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Summon
+        type: Physical
+        formula:
+          base: 25
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 3
+      - kind: Energy
+        value: 6
+    effect:
+      - name: Wolf's Bite
+        chance: 0.2
+        durationSeconds: 120
+        description: Summoned wolf deals 5 damage per turn for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Summon Healing Sprite
+    grade: 8
+    description: "Summons a healing sprite to restore health to an ally over time."
+    multi_target: false
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Healing Aura
+        chance: 0.25
+        durationSeconds: 120
+        description: Restores 5 health per turn to the ally for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Summon Guardian
+    grade: 7
+    description: "Summons a guardian entity to defend allies."
+    multi_target: false
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Protective Aura
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces incoming damage to allies by 15% for 3 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Summon Elemental
+    grade: 6
+    description: "Summons an elemental to deal damage and support in combat."
+    multi_target: false
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Damage
+        type: Elemental
+        formula:
+          base: 40
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Elemental Boost
+        chance: 0.35
+        durationSeconds: 180
+        description: Increases allies' elemental damage by 10% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Summon War Spirit
+    grade: 5
+    description: "Summons a war spirit to empower allies and attack enemies."
+    multi_target: true
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 16
+    effect:
+      - name: War Cry
+        chance: 0.4
+        durationSeconds: 240
+        description: Increases allies' speed and damage by 10% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Summon Spirit Swarm
+    grade: 3
+    description: "Summons a swarm of spirits to damage and disrupt enemies."
+    multi_target: true
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Damage
+        type: Psychic
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Swarm Chaos
+        chance: 0.4
+        durationSeconds: 120
+        description: Reduces enemies' accuracy and action points by 1 for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Summon Lightbringer
+    grade: 1
+    description: "Summons a powerful entity to heal allies and deal radiant damage."
+    multi_target: true
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Heal
+        type: Light
+        formula:
+          base: 70
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 30
+    effect:
+      - name: Light's Blessing
+        chance: 0.5
+        durationSeconds: 240
+        description: Restores health and increases allies' defenses by 15% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Summon Eternal Guardian
+    grade: 0
+    description: "Calls forth an immense guardian to devastate enemies and shield allies."
+    multi_target: true
+    school: 35d4b270-14f3-42fb-83ab-6cb505c8005d
+    type: summon
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Guardian's Presence
+        chance: 0.6
+        durationSeconds: 180
+        description: Reduces enemies' speed by 20% and heals allies for 10 health per turn for 3 turns.

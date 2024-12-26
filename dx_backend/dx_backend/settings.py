@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'corsheaders',
     # 'channels',
+    'apps.gallery',
     'apps.core',
     'apps.client',
     'apps.world',
@@ -197,10 +198,15 @@ SPECTACULAR_SETTINGS = {
         'deepLinking': True,
     },
     'COMPONENT_SPLIT_REQUEST': True,
+
+    'SCHEMA_PATH_PREFIX': '/api',  # Ensure paths have the /api prefix
     'SERVERS': [
-        {'url': 'http://localhost:8000'},
-        {"url"  "http://198.54.112.78:9999"}
+        {'url': '/api', 'description': 'API Server'},  # Set the base path for generated clients
     ],
+    # 'SERVERS': [
+    #     {'url': 'http://localhost:8000'},
+    #     {"url"  "http://198.54.112.78:9999"}
+    # ],
     'SECURITY': [{'BearerAuth': []}],
     'COMPONENTS': {
         'securitySchemes': {

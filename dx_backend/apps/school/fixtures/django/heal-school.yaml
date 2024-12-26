@@ -1,0 +1,191 @@
+- model: school.skill
+  pk: "random-id-001"
+  fields:
+    name: "Minor Heal"
+    grade: 9
+    description: "Heals a small amount of health."
+    multi_target: false
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "heal"
+    impact:
+      - kind: "Heal"
+        type: "SingleTarget"
+        formula:
+          base: 30
+          requires:
+            - stat: "Flow Manipulation"
+              value: 5
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 0.2
+    cost:
+      - kind: "Action Points"
+        value: 4
+      - kind: "Energy"
+        value: 5
+    effect:
+      - name: "Regeneration Boost"
+        chance: 0.2
+        durationSeconds: 120
+        description: "Increases health regeneration by 5 per turn."
+    icon: ''
+
+- model: school.skill
+  pk: "random-id-002"
+  fields:
+    name: "Restorative Aura"
+    grade: 8
+    description: "Creates an aura that heals allies over time."
+    multi_target: true
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "heal"
+    impact:
+      - kind: "Heal"
+        type: "AreaEffect"
+        formula:
+          base: 15
+          requires:
+            - stat: "Flow Manipulation"
+              value: 10
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 0.1
+    cost:
+      - kind: "Action Points"
+        value: 6
+      - kind: "Energy"
+        value: 10
+    effect:
+      - name: "Health Regen Aura"
+        chance: 1.0
+        durationSeconds: 180
+        description: "Restores 5 health to all allies each turn."
+    icon: ''
+
+- model: school.skill
+  pk: "random-id-003"
+  fields:
+    name: "Cleansing Light"
+    grade: 7
+    description: "Removes debuffs and heals the target."
+    multi_target: false
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "heal"
+    impact:
+      - kind: "Heal"
+        type: "SingleTarget"
+        formula:
+          base: 45
+          requires:
+            - stat: "Flow Manipulation"
+              value: 8
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 0.3
+    cost:
+      - kind: "Action Points"
+        value: 5
+      - kind: "Energy"
+        value: 8
+    effect:
+      - name: "Debuff Removal"
+        chance: 1.0
+        durationSeconds: 0
+        description: "Removes all debuffs from the target."
+    icon: ''
+
+- model: school.skill
+  pk: "random-id-004"
+  fields:
+    name: "Ultimate Healing Wave"
+    grade: 0
+    description: "Heals all allies within a wide area and boosts their health regeneration for a significant time."
+    multi_target: true
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "heal"
+    impact:
+      - kind: "Heal"
+        type: "AreaEffect"
+        formula:
+          base: 150
+          requires:
+            - stat: "Flow Manipulation"
+              value: 25
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 0.8
+    cost:
+      - kind: "Action Points"
+        value: 10
+      - kind: "Energy"
+        value: 50
+    effect:
+      - name: "Regeneration Aura"
+        chance: 1.0
+        durationSeconds: 300
+        description: "Restores 10 health per turn to all allies in range."
+    icon: ''
+
+- model: school.skill
+  pk: "random-id-005"
+  fields:
+    name: "Life Bond"
+    grade: 0
+    description: "Links the caster's health to an ally, redirecting damage for a limited duration."
+    multi_target: false
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "utility"
+    impact:
+      - kind: "Shield"
+        type: "SingleTarget"
+        formula:
+          base: 0
+          requires:
+            - stat: "Flow Manipulation"
+              value: 20
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 0.5
+    cost:
+      - kind: "Action Points"
+        value: 8
+      - kind: "Energy"
+        value: 25
+    effect:
+      - name: "Damage Redirection"
+        chance: 1.0
+        durationSeconds: 240
+        description: "Redirects 50% of damage taken by the ally to the caster."
+    icon: ''
+
+- model: school.skill
+  pk: "random-id-006"
+  fields:
+    name: "Celestial Blessing"
+    grade: 0
+    description: "Fully heals a target and grants immunity to damage for a short time."
+    multi_target: false
+    school: "6a55bc8c-d469-4f67-9842-c59a09906864"
+    type: "heal"
+    impact:
+      - kind: "Heal"
+        type: "SingleTarget"
+        formula:
+          base: 200
+          requires:
+            - stat: "Flow Manipulation"
+              value: 30
+          scaling:
+            - stat: "Flow Manipulation"
+              value: 1.0
+    cost:
+      - kind: "Action Points"
+        value: 10
+      - kind: "Energy"
+        value: 50
+    effect:
+      - name: "Immunity"
+        chance: 1.0
+        durationSeconds: 120
+        description: "Makes the target immune to all damage and debuffs for 2 minutes."
+    icon: ''

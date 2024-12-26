@@ -1,96 +1,128 @@
 <template>
   <div>
-    <div class="login-container">
-      <div class="login-form">
-        <form @submit.prevent="login">
-          <input v-model="email" placeholder="E-mail" type="email" />
-          <input v-model="password" type="password" placeholder="Password" />
-          <button type="submit">Login</button>
-        </form>
+    <form class="login-form" @submit.prevent="login">
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" v-model="email" placeholder="Enter your email" type="email" required />
       </div>
-    </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" v-model="password" type="password" placeholder="Enter your password" required />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Login</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import HeroSection from '@/components/HeroSection.vue';
+import axios from "axios";
 
 export default {
-  name: 'Login',
-  components: {},
+  name: "Login",
   data() {
     return {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
+      errorMessage: null,
     };
   },
   methods: {
     async login() {
       try {
         const loginUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_LOGIN_URL}`;
-        const response = await axios.post(loginUrl, { email: this.email, password: this.password });
-        const { access, refresh } = response.data;
+        const response = await axios.post(loginUrl, {
+          email: this.email,
+          password: this.password,
+        });
 
-        // Dispatch login action to Vuex store
-        this.$store.dispatch('login', { token: access });
-        // Redirect to the game route
-        this.$router.push('/game');
+        const { access, refresh } = response.data;
+        this.$store.dispatch("login", { token: access });
+        this.$router.push({ name: "CharacterSubmit" });
       } catch (error) {
-        console.error('Login failed', error);
+        if (error.response && error.response.status === 400) {
+          this.errorMessage = "Invalid email or password.";
+        } else {
+          this.errorMessage = "An unexpected error occurred. Please try again.";
+        }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  position: relative;
-}
-
 .login-form {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #1c1c1c;
+  border: 2px solid #444;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  margin: 2rem auto;
 }
 
-.login-form input {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+.error-message {
+  color: #ff4d4d;
+  background: #2e2e2e;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
 }
 
-.login-form input::placeholder {
-  color: #ccc;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.login-form button {
-  width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.1);
+.form-group label {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #e0e0e0;
+}
+
+.form-group input {
+  padding: 0.75rem;
   border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s, box-shadow 0.3s;
+  border-radius: 4px;
+  background: #292929;
+  color: #e0e0e0;
+  font-size: 1rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.login-form button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+.form-group input:focus {
+  outline: 2px solid #e0e0e0;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.form-actions button {
+  padding: 0.75rem 1.5rem;
+  background: #444;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  transition: background 0.3s ease;
+}
+
+.form-actions button:hover {
+  background: #555;
 }
 </style>

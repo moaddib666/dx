@@ -5,7 +5,7 @@ import json
 source_dir = "./"  # Change this to your specific source directory
 dist_dir = "./dist"
 
-excluded = ["./test", "./dx-frontend", "./dx_backend", "./dx_mobile"]
+excluded = ["./test", "./dx-frontend", "./dx_backend", "./dx_mobile", "./infra"]
 # Create the dist directory if it doesn't exist
 if not os.path.exists(dist_dir):
     os.makedirs(dist_dir)

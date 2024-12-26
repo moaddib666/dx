@@ -1,0 +1,247 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Construct Sentinel
+    grade: 9
+    description: "Summons a small sentinel to attack enemies for a limited time."
+    multi_target: false
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Summon
+        type: Physical
+        formula:
+          base: 20
+          requires:
+            - stat: Flow Manipulation
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Sentinel Attack
+        chance: 0.2
+        durationSeconds: 120
+        description: Summoned sentinel deals 5 damage per turn for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Repair Construct
+    grade: 8
+    description: "Deploys a construct that heals allies over time."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 30
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 10
+    effect:
+      - name: Repair Field
+        chance: 0.25
+        durationSeconds: 120
+        description: Restores 5 health points to allies per turn for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Defensive Construct
+    grade: 7
+    description: "Summons a construct to absorb damage and protect allies."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Damage Absorption
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces damage taken by allies by 10% for 3 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Construct Builder
+    grade: 6
+    description: "Creates a construct that boosts the stats of nearby allies."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 14
+    effect:
+      - name: Stat Boost
+        chance: 0.35
+        durationSeconds: 180
+        description: Increases allies' speed and physical strength by 10% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Overclocked Construct
+    grade: 5
+    description: "Deploys a high-powered construct that deals significant damage."
+    multi_target: false
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 60
+          requires:
+            - stat: Flow Manipulation
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 16
+    effect:
+      - name: Overclock
+        chance: 0.35
+        durationSeconds: 120
+        description: Summoned construct deals 15 additional damage for 2 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Construct Swarm
+    grade: 3
+    description: "Summons multiple constructs to harass and damage enemies."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 50
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Swarm Effect
+        chance: 0.4
+        durationSeconds: 120
+        description: Deals 10 damage per turn to multiple enemies for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Construct Overwatch
+    grade: 1
+    description: "Deploys a construct that provides healing and buffs to nearby allies."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Heal
+        type: Physical
+        formula:
+          base: 70
+          requires:
+            - stat: Flow Connection
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 28
+    effect:
+      - name: Group Support
+        chance: 0.5
+        durationSeconds: 240
+        description: Restores health and increases defense by 15% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Ultimate Construct
+    grade: 0
+    description: "Creates a massive construct to devastate enemies and support allies."
+    multi_target: true
+    school: 0896047b-d72d-44cd-9e8c-7653521abe0c
+    type: summon
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 120
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 40
+    effect:
+      - name: Construct Domination
+        chance: 0.6
+        durationSeconds: 180
+        description: Reduces enemies' speed by 20% and heals allies for 10 health per turn for 3 turns.

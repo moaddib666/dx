@@ -17,7 +17,7 @@ class Rank(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     description = models.TextField()
-    experience_needed = models.IntegerField()
+    experience_needed = models.BigIntegerField()
     next_rank = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

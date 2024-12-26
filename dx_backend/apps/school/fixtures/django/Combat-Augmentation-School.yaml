@@ -1,0 +1,243 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Augmented Strike
+    grade: 9
+    description: "A precise, enhanced strike using advanced augmentations."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 30
+          requires:
+            - stat: Physical Strength
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 4
+    effect:
+      - name: Precision
+        chance: 0.2
+        durationSeconds: 120
+        description: Increases critical hit chance by 10% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Overclock
+    grade: 8
+    description: "Boosts the user's speed and reaction time through combat augments."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: buff
+    impact:
+      - kind: Buff
+        type: Speed
+        formula:
+          base: 0
+          requires:
+            - stat: Speed
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Speed Boost
+        chance: 0.3
+        durationSeconds: 180
+        description: Increases user's speed by 15% for 3 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Crushing Blow
+    grade: 7
+    description: "A devastating melee attack that breaks through defenses."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 45
+          requires:
+            - stat: Physical Strength
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+    effect:
+      - name: Armor Shred
+        chance: 0.25
+        durationSeconds: 120
+        description: Reduces target's defense by 10% for 2 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Enhanced Reflexes
+    grade: 6
+    description: "Increases reaction speed, allowing for evasive maneuvers."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: buff
+    impact:
+      - kind: Buff
+        type: Dodge
+        formula:
+          base: 0
+          requires:
+            - stat: Speed
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Evasion
+        chance: 0.3
+        durationSeconds: 180
+        description: Increases user's chance to dodge attacks by 15% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Augmented Shielding
+    grade: 5
+    description: "Generates a temporary shield to reduce incoming damage."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 15
+    effect:
+      - name: Damage Absorption
+        chance: 0.25
+        durationSeconds: 240
+        description: Reduces incoming damage by 30% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Adaptive Strike
+    grade: 3
+    description: "Adapts to the enemy's weaknesses for increased damage."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 60
+          requires:
+            - stat: Physical Strength
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Critical Weakness
+        chance: 0.35
+        durationSeconds: 120
+        description: Reduces the target's defense by 15% for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Combat Overdrive
+    grade: 1
+    description: "Powers up all combat stats temporarily for maximum output."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 30
+    effect:
+      - name: Power Surge
+        chance: 0.5
+        durationSeconds: 180
+        description: Increases Physical Strength and Speed by 20% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Overwhelming Strike
+    grade: 0
+    description: "A high-damage attack that leaves the target severely weakened."
+    multi_target: false
+    school: 684821f8-8cb1-4a70-8273-23a9adcee28d
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 120
+          requires:
+            - stat: Physical Strength
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 50
+    effect:
+      - name: Devastation
+        chance: 0.6
+        durationSeconds: 120
+        description: Reduces the target's defense by 20% and speed by 10% for 2 turns.

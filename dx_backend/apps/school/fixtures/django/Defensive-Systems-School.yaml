@@ -1,0 +1,243 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Reinforced Shielding
+    grade: 9
+    description: "Deploys reinforced shielding to reduce incoming damage."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 4
+    effect:
+      - name: Damage Reduction
+        chance: 0.2
+        durationSeconds: 120
+        description: Reduces incoming damage by 20% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Energy Barrier
+    grade: 8
+    description: "Creates an energy barrier that absorbs damage and regenerates over time."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Energy Absorption
+        chance: 0.3
+        durationSeconds: 180
+        description: Absorbs 10% of incoming damage as energy.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Deflection Field
+    grade: 7
+    description: "Generates a field that deflects incoming attacks."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+    effect:
+      - name: Attack Deflection
+        chance: 0.25
+        durationSeconds: 120
+        description: Deflects 15% of damage back to the attacker for 2 turns.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Reactive Armor
+    grade: 6
+    description: "Activates reactive armor that reduces physical damage."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Physical Reduction
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces physical damage by 30% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Adaptive Shielding
+    grade: 5
+    description: "Generates a shield that adapts to incoming attacks, reducing their effectiveness."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 18
+    effect:
+      - name: Energy Reduction
+        chance: 0.25
+        durationSeconds: 240
+        description: Reduces energy-based damage by 40% for 3 turns.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Shield Overload
+    grade: 3
+    description: "Temporarily overloads all shields, providing maximum protection."
+    multi_target: true
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.25
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 25
+    effect:
+      - name: Maximum Shield
+        chance: 0.4
+        durationSeconds: 180
+        description: Reduces all incoming damage by 50% for 2 turns.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Fortress Mode
+    grade: 1
+    description: "Transforms the user into an immovable fortress, greatly enhancing defense."
+    multi_target: false
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: buff
+    impact:
+      - kind: Buff
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.3
+    cost:
+      - kind: Action Points
+        value: 8
+      - kind: Energy
+        value: 30
+    effect:
+      - name: Maximum Defense
+        chance: 0.5
+        durationSeconds: 240
+        description: Reduces all physical and energy damage by 50% for 3 turns.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Defensive Cataclysm
+    grade: 0
+    description: "Releases a massive defensive pulse, nullifying attacks for a short time."
+    multi_target: true
+    school: 7a7dbdf0-eb61-44df-9ff6-6a099bb0af86
+    type: defense
+    impact:
+      - kind: Defense
+        type: Energy
+        formula:
+          base: 0
+          requires:
+            - stat: Flow Connection
+              value: 25
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.4
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 50
+    effect:
+      - name: Nullify Attacks
+        chance: 0.6
+        durationSeconds: 120
+        description: Reduces all incoming damage to 0 for 2 turns and absorbs 20% as energy.

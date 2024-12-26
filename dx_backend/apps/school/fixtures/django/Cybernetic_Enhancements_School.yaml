@@ -1,0 +1,272 @@
+- model: school.skill
+  pk: 1
+  fields:
+    name: Implant - Strength Augmentation
+    grade: 9
+    description: "Enhances the user's strength temporarily."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 30
+          requires:
+            - stat: Physical Strength
+              value: 10
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 4
+    effect:
+      - name: Strength Boost
+        chance: 0.2
+        durationSeconds: 120
+        description: Increases user's strength by 5% for 2 turns.
+
+- model: school.skill
+  pk: 2
+  fields:
+    name: Implant - Cybernetic Punch
+    grade: 7
+    description: "A powerful punch augmented by cybernetic enhancements."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 35
+          requires:
+            - stat: Physical Strength
+              value: 12
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.12
+    cost:
+      - kind: Action Points
+        value: 4
+    effect:
+      - name: Internal Damage
+        chance: 0.15
+        durationSeconds: 120
+        description: Inflicts 5 physical damage per turn for 2 turns.
+
+- model: school.skill
+  pk: 3
+  fields:
+    name: Implant - Neural Disruptor
+    grade: 6
+    description: "Disrupts the target's neural pathways, causing paralysis."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 45
+          requires:
+            - stat: Concentration
+              value: 15
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 5
+      - kind: Energy
+        value: 8
+    effect:
+      - name: Paralysis
+        chance: 0.25
+        durationSeconds: 60
+        description: Disrupts the target's neural system, paralyzing them for 1 turn.
+
+- model: school.skill
+  pk: 4
+  fields:
+    name: Implant - Hydraulic Strike
+    grade: 5
+    description: "A devastating strike using hydraulic augmentation."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 50
+          requires:
+            - stat: Physical Strength
+              value: 16
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.15
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 12
+    effect:
+      - name: Defense Reduction
+        chance: 0.3
+        durationSeconds: 180
+        description: Reduces target's defense by 10% for 3 turns.
+
+- model: school.skill
+  pk: 5
+  fields:
+    name: Implant - Power Surge
+    grade: 4
+    description: "Releases a surge of energy to weaken the opponent."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Energy
+        formula:
+          base: 70
+          requires:
+            - stat: Energy Reserves
+              value: 15
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 6
+      - kind: Energy
+        value: 20
+    effect:
+      - name: Energy Drain
+        chance: 0.3
+        durationSeconds: 120
+        description: Reduces target's energy reserves by 20%.
+
+- model: school.skill
+  pk: 6
+  fields:
+    name: Implant - Armor Plating
+    grade: 4
+    description: "Reinforces the user's defense with cybernetic plating."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 14
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.1
+    cost:
+      - kind: Action Points
+        value: 5
+    effect:
+      - name: Damage Reduction
+        chance: 0.2
+        durationSeconds: 180
+        description: Reduces incoming damage by 30%.
+
+- model: school.skill
+  pk: 7
+  fields:
+    name: Implant - Adaptive Strike
+    grade: 3
+    description: "A calculated strike that adapts to the target’s weak points."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 85
+          requires:
+            - stat: Physical Strength
+              value: 18
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.18
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 25
+    effect:
+      - name: Paralysis
+        chance: 0.35
+        durationSeconds: 60
+        description: Paralyzes the target for 1 turn.
+
+- model: school.skill
+  pk: 8
+  fields:
+    name: Implant - Enhanced Armor
+    grade: 2
+    description: "An advanced armor system providing superior defense."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: defense
+    impact:
+      - kind: Defense
+        type: Physical
+        formula:
+          base: 0
+          requires:
+            - stat: Physical Strength
+              value: 20
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 7
+      - kind: Energy
+        value: 30
+    effect:
+      - name: High Defense
+        chance: 0.4
+        durationSeconds: 240
+        description: Reduces incoming damage by 40%.
+
+- model: school.skill
+  pk: 9
+  fields:
+    name: Implant - Full System Assault
+    grade: 0
+    description: "A devastating full-body attack leveraging all augmentations."
+    multi_target: false
+    school: 4f9cc24a-52f3-43a3-8e8b-b01a367a504f
+    type: attack
+    impact:
+      - kind: Damage
+        type: Physical
+        formula:
+          base: 150
+          requires:
+            - stat: Physical Strength
+              value: 22
+          scaling:
+            - stat: Flow Manipulation
+              value: 0.2
+    cost:
+      - kind: Action Points
+        value: 10
+      - kind: Energy
+        value: 50
+    effect:
+      - name: Paralyze
+        chance: 0.6
+        durationSeconds: 120
+        description: Paralyzes the target for 2 turns.

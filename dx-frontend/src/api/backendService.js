@@ -7,7 +7,9 @@ import {
     ModificatorsApi,
     SchoolApi,
     SkillsApi,
-    WorldApi
+    WorldApi,
+    ClientApi,
+    GalleryApi
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
@@ -15,6 +17,7 @@ export const GameApiConfig = new Configuration({
     accessToken: store.state.token,
 })
 
+export const ClientGameApi = new ClientApi(GameApiConfig);
 export const CharacterGameApi = new CharacterApi(GameApiConfig);
 export const SkillsGameApi = new SkillsApi(GameApiConfig);
 export const FightGameApi = new FightApi(GameApiConfig);
@@ -22,3 +25,4 @@ export const SchoolGameApi = new SchoolApi(GameApiConfig);
 export const ModificatorsGameApi = new ModificatorsApi(GameApiConfig);
 export const CoreGameApi = new CoreApi(GameApiConfig);
 export const WorldGameApi = new WorldApi(GameApiConfig);
+export const GalleryGameApi = new GalleryApi(GameApiConfig);

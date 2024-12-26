@@ -1,0 +1,555 @@
+- model: school.skill
+  pk: 14
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Spark
+    grade: 8
+    description: A small spark that ignites the target the skill is built on top of
+      the Flow Manipulation and scaled by it. Each point in Flow Manipulation increases
+      the damage by 10%.
+    multi_target: false
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 15
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 4
+    - kind: Energy
+      value: 5
+    effect:
+    - name: Burn
+      chance: 0.2
+      durationSeconds: 60
+      description: 5 heat damage per turn for 2 turns with 20% chance
+    icon: ''
+- model: school.skill
+  pk: 15
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Ember Burst
+    grade: 7
+    description: A burst of embers that can cause burning, built on Flow Manipulation
+      and scaled by it. Each point in Flow Manipulation increases the damage by 10%.
+    multi_target: false
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 20
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 4
+    - kind: Energy
+      value: 5
+    effect:
+    - name: Burn
+      chance: 0.15
+      durationSeconds: 60
+      description: 10 heat damage per turn for 2 turns with 15% chance
+    icon: ''
+- model: school.skill
+  pk: 16
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Flame Wave
+    grade: 6
+    description: A wave of fire that burns targets in a line, built on Flow Manipulation
+      and scaled by it. Each point in Flow Manipulation increases the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 30
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 5
+    - kind: Energy
+      value: 10
+    effect:
+    - name: Burn
+      chance: 0.25
+      durationSeconds: 60
+      description: 5 heat damage per turn for 2 turns with 25% chance
+    icon: ''
+- model: school.skill
+  pk: 17
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Inferno Blast
+    grade: 5
+    description: Creates an inferno that causes severe burns, built on Flow Manipulation
+      and scaled by it. Each point in Flow Manipulation increases the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 40
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 6
+    - kind: Energy
+      value: 15
+    effect:
+    - name: Defense Reduction
+      chance: 0.3
+      durationSeconds: 120
+      description: Reduces targets' defense by 10% for 2 turns
+    icon: ''
+- model: school.skill
+  pk: 18
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Scorching Ray
+    grade: 4
+    description: A focused ray of intense heat, built on Flow Manipulation and scaled
+      by it. Each point in Flow Manipulation increases the damage by 10%.
+    multi_target: false
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 55
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 6
+    - kind: Energy
+      value: 20
+    effect:
+    - name: Severe Burn
+      chance: 0.35
+      durationSeconds: 180
+      description: 10 heat damage per turn for 3 turns with 35% chance
+    icon: ''
+- model: school.skill
+  pk: 19
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Blazing Shield
+    grade: 4
+    description: A shield of flames that reduces incoming damage, built on Flow Manipulation
+      and scaled by it. Each point in Flow Manipulation increases the defense by 10%.
+    multi_target: false
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Defense
+      type: Heat
+      formula:
+        base: 30
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.1
+    cost:
+    - kind: Action Points
+      value: 5
+    - kind: Energy
+      value: 10
+    effect:
+    - name: Heat Damage
+      chance: 0.2
+      durationSeconds: 180
+      description: Deals 10 heat damage to attackers with 20% chance
+    icon: ''
+- model: school.skill
+  pk: 20
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Pyroclasm
+    grade: 3
+    description: Unleashes a pyroclasm that engulfs the area in flames, built on Flow
+      Manipulation and scaled by it. Each point in Flow Manipulation increases the
+      damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 70
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 7
+    - kind: Energy
+      value: 25
+    effect:
+    - name: Ignite
+      chance: 0.4
+      durationSeconds: 60
+      description: 10 heat damage per turn for 2 turns with 40% chance
+    icon: ''
+- model: school.skill
+  pk: 21
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Volcanic Eruption
+    grade: 2
+    description: Causes a volcanic eruption that engulfs a large area in flames, built
+      on Flow Manipulation and scaled by it. Each point in Flow Manipulation increases
+      the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 85
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 8
+    - kind: Energy
+      value: 30
+    effect:
+    - name: Speed Reduction
+      chance: 0.5
+      durationSeconds: 120
+      description: Reduces targets' speed by 10% for 2 turns
+    icon: ''
+- model: school.skill
+  pk: 22
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Molten Armor
+    grade: 2
+    description: Armor of molten rock that reduces incoming damage, built on Flow
+      Manipulation and scaled by it. Each point in Flow Manipulation increases the
+      defense by 10%.
+    multi_target: false
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Defense
+      type: Heat
+      formula:
+        base: 40
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.1
+    cost:
+    - kind: Action Points
+      value: 7
+    - kind: Energy
+      value: 25
+    effect:
+    - name: Heat Damage
+      chance: 0.3
+      durationSeconds: 240
+      description: Deals 15 heat damage to attackers with 30% chance
+    icon: ''
+- model: school.skill
+  pk: 23
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Meteor Storm
+    grade: 1
+    description: Summons a storm of meteors that devastate a large area, built on
+      Flow Manipulation and scaled by it. Each point in Flow Manipulation increases
+      the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 100
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 9
+    - kind: Energy
+      value: 35
+    effect:
+    - name: Massive Burn
+      chance: 0.6
+      durationSeconds: 180
+      description: 20 heat damage per turn for 3 turns with 60% chance
+    icon: ''
+- model: school.skill
+  pk: 24
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Hellfire
+    grade: 0
+    description: Unleashes the flames of the underworld, built on Flow Manipulation
+      and scaled by it. Each point in Flow Manipulation increases the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 120
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 10
+    - kind: Energy
+      value: 40
+    effect:
+    - name: Ignite
+      chance: 0.7
+      durationSeconds: 180
+      description: 15 heat damage per turn for 3 turns with 70% chance
+    icon: ''
+- model: school.skill
+  pk: 25
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Dragon's Breath
+    grade: 0
+    description: Emulates the breath of a dragon, spewing fire in a cone, built on
+      Flow Manipulation and scaled by it. Each point in Flow Manipulation increases
+      the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 110
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 9
+    - kind: Energy
+      value: 35
+    effect:
+    - name: Burning
+      chance: 0.5
+      durationSeconds: 180
+      description: 15 heat damage per turn for 3 turns with 50% chance
+    icon: ''
+- model: school.skill
+  pk: 26
+  fields:
+    created_at: 2024-12-21 13:27:32.436135+00:00
+    updated_at: 2024-12-21 13:27:32.455488+00:00
+    name: Fiery Cataclysm
+    grade: 0
+    description: Causes a fiery cataclysm that engulfs the area in intense flames,
+      built on Flow Manipulation and scaled by it. Each point in Flow Manipulation
+      increases the damage by 10%.
+    multi_target: true
+    school: 43607b12-9f49-4993-99ba-a416daa8da10
+    type: attack
+    impact:
+    - kind: Damage
+      type: Heat
+      formula:
+        base: 130
+        requires:
+        - stat: Flow Manipulation
+          value: 5
+        scaling:
+        - stat: Flow Manipulation
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 10
+    - kind: Energy
+      value: 45
+    effect:
+    - name: Catastrophic Burn
+      chance: 0.8
+      durationSeconds: 180
+      description: 20 heat damage per turn for 3 turns with 80% chance
+    icon: ''
+- model: school.skill
+  pk: 29
+  fields:
+    created_at: 2024-12-21 13:56:34.463606+00:00
+    updated_at: 2024-12-21 13:56:34.464470+00:00
+    name: Right Hook
+    grade: 9
+    description: A basic physical attack delivering a strong punch.
+    multi_target: false
+    school: 3ea5c283-f8fd-4e24-a7e1-89ff96c8d796
+    type: attack
+    impact:
+    - kind: Damage
+      type: Physical
+      formula:
+        base: 10
+        requires:
+        - stat: Physical Strength
+          value: 0
+        scaling:
+        - stat: Physical Strength
+          value: 0.1
+    cost:
+    - kind: Action Points
+      value: 2
+    effect: []
+    icon: ''
+- model: school.skill
+  pk: 30
+  fields:
+    created_at: 2024-12-21 13:58:16.197009+00:00
+    updated_at: 2024-12-21 13:58:16.198015+00:00
+    name: Front Kick
+    grade: 9
+    description: A basic physical attack delivering a powerful kick to the opponent.
+    multi_target: false
+    school: 3ea5c283-f8fd-4e24-a7e1-89ff96c8d796
+    type: attack
+    impact:
+    - kind: Damage
+      type: Physical
+      formula:
+        base: 12
+        requires:
+        - stat: Physical Strength
+          value: 0
+        scaling:
+        - stat: Speed
+          value: 0.1
+    cost:
+    - kind: Action Points
+      value: 3
+    effect: []
+    icon: ''
+- model: school.skill
+  pk: 31
+  fields:
+    created_at: 2024-12-21 13:58:28.850726+00:00
+    updated_at: 2024-12-21 13:58:28.851153+00:00
+    name: Block
+    grade: 9
+    description: A defensive maneuver to block incoming damage.
+    multi_target: false
+    school: 3ea5c283-f8fd-4e24-a7e1-89ff96c8d796
+    type: defense
+    impact:
+    - kind: Shield
+      type: None
+      formula:
+        base: 8
+        requires:
+        - stat: Physical Strength
+          value: 0
+        scaling:
+        - stat: Luck
+          value: 0.1
+    cost:
+    - kind: Action Points
+      value: 1
+    effect: []
+    icon: ''
+- model: school.skill
+  pk: 32
+  fields:
+    created_at: 2024-12-21 13:58:37.456129+00:00
+    updated_at: 2024-12-21 13:58:37.456836+00:00
+    name: Dodge
+    grade: 9
+    description: A quick move to evade an incoming attack.
+    multi_target: false
+    school: 3ea5c283-f8fd-4e24-a7e1-89ff96c8d796
+    type: defense
+    impact:
+    - kind: None
+      type: None
+      formula:
+        base: 0
+        requires: []
+        scaling:
+        - stat: Speed
+          value: 0.2
+    cost:
+    - kind: Action Points
+      value: 2
+    effect: []
+    icon: ''

@@ -33,6 +33,9 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     ACCEPT_DUEL_INVITATION = "ACCEPT_DUEL_INVITATION"
     REJECT_DUEL_INVITATION = "REJECT_DUEL_INVITATION"
     START_FIGHT = "START_FIGHT"
+    MOVE = "MOVE"
+    BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
+    DICE_ROLL = "DICE_ROLL"
 
 
 class ImpactType(DjangoChoicesMixin, StrEnum):

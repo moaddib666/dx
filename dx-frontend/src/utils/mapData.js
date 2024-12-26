@@ -123,6 +123,7 @@ const MapData = reactive({
             this.rooms = parsed.rooms || [];
             this.connections = parsed.connections || [];
             this.verticalConnections = parsed.virtualConnections || [];
+            this.characters = parsed.characters || {};
         }
     },
 
@@ -131,6 +132,7 @@ const MapData = reactive({
             rooms: this.rooms,
             connections: this.connections,
             virtualConnections: this.verticalConnections,
+            characters: {},
         });
     },
 
@@ -138,12 +140,14 @@ const MapData = reactive({
         this.rooms = json.rooms || [];
         this.connections = json.connections || [];
         this.verticalConnections = json.virtualConnections || [];
+        this.characters = json.characters || {};
     },
 
     clear() {
         this.rooms = [];
         this.connections = [];
         this.verticalConnections = [];
+        this.characters = {};
         this.save();
     },
 
@@ -183,6 +187,9 @@ const MapData = reactive({
                 return roomA !== undefined && roomB !== undefined && ((roomA.grid_z === floor) || (roomB.grid_z === floor))
             }
         );
+    },
+    getCharactersInRoom(room) {
+        return this.characters[room.id] || [];
     }
 });
 
