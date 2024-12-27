@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'django_filters',
     'corsheaders',
     # 'channels',
     'apps.gallery',
@@ -200,6 +201,8 @@ SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST': True,
 
     'SCHEMA_PATH_PREFIX': '/api',  # Ensure paths have the /api prefix
+    # FIXME: comment the line before - to generation api clients
+    # 'SCHEMA_PATH_PREFIX_TRIM': True,
     'SERVERS': [
         {'url': '/api', 'description': 'API Server'},  # Set the base path for generated clients
     ],

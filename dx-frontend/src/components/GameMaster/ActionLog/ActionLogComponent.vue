@@ -69,28 +69,29 @@ export default {
 <style scoped>
 .action-log {
   border: 1px solid #444;
-  border-radius: 8px;
-  padding: 1.5rem;
-  background: #1c1c1c;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: #1a1a1a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .action-log-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .refresh-button {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.6rem;
   background: #ffcc00;
   border: none;
   border-radius: 4px;
   color: #1c1c1c;
   font-weight: bold;
+  font-size: 0.75rem;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.2s ease;
 }
 
 .refresh-button:hover {
@@ -100,28 +101,28 @@ export default {
 .action-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .cycle-group {
   border: 1px solid #555;
-  border-radius: 6px;
-  background: #222;
-  padding: 1rem;
+  border-radius: 4px;
+  background: #1f1f1f;
+  padding: 0.5rem;
 }
 
 .cycle-header {
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: bold;
   color: #ffcc00;
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
   border-bottom: 1px solid #444;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
 }
 
 .cycle-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.4rem;
 }
 </style>

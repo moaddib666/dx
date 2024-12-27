@@ -378,3 +378,11 @@ FIGHT_TURN_DURATION_SECONDS = 30
 class FightSide(DjangoChoicesMixin, StrEnum):
     ATTACKER = "Attacker"
     DEFENDER = "Defender"
+
+
+class GameMasterImpactAction(BaseModel):
+    initiator: uuid.UUID
+    target: uuid.UUID
+    impact_type: ImpactType
+    impact_violation: ImpactViolationType
+

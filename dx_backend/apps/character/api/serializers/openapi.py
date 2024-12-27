@@ -22,7 +22,7 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        fields = ['id', 'name', 'biography']
+        fields = ['id', 'name', 'biography', "npc"]
 
 
 class CharacterStatsSerializer(serializers.Serializer):

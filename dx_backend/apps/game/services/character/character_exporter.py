@@ -62,7 +62,7 @@ class CharacterExportService:
 
 
 if __name__ == '__main__':
-    character_id = 'e1cd95a3-bd01-4e57-aefa-2e83144406d9'
+    character_id = '9b66a56f-2c5d-4db3-86d9-4b75aed0406d'
     char = Character.objects.get(pk=character_id)
     service = CharacterExportService()
     print(service.to_json(char, indent=2))

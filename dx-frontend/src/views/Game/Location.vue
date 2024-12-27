@@ -5,6 +5,7 @@
     </BackgroundView>
     <!-- Compass Component -->
     <CompassComponent
+        v-if="hasActionPoints"
         :connections="this.activeConnections"
         centerAction="true"
         centerLabel="Up"
@@ -21,20 +22,29 @@
         :player="playerInfo"
         :playerImage="playerGeneralInfo.biography.avatar"
     />
+
+    <DiceComponent @selectedDice="diceRoll" :result="diceResult"/>
+    <CurrentTurnComponent @turnChanged="updateAll"/>
   </div>
 
 </template>
 
 <script>
 import CompassComponent from '@/components/Game/Location/Compass.vue';
-import {CharacterGameApi, WorldGameApi} from "@/api/backendService.js";
+import {ActionGameApi, CharacterGameApi, WorldGameApi} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
+import ActionService from "@/services/actionsService.js";
+import PlayerService from "@/services/playerService.js";
+import DiceComponent from "@/components/Dice/DiceComponent.vue";
+import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    CurrentTurnComponent,
+    DiceComponent,
     BackgroundView,
     PlayerComponent,
     CharacterCardHolder,
@@ -48,9 +58,15 @@ export default {
       playerGeneralInfo: null,
       characters: [],
       selectedCharacterId: 'f3c4216f-cbaa-4792-b6e6-1cedd502deae',
+      actionService: new ActionService(ActionGameApi),
+      playerService: null,
+      diceResult: null,
     };
   },
   computed: {
+    hasActionPoints() {
+      return this.playerService?.hasActionPoints();
+    },
     activeCharacters() {
       return this.characters
     },
@@ -62,15 +78,24 @@ export default {
     },
   },
   async created() {
-    await this.getCurrentPositionInfo();
-    await this.getPlayerInfo();
+    await this.updateAll();
   },
   methods: {
+    async updateAll() {
+      await this.getCurrentPositionInfo();
+      await this.getPlayerInfo();
+    },
+    async diceRoll({dice, index}) {
+      // sleep for 1 second
+      await new Promise(r => setTimeout(r, 1000));
+      this.diceResult = await this.actionService.diceRoll(dice.value);
+    },
     async handleMove(direction) {
       const move_direction = this.connections[direction]
       const new_postion_id = move_direction.to_position;
-      await WorldGameApi.worldPositionMoveToPositionCreate(new_postion_id);
-      await this.getCurrentPositionInfo();
+      await this.actionService.move(new_postion_id);
+      // await this.getCurrentPositionInfo();
+      await this.getPlayerInfo();
     },
     async resolveCharacter(characterId) {
       const data = await CharacterGameApi.characterRetrieve(characterId);
@@ -92,6 +117,7 @@ export default {
       if (this.playerGeneralInfo === null) {
         this.playerGeneralInfo = (await CharacterGameApi.characterRetrieve(this.playerInfo.id)).data;
       }
+      this.playerService = new PlayerService(this.playerInfo)
     }
   },
 };

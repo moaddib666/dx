@@ -2,11 +2,11 @@ from typing import List
 
 from typing_extensions import TypedDict
 
-from apps.core.models import ImpactType, ImpactViolationType
+from apps.core.models import ImpactType, ImpactViolationType, AttributeType, CharacterStats
 
 
 class StatRequirement(TypedDict):
-    stat: str
+    stat: CharacterStats
     value: float
 
 
@@ -31,7 +31,7 @@ class Impact(TypedDict):
 
 
 class Cost(TypedDict):
-    kind: str
+    kind: AttributeType
     value: int
 
 

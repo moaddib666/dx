@@ -99,9 +99,11 @@ class CharacterAdmin(admin.ModelAdmin):
     """
     Admin interface for Character with integrated CharacterBiography.
     """
+
+
     list_display = (
         'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
-        'current_health_points', 'current_energy_points',
+        'current_health_points', 'current_energy_points', "current_active_points",
         'organization', 'is_active', 'npc'
     )
     search_fields = ('name', 'biography__background', 'biography__appearance')

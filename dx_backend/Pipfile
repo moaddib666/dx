@@ -26,5 +26,6 @@ djangorestframework-simplejwt = "*"
 pydantic = "*"
 channels-redis = "*"
 psycopg2-binary = "*"
+django-filter = "*"
 
 [dev-packages]

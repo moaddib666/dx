@@ -26,6 +26,22 @@ class CharacterService:
     def model(self):
         return self.character
 
+    def spend_all_ap(self):
+        self.character.current_active_points = 0
+        self.character.save(update_fields=['current_active_points'])
+
+    def spend_ap(self, amount: int):
+        self.character.current_active_points -= amount
+        self.character.save(update_fields=['current_active_points'])
+
+    def spend_energy(self, amount: int):
+        self.character.current_energy_points -= amount
+        self.character.save(update_fields=['current_energy_points'])
+
+    def spend_hp(self, amount: int):
+        self.character.current_health_points -= amount
+        self.character.save(update_fields=['current_health_points'])
+
     def get_max_ap(self):
         return int(round(self.get_stat(CharacterStats.SPEED) * 0.5 * self.character.dimension.speed))
 
@@ -40,6 +56,15 @@ class CharacterService:
         # TODO: think about better formula for calculating max energy
         calculated_energy = 100 + round(mental_strength * 5.5)
         return calculated_energy
+
+    def get_current_ap(self) -> int:
+        return self.character.current_active_points
+
+    def get_current_hp(self) -> int:
+        return self.character.current_health_points
+
+    def get_current_energy(self) -> int:
+        return self.character.current_energy_points
 
     def get_character_info(self) -> FullCharacterInfo:
         self.character.refresh_from_db()
@@ -99,10 +124,14 @@ class CharacterService:
             return results
 
         # FIXME: add processing for other impact types
-        if calculated_impact['kind'] != ImpactType.DAMAGE:
+        if calculated_impact['kind'] not in (ImpactType.DAMAGE, ImpactType.HEAL):
             raise GameLogicException(f"Unknown impact kind {calculated_impact['kind']}")
 
         self.character.current_health_points -= calculated_impact['value']
+        if self.character.current_health_points < 0:
+            self.character.current_health_points = 0
+        if self.character.current_health_points > self.get_max_hp():
+            self.character.current_health_points = self.get_max_hp()
         self.character.save()
         r = action.impacts.create(
             target=self.character,

@@ -42,7 +42,7 @@
               @click="onCharacterClick(player.id)"
           >
             <div class="avatar-placeholder">
-              <img :src="player.avatar" :alt="player.name + ' avatar'" />
+              <img class="avatar-placeholder" :src="player.avatar" :alt="player.name + ' avatar'" />
             </div>
             <span class="character-name">{{ player.name }}</span>
           </div>
@@ -61,7 +61,9 @@
               class="character-row"
               @click="onCharacterClick(npc.id)"
           >
-            <div class="avatar-placeholder"></div>
+            <div class="avatar-placeholder">
+              <img class="avatar-placeholder" :src="npc.avatar" :alt="npc.name + ' avatar'" />
+            </div>
             <span class="character-name">{{ npc.name }}</span>
           </div>
         </div>
@@ -781,6 +783,8 @@ h3 {
 .avatar-placeholder {
   width: 40px;
   height: 40px;
+  max-width: 40px;
+  max-height: 40px;
   background: #666; /* Placeholder color */
   border-radius: 50%;
   margin-right: 10px;

@@ -1,5 +1,6 @@
 import store from '@/store';
 import {
+    ActionApi,
     CharacterApi,
     Configuration,
     CoreApi,
@@ -16,7 +17,7 @@ export const GameApiConfig = new Configuration({
     basePath: import.meta.env.VITE_API_BASE_URL,
     accessToken: store.state.token,
 })
-
+export const ActionGameApi = new ActionApi(GameApiConfig);
 export const ClientGameApi = new ClientApi(GameApiConfig);
 export const CharacterGameApi = new CharacterApi(GameApiConfig);
 export const SkillsGameApi = new SkillsApi(GameApiConfig);

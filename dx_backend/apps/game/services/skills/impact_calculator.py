@@ -1,10 +1,11 @@
 import logging
+from typing import List
+
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.game.services.character.core import CharacterService
 from apps.school.dto import Impact
 from apps.school.models import Skill
-from typing import List, Dict, Any
 
 
 class SkillImpactService:
@@ -15,15 +16,18 @@ class SkillImpactService:
         self.skill = skill
 
     def calculate_impact(self) -> List[CalculatedImpact]:
-        self.logger.info(f"Calculating impact for skill {self.skill.id} used by character {self.initiator.character.id}")
+        self.logger.info(
+            f"Calculating impact for skill {self.skill.id} used by character {self.initiator.character.id}")
 
-        if self.skill.type != Skill.Types.ATTACK:
+        if self.skill.type not in (Skill.Types.ATTACK, Skill.Types.HEAL):
             self.logger.error("Only attack skills supported for now")
             raise GameLogicException("Only attack skills supported for now")
 
         impacts: List[Impact] = self.skill.impact
         calculated_impacts = [self.calculate_damage(impact) for impact in impacts]
-
+        if self.skill.type == Skill.Types.HEAL:
+            for impact in calculated_impacts:
+                impact['value'] *= -1
         return calculated_impacts
 
     def calculate_damage(self, impact: Impact) -> CalculatedImpact:
@@ -42,9 +46,9 @@ class SkillImpactService:
         required_stats = formula.get("requires", [])
         scaling_factors = formula.get("scaling", [])
         self.logger.debug(f"Base damage: {base_damage}")
-
-        if len(required_stats) != len(scaling_factors):
-            raise GameLogicException("Improperly configured impact formula")
+        # FIXME: decide on this
+        # if len(required_stats) != len(scaling_factors):
+        #     raise GameLogicException("Improperly configured impact formula")
 
         potential_impacts = []
         for r, s in zip(required_stats, scaling_factors):

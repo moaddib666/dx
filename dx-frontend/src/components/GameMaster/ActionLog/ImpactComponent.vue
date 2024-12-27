@@ -1,12 +1,11 @@
 <template>
-  <div class="impact compact">
-    <div class="impact-details">
-      <span class="type">Type: {{ impact.type }}</span>
-      <span class="violation">Violation: {{ impact.violation }}</span>
-      <span class="size">Size: {{ impact.size }}</span>
-    </div>
-    <SmallCharPreview :char="impact.target" @select="selectTarget"/>
-    <DiceRollResult v-if="impact.dice_roll_result" :result="impact.dice_roll_result"/>
+  <div class="impact">
+    <SmallCharPreview :char="impact.target" @select="handleSelect" />
+    <span class="impact-type">Type: {{ impact.type }}</span>
+    <span class="impact-violation">Violation: {{ impact.violation }}</span>
+    <span class="impact-size">Size: {{ impact.size }}</span>
+
+    <DiceRollResult v-if="impact.dice_roll_result" :result="impact.dice_roll_result" />
   </div>
 </template>
 
@@ -24,7 +23,7 @@ export default {
     impact: Object,
   },
   methods: {
-    selectTarget(id) {
+    handleSelect(id) {
       this.$emit('selectTarget', id);
     },
   },
@@ -32,35 +31,31 @@ export default {
 </script>
 
 <style scoped>
-.impact.compact {
+.impact {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem;
   border: 1px solid #444;
   border-radius: 4px;
-  background: #1c1c1c;
+  padding: 0.3rem;
+  background: #202020;
+  font-size: 0.8rem;
 }
 
-.impact-details {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.9rem;
+.impact-type, .impact-violation, .impact-size {
+  font-weight: bold;
   color: #e0e0e0;
 }
 
-.impact-details .type {
-  font-weight: bold;
+.impact-type {
   color: #ffcc00;
 }
 
-.impact-details .violation {
-  font-weight: bold;
+.impact-violation {
   color: #00ccff;
 }
 
-.impact-details .size {
-  font-weight: bold;
+.impact-size {
   color: #ff6666;
 }
 </style>

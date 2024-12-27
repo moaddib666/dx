@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "21c66a1657d2cef4fe912b9322bf26e048b181ec64cf554e4704aa574f32d979"
+            "sha256": "d7ce28503bb8dda36864fa3e88993154e62301129a9506af7684387e23217c56"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -391,11 +391,11 @@
         },
         "django-allauth": {
             "hashes": [
-                "sha256:92e0242724af03458b05b88c5fa798b01112ab22a86d873a8a9fd8f0ec57bbbf"
+                "sha256:e02e951b71a2753a746459f2efa114c7c72bf2cef6887dbe8607a577c0350587"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==65.3.0"
+            "version": "==65.3.1"
         },
         "django-celery-beat": {
             "hashes": [
@@ -414,6 +414,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.9'",
             "version": "==4.6.0"
+        },
+        "django-filter": {
+            "hashes": [
+                "sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64",
+                "sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==24.3"
         },
         "django-jet-reboot": {
             "hashes": [

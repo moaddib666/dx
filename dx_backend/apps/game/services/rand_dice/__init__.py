@@ -18,7 +18,7 @@ class CharacterProtocol(Protocol):
 class DiceService:
     logger = logging.getLogger("game.services.dice")
 
-    def __init__(self, character: CharacterProtocol, luck: int, sides: int = 6, base_luck: int = 5):
+    def __init__(self, character: CharacterProtocol, luck: int, sides: int = 6, base_luck: int = 10):
         self.character = character
         self.luck = luck
         self.sides = sides

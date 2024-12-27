@@ -1,11 +1,12 @@
 <template>
   <div class="dice-visualizer">
     <div class="dice-container">
+      <!-- Iterate over the dice set -->
       <div
           v-for="(dice, index) in diceSet"
           :key="index"
-          :class="['dice', { highlighted: highlightedDice === index, disabled: highlightedDice !== index }]"
-          @click="rollDice(dice, index)"
+          class="dice"
+          @click="selectDice(dice, index)"
       >
         <span class="dice-label">{{ dice.type }}</span>
       </div>
@@ -25,57 +26,62 @@ export default {
     diceSet: {
       type: Array,
       default: () => [
-        {type: "d4"},
-        {type: "d6"},
-        {type: "d8"},
-        {type: "d10"},
-        {type: "d12"},
-        {type: "d20"},
-        {type: "d100"},
+        {type: "d4", value: 4},
+        {type: "d6", value: 6},
+        {type: "d8", value: 8},
+        {type: "d10", value: 10},
+        {type: "d12", value: 12},
+        {type: "d20", value: 20},
+        {type: "d100", value: 100},
       ],
     },
-    highlightedDice: {
+    result: {
       type: Number,
-      default: -1,
+      default: null, // The final result to display
     },
   },
   data() {
     return {
-      rolledResult: null,
       rolledDiceIndex: null,
       displayResult: null,
       isFinalResult: false,
+      rollInterval: null,
     };
   },
+  watch: {
+    // Watch for changes in the result prop
+    result(newResult) {
+      this.stopBlinking(newResult);
+    },
+  },
   methods: {
-    rollDice(dice, index) {
-      if (this.highlightedDice !== index) return;
-
+    selectDice(dice, index) {
       this.rolledDiceIndex = index;
-      this.rolledResult = null; // Reset result for animation
-      this.displayResult = null;
-      this.isFinalResult = false;
-
+      this.startBlinking(dice);
+      this.$emit("selectedDice", {dice, index});
+    },
+    startBlinking(dice) {
       const sides = parseInt(dice.type.slice(1));
 
-      // Random result simulation
-      let randomInterval = setInterval(() => {
+      // Start random blinking numbers
+      this.rollInterval = setInterval(() => {
         this.displayResult = Math.floor(Math.random() * sides) + 1;
       }, 100);
+    },
+    stopBlinking(finalResult) {
+      // Stop blinking and display the final result
+      clearInterval(this.rollInterval);
+      this.rollInterval = null;
+      this.displayResult = finalResult;
+      this.isFinalResult = true;
 
-      // Final result reveal
-      setTimeout(() => {
-        clearInterval(randomInterval);
-        this.rolledResult = Math.floor(Math.random() * sides) + 1;
-        this.displayResult = this.rolledResult;
-        this.isFinalResult = true;
-        this.$emit("rollResult", {dice, result: this.rolledResult});
-      }, 2000); // Let the animation run for 2 seconds
+      // Emit the roll result
+      const dice = this.diceSet[this.rolledDiceIndex];
+      this.$emit("rollResult", {dice, result: finalResult});
     },
   },
 };
 </script>
-
 <style scoped>
 /* Layout and Container Styles */
 .dice-visualizer {
@@ -112,17 +118,12 @@ export default {
   background-size: cover;
   background-position: center;
   box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dice.disabled {
-  filter: grayscale(80%) brightness(0.7);
-  pointer-events: none;
-}
-
-.dice.highlighted:hover {
-  transform: scale(1.2) rotate(5deg);
-  box-shadow: 0 0 40px rgba(0, 255, 255, 1);
+.dice:hover {
+  transform: scale(1.2) rotate(5deg); /* Slight enlargement and rotation */
+  box-shadow: 0 0 40px rgba(0, 255, 255, 1); /* Bright glow on hover */
 }
 
 .dice-label {

@@ -1,8 +1,10 @@
 from django.db import transaction
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.character.api.filters.character import CharacterFilter
 from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, CharacterInfoSerializer, \
     CharacterPathSerializer, \
     CharacterTemplateFullSerializer, CharacterGenericDataSerializer
@@ -13,11 +15,12 @@ from apps.game.services.character.core import CharacterService
 from apps.game.services.character.template import CharacterTemplateService
 
 
-class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
+class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Character.objects.filter(is_active=True)
     serializer_class = OpenaiCharacterSerializer
-    permission_classes = [permissions.IsAdminUser]
-
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CharacterFilter
     # TODO move TO THE GAME SETTINGS
     PLAYER_CREATION_LIMIT = 5
 
@@ -56,7 +59,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
             character = user.main_character
             service = CharacterService(character)
             character_info = service.get_character_info()
-            return Response(data=character_info.dict())
+            return Response(data=character_info.model_dump())
         except Character.DoesNotExist:
             return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -96,3 +99,23 @@ class OpenAISchoolsManagementViewSet(viewsets.ModelViewSet):
         char_svc = svc.import_character(CharacterGenericData(**serializer.validated_data))
         character_info = char_svc.get_character_info()
         return Response(data=character_info.model_dump())
+
+
+class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Character.objects.all()
+    serializer_class = OpenaiCharacterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CharacterFilter
+
+    @action(detail=True, methods=['get'],
+            serializer_class=CharacterInfoSerializer)
+    def character_info(self, request, pk=None):
+
+        try:
+            character = self.get_object()
+            service = CharacterService(character)
+            character_info = service.get_character_info()
+            return Response(data=character_info.model_dump())
+        except Character.DoesNotExist:
+            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)

@@ -26,6 +26,11 @@ class CharacterCloner:
                     background=self.char.biography.background,
                     avatar=self.char.biography.avatar
                 )
+                self.clone_stats(self.char, new_char)
                 new.add(new_char)
 
         return new
+
+    def clone_stats(self, source: Character, target: Character) -> None:
+        for stat in source.stats.all():
+            target.stats.create(name=stat.name, value=stat.value)

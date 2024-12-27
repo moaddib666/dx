@@ -1,23 +1,21 @@
 <template>
   <div class="action-log-item">
-    <div class="action-header">
-      <SmallCharPreview :char="action.initiator" @select="handleSelect"/>
-      <span class="action-type">Action: {{ action.action_type }}</span>
-    </div>
-
-    <div class="action-status">
-      <span class="cycle">Cycle: {{ action.cycle.id }}</span>
-      <span :class="{ true: 'status-true', false: 'status-false' }[action.accepted]" class="accepted">
-        Accepted: {{ action.accepted ? 'Yes' : 'No' }}
-      </span>
-      <span :class="{ true: 'status-true', false: 'status-false' }[action.performed]" class="performed">
-        Performed: {{ action.performed ? 'Yes' : 'No' }}
-      </span>
-    </div>
-
-    <div v-if="action.targets.length" class="action-targets">
-      <h4>Targets:</h4>
-      <div class="targets-list">
+    <div class="action-row">
+      <SmallCharPreview class="initiator" :char="action.initiator" @select="handleSelect" />
+      <div class="action-info">
+        <span class="action-id">ID: {{ action.id }}</span>
+        <span class="action-type">Type: {{ action.action_type }}</span>
+        <span class="cycle">Cycle: {{ action.cycle.id }}</span>
+        <span class="status">
+          <span :class="{ 'status-true': action.accepted, 'status-false': !action.accepted }">
+            Accepted: {{ action.accepted ? 'Yes' : 'No' }}
+          </span>
+          <span :class="{ 'status-true': action.performed, 'status-false': !action.performed }">
+            Performed: {{ action.performed ? 'Yes' : 'No' }}
+          </span>
+        </span>
+      </div>
+      <div v-if="action.accepted && !action.performed" class="targets-row">
         <SmallCharPreview
             v-for="target in action.targets"
             :key="target.id"
@@ -25,14 +23,7 @@
             @select="handleSelect"
         />
       </div>
-    </div>
-
-    <SkillComponent v-if="action.skill" :skill="action.skill"/>
-    <PositionComponent v-if="action.position" :position="action.position"/>
-
-    <div v-if="action.impacts.length" class="action-impacts">
-      <h4>Impacts:</h4>
-      <div class="impacts-list">
+      <div v-if="action.performed" class="impacts-row">
         <ImpactComponent
             v-for="impact in action.impacts"
             :key="impact.id"
@@ -46,16 +37,12 @@
 
 <script>
 import SmallCharPreview from './SmallCharPreview.vue';
-import SkillComponent from './SkillComponent.vue';
-import PositionComponent from './PositionComponent.vue';
 import ImpactComponent from './ImpactComponent.vue';
 
 export default {
   name: 'ActionLogItem',
   components: {
     SmallCharPreview,
-    SkillComponent,
-    PositionComponent,
     ImpactComponent,
   },
   props: {
@@ -71,42 +58,50 @@ export default {
 
 <style scoped>
 .action-log-item {
+  display: flex;
   border: 1px solid #444;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: 4px;
+  padding: 0.5rem;
   background: #1c1c1c;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-.action-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
 }
 
-.action-type {
-  font-weight: bold;
-  color: #e0e0e0;
-  font-size: 0.9rem;
-}
-
-.action-status {
+.action-row {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.85rem;
-  color: #e0e0e0;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.6rem;
 }
 
-.cycle {
+.initiator {
+  flex: 0 0 3rem; /* Fixed size for SmallCharPreview */
+}
+
+.action-info {
+  flex: 0 0 15rem; /* Fixed size for action-info */
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: #ccc;
+}
+
+.action-id {
   font-weight: bold;
   color: #ffcc00;
 }
 
-.accepted, .performed {
-  font-weight: bold;
+.action-type, .cycle {
+  color: #aaa;
+}
+
+.status {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
 }
 
 .status-true {
@@ -117,21 +112,19 @@ export default {
   color: #ff0000;
 }
 
-.action-targets, .action-impacts {
-  margin-top: 1rem;
+.targets-row, .impacts-row {
+  flex: 1; /* Dynamic size for targets or impacts */
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
 }
 
-.targets-list, .impacts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.targets-row > *:not(:last-child), .impacts-row > *:not(:last-child) {
+  margin-right: 0.3rem;
 }
 
 h4 {
-  font-size: 0.95rem;
-  color: #e0e0e0;
-  border-bottom: 1px solid #444;
-  padding-bottom: 0.25rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #ffcc00;
 }
 </style>
