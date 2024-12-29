@@ -47,19 +47,20 @@
               :class="['spell-item', { disabled: spell.grade < playerRank, selected: selectedSpells.includes(spell.id) }]"
               @click="spell.grade < playerRank ? null : toggleSpell(spell.id)"
           >
-            <span>{{ spell.name }}</span>
-            <div
-                class="spell-hover"
-                @mouseenter="tooltipSpell = spell.id"
-                @mouseleave="tooltipSpell = null"
-            >
-              <span
-                  v-if="tooltipSpell === spell.id"
-                  class="tooltip"
-              >
-                {{ spell.description }}
-              </span>
-            </div>
+            <SkillIcon :skill="spell"/>
+            <!--            <span>{{ spell.name }}</span>-->
+            <!--            <div-->
+            <!--                class="spell-hover"-->
+            <!--                @mouseenter="tooltipSpell = spell.id"-->
+            <!--                @mouseleave="tooltipSpell = null"-->
+            <!--            >-->
+            <!--              <span-->
+            <!--                  v-if="tooltipSpell === spell.id"-->
+            <!--                  class="tooltip"-->
+            <!--              >-->
+            <!--                {{ spell.description }}-->
+            <!--              </span>-->
+            <!--            </div>-->
           </div>
         </div>
       </div>
@@ -72,8 +73,11 @@
 </template>
 
 <script>
+import SkillIcon from "@/components/Action/ActionIcon.vue";
+
 export default {
   name: "SchoolAndSpellSelector",
+  components: {SkillIcon},
   props: {
     maxSpells: {
       type: Number,

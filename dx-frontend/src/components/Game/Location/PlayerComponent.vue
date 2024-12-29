@@ -41,6 +41,11 @@
             {{ player.position }}
           </span>
         </div>
+        <!-- System Tags -->
+        <div class="player-system-info-item">
+          <span class="player-system-info-label">Tags:</span>
+          <span v-for="tag in player.tags" :key="tag" class="player-system-info-value">{{ tag }}</span>
+        </div>
       </div>
     </div>
   </div>

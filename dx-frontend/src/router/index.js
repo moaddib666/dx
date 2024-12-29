@@ -7,17 +7,16 @@ import Community from '@/views/Community.vue';
 import Shop from '@/views/Shop.vue';
 import Support from '@/views/Support.vue';
 import FAQ from '@/views/FAQ.vue';
-import RegisterPlay from '@/views/RegisterPlay.vue';
 import ArtGallery from "@/views/ArtGallery.vue";
 import store from "@/store/index.js";
 import Login from "@/views/Login.vue";
-import FightView from "@/views/Game/Fight.vue";
 import CharacterSubmit from "@/views/Player/CharacterSubmit.vue";
 import CharacterView from "@/views/Cartograph/Map.vue";
 import DiceTest from "@/views/DiceTest.vue";
 import LocationView from "@/views/Game/Location.vue";
 import Register from "@/views/Register.vue";
 import GameMasterMain from "@/views/GameMaster/GameMasterMain.vue";
+import CharacterSkills from "@/views/CharacterSkills.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
@@ -25,6 +24,7 @@ const routes = [
     {path: '/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false}},
     {path: '/characters', name: 'Characters', component: Characters, meta: {requiresAuth: false}},
     {path: '/characters/submit', name: 'CharacterSubmit', component: CharacterSubmit, meta: {requiresAuth: false}},
+    {path: '/characters/skills', name: 'CharacterSkills', component: CharacterSkills, meta: {requiresAuth: false}},
     {path: '/dice', name: 'Dice', component: DiceTest, meta: {requiresAuth: false}},
     {path: '/gameplay', name: 'Gameplay', component: Gameplay, meta: {requiresAuth: false}},
     {path: '/community', name: 'Community', component: Community, meta: {requiresAuth: false}},

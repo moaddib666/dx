@@ -1,5 +1,5 @@
 <template>
-  <div class="character-card">
+  <div class="character-inline-card">
     <div :style="{ backgroundImage: `url(${icon})` }" class="character-icon"></div>
     <div class="character-name">{{ name }}</div>
   </div>
@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "CharacterCard",
+  name: "CharacterInlineCard",
   props: {
     name: {
       type: String,
@@ -22,56 +22,49 @@ export default {
 </script>
 
 <style scoped>
-/* Character Card Container */
-.character-card {
+/* Character Inline Card Container */
+.character-inline-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  width: 6rem; /* Fixed width */
-  height: 8rem; /* Fixed height */
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  justify-content: flex-start;
+  width: 12rem; /* Compact horizontal width */
+  height: 3rem; /* Compact vertical height */
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(6px);
   box-sizing: border-box;
   padding: 0.5rem;
-  text-align: center;
-  transition: transform 0.2s ease-in-out;
+  gap: 0.5rem; /* Spacing between icon and name */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   cursor: pointer;
 }
 
-.character-card:hover {
-  transform: scale(1.05);
+.character-inline-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 /* Character Icon Styling */
 .character-icon {
-  width: 5rem; /* Fixed size for consistency */
-  height: 5rem;
-  position: absolute;
-  top: 0.2rem;
-  border-radius: 50%;
+  width: 2.5rem; /* Smaller circular size */
+  height: 2.5rem;
   background-size: cover;
   background-position: center;
+  border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.8);
-  margin-bottom: 0.5rem;
 }
 
 /* Character Name Styling */
 .character-name {
-  position: absolute;
-  bottom: 0.1rem;
-  font-size: 0.7rem; /* Scalable font size */
+  font-size: 0.9rem; /* Text size aligned with icon */
   font-weight: bold;
   color: rgba(255, 255, 255, 0.9);
-  line-height: 1.2; /* Control line spacing */
   overflow: hidden;
   text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
-  max-height: 2.4rem; /* Ensure consistent height */
+  white-space: nowrap; /* Ensures text remains in one line */
+  flex-grow: 1; /* Allows name to take remaining space */
+  text-align: left; /* Align text to the left */
 }
 </style>

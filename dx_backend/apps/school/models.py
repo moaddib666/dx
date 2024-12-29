@@ -37,6 +37,7 @@ class Skill(BaseModel):
         BUFF = 'buff'
         DEBUFF = 'debuff'
         UTILITY = 'utility'
+        SPECIAL = 'special'
 
     class CostType(models.TextChoices):
         ENERGY = 'Energy'

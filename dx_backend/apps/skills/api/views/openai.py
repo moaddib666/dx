@@ -18,23 +18,23 @@ class OpenAILearnedSkillsViewSet(
 ):
     queryset = LearnedSkill.objects.filter()
     serializer_class = LearnedSkillSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        return qs.filter(character=user.character)
+        return qs.filter(character=user.main_character)
 
     @transaction.atomic
     def perform_create(self, serializer):
         user = self.request.user
         skill = serializer.validated_data['skill']
-        CharacterSkillsService().add(user.character, skill)
+        CharacterSkillsService().add(user.main_character, skill)
         return Response(status=status.HTTP_201_CREATED)
 
     @transaction.atomic
     def perform_destroy(self, instance):
-        CharacterSkillsService().remove(self.request.user.character, instance)
+        CharacterSkillsService().remove(self.request.user.main_character, instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -47,21 +47,21 @@ class OpenAILearnedSchoolsViewSet(
 ):
     queryset = LearnedSchool.objects.filter()
     serializer_class = LearnedSchoolSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        return qs.filter(character=user.character)
+        return qs.filter(character=user.main_character)
 
     @transaction.atomic
     def perform_create(self, serializer):
         user = self.request.user
         school = serializer.validated_data['school']
-        CharacterSchoolService().add(user.character, school)
+        CharacterSchoolService().add(user.main_character, school)
         return Response(status=status.HTTP_201_CREATED)
 
     @transaction.atomic
     def perform_destroy(self, instance):
-        CharacterSchoolService().remove(self.request.user.character, instance)
+        CharacterSchoolService().remove(self.request.user.main_character, instance)
         return Response(status=status.HTTP_204_NO_CONTENT)

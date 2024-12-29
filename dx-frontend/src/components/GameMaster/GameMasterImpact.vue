@@ -4,19 +4,15 @@
       <!-- Initiator Selection -->
       <label for="initiator">Initiator</label>
       <input
+          v-if="!initiatorData"
           type="text"
           id="initiator"
           v-model="initiator"
           @change="fetchCharacterData('initiator')"
           placeholder="Enter Initiator ID"
       />
-      <div v-if="initiatorData" class="character-info">
-        <img :src="initiatorData.biography.avatar" alt="Avatar" class="avatar" />
-        <div>
-          <p><strong>{{ initiatorData.name }}</strong></p>
-          <p>Age: {{ initiatorData.biography.age }}</p>
-          <p>Gender: {{ initiatorData.biography.gender }}</p>
-        </div>
+      <div v-else @click="cleanInitiatorData">
+        <CharacterInlineCard :icon="initiatorData.biography.avatar" :name="initiatorData.name"/>
       </div>
     </div>
 
@@ -24,19 +20,15 @@
       <!-- Target Selection -->
       <label for="target">Target</label>
       <input
+          v-if="!targetData"
           type="text"
           id="target"
           v-model="target"
           @change="fetchCharacterData('target')"
           placeholder="Enter Target ID"
       />
-      <div v-if="targetData" class="character-info">
-        <img :src="targetData.biography.avatar" alt="Avatar" class="avatar" />
-        <div>
-          <p><strong>{{ targetData.name }}</strong></p>
-          <p>Age: {{ targetData.biography.age }}</p>
-          <p>Gender: {{ targetData.biography.gender }}</p>
-        </div>
+      <div v-else @click="cleanTargetData">
+        <CharacterInlineCard :icon="targetData.biography.avatar" :name="targetData.name"/>
       </div>
     </div>
 
@@ -66,9 +58,11 @@
 
 <script>
 import {ActionGameApi, CharacterGameApi} from "@/api/backendService.js";
+import CharacterInlineCard from "@/components/Game/Location/CharacterInlineCard.vue";
 
 export default {
   name: "GameMasterImpact",
+  components: {CharacterInlineCard},
   data() {
     return {
       initiator: "",
@@ -80,6 +74,14 @@ export default {
     };
   },
   methods: {
+    async cleanInitiatorData() {
+      this.initiatorData = null;
+      this.initiator = "";
+    },
+    async cleanTargetData() {
+      this.targetData = null;
+      this.target = "";
+    },
     async fetchCharacterData(type) {
       const id = type === "initiator" ? this.initiator : this.target;
 
