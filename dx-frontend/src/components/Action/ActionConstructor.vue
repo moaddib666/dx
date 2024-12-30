@@ -69,7 +69,6 @@ export default {
   methods: {
     reset() {
       this.selectedAction = null;
-      this.selectedGameObjectId = null;
     },
     applyAction() {
       if (!this.selectedAction || !this.selectedGameObjectId) return;

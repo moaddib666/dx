@@ -152,7 +152,7 @@ class CharacterAdmin(admin.ModelAdmin):
         'current_health_points', 'current_energy_points', "current_active_points",
         'organization', 'is_active', 'npc'
     )
-    search_fields = ('name', 'biography__background', 'biography__appearance')
+    search_fields = ('name', 'biography__background', 'biography__appearance', "id")
     list_filter = (
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )

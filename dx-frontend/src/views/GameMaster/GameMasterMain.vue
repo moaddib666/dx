@@ -106,12 +106,12 @@ export default {
       this.actions = newActions.results;
     },
     async refreshCharacters() {
-      this.characters = (await CharacterGameApi.characterList(
+      this.characters = (await CharacterGameApi.characterGmList(
           false
       )).data;
     },
     async refreshNPCharacters() {
-      this.npcCharacters = (await CharacterGameApi.characterList(
+      this.npcCharacters = (await CharacterGameApi.characterGmList(
           true, this.selectedLocationId,
       )).data;
     },

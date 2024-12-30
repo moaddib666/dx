@@ -32,6 +32,7 @@
             :player="playerInfo"
             :playerImage="playerGeneralInfo.biography.avatar"
         />
+        <EffectsHolder :effects="activeEffects" />
         <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
       </div>
       <div class="center-center">
@@ -84,7 +85,7 @@
 
 <script>
 import CompassComponent from '@/components/Game/Location/Compass.vue';
-import {ActionGameApi, CharacterGameApi, SkillsGameApi, WorldGameApi} from "@/api/backendService.js";
+import {ActionGameApi, CharacterGameApi, EffectsGameApi, SkillsGameApi, WorldGameApi} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
@@ -100,10 +101,14 @@ import ActionConstructor from "@/components/Action/ActionConstructor.vue";
 import ActionButton from "@/components/Action/ActionButton.vue";
 import DiceVisualizer from "@/components/Dice/DiceVisualizer.vue";
 import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
+import EffectItem from "@/components/Effect/EffectItem.vue";
+import EffectsHolder from "@/components/Effect/EffectsHolder.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    EffectsHolder,
+    EffectItem,
     CoordinatesDisplay,
     DiceVisualizer,
     ActionButton,
@@ -135,6 +140,7 @@ export default {
       playerSkills: null,
       diceResult: null,
       diceActivated: false,
+      activeEffects: [],
     };
   },
   computed: {
@@ -202,6 +208,7 @@ export default {
       await this.getCurrentPositionInfo();
       await this.getPlayerInfo();
       await this.getPlayerSkills();
+      await this.getActiveEffects();
     },
     async diceRoll({dice, index}) {
       // sleep for 1 second
@@ -216,7 +223,7 @@ export default {
       await this.getPlayerInfo();
     },
     async resolveCharacter(characterId) {
-      const data = (await CharacterGameApi.characterRetrieve(characterId)).data;
+      const data = (await CharacterGameApi.characterPlayerRetrieve(characterId)).data;
       if (data.npc) {
         this.npcCharacters.push(data);
       } else {
@@ -236,15 +243,18 @@ export default {
       });
     },
     async getPlayerInfo() {
-      this.playerInfo = (await CharacterGameApi.characterCharacterInfoRetrieve()).data;
+      this.playerInfo = (await CharacterGameApi.characterPlayerCharacterInfoRetrieve()).data;
       if (this.playerGeneralInfo === null) {
-        this.playerGeneralInfo = (await CharacterGameApi.characterRetrieve(this.playerInfo.id)).data;
+        this.playerGeneralInfo = (await CharacterGameApi.characterPlayerRetrieve(this.playerInfo.id)).data;
       }
       this.playerService = new PlayerService(this.playerInfo)
     },
     async getPlayerSkills() {
       this.playerSkills = (await SkillsGameApi.skillsSkillsList()).data;
-    }
+    },
+    async getActiveEffects() {
+      this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
+    },
   },
 };
 </script>

@@ -29,7 +29,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        return Character.objects.filter(position=user.main_character.position)
+        return Character.objects.filter(position=user.main_character.position, is_active=True)
 
     @transaction.atomic
     def perform_create(self, serializer):
@@ -104,7 +104,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
 class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Character.objects.all()
     serializer_class = OpenaiCharacterSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterFilter
 

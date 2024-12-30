@@ -16,6 +16,7 @@ from apps.game.services.action.notify import ConsoleResultNotifyService
 from apps.game.services.action.player import ManualCharacterActionPlayerService
 from apps.game.services.action.skill_action import SkillActionService
 from apps.game.services.character.core import CharacterService
+from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
 from apps.school.models import School, Skill
@@ -258,5 +259,7 @@ class GameMasterActionFactory:
 
 ManualCharacterActionPlayerServiceFactory = partial(
     ManualCharacterActionPlayerService,
-    notify_svc=ConsoleResultNotifyService()
+    notify_svc=ConsoleResultNotifyService(),
+    effects_manager_factory=ManagerEffectFactory(),
+    effects_apply_factory=ApplyEffectFactory(),
 )

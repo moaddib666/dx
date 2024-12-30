@@ -1,4 +1,5 @@
 import logging
+import random
 import uuid
 from datetime import timedelta
 
@@ -10,7 +11,7 @@ from apps.character.models import Character
 from apps.core.bus.base import GameEvent
 from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder, CharacterStats, FullCharacterInfo, \
     FightSide, \
-    ImpactType, ImpactViolationType, RollOutcome, Coordinate
+    ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.school.models import Skill
@@ -25,6 +26,14 @@ class CharacterService:
     @property
     def model(self):
         return self.character
+
+    def knock_out(self):
+        self.character.current_health_points = 0
+        self.character.current_active_points = 0
+        self.character.current_energy_points = 0
+        self.character.save(
+            update_fields=['current_health_points', 'current_active_points', 'current_energy_points', 'updated_at']
+        )
 
     def spend_all_ap(self):
         self.character.current_active_points = 0
@@ -41,6 +50,33 @@ class CharacterService:
     def spend_hp(self, amount: int):
         self.character.current_health_points -= amount
         self.character.save(update_fields=['current_health_points'])
+
+    def add_hp(self, amount: int):
+        current_hp = self.character.current_health_points
+        max_hp = self.get_max_hp()
+        if current_hp + amount > max_hp:
+            self.character.current_health_points = max_hp
+        else:
+            self.character.current_health_points += amount
+        self.character.save(update_fields=['current_health_points', 'updated_at'])
+
+    def add_ap(self, amount: int):
+        current_ap = self.character.current_active_points
+        max_ap = self.get_max_ap()
+        if current_ap + amount > max_ap:
+            self.character.current_active_points = max_ap
+        else:
+            self.character.current_active_points += amount
+        self.character.save(update_fields=['current_active_points', 'updated_at'])
+
+    def add_energy(self, amount: int):
+        current_energy = self.character.current_energy_points
+        max_energy = self.get_max_energy()
+        if current_energy + amount > max_energy:
+            self.character.current_energy_points = max_energy
+        else:
+            self.character.current_energy_points += amount
+        self.character.save(update_fields=['current_energy_points', 'updated_at'])
 
     def get_max_ap(self):
         return int(round(self.get_stat(CharacterStats.SPEED) * 0.5 * self.character.dimension.speed))
@@ -71,7 +107,8 @@ class CharacterService:
         return FullCharacterInfo(
             id=self.character.id,
             position=self.character.position_id,
-            coordinates=Coordinate(x=self.character.position.grid_x, y=self.character.position.grid_y, z=self.character.position.grid_z),
+            coordinates=Coordinate(x=self.character.position.grid_x, y=self.character.position.grid_y,
+                                   z=self.character.position.grid_z),
             name=self.character.name,
             attributes=[
                 self.get_attribute(attr_name) for attr_name in AttributeType
@@ -120,8 +157,16 @@ class CharacterService:
             list[ActionImpact]:
         results = []
         self.logger.debug(f"Character {self.character.id} impacted with {calculated_impact}")
-        if self.character.current_health_points <= 0:
+        # FIXME: adjust to allow healing in knock out state
+        if self.character.current_health_points <= 0 and calculated_impact['kind'] == ImpactType.DAMAGE:
             self.logger.debug(f"Character {self.character.id} is already dead")
+            return results
+        if action.skill.type == Skill.Types.SPECIAL:
+            self.logger.debug(f"Special skill impact")
+            # FIXME: dirty hack
+            if action.skill.id == 167:
+                self.logger.debug(f"Special skill impact accumulate energy")
+                self.add_energy(int(self.get_max_energy() * (random.randint(1, 10) / 10)))
             return results
 
         # FIXME: add processing for other impact types
@@ -230,3 +275,9 @@ class CharacterService:
 
     def get_fight_team(self) -> FightSide:
         return self.character.fight.get_character_side(self.character)
+
+    def has_effect(self, effect: EffectType) -> bool:
+        return self.character.effects.filter(effect=effect, active=True).exists()
+
+    def has_effects(self, effects: [EffectType]) -> bool:
+        return self.character.effects.filter(effect__in=effects, active=True).exists()

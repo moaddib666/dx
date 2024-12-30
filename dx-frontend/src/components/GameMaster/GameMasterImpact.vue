@@ -89,7 +89,7 @@ export default {
 
       // Placeholder for API call
       try {
-        const response = (await CharacterGameApi.characterRetrieve(id)).data; // Replace with actual API call
+        const response = (await CharacterGameApi.characterPlayerRetrieve(id)).data; // Replace with actual API call
         if (type === "initiator") {
           this.initiatorData = response;
         } else if (type === "target") {

@@ -4,20 +4,27 @@ from django.db.models import QuerySet
 
 from apps.action.models import Cycle
 from apps.character.models import Character
+from apps.core.models import EffectType
 from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
 from ..character.core import CharacterService
 
 if typing.TYPE_CHECKING:
     from .factory import CharacterActionFactory
+    from ..effect.facctory import ApplyEffectFactory, ManagerEffectFactory
 
 
 class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     char_svc_cls = CharacterService
 
-    def __init__(self, cycle: Cycle, factory: "CharacterActionFactory", notify_svc: "ActionResultNotifier"):
+    def __init__(self, cycle: Cycle, factory: "CharacterActionFactory", notify_svc: "ActionResultNotifier",
+                 effects_apply_factory: "ApplyEffectFactory",
+                 effects_manager_factory: "ManagerEffectFactory"
+                 ):
         self.cycle = cycle
         self.factory = factory
         self.notify_svc = notify_svc
+        self.effects_apply_factory = effects_apply_factory
+        self.effects_manager_factory = effects_manager_factory
 
     def prepare(self):
         pass
@@ -31,6 +38,10 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.post()
 
     def _play(self):
+        self.apply_effects()
+        self.apply_actions()
+
+    def apply_actions(self):
         for action in self.get_actions():
             try:
                 self.factory.from_action(action).perform(action)
@@ -38,9 +49,24 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
             except Exception as e:
                 self.notify_svc.notify(action, e)
 
+    def apply_effects(self):
+        qs = Character.objects.filter(is_active=True)
+        for char in qs:
+            for effect in char.effects.all():
+                svc = self.effects_apply_factory.from_active_effect(effect)
+                svc.apply_effect(char)
+
     def update_characters(self):
-        characters = self._get_suitable_characters()
-        for char in characters:
+        for char in self._get_suitable_characters():
+            if char.is_knocked_out():
+                if not char.has_effects([EffectType.KNOCKED_OUT, EffectType.COMA]):
+                    manager = self.effects_manager_factory.from_effect_id(EffectType)
+                    manager.remove_all_effects(char.model)
+                    manager.assign_effect(EffectType.KNOCKED_OUT, char.model, initiator=char.model)
+                continue
+            if char.has_effects([EffectType.KNOCKED_OUT]):
+                manager = self.effects_manager_factory.from_effect_id(EffectType.COMA)
+                manager.remove_effect(EffectType.KNOCKED_OUT, char.model, initiator=char.model)
             char.refill_ap()
 
     def _get_suitable_characters(self) -> ["CharacterService"]:
@@ -48,13 +74,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         take characters that have hp > 0 and not stunned
         :return:
         """
-        qs = Character.objects.all()
-        res = []
-        for char in qs:
-            svc = self.char_svc_cls(char)
-            if svc.get_current_hp() > 0 and not svc.is_knocked_out():
-                res.append(svc)
-        return res
+        return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
         return self.cycle.actions.filter(performed=False)

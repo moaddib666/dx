@@ -1,16 +1,9 @@
 <template>
-  <div :class="{ inactive: !effectData.active }" class="effect-item">
-    <div class="icon-container">
-      <img :src="effectData.effect.icon" alt="Effect Icon" class="effect-icon"/>
-    </div>
-    <div class="info-container">
-      <div class="effect-name">{{ effectData.effect.id }}</div>
-      <div class="effect-details">
-        <span v-if="effectData.effect.permanent">Permanent</span>
-        <span v-else>
-          {{ timeLeft }} Turns Left
-        </span>
-      </div>
+  <div class="effect-item">
+    <div class="icon-container" @mouseenter="showDescription" @mouseleave="hideDescription">
+      <img :src="effectData.effect.icon" alt="Effect Icon" class="effect-icon" />
+      <div class="counter">{{ timeLeft }}</div>
+      <div class="description" :class="{ visible: showingDescription }">{{ effectData.effect.id }}</div>
     </div>
   </div>
 </template>
@@ -24,10 +17,23 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      showingDescription: false,
+    };
+  },
   computed: {
     timeLeft() {
-      const {ends_in, duration} = this.effectData.effect;
-      return ends_in - duration;
+
+      return this.effectData.effect.ends_in - this.effectData.duration
+    },
+  },
+  methods: {
+    showDescription() {
+      this.showingDescription = true;
+    },
+    hideDescription() {
+      this.showingDescription = false;
     },
   },
 };
@@ -35,57 +41,64 @@ export default {
 
 <style scoped>
 .effect-item {
+  cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  width: 200px;
-  gap: 0.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  color: #ffffff;
-  font-family: "Roboto", sans-serif;
-  font-size: 0.9rem;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.effect-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
-}
-
-.effect-item.inactive {
-  opacity: 0.5;
+  width: 50px;
 }
 
 .icon-container {
-  flex-shrink: 0;
+  position: relative;
+  width: 40px;
+  height: 40px;
 }
 
 .effect-icon {
-  height: 40px;
-  width: 40px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease-in-out;
 }
 
-.info-container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.icon-container:hover .effect-icon {
+  transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
-.effect-name {
+.counter {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 0.6rem;
   font-weight: bold;
-  font-size: 1rem;
-  margin-bottom: 0.2rem;
+  padding: 0.2rem;
+  border-radius: 50%;
+  line-height: 1;
+  text-align: center;
 }
 
-.effect-details {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+.description {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.3rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  visibility: hidden; /* Hidden by default */
+  opacity: 0; /* Transparent by default */
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.description.visible {
+  visibility: visible; /* Make visible */
+  opacity: 1; /* Fade in */
 }
 </style>

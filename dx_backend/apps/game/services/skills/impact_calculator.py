@@ -19,7 +19,7 @@ class SkillImpactService:
         self.logger.info(
             f"Calculating impact for skill {self.skill.id} used by character {self.initiator.character.id}")
 
-        if self.skill.type not in (Skill.Types.ATTACK, Skill.Types.HEAL):
+        if self.skill.type not in (Skill.Types.ATTACK, Skill.Types.HEAL, Skill.Types.SPECIAL):
             self.logger.error("Only attack skills supported for now")
             raise GameLogicException("Only attack skills supported for now")
 
@@ -61,6 +61,6 @@ class SkillImpactService:
             logging.debug(f"Calculating impact based on stat {r['stat']} Skill efficiencies: {skill_efficiencies}, "
                           f"scaling factor: {scaling_factor}, resulting value: {skill_efficiencies}")
             potential_impacts.append(skill_efficiencies)
-        final_impact = base_damage * min(potential_impacts)
+        final_impact = base_damage * min(potential_impacts or [1])
         logging.debug(f"Final impact: {final_impact}")
         return CalculatedImpact(kind=impact['kind'], value=final_impact)
