@@ -1,14 +1,15 @@
 import abc
 
-from apps.game.exceptions import GameLogicException
 from apps.character.models import Character
+from apps.core.models import AttributeType
+from apps.game.exceptions import GameLogicException
 from apps.school.dto import Cost
 from apps.school.models import Skill
 
 
 class SpecificCostService(abc.ABC):
-
     point_type: str
+
     def __init__(self, value: int):
         self.value = value
 
@@ -28,6 +29,7 @@ class SpecificCostService(abc.ABC):
 
 class EnergyCostService(SpecificCostService):
     point_type = "energy"
+
     def validate(self, character: Character) -> bool:
         return character.current_energy_points >= self.value
 
@@ -40,6 +42,7 @@ class EnergyCostService(SpecificCostService):
 
 class HealthCostService(SpecificCostService):
     point_type = "health"
+
     def validate(self, character: Character) -> bool:
         return character.current_health_points >= self.value
 
@@ -52,6 +55,7 @@ class HealthCostService(SpecificCostService):
 
 class ActionPointsCostService(SpecificCostService):
     point_type = "action points"
+
     def validate(self, character: Character) -> bool:
         return character.current_active_points >= self.value
 
@@ -64,9 +68,9 @@ class ActionPointsCostService(SpecificCostService):
 
 class SkillCostService:
     mapping = {
-        Skill.CostType.ENERGY: EnergyCostService,
-        Skill.CostType.HEALTH: HealthCostService,
-        Skill.CostType.AP: ActionPointsCostService,
+        AttributeType.ENERGY: EnergyCostService,
+        AttributeType.HEALTH: HealthCostService,
+        AttributeType.ACTION_POINTS: ActionPointsCostService,
     }
 
     def __init__(self, skill: Skill):

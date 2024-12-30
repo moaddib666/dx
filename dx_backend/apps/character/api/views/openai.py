@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.character.api.filters.character import CharacterFilter
+from apps.character.api.filters.character import CharacterFilter, NPCFilter
 from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, CharacterInfoSerializer, \
     CharacterPathSerializer, \
     CharacterTemplateFullSerializer, CharacterGenericDataSerializer
@@ -20,7 +20,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OpenaiCharacterSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_class = CharacterFilter
+    filterset_class = NPCFilter
     # TODO move TO THE GAME SETTINGS
     PLAYER_CREATION_LIMIT = 5
 
@@ -29,7 +29,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        return Character.objects.filter(owner=user)
+        return Character.objects.filter(position=user.main_character.position)
 
     @transaction.atomic
     def perform_create(self, serializer):

@@ -9,7 +9,7 @@
     </button>
     <div ref="cardRow" class="character-card-row">
       <CharacterCard
-          v-for="character in characters"
+          v-for="character in visibleCharacters"
           :key="character.id"
           :class="{ selected: character.id === selectedCharacterId }"
           :icon="character.biography.avatar"
@@ -44,54 +44,40 @@ export default {
       type: String,
       default: null,
     },
+    visibleCount: {
+      type: Number,
+      default: 8, // Number of visible characters at a time
+    },
   },
   data() {
     return {
-      scrollPosition: 0, // Tracks current scroll position
-      containerWidth: 0, // Visible container width
-      totalContentWidth: 0, // Total width of all cards
+      scrollIndex: 0, // Tracks the current scroll position in terms of items
     };
   },
   computed: {
+    visibleCharacters() {
+      // Calculate the visible characters based on scrollIndex and visibleCount
+      return this.characters.slice(this.scrollIndex, this.scrollIndex + this.visibleCount);
+    },
     canScrollLeft() {
-      return this.scrollPosition > 0;
+      return this.scrollIndex > 0;
     },
     canScrollRight() {
-      return this.scrollPosition + this.containerWidth < this.totalContentWidth;
+      return this.scrollIndex + this.visibleCount < this.characters.length;
     },
   },
   methods: {
-    updateDimensions() {
-      const cardRow = this.$refs.cardRow;
-      this.containerWidth = cardRow.offsetWidth;
-      this.totalContentWidth = cardRow.scrollWidth;
-    },
     scrollLeft() {
-      const cardRow = this.$refs.cardRow;
-      const scrollAmount = Math.min(this.scrollPosition, 200); // Adjust scroll amount as needed
-      this.scrollPosition -= scrollAmount;
-      cardRow.scrollBy({left: -scrollAmount, behavior: "smooth"});
+      this.scrollIndex = Math.max(0, this.scrollIndex - this.visibleCount);
     },
     scrollRight() {
-      const cardRow = this.$refs.cardRow;
-      const remainingScroll = this.totalContentWidth - (this.scrollPosition + this.containerWidth);
-      const scrollAmount = Math.min(remainingScroll, 200); // Adjust scroll amount as needed
-      this.scrollPosition += scrollAmount;
-      cardRow.scrollBy({left: scrollAmount, behavior: "smooth"});
+      this.scrollIndex = Math.min(
+          this.characters.length - this.visibleCount,
+          this.scrollIndex + this.visibleCount
+      );
     },
     selectCharacter(id) {
       this.$emit("characterSelected", id);
-    },
-  },
-  mounted() {
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions); // Recalculate dimensions on window resize
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.updateDimensions);
-  },
-  watch: {
-    characters() {
     },
   },
 };
@@ -117,7 +103,7 @@ export default {
 .scroll-btn {
   width: 2rem;
   height: 2rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.4);
   color: rgba(255, 255, 255, 0.7);
   border: none;
   border-radius: 50%;
@@ -154,16 +140,11 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   gap: 1rem;
-  overflow-x: auto; /* Horizontal scroll only */
-  overflow-y: hidden; /* Prevent vertical scroll */
-  width: calc(100% - 4rem); /* Account for buttons */
+  overflow: hidden;
   padding: 0 1rem;
-  scroll-behavior: smooth;
-}
-
-/* Hide Scrollbar */
-.character-card-row::-webkit-scrollbar {
-  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 /* Selected Character Styling */

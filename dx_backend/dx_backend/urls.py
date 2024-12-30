@@ -10,15 +10,6 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from django.urls import path, include
-from django.contrib import admin
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
 urlpatterns = [
     # Admin and Jet
     path('jet/', include('jet.urls', 'jet')),
@@ -44,6 +35,7 @@ urlpatterns = [
 
     # Feature Modules
     path('api/character/', include('apps.character.urls')),
+    path('api/effects/', include('apps.effects.urls')),
     path('api/school/', include('apps.school.urls')),
     path('api/world/', include('apps.world.urls')),
     path('api/fight/', include('apps.fight.urls')),
@@ -57,7 +49,6 @@ urlpatterns = [
     # Adapters
     path('api/adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # 'channels',
     'apps.gallery',
     'apps.core',
+    'apps.effects',
     'apps.client',
     'apps.world',
     'apps.school',

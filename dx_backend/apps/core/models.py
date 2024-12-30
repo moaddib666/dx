@@ -38,6 +38,38 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     DICE_ROLL = "DICE_ROLL"
 
 
+class EffectType(DjangoChoicesMixin, StrEnum):
+    KNOCKED_OUT = "Knocked out"  # Can be atacked in case damage is bigger that full health points character is in coma, can be healed by other players using healing spells or items
+    COMA = "Coma"  # Can't be attacked or attack even healings are not working only time can heal or high level healers or resque packages
+    NONE = "None"  # No effect
+    BURNING = "Burning"  # Decrease health points every turn by fire damage
+    POISONED = "Poisoned"  # Decrease health points every turn by poison damage
+    SLEEPING = "Sleeping"  # Can't move or attack
+    CONFUSED = "Confused"  # The character can't distinguish between friend and enemy targets allways random
+    PARALYZED = "Paralyzed"  # Can't move or attack
+    FEAR = "Fear"  # The concentration, mental strand is decreased
+    SLOWNESS = "Slowness"  # Decrease speed
+    COLD = "Cold"  # Decrease health points with ice damage every turn
+
+
+class EffectViolation(DjangoChoicesMixin, StrEnum):
+    NONE = "None"
+    Negative = "Negative"
+    Positive = "Positive"
+    Neutral = "Neutral"
+    Special = "Special"
+
+
+class SkillTypes(DjangoChoicesMixin, StrEnum):
+    ATTACK = 'attack'
+    DEFENSE = 'defense'
+    HEAL = 'heal'
+    BUFF = 'buff'
+    DEBUFF = 'debuff'
+    UTILITY = 'utility'
+    SPECIAL = 'special'
+
+
 class ImpactType(DjangoChoicesMixin, StrEnum):
     NONE = "None"
     KNOCK_OUT = "Knock out"
@@ -120,13 +152,16 @@ class CalculatedImpact(BaseModel):
 class CharacterStats(DjangoChoicesMixin, StrEnum):
     PHYSICAL_STRENGTH = "Physical Strength"  # Influences health and physical damage
     MENTAL_STRENGTH = "Mental Strength"  # Influences energy and mental resilience
-    LUCK = "Luck"  # Adds a modifier to various outcomes
-    SPEED = "Speed"  # Influences action points and turn order
+    FLOW_RESONANCE = "Flow Resonance"  # Ability to align with the Flow, enhancing spell potency
+
     CONCENTRATION = "Concentration"  # Ability to maintain spell casting under pressure
     FLOW_MANIPULATION = "Flow Manipulation"  # Skill in shaping and controlling Flow energy
     FLOW_CONNECTION = "Flow Connection"  # Depth of bond with the Flow, affecting spell efficiency
+
     KNOWLEDGE = "Knowledge"  # Understanding of magical theory and applications
-    FLOW_RESONANCE = "Flow Resonance"  # Ability to align with the Flow, enhancing spell potency
+
+    SPEED = "Speed"  # Influences action points and turn order
+    LUCK = "Luck"  # Adds a modifier to various outcomes
     CHARISMA = "Charisma"  # Ability to influence others and maintain relationships
 
 
@@ -305,6 +340,12 @@ class CharacterTemplate(BaseModel):
     validation: CharacterTemplateValidator
 
 
+class Coordinate(BaseModel):
+    x: int
+    y: int
+    z: int
+
+
 class FullCharacterInfo(BaseModel):
     id: uuid.UUID
     name: str
@@ -316,6 +357,7 @@ class FullCharacterInfo(BaseModel):
     dimension: int
     # location: uuid.UUID
     position: uuid.UUID
+    coordinates: Optional[Coordinate]
     fight: Optional[uuid.UUID]
     duel_invitations: list[uuid.UUID]
 
@@ -385,4 +427,3 @@ class GameMasterImpactAction(BaseModel):
     target: uuid.UUID
     impact_type: ImpactType
     impact_violation: ImpactViolationType
-

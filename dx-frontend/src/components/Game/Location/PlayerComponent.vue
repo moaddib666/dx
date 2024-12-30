@@ -26,7 +26,6 @@
           />
         </div>
       </div>
-
       <!-- System Info Section -->
       <div v-if="extended" class="player-system-info">
         <div class="player-system-info-item">
@@ -53,10 +52,12 @@
 
 <script>
 import AttributeBar from "./AttributeBar.vue";
+import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 
 export default {
   name: "PlayerComponent",
   components: {
+    CoordinatesDisplay,
     AttributeBar,
   },
   props: {

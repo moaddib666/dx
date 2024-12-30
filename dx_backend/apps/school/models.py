@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from typing_extensions import TypedDict
 
+from apps.core.models import SkillTypes
 from apps.core.utils.models import BaseModel
 from apps.school.dto import Impact, Cost, Effect
 
@@ -17,32 +18,20 @@ class ThePath(BaseModel):
     def __str__(self):
         return f'{self.name}'
 
+
 class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     path = models.ManyToManyField(ThePath)
     icon = models.ImageField(upload_to='icons/school/', null=True, blank=True)
-    is_default = models.BooleanField(default=False)
+    is_base = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name}'
 
 
-
 class Skill(BaseModel):
-    class Types(models.TextChoices):
-        ATTACK = 'attack'
-        DEFENSE = 'defense'
-        HEAL = 'heal'
-        BUFF = 'buff'
-        DEBUFF = 'debuff'
-        UTILITY = 'utility'
-        SPECIAL = 'special'
-
-    class CostType(models.TextChoices):
-        ENERGY = 'Energy'
-        HEALTH = 'Health'
-        AP = 'Action Points'
+    Types = SkillTypes
 
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)

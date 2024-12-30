@@ -1,9 +1,10 @@
 from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
-from django.shortcuts import redirect, render
-from django.urls import path, reverse
+from django.utils.safestring import mark_safe
+
 from .models import Organization, Rank, Character, CharacterBiography, Stat
+from ..effects.models import ActiveEffect
 
 
 class BulkChangeAvatarForm(forms.Form):
@@ -66,7 +67,8 @@ class SubLocationFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         sublocations = set(
-            obj.position.sub_location for obj in Character.objects.select_related('position__sub_location') if obj.position
+            obj.position.sub_location for obj in Character.objects.select_related('position__sub_location') if
+            obj.position
         )
         return [(s.id, s.name) for s in sublocations]
 
@@ -106,6 +108,40 @@ class StatInline(admin.TabularInline):
     can_delete = False
 
 
+class ActiveEffectsInline(admin.TabularInline):
+    """
+    Inline for displaying and editing Active Effects directly in the Character admin interface.
+    """
+    model = ActiveEffect
+    extra = 1  # Number of extra blank rows
+    fields = ('effect', 'effect_details', 'duration', 'active',)
+    readonly_fields = ('effect_details',)
+    can_delete = True  # Allow deletion of rows
+
+    def effect_details(self, obj):
+        """
+        Render the effect details, including an icon and name, in the inline form.
+        """
+        if obj and obj.effect and obj.effect.icon:
+            return mark_safe(
+                f'''
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="{obj.effect.icon.url}" 
+                         alt="Effect Icon" 
+                         style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
+                    <div>
+                        <strong style="color: #333; font-size: 14px;">{obj.effect.id}</strong>
+                        <div style="font-size: 12px; color: #555;">Permanent: {"Yes" if obj.effect.permanent else "No"}</div>
+                        <div style="font-size: 12px; color: #555;">Ends In: {obj.effect.ends_in or "N/A"}</div>
+                    </div>
+                </div>
+                '''
+            )
+        return "No Effect Data"
+
+    effect_details.short_description = "Effect Details"
+
+
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
     """
@@ -120,7 +156,7 @@ class CharacterAdmin(admin.ModelAdmin):
     list_filter = (
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )
-    inlines = [CharacterBiographyInline, StatInline]
+    inlines = [CharacterBiographyInline, StatInline, ActiveEffectsInline]
     actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
 
     def pictogram(self, obj):

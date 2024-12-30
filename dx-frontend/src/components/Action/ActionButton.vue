@@ -1,39 +1,43 @@
 <template>
-  <div class="dice-btn" @click="openModal"></div>
+  <div class="action-btn" @click="onClick">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "DiceComponent",
+  name: "ActionButton",
   methods: {
-    openModal() {
-      this.$emit("open-modal"); // Notify parent to open modal
+    onClick() {
+      this.$emit("click"); // Notify parent when the button is clicked
     },
   },
 };
 </script>
 
 <style scoped>
-/* Container for the dice button */
-.dice-btn {
+/* Container for the action button */
+.action-btn {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-image: url('@/assets/images/dice/dice.png'); /* Your dice image */
+  background-image: url('@/assets/images/action/action_btn.png'); /* Your action button image */
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
 
   /* Dimensions */
+  min-height: 2rem;
+  min-width: 2rem;
 
   /* Rounded corners and smooth transition */
   border-radius: 8px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dice-btn:hover {
+.action-btn:hover {
   cursor: pointer;
-  transform: scale(1.1); /* Slightly enlarge the dice container */
+  transform: scale(1.1); /* Slightly enlarge the action button */
 }
 </style>

@@ -1,8 +1,9 @@
+import uuid
 from typing import List
 
 from typing_extensions import TypedDict
 
-from apps.core.models import ImpactType, ImpactViolationType, AttributeType, CharacterStats
+from apps.core.models import ImpactType, ImpactViolationType, AttributeType, CharacterStats, SkillTypes, EffectType
 
 
 class StatRequirement(TypedDict):
@@ -36,7 +37,18 @@ class Cost(TypedDict):
 
 
 class Effect(TypedDict):
-    name: str
+    name: EffectType
     chance: float
-    durationSeconds: int
+    duration: int
+
+
+class BaseSkill(TypedDict):
+    name: str
     description: str
+    school: uuid.UUID
+    multi_target: bool
+    type: SkillTypes
+    grade: int
+    cost: List[Cost]
+    effect: List[Effect]
+    impact: List[Impact]

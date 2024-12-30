@@ -16,12 +16,16 @@
         {{ displayResult }}
       </div>
     </div>
+    <GlassButton @click="$emit('close')">Done</GlassButton>
   </div>
 </template>
 
 <script>
+import GlassButton from "@/components/btn/Glass.vue";
+
 export default {
   name: "DiceVisualizer",
+  components: {GlassButton},
   props: {
     diceSet: {
       type: Array,
@@ -90,7 +94,7 @@ export default {
   align-items: center;
   gap: 30px;
   padding: 30px;
-  background: radial-gradient(circle, #0d0d0d, #000000);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5)) fixed;
   border-radius: 15px;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -104,6 +108,16 @@ export default {
   justify-content: center;
 }
 
+.close {
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: #00ffcc;
+  z-index: 20;
+}
 /* Futuristic Dice Styles */
 .dice {
   width: 100px;

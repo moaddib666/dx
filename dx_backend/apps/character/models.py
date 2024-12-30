@@ -66,6 +66,9 @@ class Character(BaseModel):
     position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
                                  related_name='characters')
 
+    last_safe_position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
+                                           related_name='characters_in_safe')
+
     def __str__(self):
         return self.name
 

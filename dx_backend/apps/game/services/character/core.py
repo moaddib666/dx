@@ -10,7 +10,7 @@ from apps.character.models import Character
 from apps.core.bus.base import GameEvent
 from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder, CharacterStats, FullCharacterInfo, \
     FightSide, \
-    ImpactType, ImpactViolationType, RollOutcome
+    ImpactType, ImpactViolationType, RollOutcome, Coordinate
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.school.models import Skill
@@ -71,6 +71,7 @@ class CharacterService:
         return FullCharacterInfo(
             id=self.character.id,
             position=self.character.position_id,
+            coordinates=Coordinate(x=self.character.position.grid_x, y=self.character.position.grid_y, z=self.character.position.grid_z),
             name=self.character.name,
             attributes=[
                 self.get_attribute(attr_name) for attr_name in AttributeType

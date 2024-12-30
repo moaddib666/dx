@@ -7,56 +7,77 @@
         class="background-view"
     ></BackgroundView>
 
-    <!-- Compass Component (Centered) -->
-    <div class="center-section">
-
-      <CompassComponent
-          v-if="hasActionPoints && selectedGameObjectId === null"
-          :connections="activeConnections"
-          centerAction="true"
-          centerLabel="Up"
-          class="compass-component"
-          @move="handleMove"
-      />
-      <ActionConstructor v-else-if="hasActionPoints && selectedGameObjectId !== null"
-                         :availableActions="availableActions"
-                         :availableGameObjects="availableGameObjects"
-                         :preSelectedTarget="selectedGameObjectId"
-                         @applyAction="alert"
-                         @cancelAction="cancelAction"
-      />
-    </div>
     <!-- Top Row (Character Cards) -->
     <div class="top-row">
       <CharacterCardHolder
-          :characters="activeCharacters"
+          :characters="characters"
           :selectedCharacterId="selectedCharacterId"
+          class="top-left"
+          @characterSelected="updateSelectedGameObjectId"
+      />
+      <div class="top-separator"></div>
+      <CharacterCardHolder
+          :characters="npcCharacters"
+          :selectedCharacterId="selectedCharacterId"
+          class="top-right"
           @characterSelected="updateSelectedGameObjectId"
       />
     </div>
 
-    <!-- Side Columns -->
-    <div class="side-columns">
-      <!-- Player Component (Left) -->
-      <PlayerComponent
-          :player="playerInfo"
-          :playerImage="playerGeneralInfo.biography.avatar"
-          class="player-component"
-      />
+    <!-- Compass Component (Centered) -->
+    <div class="center-section">
+      <div class="center-left">
+        <!-- Player Component (Left) -->
+        <PlayerComponent
+            :player="playerInfo"
+            :playerImage="playerGeneralInfo.biography.avatar"
+        />
+        <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
+      </div>
+      <div class="center-center">
+        <DiceVisualizer v-if="diceActivated" :result="diceResult" @close="deactivateDice" @selectedDice="diceRoll"/>
+        <CompassComponent
+            v-else-if="hasActionPoints && selectedGameObjectId === null"
+            :connections="activeConnections"
+            centerAction="true"
+            centerLabel="Up"
+            class="compass-component"
+            @move="handleMove"
+        />
+        <ActionConstructor v-else-if="hasActionPoints && selectedGameObjectId !== null"
+                           :availableActions="availableActions"
+                           :availableGameObjects="availableGameObjects"
+                           :preSelectedTarget="selectedGameObjectId"
+                           @applyAction="applyAction"
+                           @cancelAction="cancelAction"
+        />
 
-      <!-- Current Turn Component (Right, Top) -->
 
+      </div>
+      <div class="center-right">
+      </div>
     </div>
-    <CurrentTurnComponent
-        class="current-turn-component"
-        @turnChanged="updateAll"
-    />
-    <!-- Dice Component (Bottom, Right) -->
-    <DiceComponent
-        :result="diceResult"
-        class="dice-component"
-        @selectedDice="diceRoll"
-    />
+    <!-- Bottom Row -->
+    <div class="bottom">
+      <!-- Current Turn Component (Bottom, Left) -->
+      <div class="left-action-group">
+
+        <CurrentTurnComponent
+            class="current-turn-component"
+            @turnChanged="updateAll"
+        />
+      </div>
+      <!-- Dice Component (Bottom, Right) -->
+      <div class="right-action-group">
+        <ActionButton
+            v-if="hasActionPoints"
+            @click="selectSelf"
+        />
+        <DiceComponent
+            @click="activateDice"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -76,10 +97,16 @@ import ActionSelector from "@/components/Selectors/ActionSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
 import GlassPlayButton from "@/components/btn/GlassPlayButton.vue";
 import ActionConstructor from "@/components/Action/ActionConstructor.vue";
+import ActionButton from "@/components/Action/ActionButton.vue";
+import DiceVisualizer from "@/components/Dice/DiceVisualizer.vue";
+import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    CoordinatesDisplay,
+    DiceVisualizer,
+    ActionButton,
     ActionConstructor,
     GlassPlayButton,
     ActionPicker: ActionPreview,
@@ -101,11 +128,13 @@ export default {
       playerInfo: null,
       playerGeneralInfo: null,
       characters: [],
+      npcCharacters: [],
       selectedCharacterId: 'f3c4216f-cbaa-4792-b6e6-1cedd502deae',
       actionService: new ActionService(ActionGameApi),
       playerService: null,
       playerSkills: null,
       diceResult: null,
+      diceActivated: false,
     };
   },
   computed: {
@@ -126,14 +155,18 @@ export default {
           icon: char.biography.avatar,
         };
       });
+      const npcGameObjects = this.npcCharacters.map((char) => {
+        return {
+          id: char.id,
+          name: char.name,
+          icon: char.biography.avatar,
+        };
+      });
       const itemsGameObjects = [];
-      return playersGameObjects.concat(itemsGameObjects);
+      return playersGameObjects.concat(itemsGameObjects).concat(npcGameObjects);
     },
     hasActionPoints() {
       return this.playerService?.hasActionPoints();
-    },
-    activeCharacters() {
-      return this.characters
     },
     activeConnections() {
       if (!this.connections) return [];
@@ -146,11 +179,21 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async selectSelf() {
+      this.selectedGameObjectId = this.playerInfo.id;
+    },
+    async activateDice() {
+      this.diceActivated = true;
+    },
+    async deactivateDice() {
+      this.diceActivated = false;
+    },
     async cancelAction() {
       this.selectedGameObjectId = null;
     },
-    async updateSelectedAction(action) {
-      this.selectedAction = action;
+    async applyAction(action) {
+      await this.actionService.performAction(action);
+      await this.getPlayerInfo();
     },
     async updateSelectedGameObjectId(id) {
       this.selectedGameObjectId = id;
@@ -173,8 +216,12 @@ export default {
       await this.getPlayerInfo();
     },
     async resolveCharacter(characterId) {
-      const data = await CharacterGameApi.characterRetrieve(characterId);
-      this.characters.push(data.data);
+      const data = (await CharacterGameApi.characterRetrieve(characterId)).data;
+      if (data.npc) {
+        this.npcCharacters.push(data);
+      } else {
+        this.characters.push(data);
+      }
     },
     async getCurrentPositionInfo() {
       this.position = (await WorldGameApi.worldPositionCurrentRetrieve()).data;
@@ -183,6 +230,7 @@ export default {
         this.connections[conn.direction] = conn;
       });
       this.characters = [];
+      this.npcCharacters = [];
       this.position.characters.forEach((char) => {
         this.resolveCharacter(char);
       });
@@ -202,11 +250,11 @@ export default {
 </script>
 
 <style scoped>
-.action-constructor-holder {
+.center-section {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  flex-direction: row;
-  gap: 0.1rem;
+  height: 60vh;
 }
 
 .location-view {
@@ -227,29 +275,51 @@ export default {
   display: flex;
 }
 
-.compass-component {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
+.center-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex: 3;
 }
 
+.center-right {
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+
 .top-row {
-  padding: 10px;
+  width: 90%;
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-left: 5%;
   z-index: 5;
 }
 
-.side-columns {
+.top-right {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: absolute;
-  top: 150px;
-  width: 100%;
-  padding: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+.top-separator {
+  width: 1rem;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.top-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
 }
 
 .current-turn-component {
@@ -259,37 +329,33 @@ export default {
   z-index: 20;
 }
 
-.dice-component {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 200;
+.left-action-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: row;
+  z-index: 20;
+  padding-left: 1rem;
 }
 
-.player-component {
-  position: fixed;
-  top: 50%;
-  transform: translate(0, -50%);
-  z-index: 10;
+.right-action-group {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: row;
+  z-index: 20;
+  padding-right: 1rem;
+  gap: 1rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .side-columns {
-    flex-direction: column;
-    align-items: center;
-  }
-
+.right-action-group * {
+  height: 3rem;
+  width: 3rem;
 }
 
 @media (max-width: 480px) {
   .compass-component {
     width: 90%;
-  }
-
-  .dice-component {
-    bottom: 10px;
-    right: 10px;
   }
 
   .top-row {

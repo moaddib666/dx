@@ -7,18 +7,20 @@
           @update:selectedId="updateSelectedGameObjectId"
       />
       <ActionPreview v-if="selectedAction !== null" :action="selectedAction"/>
-      <GlassButton @click="$emit('cancelAction',)"> Cancel</GlassButton>
-      <GlassButton v-if="selectedGameObjectId && selectedAction" @click="applyAction"> Apply</GlassButton>
+      <GlassButton @click="$emit('cancelAction')">Cancel</GlassButton>
+      <GlassButton v-if="selectedGameObjectId && selectedAction" @click="applyAction">Apply</GlassButton>
     </div>
     <div class="action-selector-holder">
-      <ActionSelector :actions="availableActions" :preSelected="selectedGameObjectId"
-                      @action-selected="updateSelectedAction"/>
+      <ActionSelector
+          :actions="availableActions"
+          :preSelected="selectedGameObjectId"
+          @action-selected="updateSelectedAction"
+      />
     </div>
   </div>
 </template>
 
 <script>
-
 import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
 import GlassPlayButton from "@/components/btn/GlassPlayButton.vue";
@@ -45,8 +47,13 @@ export default {
     },
     preSelectedTarget: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
+  },
+  watch: {
+    preSelectedTarget(newTarget) {
+      this.updateSelectedGameObjectId(newTarget);
+    },
   },
   data() {
     return {
@@ -56,16 +63,26 @@ export default {
   },
   mounted() {
     if (this.preSelectedTarget !== null) {
-      this.updateSelectedGameObjectId(this.preSelectedTarget)
+      this.updateSelectedGameObjectId(this.preSelectedTarget);
     }
   },
   methods: {
     reset() {
-      this.selectedAction = null
+      this.selectedAction = null;
+      this.selectedGameObjectId = null;
     },
     applyAction() {
-      this.$emit("applyAction", {id: "tbd"})
-      this.reset()
+      if (!this.selectedAction || !this.selectedGameObjectId) return;
+
+      const actionObject = {
+        actionType: "USE_SKILL", // TODO: add support of actions on backend
+        actionData: {},
+        skill: this.selectedAction.id,
+        targets: [this.selectedGameObjectId], // Selected game object as target
+      };
+
+      this.$emit("applyAction", actionObject);
+      this.reset();
     },
     updateSelectedGameObjectId(id) {
       this.selectedGameObjectId = id;
