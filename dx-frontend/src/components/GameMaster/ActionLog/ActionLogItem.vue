@@ -1,11 +1,22 @@
 <template>
   <div class="action-log-item">
     <div class="action-row">
-      <SmallCharPreview class="initiator" :char="action.initiator" @select="handleSelect" />
+      <SmallCharPreview :char="action.initiator" :gmMode="gmMode" class="initiator" @select="handleSelect"/>
       <div class="action-info">
-        <span class="action-id">ID: {{ action.id }}</span>
-        <span class="action-type">Type: {{ action.action_type }}</span>
-        <span class="cycle">Cycle: {{ action.cycle.id }}</span>
+        <ActionIconMini v-if="action.skill" :skill="action.skill"/>
+        <div v-else-if="action.action_type === 'MOVE'" class="action-icon">
+          <img alt="Move" src="@/assets/images/action/move.png"/>
+          <span> Move </span>
+        </div>
+        <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">
+          <DiceComponent/>
+          <span> Dice Roll </span>
+        </div>
+        <div v-else>
+          <span class="action-id">ID: {{ action.id }}</span>
+          <span class="action-type">Type: {{ action.action_type }}</span>
+          <span class="cycle">Cycle: {{ action.cycle.id }}</span>
+        </div>
         <span class="status">
           <span :class="{ 'status-true': action.accepted, 'status-false': !action.accepted }">
             Accepted: {{ action.accepted ? 'Yes' : 'No' }}
@@ -20,6 +31,7 @@
             v-for="target in action.targets"
             :key="target.id"
             :char="target"
+            :gmMode="gmMode"
             @select="handleSelect"
         />
       </div>
@@ -38,15 +50,25 @@
 <script>
 import SmallCharPreview from './SmallCharPreview.vue';
 import ImpactComponent from './ImpactComponent.vue';
+import SkillIcon from "@/components/Action/ActionIcon.vue";
+import ActionIconMini from "@/components/Action/ActionIconMini.vue";
+import DiceComponent from "@/components/Dice/DiceComponent.vue";
 
 export default {
   name: 'ActionLogItem',
   components: {
+    DiceComponent,
+    ActionIconMini,
+    SkillIcon,
     SmallCharPreview,
     ImpactComponent,
   },
   props: {
     action: Object,
+    gmMode: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     handleSelect(id) {
@@ -81,7 +103,7 @@ export default {
 }
 
 .action-info {
-  flex: 0 0 15rem; /* Fixed size for action-info */
+  flex: 0 0 10rem; /* Fixed size for action-info */
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -127,4 +149,24 @@ h4 {
   font-size: 0.8rem;
   color: #ffcc00;
 }
+
+.action-info .action-icon {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.action-info .action-icon span {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.action-info .action-icon img {
+  width: 2em;
+  height: 2em;
+}
+
 </style>

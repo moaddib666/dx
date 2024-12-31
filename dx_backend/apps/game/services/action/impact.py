@@ -2,13 +2,16 @@ import abc
 import logging
 
 from apps.action.models import CharacterAction, DiceRollResult
-from apps.core.models import CharacterStats
+from apps.character.models import Character
+from apps.core.models import CharacterStats, SkillTypes
+from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
 from apps.game.services.character.core import CharacterService
 from apps.game.services.rand_dice import DiceService
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
+from apps.world.models import Position
 
 
 class AbstractImpactActionApplicator(abc.ABC):
@@ -69,19 +72,20 @@ class ImpactAction(CharacterActionServicePrototype):
             multiplier=multiplier.multiplier,
             outcome=multiplier.outcome
         )
-        for calculated_impact in calculated_impacts:
-            calculated_impact['value'] = int(calculated_impact['value'] * multiplier.multiplier)
-            self.logger.debug(
-                f"Calculated impact damage {calculated_impact['value']} for action {action.id} in cycle {action.cycle_id}")
-            for target in action.targets.all():
-                target_character = CharacterService(target)
-                rs = target_character.impacted(action, calculated_impact, dice_result)
-                self.logger.debug(
-                    f"Applied impact to target character {target.id} from action {action.id} in cycle {action.cycle_id}",
-                    extra={
-                        "impacts": rs
-                    })
-        action.perform()
+
+        if action.skill.type == SkillTypes.SPECIAL:
+            self._perform_special(action, calculated_impacts, dice_result, multiplier)
+            return
+
+        if action.skill.type == SkillTypes.HEAL:
+            self._perform_heal(action, calculated_impacts, dice_result, multiplier)
+            return
+
+        if action.skill.type == SkillTypes.ATTACK:
+            self._perform_damage(action, calculated_impacts, dice_result, multiplier)
+            return
+
+        raise GameException("Skill type not implemented")
 
     def check(self, action: CharacterAction):
         pass
@@ -124,3 +128,62 @@ class ImpactAction(CharacterActionServicePrototype):
         self._accept(action, self.character_svc_cls(action.initiator))
         SkillCostService(action.skill).apply(action.initiator)
         action.accept()
+
+    # TODO: refactor this to use performers instead
+    def _perform_special(self, action, calculated_impacts, dice_result, multiplier):
+        if dice_result.outcome == 1:
+            self.logger.debug(
+                f"Special action failed for action {action.id} in cycle {action.cycle_id} due to dice roll")
+            return
+
+        if action.skill_id == 168:  # case 1: teleport to safe place
+            # TODO: use location service for this
+            action.initiator.position = action.initiator.last_safe_position or Position.objects.get(
+                grid_x=0, grid_y=1, grid_z=1,
+            )
+            action.initiator.save(
+                update_fields=["position", "updated_at"]
+            )
+            for impact in calculated_impacts:
+                self._register_impact(action, action.initiator, impact, dice_result)
+            return
+        if action.skill_id == 167:  # case 2: accumulate energy
+            char_svc = CharacterService(action.initiator)
+            calculate_amount = (char_svc.get_max_energy() * 0.7) * multiplier.multiplier
+            char_svc.add_energy(calculate_amount)
+            for impact in calculated_impacts:
+                impact['value'] = calculate_amount
+                self._register_impact(action, action.initiator, impact, dice_result)
+            return
+        raise GameException("Special action not implemented")
+
+    def _perform_heal(self, action, calculated_impacts, dice_result, multiplier):
+        # TODO: refactor this to use performers instead and give up hack w
+        for impact in calculated_impacts:
+            impact['value'] *= -1
+        self._perform_damage(action, calculated_impacts, dice_result, multiplier)
+
+    def _perform_damage(self, action, calculated_impacts, dice_result, multiplier):
+        for calculated_impact in calculated_impacts:
+            calculated_impact['value'] = int(calculated_impact['value'] * multiplier.multiplier)
+            self.logger.debug(
+                f"Calculated impact damage {calculated_impact['value']} for action {action.id} in cycle {action.cycle_id}")
+            for target in action.targets.filter(is_active=True):
+                target_character = CharacterService(target)
+                target_character.impacted(action, calculated_impact, dice_result)
+                rs = [self._register_impact(action, target, calculated_impact, dice_result), ]
+                self.logger.debug(
+                    f"Applied impact to target character {target.id} from action {action.id} in cycle {action.cycle_id}",
+                    extra={
+                        "impacts": rs
+                    })
+
+    def _register_impact(self, action, target: Character, calculated_impact: CalculatedImpact,
+                         dice_roll_result: DiceRollResult):
+        action.impacts.create(
+            target=target,
+            type=calculated_impact["kind"],
+            violation=calculated_impact["violation"],
+            size=calculated_impact['value'],
+            dice_roll_result=dice_roll_result
+        )

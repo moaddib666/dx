@@ -14,6 +14,7 @@
               :action="action"
               @selectInitiator="handleInitiatorSelect"
               @selectTarget="handleTargetSelect"
+              :gmMode="gmMode"
           />
         </div>
       </div>
@@ -37,6 +38,10 @@ export default {
       type: Array,
       required: true,
     },
+    gmMode: {
+      type: Boolean,
+      default: false,
+    }
   },
   computed: {
     groupedActions() {

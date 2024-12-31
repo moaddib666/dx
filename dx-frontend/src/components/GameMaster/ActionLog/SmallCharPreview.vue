@@ -1,8 +1,6 @@
 <template>
   <div class="small-char-preview">
-    <div class="char-avatar">
-      <img :src="char.avatar || placeholder" alt="Character Avatar" class="char-avatar-img"/>
-    </div>
+    <img :src="avatarLink" alt="Character Avatar" class="char-avatar-img"/>
     <div class="char-details">
       <span class="char-name">{{ char.name }}</span>
       <span v-if="char.npc" class="char-npc">(NPC)</span>
@@ -11,14 +9,22 @@
 </template>
 
 <script>
+import {CharacterInfoGameService} from "@/services/characterInfoService.js";
+
 export default {
   name: 'SmallCharPreview',
   props: {
     char: Object,
+    gmMode: Boolean,
   },
+  async created() {
+    this.avatarLink = await CharacterInfoGameService.getAvatarUrl(this.char.id, this.gmMode) || this.placeholder;
+  },
+  computed: {},
   data() {
     return {
       placeholder: 'https://via.placeholder.com/24',
+      avatarLink: null,
     };
   },
 };
@@ -26,8 +32,8 @@ export default {
 
 <style scoped>
 .char-avatar-img {
-  width: 30px;
-  height: 30px;
+  height: 2em;
+  width: 2em;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid #555;
@@ -38,14 +44,12 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.1rem 0.5rem;
-  border: 1px solid #444;
   border-radius: 4px;
-  background: #292929;
 }
 
 .char-avatar img {
-  width: 24px;
-  height: 24px;
+  width: 2em;
+  height: 2em;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid #555;
@@ -59,11 +63,11 @@ export default {
 .char-name {
   font-weight: bold;
   color: #e0e0e0;
-  font-size: 0.8rem;
+  font-size: 0.5rem;
 }
 
 .char-npc {
-  font-size: 0.7rem;
+  font-size: 0.5rem;
   color: #aaa;
 }
 </style>

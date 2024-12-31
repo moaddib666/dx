@@ -19,15 +19,8 @@ class SkillImpactService:
         self.logger.info(
             f"Calculating impact for skill {self.skill.id} used by character {self.initiator.character.id}")
 
-        if self.skill.type not in (Skill.Types.ATTACK, Skill.Types.HEAL, Skill.Types.SPECIAL):
-            self.logger.error("Only attack skills supported for now")
-            raise GameLogicException("Only attack skills supported for now")
-
         impacts: List[Impact] = self.skill.impact
         calculated_impacts = [self.calculate_damage(impact) for impact in impacts]
-        if self.skill.type == Skill.Types.HEAL:
-            for impact in calculated_impacts:
-                impact['value'] *= -1
         return calculated_impacts
 
     def calculate_damage(self, impact: Impact) -> CalculatedImpact:
@@ -63,4 +56,4 @@ class SkillImpactService:
             potential_impacts.append(skill_efficiencies)
         final_impact = base_damage * min(potential_impacts or [1])
         logging.debug(f"Final impact: {final_impact}")
-        return CalculatedImpact(kind=impact['kind'], value=final_impact)
+        return CalculatedImpact(kind=impact['kind'], value=int(final_impact), violation=impact['type'])

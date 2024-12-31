@@ -45,6 +45,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         for action in self.get_actions():
             try:
                 self.factory.from_action(action).perform(action)
+                action.perform()
                 self.notify_svc.notify(action)
             except Exception as e:
                 self.notify_svc.notify(action, e)
@@ -77,4 +78,6 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
-        return self.cycle.actions.filter(performed=False)
+        # TODO: include speed and action size in ordering
+        # so that first we execute action that take less action points and the fastest player been first
+        return self.cycle.actions.filter(performed=False).order_by("cycle", "created_at")

@@ -1,5 +1,4 @@
 import logging
-import random
 import uuid
 from datetime import timedelta
 
@@ -153,23 +152,12 @@ class CharacterService:
 
     # TODO: refactor this
     def impacted(self, action: CharacterAction, calculated_impact: CalculatedImpact,
-                 dice_roll_result: DiceRollResult) -> \
-            list[ActionImpact]:
-        results = []
+                 dice_roll_result: DiceRollResult):
         self.logger.debug(f"Character {self.character.id} impacted with {calculated_impact}")
         # FIXME: adjust to allow healing in knock out state
         if self.character.current_health_points <= 0 and calculated_impact['kind'] == ImpactType.DAMAGE:
             self.logger.debug(f"Character {self.character.id} is already dead")
-            return results
-        if action.skill.type == Skill.Types.SPECIAL:
-            self.logger.debug(f"Special skill impact")
-            # FIXME: dirty hack
-            if action.skill.id == 167:
-                self.logger.debug(f"Special skill impact accumulate energy")
-                self.add_energy(int(self.get_max_energy() * (random.randint(1, 10) / 10)))
-            return results
 
-        # FIXME: add processing for other impact types
         if calculated_impact['kind'] not in (ImpactType.DAMAGE, ImpactType.HEAL):
             raise GameLogicException(f"Unknown impact kind {calculated_impact['kind']}")
 
@@ -178,32 +166,15 @@ class CharacterService:
             self.character.current_health_points = 0
         if self.character.current_health_points > self.get_max_hp():
             self.character.current_health_points = self.get_max_hp()
-        self.character.save()
-        r = action.impacts.create(
-            target=self.character,
-            type=calculated_impact["kind"],
-            violation=ImpactViolationType.PHYSICAL,  # FIXME
-            size=calculated_impact['value'],
-            dice_roll_result=dice_roll_result
-        )
-        results.append(r)
+        # safe roll
         if self.character.current_health_points <= 0:
             if dice_roll_result.outcome == RollOutcome.CRITICAL_FAIL:
+                self.logger.info(f"Attacker {self.character.id} received critical fail and cant kill the target")
                 self.character.current_health_points = 1
-                self.character.save()
             # TODO: draw the dice d20 and if critical success heal it to 1hp
-            else:
-                r = action.impacts.create(
-                    target=self.character,
-                    type=ImpactType.KNOCK_OUT,
-                    violation=ImpactViolationType.PHYSICAL,  # FIXME
-                    size=0,
-                    dice_roll_result=dice_roll_result
-                )
-                results.append(r)
+        self.character.save(update_fields=['current_health_points', 'updated_at'])
         self.logger.info(
             f"Character {self.character.id} received {calculated_impact['value']} of {calculated_impact['kind']} damage")
-        return results
 
     def refill_all(self):
         self.refill_ap()

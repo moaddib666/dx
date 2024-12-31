@@ -103,6 +103,7 @@ import DiceVisualizer from "@/components/Dice/DiceVisualizer.vue";
 import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 import EffectItem from "@/components/Effect/EffectItem.vue";
 import EffectsHolder from "@/components/Effect/EffectsHolder.vue";
+import {CharacterInfoGameService} from "@/services/characterInfoService.js";
 
 export default {
   name: 'LocationView',
@@ -223,7 +224,8 @@ export default {
       await this.getPlayerInfo();
     },
     async resolveCharacter(characterId) {
-      const data = (await CharacterGameApi.characterPlayerRetrieve(characterId)).data;
+      const data = await CharacterInfoGameService.getCharacterInfo(characterId);
+      // const data = (await CharacterGameApi.characterPlayerRetrieve(characterId)).data;
       if (data.npc) {
         this.npcCharacters.push(data);
       } else {

@@ -2,34 +2,48 @@
   <div class="dashboard">
     <!-- Left Full Height Section -->
     <div class="left-section">
-      <ActionLog :actions="actions" @refresh="refreshActions" />
+      <ActionLog :actions="actions" :gmMode="true" @refresh="refreshActions"/>
     </div>
     <!-- Top Center Section -->
+    <!--    <div class="top-center" v-if="characters && characters.length > 0 && !selectedLocationId">-->
+    <!--      <CharacterCardHolder-->
+    <!--          :characters="characters"-->
+    <!--          @characterSelected="selectCharacter"-->
+    <!--      />-->
+    <!--    </div>-->
     <div class="top-center">
-      <CharacterCardHolder
-          v-if="characters && characters.length > 0"
-          :characters="characters"
-          @characterSelected="selectCharacter"
-      />
+      <div class="top-center-container">
+        <p>1</p>
+        <p>2</p>
+        <p>3</p>
+      </div>
       <CharacterCardHolder
           v-if="npcCharacters && selectedLocationId && npcCharacters.length > 0"
           :characters="npcCharacters"
           :selectedCharacterId="selectedCharacterId"
+          class="top-center-left"
           @characterSelected="selectCharacter"
+      />
+      <CharacterCardHolder
+
+          v-if="npcCharacters && selectedLocationId && npcCharacters.length > 0"
+          :characters="npcCharacters"
+          :selectedCharacterId="selectedCharacterId"
+          @characterSelected="selectCharacter"
+          class="top-center-right"
       />
     </div>
 
 
-
     <!-- Center Section -->
     <div class="center-section">
-      <GameMasterImpact @applyImpact="handleImpact" />
+      <GameMasterImpact @applyImpact="handleImpact"/>
     </div>
 
     <!-- Floating Top Right -->
     <div class="top-right">
-      <CurrentTurnComponent @turnChanged="refresh" />
-      <LocationIdSelector @locationSelected="selectLocationId" />
+      <CurrentTurnComponent @turnChanged="refresh"/>
+      <LocationIdSelector @locationSelected="selectLocationId"/>
       <PlayerComponent
           v-if="selectedCharacterData && selectedCharacterInfo"
           :player="selectedCharacterData"
@@ -41,7 +55,7 @@
 
     <!-- Center Bottom -->
     <div class="bottom-center">
-      <EndTurnComponent />
+      <EndTurnComponent/>
     </div>
 
     <!-- Bottom Right -->
@@ -149,12 +163,30 @@ export default {
 
 /* Top Center Section */
 .top-center {
-  grid-area: top-center;
-  display: flex;
-  flex-wrap: wrap;
+
+  display: grid;
+  flex-direction: row;
   justify-content: center;
-  gap: 0.2rem;
+  align-items: center;
+  z-index: 5;
 }
+
+.top-center-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+}
+
+.top-center-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+
+
 
 /* Left Full Height Section */
 .left-section {

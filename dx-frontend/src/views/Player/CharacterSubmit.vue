@@ -251,7 +251,7 @@ export default {
       }
     },
     async getPlayerTemplate() {
-      this.playerData = (await CharacterGameApi.characterCharacterTemplateRetrieve()).data;
+      this.playerData = (await CharacterGameApi.characterPlayerCharacterTemplateRetrieve()).data;
     },
     async getPlayerPaths() {
       this.availablePaths = (await SchoolGameApi.schoolPathsGetAllPathsRetrieve()).data;
