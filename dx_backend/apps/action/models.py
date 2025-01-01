@@ -33,8 +33,9 @@ class CharacterAction(BaseModel):
     data = models.JSONField(default=dict)
 
     action_type = models.CharField(max_length=255, choices=ActionType.choices(), default=ActionType.USE_SKILL)
-    initiator = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='actions')
-    targets = models.ManyToManyField('character.Character', related_name='actions_targets', blank=True)
+    initiator = models.UUIDField()
+    # initiator = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='actions')
+    targets = models.ManyToManyField('core.GameObject', related_name='actions_targets', blank=True)
 
     skill = models.ForeignKey('school.Skill', on_delete=models.CASCADE, null=True, blank=True)
     # target_dimension = models.ForeignKey('world.Dimension', on_delete=models.CASCADE, null=True, blank=True)
@@ -57,7 +58,8 @@ class CharacterAction(BaseModel):
 
 class ActionImpact(BaseModel):
     action = models.ForeignKey('action.CharacterAction', on_delete=models.CASCADE, related_name='impacts')
-    target = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='impacted_by')
+    # target = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='impacted_by')
+    target = models.UUIDField()
     type = models.CharField(choices=ImpactType.choices(), max_length=255)
     violation = models.CharField(max_length=255, choices=ImpactViolationType.choices())
     size = models.IntegerField()

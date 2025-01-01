@@ -86,6 +86,7 @@ MIDDLEWARE = [
     # "allauth.account.middleware.AccountMiddleware",
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.UUIDField'
 
 ROOT_URLCONF = "dx_backend.urls"
 

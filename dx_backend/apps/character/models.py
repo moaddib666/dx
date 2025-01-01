@@ -34,7 +34,8 @@ class CharacterBiography(BaseModel):
     background = models.TextField(blank=True)
     appearance = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
-    character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='biography')
+    # character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='biography')
+    character = models.UUIDField()
 
 
 class Character(GameObject):
@@ -77,7 +78,8 @@ class Character(GameObject):
 class Stat(BaseModel):
     name = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
     value = models.IntegerField()
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='stats')
+    # character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='stats')
+    character = models.UUIDField()
 
     def __str__(self):
         return self.name

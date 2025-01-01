@@ -5,7 +5,8 @@ from apps.core.utils.models import BaseModel
 
 class Session(BaseModel):
     client = models.ForeignKey('client.Client', on_delete=models.CASCADE)
-    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE)
+    # character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE)
+    character = models.UUIDField()
 
 
 class Campaign(BaseModel):
