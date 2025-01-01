@@ -39,13 +39,12 @@ class ActiveEffect(BaseModel):
     duration = models.PositiveIntegerField(default=0)
     impact = models.JSONField(default=dict, null=True, blank=True)
     # Fixme - on reverse relation .effects.all() returns all effects, not only active
-    # target = models.ForeignKey(
-    #     'character.Character', to_field='gameobject_ptr',
-    #     on_delete=models.CASCADE,
-    #     related_name='effects'
-    #
-    # )
-    target = models.UUIDField()
+    target = models.ForeignKey(
+        'character.Character', to_field='gameobject_ptr',
+        on_delete=models.CASCADE,
+        related_name='effects'
+
+    )
     active = models.BooleanField(default=True)
 
     _data = models.JSONField(default=dict, null=True, blank=True)

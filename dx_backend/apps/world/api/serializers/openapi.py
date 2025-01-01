@@ -200,7 +200,7 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def get_characters(self, obj):
         """Retrieve all characters in the current position."""
-        return [character.id for character in obj.characters.all()]
+        return [character.id for character in obj.gameobject_set.instance_of(Character)]
 
     def get_image(self, obj):
         """Retrieve the background of the current position."""

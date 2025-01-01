@@ -16,6 +16,5 @@ class StatModificator(BaseModel):
     value = models.IntegerField(default=0)
 
 class CharacterModificator(BaseModel):
-    # character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='modificators')
-    character = models.UUIDField()
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='modificators')
     modificator = models.ForeignKey(Modificator, on_delete=models.CASCADE)
