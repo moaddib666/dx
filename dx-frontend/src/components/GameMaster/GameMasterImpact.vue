@@ -32,37 +32,25 @@
       </div>
     </div>
 
-    <!-- Impact Type Dropdown -->
-    <div class="dropdown">
-      <label for="impactType">Impact Type</label>
-      <select id="impactType" v-model="impactType">
-        <option value="Heal">Heal</option>
-        <option value="Damage">Damage</option>
-      </select>
-    </div>
-
-    <!-- Impact Violation Dropdown -->
-    <div class="dropdown">
-      <label for="impactViolation">Impact Violation</label>
-      <select id="impactViolation" v-model="impactViolation">
-        <option value="Physical">Physical</option>
-        <option value="Energy">Energy</option>
-        <option value="None">None</option>
-      </select>
-    </div>
-
-    <!-- Apply Button -->
-    <button class="apply-button" @click="applyImpact">Apply</button>
+    <!-- Skills Dropdown -->
+    <DropdownActionSelector :skills="availableActions" @action-selected="setPreparedAction" :selected-action-id="preparedActionId" v-if="initiator" class="dropdown"/>
+    <!-- Submit Button -->
+    <LandingButton :action="applyImpact">
+      Apply
+    </LandingButton>
   </div>
 </template>
 
 <script>
-import {ActionGameApi, CharacterGameApi} from "@/api/backendService.js";
+import {ActionGameApi, CharacterGameApi, SkillsGameApi} from "@/api/backendService.js";
 import CharacterInlineCard from "@/components/Game/Location/CharacterInlineCard.vue";
+import DropdownActionSelector from "@/components/Action/DropdownActionSelector.vue";
+import LandingButton from "@/components/btn/LandingButton.vue";
+import ActionService from "@/services/actionsService.js";
 
 export default {
   name: "GameMasterImpact",
-  components: {CharacterInlineCard},
+  components: {LandingButton, DropdownActionSelector, CharacterInlineCard},
   data() {
     return {
       initiator: "",
@@ -71,9 +59,24 @@ export default {
       impactViolation: "Physical",
       initiatorData: null,
       targetData: null,
+      availableSkills: [],
+      preparedActionId: null,
+      actionService: null,
     };
   },
+  async created() {
+    this.actionService = new ActionService(ActionGameApi);
+  },
+  computed: {
+    availableActions() {
+      if (!this.availableSkills) return [];
+      return this.availableSkills.map((skill) => (skill.skill));
+    },
+  },
   methods: {
+    async setPreparedAction(actionId) {
+      this.preparedActionId = actionId;
+    },
     async cleanInitiatorData() {
       this.initiatorData = null;
       this.initiator = "";
@@ -81,6 +84,17 @@ export default {
     async cleanTargetData() {
       this.targetData = null;
       this.target = "";
+    },
+    async setInitiator(id) {
+      this.initiator = id;
+      await this.fetchCharacterData("initiator");
+    },
+    async setTarget(id) {
+      this.target = id;
+      await this.fetchCharacterData("target");
+    },
+    async fetchCharacterSkills(id) {
+      this.availableSkills = (await SkillsGameApi.skillsGmSkillsList(id)).data.results;
     },
     async fetchCharacterData(type) {
       const id = type === "initiator" ? this.initiator : this.target;
@@ -100,21 +114,39 @@ export default {
       }
     },
     async applyImpact() {
-      if (!this.initiator || !this.target) {
-        alert("Please provide both initiator and target IDs.");
+      if (!this.initiator || !this.target || !this.preparedActionId) {
+        alert("Please fill all required fields.");
         return;
       }
 
-      const impact = {
-        initiator: this.initiator,
-        target: this.target,
-        impact_type: this.impactType,
-        impact_violation: this.impactViolation,
-      };
-      await ActionGameApi.actionGmRegisterImpactCreate(impact);
-      this.$emit("applyImpact", impact);
+      const action = {
+        actionType: "USE_SKILL",
+        actionData: {},
+        position: null,
+        targets: [this.target],
+        skill: this.preparedActionId,
+        characterId: this.initiator,
+      }
+
+      const result = await this.actionService.performActionForCharacter(action);
+      this.$emit("applied", result);
+      //
+      // const impact = {
+      //   initiator: this.initiator,
+      //   target: this.target,
+      //   impact_type: this.impactType,
+      //   impact_violation: this.impactViolation,
+      // };
+      // await ActionGameApi.actionGmRegisterImpactCreate(impact);
+      // this.$emit("applyImpact", impact);
     },
   },
+  watch: {
+    initiator(val) {
+      this.initiatorData = null;
+      if (val) this.fetchCharacterSkills(this.initiator); else this.availableSkills = [];
+    },
+  }
 };
 </script>
 
@@ -157,6 +189,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 label {
@@ -188,4 +221,5 @@ input {
 .apply-button:hover {
   background: #0056b3;
 }
+
 </style>

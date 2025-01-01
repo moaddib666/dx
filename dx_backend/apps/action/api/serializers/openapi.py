@@ -49,6 +49,15 @@ class RegisterImpactActionSerializer(serializers.Serializer):
     impact_violation = serializers.ChoiceField(choices=ImpactViolationType.choices())
 
 
+class RegisterCharacterActionSerializer(serializers.Serializer):
+    initiator = serializers.UUIDField()
+    targets = serializers.ListField(child=serializers.UUIDField())
+    action_type = serializers.CharField()
+    skill = serializers.UUIDField()
+    data = serializers.JSONField()
+    position = serializers.JSONField()
+
+
 class CharacterActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CharacterAction
@@ -59,3 +68,8 @@ class CharacterActionSerializer(serializers.ModelSerializer):
             'skill': {'required': False},
             'id': {'read_only': True},
         }
+
+
+class GameMasterCharacterActionSerializer(CharacterActionSerializer):
+    class Meta(CharacterActionSerializer.Meta):
+        read_only_fields = ['created_at', 'updated_at']

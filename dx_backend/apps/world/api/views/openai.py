@@ -1,5 +1,7 @@
+from django.db import transaction
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from apps.character.models import Character
@@ -7,7 +9,7 @@ from apps.core.api.utils.character import GenericGameViewSet
 from apps.game.services.location import LocationService
 from apps.game.services.world.position import JsonDumper
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
-    PositionSerializer
+    PositionSerializer, TeleportPositionSerializer, TeleportCoordinatesSerializer
 from apps.world.models import Location, Area, City, Dimension, Position
 
 
@@ -152,6 +154,12 @@ class PositionManagementViewSet(GenericGameViewSet):
         serializer = self.get_serializer(position, context=self.get_serializer_context())
         return Response(data=serializer.data)
 
+    @action(detail=True, methods=['get'], permission_classes=[permissions.IsAdminUser])
+    def info(self, request, pk=None):
+        pos = get_object_or_404(Position, pk=pk)
+        serializer = PositionSerializer(pos, context=self.get_serializer_context())
+        return Response(data=serializer.data)
+
     @action(detail=True, methods=['post'], serializer_class=None, permission_classes=[permissions.IsAuthenticated])
     def move_to_position(self, request, pk=None):
         character = self.get_character()
@@ -163,6 +171,28 @@ class PositionManagementViewSet(GenericGameViewSet):
         character.position = new_position
         character.save()
         return Response(data=PositionSerializer(new_position, context=self.get_serializer_context()).data)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser],
+            serializer_class=TeleportPositionSerializer)
+    @transaction.atomic
+    def teleport_to_position(self, request, pk=None):
+        char = self.get_object()
+        serializer = TeleportPositionSerializer(data=request.data, context=self.get_serializer_context())
+        serializer.is_valid(raise_exception=True)
+        char.position = serializer.save()
+        char.save()
+        return Response(data=serializer.data)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser],
+            serializer_class=TeleportCoordinatesSerializer)
+    @transaction.atomic
+    def teleport_to_coordinates(self, request, pk=None):
+        char = self.get_object()
+        serializer = TeleportCoordinatesSerializer(data=request.data, context=self.get_serializer_context())
+        serializer.is_valid(raise_exception=True)
+        char.position = serializer.save()
+        char.save()
+        return Response(data=serializer.data)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
     def map(self, request):

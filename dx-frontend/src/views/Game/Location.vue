@@ -10,6 +10,7 @@
     <!-- Top Row (Character Cards) -->
     <div class="top-row">
       <CharacterCardHolder
+          v-if="characters.length > 0"
           :characters="characters"
           :selectedCharacterId="selectedCharacterId"
           class="top-left"
@@ -17,6 +18,7 @@
       />
       <div class="top-separator"></div>
       <CharacterCardHolder
+          v-if="npcCharacters.length > 0"
           :characters="npcCharacters"
           :selectedCharacterId="selectedCharacterId"
           class="top-right"
@@ -324,7 +326,6 @@ export default {
 .top-separator {
   width: 1rem;
   height: 100%;
-  background: rgba(255, 255, 255, 0.3);
 }
 
 .top-left {

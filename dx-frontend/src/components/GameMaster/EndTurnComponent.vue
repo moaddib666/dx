@@ -8,8 +8,8 @@
       <div class="modal-content">
         <h3>End Turn for All Players?</h3>
         <div class="modal-actions">
-          <button class="confirm-button" @click="endTurn">Yes</button>
           <button class="cancel-button" @click="cancelConfirmation">No</button>
+          <button class="confirm-button" @click="endTurn">Yes</button>
         </div>
       </div>
     </div>

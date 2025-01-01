@@ -12,7 +12,7 @@ from apps.core.models import GameMasterImpactAction
 from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
     GameMasterActionFactory
 from ..serializers.openapi import CharacterActionSerializer, CharacterActionLogSerializer, \
-    RegisterImpactActionSerializer
+    RegisterImpactActionSerializer, GameMasterCharacterActionSerializer
 from ...models import CharacterAction, Cycle
 
 
@@ -98,6 +98,8 @@ class GameMasterActionsViewSet(
         SearchFilter,
     ]
 
+    action_factory = CharacterActionFactory()
+
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=RegisterImpactActionSerializer)
     @transaction.atomic
@@ -113,4 +115,18 @@ class GameMasterActionsViewSet(
         svc.accept(act)
         # TMP: Apply the impact immediately
         # svc.perform(act)
+        return Response(data=serializer.data)
+
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
+            serializer_class=GameMasterCharacterActionSerializer)
+    @transaction.atomic
+    def register_character_action(self, request):
+        # add initiator to the data
+        serializer = self.get_serializer(data=request.data, context=self.get_serializer_context())
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['cycle'] = Cycle.objects.current()
+        super().perform_create(serializer)
+        instance = serializer.instance
+        svc = self.action_factory.from_action(instance)
+        svc.accept(instance)
         return Response(data=serializer.data)

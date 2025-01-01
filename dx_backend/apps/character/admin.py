@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 
 from .models import Organization, Rank, Character, CharacterBiography, Stat
 from ..effects.models import ActiveEffect
+from ..skills.models import LearnedSchool, LearnedSkill
 
 
 class BulkChangeAvatarForm(forms.Form):
@@ -108,6 +109,78 @@ class StatInline(admin.TabularInline):
     can_delete = False
 
 
+class LearnedSchoolsInline(admin.TabularInline):
+    """
+    Inline for displaying and editing learned schools directly in the Character admin interface.
+    """
+    model = LearnedSchool
+    extra = 1  # Number of extra blank rows
+    fields = ('school_details',)
+    readonly_fields = ('school_details',)
+    can_delete = True  # Allow deletion of rows
+
+    def school_details(self, obj):
+        """
+        Render the school details, including an icon and name, in the inline form.
+        """
+        if obj and obj.school and obj.school.icon:
+            return mark_safe(
+                f'''
+                 
+                <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="/admin/school/school/{obj.school.id}/change/" style="color: #333; font-size: 14px;">
+                    <img src="{obj.school.icon.url}" 
+                         alt="School Icon" 
+                         style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
+                     </a>
+                    <div>
+                       
+                            <strong style="color: #333; font-size: 14px;">{obj.school}</strong>
+                       
+                        <div style="font-size: 12px; color: #555;">Base: {"Yes" if obj.is_base else "No"}</div>
+                    </div>
+                   
+                </div>
+                '''
+            )
+        return "No School Data"
+
+    school_details.short_description = "School Details"
+
+
+class LearnedSkillsInline(admin.TabularInline):
+    """
+    Inline for displaying and editing learned skills directly in the Character admin interface.
+    """
+    model = LearnedSkill
+    extra = 1  # Number of extra blank rows
+    fields = ('skill_details',)
+    readonly_fields = ('skill_details',)
+    can_delete = True  # Allow deletion of rows
+
+    def skill_details(self, obj):
+        """
+        Render the skill details, including an icon and name, in the inline form.
+        """
+        if obj and obj.skill and obj.skill.icon:
+            return mark_safe(
+                f'''
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="{obj.skill.icon.url}" 
+                         alt="Skill Icon" 
+                         style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
+                    <div>
+                        <strong style="color: #333; font-size: 14px;">{obj.skill}</strong>
+                        <div style="font-size: 12px; color: #555;">Grade: {obj.skill.grade}</div>
+                    </div>
+                </div>
+                '''
+            )
+        return "No Skill Data"
+
+    skill_details.short_description = "Skill Details"
+
+
 class ActiveEffectsInline(admin.TabularInline):
     """
     Inline for displaying and editing Active Effects directly in the Character admin interface.
@@ -150,13 +223,13 @@ class CharacterAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
         'current_health_points', 'current_energy_points', "current_active_points",
-        'organization', 'is_active', 'npc'
+        'organization', 'is_active', 'npc',
     )
     search_fields = ('name', 'biography__background', 'biography__appearance', "id")
     list_filter = (
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )
-    inlines = [CharacterBiographyInline, StatInline, ActiveEffectsInline]
+    inlines = [CharacterBiographyInline, StatInline, LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ]
     actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
 
     def pictogram(self, obj):

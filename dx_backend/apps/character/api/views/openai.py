@@ -102,7 +102,7 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Character.objects.all()
+    queryset = Character.objects.filter(is_active=True)
     serializer_class = OpenaiCharacterSerializer
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]

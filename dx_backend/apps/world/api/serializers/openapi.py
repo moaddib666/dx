@@ -131,6 +131,48 @@ class PositionConnectionSerializer(serializers.ModelSerializer):
         return direction_map.get((dx, dy, dz), None)
 
 
+class TeleportCoordinatesSerializer(serializers.Serializer):
+    """References an existing position by coordinates only."""
+    grid_x = serializers.IntegerField()
+    grid_y = serializers.IntegerField()
+    grid_z = serializers.IntegerField()
+
+    def is_valid(self, *args, raise_exception=False):
+        try:
+            super().is_valid(raise_exception=raise_exception)
+            try:
+                self.instance = Position.objects.get(
+                    grid_x=self.validated_data['grid_x'],
+                    grid_y=self.validated_data['grid_y'],
+                    grid_z=self.validated_data['grid_z']
+                )
+                return True
+            except Position.DoesNotExist:
+                raise serializers.ValidationError("Position does not exist.")
+        except serializers.ValidationError:
+            if raise_exception:
+                raise
+            return False
+
+    def create(self, validated_data):
+        return self.instance
+
+    def update(self, instance, validated_data):
+        return instance
+
+
+class TeleportPositionSerializer(serializers.Serializer):
+    """References an existing position by ID only."""
+    id = serializers.PrimaryKeyRelatedField(queryset=Position.objects.all())
+
+    # No create/update needed; we just pull an existing Position
+    def create(self, validated_data):
+        return validated_data['id']
+
+    def update(self, instance, validated_data):
+        return instance
+
+
 class PositionSerializer(serializers.ModelSerializer):
     connections = serializers.SerializerMethodField()
     location = serializers.UUIDField(source='sub_location.location_id')
@@ -140,7 +182,8 @@ class PositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
         fields = (
-        'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters', "image")
+            'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
+            "image")
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""

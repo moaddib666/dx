@@ -42,6 +42,36 @@ class ActionService {
         }
     }
 
+    async performActionForCharacter({
+                                        actionType,
+                                        actionData = {},
+                                        position = null,
+                                        skill = null,
+                                        targets = [],
+                                        characterId
+                                    }) {
+        if (!actionType) {
+            throw new Error("Action type is required.");
+        }
+
+        const payload = {
+            initiator: characterId,
+            action_type: actionType,
+            data: actionData,
+            position,
+            skill,
+            targets,
+        };
+
+        try {
+            const response = await this.api.actionGmRegisterCharacterActionCreate(payload);
+            return response.data;
+        } catch (error) {
+            console.error("Failed to perform action:", error);
+            throw error;
+        }
+    }
+
     /**
      * Perform a "MOVE" action.
      * @param {string} position - The position to move to.
