@@ -40,7 +40,7 @@ class ActiveEffect(BaseModel):
     impact = models.JSONField(default=dict, null=True, blank=True)
     # Fixme - on reverse relation .effects.all() returns all effects, not only active
     target = models.ForeignKey(
-        'character.Character',
+        'character.Character', to_field='gameobject_ptr',
         on_delete=models.CASCADE,
         related_name='effects'
 

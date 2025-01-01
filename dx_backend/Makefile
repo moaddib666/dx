@@ -1,5 +1,7 @@
 re-init-migrations: remove-migrations migrations migrate load-fixtures
 
+apps=action adapters character client core currency effects fight gallery game items modificators school skills world
+
 remove-migrations:
 	find . -path "./apps/*/migrations/*.py" -not -name "__init__.py" -delete
 migrations:
@@ -16,3 +18,5 @@ redis:
 	docker-compose up -d redis
 gateway:
 	docker-compose up -d gateway
+dumpdata:
+	python manage.py dumpdata $(apps) --indent 2 -o backup/full_data_dump.$(shell date +%Y-%m-%d).json

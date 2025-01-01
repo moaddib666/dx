@@ -10,6 +10,6 @@ class CurrencyToken(BaseModel):
 
 
 class CharacterCurrency(BaseModel):
-    character = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='tokens')
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='tokens')
     currency = models.ForeignKey(CurrencyToken, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=0)

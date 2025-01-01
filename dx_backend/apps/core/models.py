@@ -3,6 +3,7 @@ import uuid
 from enum import StrEnum
 from typing import Optional
 
+from polymorphic.models import PolymorphicModel
 from pydantic import BaseModel
 
 
@@ -427,3 +428,15 @@ class GameMasterImpactAction(BaseModel):
     target: uuid.UUID
     impact_type: ImpactType
     impact_violation: ImpactViolationType
+
+
+from apps.core.utils.models import BaseModel as DjangoBaseModel
+from django.db import models as django_models
+
+
+class GameObject(DjangoBaseModel, PolymorphicModel):
+    position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL)
+    dimension = django_models.ForeignKey("world.Dimension", on_delete=django_models.SET_NULL, null=True, blank=True,
+                                         default=1)
+    is_active = django_models.BooleanField(default=True)
+    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True)

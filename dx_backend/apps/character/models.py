@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from apps.core.models import CharacterStats, GenderEnum
+from apps.core.models import CharacterStats, GenderEnum, GameObject
 from apps.core.utils.models import BaseModel
 
 
@@ -34,10 +34,10 @@ class CharacterBiography(BaseModel):
     background = models.TextField(blank=True)
     appearance = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
-    character = models.OneToOneField('character.Character', on_delete=models.CASCADE, related_name='biography')
+    character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='biography')
 
 
-class Character(BaseModel):
+class Character(GameObject):
     owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters')
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True)
@@ -52,9 +52,9 @@ class Character(BaseModel):
 
     place_of_birth = models.ForeignKey("world.Location", on_delete=models.SET_NULL, null=True, blank=True,
                                        related_name='where_born')
-    dimension = models.ForeignKey("world.Dimension", on_delete=models.SET_NULL, null=True, blank=True, default=1)
-
-    is_active = models.BooleanField(default=True)
+    # FIXME: implement migration moved to GameObject
+    # dimension = models.ForeignKey("world.Dimension", on_delete=models.SET_NULL, null=True, blank=True, default=1)
+    # is_active = models.BooleanField(default=True)
 
     fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -62,9 +62,10 @@ class Character(BaseModel):
 
     #
     npc = models.BooleanField(default=False)
-    campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
-    position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
-                                 related_name='characters')
+    # FIXME: implement migration moved to GameObject
+    # campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
+    # position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
+    #                              related_name='characters')
 
     last_safe_position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
                                            related_name='characters_in_safe')

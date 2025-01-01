@@ -42,6 +42,6 @@ class Item(BaseModel):
 
 
 class CharacterItem(BaseModel):
-    character = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='equipped_items')
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='equipped_items')
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=1)

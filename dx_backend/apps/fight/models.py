@@ -6,8 +6,8 @@ from apps.core.utils.models import BaseModel
 
 
 class DuelInvitation(BaseModel):
-    initiator = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='duel_invitations_sent')
-    target = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='duel_invitations_received')
+    initiator = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='duel_invitations_sent')
+    target = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='duel_invitations_received')
 
     is_accepted = models.BooleanField(default=False)
     is_rejected = models.BooleanField(default=False)
@@ -16,8 +16,8 @@ class DuelInvitation(BaseModel):
 
 
 class Fight(BaseModel):
-    initiator = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='fights_initiated')
-    target = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='fights_attacked')
+    initiator = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='fights_initiated')
+    target = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='fights_attacked')
 
     is_open = models.BooleanField(default=True)
     is_ended = models.BooleanField(default=False)
