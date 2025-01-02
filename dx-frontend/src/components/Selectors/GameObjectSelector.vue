@@ -31,7 +31,7 @@ export default {
       required: true,
     },
     selectedId: {
-      type: Number,
+      type: String,
       default: null,
     },
     placeholderIcon: {

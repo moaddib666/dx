@@ -20,7 +20,7 @@
       </div>
     </div>
     <div v-else>
-      <p>No actions available</p>
+      <p>No characterItems available</p>
     </div>
   </div>
 </template>

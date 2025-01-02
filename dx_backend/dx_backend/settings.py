@@ -205,7 +205,7 @@ SPECTACULAR_SETTINGS = {
 
     'SCHEMA_PATH_PREFIX': '/api',  # Ensure paths have the /api prefix
     # FIXME: comment the line before - to generation api clients
-    # 'SCHEMA_PATH_PREFIX_TRIM': True,
+    'SCHEMA_PATH_PREFIX_TRIM': True,
     'SERVERS': [
         {'url': '/api', 'description': 'API Server'},  # Set the base path for generated clients
     ],

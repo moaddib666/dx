@@ -1,5 +1,6 @@
 from django.db import models
 
+from apps.core.models import GameObject, ItemType
 from apps.core.utils.models import BaseModel
 
 
@@ -15,33 +16,34 @@ class ItemsManager(models.Manager):
 
 
 class Item(BaseModel):
-    class ItemType(models.TextChoices):
-        WEAPON = 'weapon'
-        ARMOR = 'armor'
-        POTION = 'artifact'
-        FOOD = 'amulet'
-        MATERIAL = 'material'
-        QUEST = 'quest'
-        MISC = 'misc'
-
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(default='')
     icon = models.ImageField(upload_to='icons/items/', null=True, blank=True)
     type = models.CharField(max_length=255, choices=ItemType.choices, default=ItemType.MISC)
-    weight = models.FloatField()
 
-    ap_cost = models.IntegerField(default=1)
-    hp_cost = models.IntegerField(default=0)
-    ep_cost = models.IntegerField(default=0)
+    charges = models.IntegerField(default=1)
+    weight = models.FloatField(default=0.0)
+    visibility = models.FloatField(default=1.0)  # 0.0 - 1.0 (0% - 100%)
 
-    once_per_fight = models.BooleanField(default=False)
-    once_per_turn = models.BooleanField(default=False)
-    once = models.BooleanField(default=False)
+    skill = models.ForeignKey('school.Skill', on_delete=models.SET_NULL, null=True, blank=True)
+    effect = models.ForeignKey('effects.Effect', on_delete=models.SET_NULL, null=True, blank=True)
 
-    canonical = models.BooleanField(default=False)
+    base_price = models.PositiveIntegerField(default=1)
+    canonical = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.type})"
+
+
+class WorldItem(GameObject):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    charges_left = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.item.name}"
 
 
 class CharacterItem(BaseModel):
-    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='equipped_items')
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    amount = models.PositiveIntegerField(default=1)
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
+                                  related_name='equipped_items')
+    world_item = models.ForeignKey(WorldItem, on_delete=models.CASCADE)

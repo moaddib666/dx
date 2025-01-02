@@ -1,11 +1,13 @@
 from django import forms
 from django.contrib import admin
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from polymorphic.admin import PolymorphicChildModelAdmin
 
 from .models import Organization, Rank, Character, CharacterBiography, Stat
 from ..effects.models import ActiveEffect
+from ..items.models import CharacterItem
 from ..skills.models import LearnedSchool, LearnedSkill
 
 
@@ -108,6 +110,43 @@ class StatInline(admin.TabularInline):
     fields = ('name', 'value',)
     readonly_fields = ('name',)
     can_delete = False
+
+
+class OwnedItemsInline(admin.TabularInline):
+    model = CharacterItem
+    extra = 1
+    fields = ('world_item', 'item_details', 'duplicate_item')
+    readonly_fields = ('item_details', 'duplicate_item')
+    can_delete = True
+
+    def item_details(self, obj):
+        if obj.world_item and obj.world_item.item and obj.world_item.item.icon:
+            return mark_safe(
+                f'''
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="{obj.world_item.item.icon.url}"
+                         alt="Item Icon"
+                         style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
+                    <div>
+                        <strong style="color: #333; font-size: 14px;">{obj.world_item.item.name}</strong>
+                        <div style="font-size: 12px; color: #555;">{obj.world_item.item.description}</div>
+                    </div>
+                </div>
+                '''
+            )
+        return "No Item Data Available"
+
+    item_details.short_description = "Item Details"
+
+    def duplicate_item(self, obj):
+        if obj.pk:  # Ensure the object is saved
+            duplicate_url = reverse('admin:duplicate_item', args=[obj.pk])
+            return format_html(
+                f'<a href="{duplicate_url}" class="button">Duplicate</a>'
+            )
+        return "Save to duplicate"
+
+    duplicate_item.short_description = "Duplicate Item"
 
 
 class LearnedSchoolsInline(admin.TabularInline):
@@ -232,7 +271,8 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
     list_filter = (
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )
-    inlines = [CharacterBiographyInline, StatInline, LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ]
+    inlines = [CharacterBiographyInline, StatInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
+               ActiveEffectsInline, ]
     actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
 
     def pictogram(self, obj):

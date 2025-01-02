@@ -39,6 +39,18 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     DICE_ROLL = "DICE_ROLL"
 
 
+class ItemType(DjangoChoicesMixin, StrEnum):
+    WEAPON = 'weapon'
+    ARMOR = 'armor'
+    ARTIFACT = 'artifact'
+    AMULET = 'amulet'
+    MATERIAL = 'material'
+    QUEST = 'quest'
+    MISC = 'misc'
+    FOOD = 'food'
+    RUNE = 'rune'
+
+
 class EffectType(DjangoChoicesMixin, StrEnum):
     KNOCKED_OUT = "Knocked out"  # Can be atacked in case damage is bigger that full health points character is in coma, can be healed by other players using healing spells or items
     COMA = "Coma"  # Can't be attacked or attack even healings are not working only time can heal or high level healers or resque packages
@@ -435,8 +447,8 @@ from django.db import models as django_models
 
 
 class GameObject(DjangoBaseModel, PolymorphicModel):
-    position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL)
+    position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL, blank=True, default=None)
     dimension = django_models.ForeignKey("world.Dimension", on_delete=django_models.SET_NULL, null=True, blank=True,
                                          default=1)
     is_active = django_models.BooleanField(default=True)
-    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True)
+    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True, default=None)

@@ -14,7 +14,7 @@
 import SkillIcon from "@/components/Action/ActionIcon.vue";
 
 export default {
-  name: "ActionSelector",
+  name: "SkillSelector",
   components: {SkillIcon},
   props: {
     actions: {
@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     selectAction(action) {
-      this.$emit("action-selected", action); // Emit event with selected action ID
+      this.$emit("skill-selected", action); // Emit event with selected action ID
     },
   },
 };
@@ -34,11 +34,9 @@ export default {
 .action-selector {
   display: flex;
   flex-wrap: wrap; /* Allow wrapping of icons */
-  gap: 0.2rem; /* Space between icons */
+  gap: 0.5rem; /* Space between icons */
   justify-content: center; /* Center icons */
   align-items: center; /* Align icons */
-  width: 90%; /* Take full width of the container */
-  max-width: 90%; /* Ensure it doesn’t overflow */
   padding: 0.5rem;
   box-sizing: border-box;
 }

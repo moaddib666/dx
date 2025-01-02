@@ -1,20 +1,29 @@
 from rest_framework import serializers
 
-from apps.items.models import Item, CharacterItem
+from apps.items.models import Item, CharacterItem, WorldItem
 
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ['id', 'name', 'description', 'icon', 'type', 'weight', 'ap_cost', 'hp_cost', 'ep_cost',
-                  'once_per_fight', 'once_per_turn', 'once']
+        exclude = ['canonical', 'created_at', 'updated_at']
+        read_only_fields = ['id']
+        depth = 1
+
+
+class WorldItemSerializer(serializers.ModelSerializer):
+    item = ItemSerializer()
+
+    class Meta:
+        model = WorldItem
+        exclude = ['created_at', 'updated_at', 'polymorphic_ctype']
         read_only_fields = ['id']
 
 
 class CharacterItemSerializer(serializers.ModelSerializer):
-    item = ItemSerializer()
+    world_item = WorldItemSerializer()
 
     class Meta:
         model = CharacterItem
-        fields = ['id', 'character', 'item', 'amount']
+        exclude = ['created_at', 'updated_at']
         read_only_fields = ['id', 'character']

@@ -212,7 +212,6 @@ export default {
 /* Right Full Height Section */
 .center-section {
   flex: 4;
-  overflow-y: auto;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
   background: rgba(0, 0, 0, 0.1);

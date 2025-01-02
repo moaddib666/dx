@@ -10,7 +10,9 @@ import {
     SkillsApi,
     WorldApi,
     ClientApi,
-    GalleryApi, EffectsApi
+    GalleryApi,
+    EffectsApi,
+    ItemsApi,
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
@@ -28,3 +30,4 @@ export const ModificatorsGameApi = new ModificatorsApi(GameApiConfig);
 export const CoreGameApi = new CoreApi(GameApiConfig);
 export const WorldGameApi = new WorldApi(GameApiConfig);
 export const GalleryGameApi = new GalleryApi(GameApiConfig);
+export const ItemsGameApi = new ItemsApi(GameApiConfig);

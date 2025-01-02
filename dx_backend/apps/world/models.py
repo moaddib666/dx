@@ -16,6 +16,9 @@ class Dimension(BaseModel):
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f"Dimension {self.id}"
+
 
 class Planet(BaseModel):
     name = models.CharField(max_length=255)

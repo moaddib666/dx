@@ -34,11 +34,19 @@
             :player="playerInfo"
             :playerImage="playerGeneralInfo.biography.avatar"
         />
-        <EffectsHolder :effects="activeEffects" />
+        <EffectsHolder :effects="activeEffects"/>
         <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
       </div>
       <div class="center-center">
-        <DiceVisualizer v-if="diceActivated" :result="diceResult" @close="deactivateDice" @selectedDice="diceRoll"/>
+        <ItemHolder
+            v-if="inventoryVisible"
+            :items="inventoryItems" @item-clicked="alert('itemClicked')" @close="closeInventory">
+          <template #header>
+            <span>Inventory</span>
+          </template>
+        </ItemHolder>
+        <DiceVisualizer v-else-if="diceActivated" :result="diceResult" @close="deactivateDice"
+                        @selectedDice="diceRoll"/>
         <CompassComponent
             v-else-if="hasActionPoints && selectedGameObjectId === null"
             :connections="activeConnections"
@@ -48,11 +56,13 @@
             @move="handleMove"
         />
         <ActionConstructor v-else-if="hasActionPoints && selectedGameObjectId !== null"
-                           :availableActions="availableActions"
+                           :availableSkills="availableActions"
+                           :availableItems="availableItems"
                            :availableGameObjects="availableGameObjects"
                            :preSelectedTarget="selectedGameObjectId"
                            @applyAction="applyAction"
                            @cancelAction="cancelAction"
+                           class="action-constructor"
         />
 
 
@@ -64,7 +74,6 @@
     <div class="bottom">
       <!-- Current Turn Component (Bottom, Left) -->
       <div class="left-action-group">
-
         <CurrentTurnComponent
             class="current-turn-component"
             @turnChanged="updateAll"
@@ -72,6 +81,9 @@
       </div>
       <!-- Dice Component (Bottom, Right) -->
       <div class="right-action-group">
+        <InventoryButton
+            @click="toggleInventory"
+        />
         <ActionButton
             v-if="hasActionPoints"
             @click="selectSelf"
@@ -87,7 +99,14 @@
 
 <script>
 import CompassComponent from '@/components/Game/Location/Compass.vue';
-import {ActionGameApi, CharacterGameApi, EffectsGameApi, SkillsGameApi, WorldGameApi} from "@/api/backendService.js";
+import {
+  ActionGameApi,
+  CharacterGameApi,
+  EffectsGameApi,
+  ItemsGameApi,
+  SkillsGameApi,
+  WorldGameApi
+} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
@@ -96,7 +115,7 @@ import PlayerService from "@/services/playerService.js";
 import DiceComponent from "@/components/Dice/DiceComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
-import ActionSelector from "@/components/Selectors/ActionSelector.vue";
+import SkillSelector from "@/components/Selectors/SkillSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
 import GlassPlayButton from "@/components/btn/GlassPlayButton.vue";
 import ActionConstructor from "@/components/Action/ActionConstructor.vue";
@@ -106,10 +125,16 @@ import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 import EffectItem from "@/components/Effect/EffectItem.vue";
 import EffectsHolder from "@/components/Effect/EffectsHolder.vue";
 import {CharacterInfoGameService} from "@/services/characterInfoService.js";
+import ItemCell from "@/components/Item/ItemCell.vue";
+import ItemHolder from "@/components/Item/ItemHolder.vue";
+import InventoryButton from "@/components/Action/InventoryButton.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    InventoryButton,
+    ItemHolder,
+    ItemCell,
     EffectsHolder,
     EffectItem,
     CoordinatesDisplay,
@@ -118,7 +143,7 @@ export default {
     ActionConstructor,
     GlassPlayButton,
     ActionPicker: ActionPreview,
-    ActionSelector,
+    ActionSelector: SkillSelector,
     GameObjectSelector,
     CurrentTurnComponent,
     DiceComponent,
@@ -144,6 +169,8 @@ export default {
       diceResult: null,
       diceActivated: false,
       activeEffects: [],
+      inventoryVisible: false,
+      inventoryItems: null,
     };
   },
   computed: {
@@ -153,6 +180,16 @@ export default {
       });
       const actions = []
       return actions.concat(skills);
+    },
+    availableItems() {
+      if (!this.inventoryItems) return [];
+
+      return this.inventoryItems
+          .filter(
+              (word_item) =>
+                  word_item.item.skill !== null &&
+                  word_item.charges_left > 0
+          );
     },
     availableGameObjects() {
       // Return a list of game objects that are available to the player in current location
@@ -188,6 +225,24 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async toggleInventory() {
+      if (this.inventoryVisible) {
+        await this.closeInventory();
+      } else {
+        await this.openInventory();
+      }
+    },
+    async openInventory() {
+      this.inventoryVisible = true;
+      await this.refreshInventory();
+    },
+    async closeInventory() {
+      this.inventoryVisible = false;
+      this.inventoryItems = null;
+    },
+    async refreshInventory() {
+      this.inventoryItems = (await ItemsGameApi.itemsCharacterList()).data.map((item) => item.world_item);
+    },
     async selectSelf() {
       this.selectedGameObjectId = this.playerInfo.id;
     },
@@ -260,6 +315,11 @@ export default {
       this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
     },
   },
+  watch: {
+    selectedGameObjectId(newId) {
+      this.refreshInventory();
+    },
+  },
 };
 </script>
 
@@ -267,16 +327,19 @@ export default {
 .center-section {
   display: flex;
   justify-content: space-between;
+  gap: 3rem;
   align-items: center;
   height: 60vh;
+  max-height: 60vh;
 }
 
 .location-view {
   display: flex;
   flex-direction: column;
   position: relative;
-  height: 80vh;
+  height: 85vh;
   overflow: hidden;
+  gap: 1rem;
 }
 
 .background-view {
@@ -342,6 +405,14 @@ export default {
   z-index: 20;
 }
 
+.action-constructor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+}
 .left-action-group {
   display: flex;
   justify-content: flex-start;
