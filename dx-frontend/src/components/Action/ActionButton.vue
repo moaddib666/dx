@@ -7,11 +7,7 @@
 <script>
 export default {
   name: "ActionButton",
-  methods: {
-    onClick() {
-      this.$emit("click"); // Notify parent when the button is clicked
-    },
-  },
+  methods: {},
 };
 </script>
 

@@ -20,7 +20,7 @@ class ActionService {
      * @returns {Promise<Object>} The response from the server.
      * @throws Will throw an error if the request fails.
      */
-    async performAction({actionType, actionData = {}, position = null, skill = null, targets = []}) {
+    async performAction({actionType, actionData = {}, position = null, skill = null, targets = [], item = null}) {
         if (!actionType) {
             throw new Error("Action type is required.");
         }
@@ -31,6 +31,7 @@ class ActionService {
             position,
             skill,
             targets,
+            item
         };
 
         try {

@@ -61,11 +61,12 @@ class RegisterCharacterActionSerializer(serializers.Serializer):
 class CharacterActionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CharacterAction
-        fields = ['id', 'initiator', 'targets', 'action_type', 'skill', 'data', 'position']
+        fields = ['id', 'initiator', 'targets', 'action_type', 'skill', 'data', 'position', "item"]
         read_only_fields = ['created_at', 'updated_at', "initiator"]
         extra_kwargs = {
             'targets': {'required': False},
             'skill': {'required': False},
+            'item': {'required': False},
             'id': {'read_only': True},
         }
 

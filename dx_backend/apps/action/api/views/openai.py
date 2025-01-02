@@ -62,6 +62,7 @@ class CharacterActionsViewSet(
         super().perform_create(serializer)
         instance = serializer.instance
         svc = self.action_factory.from_action(instance)
+        svc.check_acceptance(instance)
         svc.accept(instance)
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],

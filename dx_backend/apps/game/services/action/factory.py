@@ -15,6 +15,7 @@ from apps.game.services.action.move import CharacterActionPositionMoveService
 from apps.game.services.action.notify import ConsoleResultNotifyService
 from apps.game.services.action.player import ManualCharacterActionPlayerService
 from apps.game.services.action.skill_action import SkillActionService
+from apps.game.services.action.use_item import UseItemActionService
 from apps.game.services.character.core import CharacterService
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
 from apps.game.services.world.movemant import MovementService
@@ -43,6 +44,7 @@ class CharacterActionFactory:
         CharacterActionType.MOVE.value: CharacterActionPositionMoveService(MovementService()),
         CharacterActionType.DICE_ROLL: DiceRollActionService(),
         CharacterActionType.USE_SKILL: ImpactAction(),
+        CharacterActionType.USE_ITEM: UseItemActionService(ImpactAction()),
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:

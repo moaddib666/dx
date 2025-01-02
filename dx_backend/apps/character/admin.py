@@ -129,6 +129,7 @@ class OwnedItemsInline(admin.TabularInline):
                          style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
                     <div>
                         <strong style="color: #333; font-size: 14px;">{obj.world_item.item.name}</strong>
+                        <div style="font-size: 12px; color: #555;">Charges: {obj.world_item.charges_left}</div>
                         <div style="font-size: 12px; color: #555;">{obj.world_item.item.description}</div>
                     </div>
                 </div>

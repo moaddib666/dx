@@ -39,29 +39,29 @@
       </div>
       <div class="center-center">
         <ItemHolder
-            v-if="inventoryVisible"
-            :items="inventoryItems" @item-clicked="alert('itemClicked')" @close="closeInventory">
+            v-if="isInventoryVisible"
+            :items="inventoryItems" @item-clicked="alert('itemClicked')" @close="toggleInventory">
           <template #header>
             <span>Inventory</span>
           </template>
         </ItemHolder>
-        <DiceVisualizer v-else-if="diceActivated" :result="diceResult" @close="deactivateDice"
+        <DiceVisualizer v-if="isDiceVisible" :result="diceResult" @close="toogleDice"
                         @selectedDice="diceRoll"/>
         <CompassComponent
-            v-else-if="hasActionPoints && selectedGameObjectId === null"
+          v-if="isCompassVisible"
             :connections="activeConnections"
             centerAction="true"
             centerLabel="Up"
             class="compass-component"
             @move="handleMove"
         />
-        <ActionConstructor v-else-if="hasActionPoints && selectedGameObjectId !== null"
+        <ActionConstructor v-if="isActionConstructorVisible"
                            :availableSkills="availableActions"
                            :availableItems="availableItems"
                            :availableGameObjects="availableGameObjects"
                            :preSelectedTarget="selectedGameObjectId"
                            @applyAction="applyAction"
-                           @cancelAction="cancelAction"
+                           @cancelAction="closeActionConstructor"
                            class="action-constructor"
         />
 
@@ -86,10 +86,10 @@
         />
         <ActionButton
             v-if="hasActionPoints"
-            @click="selectSelf"
+            @click="toggleActionConstructor"
         />
         <DiceComponent
-            @click="activateDice"
+            @click="toogleDice"
         />
       </div>
     </div>
@@ -167,19 +167,31 @@ export default {
       playerService: null,
       playerSkills: null,
       diceResult: null,
-      diceActivated: false,
-      activeEffects: [],
-      inventoryVisible: false,
       inventoryItems: null,
+      activeEffects: [],
+
+      diceVisible: false,
+      inventoryVisible: false,
+      actionConstructorVisible: false,
     };
   },
   computed: {
+    isCompassVisible() {
+      return this.hasActionPoints && !this.isActionConstructorVisible && !this.isDiceVisible && !this.isInventoryVisible;
+    },
+    isActionConstructorVisible() {
+      return this.hasActionPoints && this.actionConstructorVisible;
+    },
+    isDiceVisible() {
+      return this.diceVisible;
+    },
+    isInventoryVisible() {
+      return this.inventoryVisible;
+    },
     availableActions() {
-      const skills = this.playerSkills.map((knownSkill) => {
+      return this.playerSkills.map((knownSkill) => {
         return knownSkill.skill;
       });
-      const actions = []
-      return actions.concat(skills);
     },
     availableItems() {
       if (!this.inventoryItems) return [];
@@ -225,6 +237,44 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async hideAll() {
+      this.diceVisible = false;
+      this.inventoryVisible = false;
+      this.actionConstructorVisible = false;
+    },
+    async toggleActionConstructor() {
+      console.debug("Toggling action constructor");
+      if (this.actionConstructorVisible) {
+        await this.closeActionConstructor();
+      } else {
+        await this.openActionConstructor();
+      }
+    },
+    async openActionConstructor() {
+      await this.hideAll();
+      await this.selectSelf();
+      this.actionConstructorVisible = true;
+      console.debug("Opening action constructor", this.selectedGameObjectId);
+    },
+    async closeActionConstructor() {
+      this.actionConstructorVisible = false;
+      this.selectedGameObjectId = null;
+      console.debug("Closing action constructor");
+    },
+    async toogleDice() {
+      if (this.diceVisible) {
+        await this.closeDice();
+      } else {
+        await this.openDice();
+      }
+    },
+    async openDice() {
+      await this.hideAll();
+      this.diceVisible = true;
+    },
+    async closeDice() {
+      this.diceVisible = false;
+    },
     async toggleInventory() {
       if (this.inventoryVisible) {
         await this.closeInventory();
@@ -233,24 +283,18 @@ export default {
       }
     },
     async openInventory() {
-      this.inventoryVisible = true;
       await this.refreshInventory();
+      await this.hideAll();
+      this.inventoryVisible = true;
     },
     async closeInventory() {
       this.inventoryVisible = false;
-      this.inventoryItems = null;
     },
     async refreshInventory() {
       this.inventoryItems = (await ItemsGameApi.itemsCharacterList()).data.map((item) => item.world_item);
     },
     async selectSelf() {
       this.selectedGameObjectId = this.playerInfo.id;
-    },
-    async activateDice() {
-      this.diceActivated = true;
-    },
-    async deactivateDice() {
-      this.diceActivated = false;
     },
     async cancelAction() {
       this.selectedGameObjectId = null;
@@ -261,6 +305,7 @@ export default {
     },
     async updateSelectedGameObjectId(id) {
       this.selectedGameObjectId = id;
+      await this.openActionConstructor();
     },
     async updateAll() {
       await this.getCurrentPositionInfo();

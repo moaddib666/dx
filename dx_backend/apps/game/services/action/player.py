@@ -44,7 +44,9 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     def apply_actions(self):
         for action in self.get_actions():
             try:
-                self.factory.from_action(action).perform(action)
+                action_service = self.factory.from_action(action)
+                action_service.check(action)
+                action_service.perform(action)
                 action.perform()
                 self.notify_svc.notify(action)
             except Exception as e:
