@@ -91,9 +91,11 @@ class SkillImpactService:
 
         if required_value > 0:
             ratio = stat_value / required_value
-            normalized_log = math.log10(1 + ratio) / math.log10(2)
-            skill_efficiency = normalized_log * (1 + scaling_factor)
+            normalized_log = math.log10(1 + ratio) / math.log10(2)  # Normalize the logarithm
+            base_efficiency = 1  # Ensure base efficiency is always 1
+            efficiency = base_efficiency + (normalized_log - base_efficiency) * (1 + scaling_factor)
         else:
-            skill_efficiency = min_efficiency * (1 + scaling_factor)
+            efficiency = min_efficiency * (1 + scaling_factor)
 
-        return max(min(max_efficiency, skill_efficiency), min_efficiency)
+        # Ensure efficiency is within bounds
+        return max(min(max_efficiency, efficiency), min_efficiency)
