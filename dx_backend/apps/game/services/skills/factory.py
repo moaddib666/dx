@@ -249,3 +249,4 @@ class SkillConstructor:
         base_skill["cost"][1]["value"] = calculated_values["Energy"]
         base_skill["impact"][0]["formula"]["base"] = calculated_values["Damage"]
         return base_skill
+

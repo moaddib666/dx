@@ -2,6 +2,7 @@ import logging
 import math
 from typing import List
 
+from apps.core.models import CharacterStats
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.services.character.core import CharacterService
 from apps.school.dto import Impact
@@ -26,8 +27,7 @@ class SkillImpactService:
     def calculate_damage(self, impact: Impact) -> CalculatedImpact:
         """
         Calculates the damage for a given impact based on a formula that includes base damage, required stats,
-        and scaling factors. The scaling factor calculation now uses the logarithm base 10 of the stat ratio,
-        multiplied by (1 + scaling factor).
+        and scaling factors. The scaling factor calculation now uses a normalized logarithm base 10.
 
         :param impact: Impact data containing the damage formula and kind.
         :return: A CalculatedImpact instance with the final damage value and violation type.
@@ -36,6 +36,8 @@ class SkillImpactService:
 
         # Extract the formula details from the impact
         formula = impact['formula']
+        min_efficiency = formula.get("min_efficiency", 0.01)  # Minimum efficiency value
+        max_efficiency = formula.get("max_efficiency", 3)  # Maximum efficiency value
         base_damage = formula.get("base", 0)  # Base damage value
         required_stats = formula.get("requires", [])  # List of required stats with their minimum values
         scaling_factors = formula.get("scaling", [])  # List of scaling factors for each stat
@@ -51,21 +53,47 @@ class SkillImpactService:
             required_value = r['value']  # Required minimum value for the stat
             scaling_factor = s['value']  # Scaling factor for this stat
 
-            # Calculate the efficiency of the stat based on logarithm base 10
-            if required_value > 0:
-                # skill_efficiency = math.log10(max(stat_value / required_value, 0.01)) * (1 + scaling_factor)
-                # FIXME: required_value now not used
-                skill_efficiency = math.log10(stat_value) * (1 + scaling_factor)
-            else:
-                skill_efficiency = 0.01 * (1 + scaling_factor)  # Avoid divide-by-zero errors
+            skill_efficiency = self.calculate_efficiency(stat_name, required_value, scaling_factor, max_efficiency,
+                                                         min_efficiency)
+            # Calculate the efficiency of the stat based on the normalized logarithm base 10
+            # if required_value > 0:
+            #     ratio = stat_value / required_value
+            #     normalized_log = math.log10(1 + ratio) / math.log10(2)  # Normalize the logarithm
+            #     skill_efficiency = normalized_log * (1 + scaling_factor)  # Apply scaling factor
+            # else:
+            #     skill_efficiency = 0.01 * (1 + scaling_factor)  # Default efficiency for zero required_value
 
-            self.logger.debug(f"Calculating impact based on stat {r['stat']}. Skill efficiency: {skill_efficiency}, "
-                              f"scaling factor: {scaling_factor}, resulting value: {skill_efficiency}")
+            self.logger.debug(
+                f"Calculating impact based on stat {r['stat']} ({stat_value}). Skill efficiency: {skill_efficiency}, "
+                f"scaling factor: {scaling_factor}, resulting value: {skill_efficiency}")
             potential_impacts.append(skill_efficiency)
 
         # Final impact is base damage scaled by the minimum skill efficiency
-        final_impact = base_damage * max(potential_impacts or [1])
+        final_impact = base_damage * min(potential_impacts or [1])
         self.logger.debug(f"Final impact: {final_impact}")
 
         # Return the calculated impact as an instance of CalculatedImpact
         return CalculatedImpact(kind=impact['kind'], value=int(final_impact), violation=impact['type'])
+
+    def calculate_efficiency(self, stat_name: CharacterStats, required_value: int, scaling_factor: float,
+                             max_efficiency: float = 3, min_efficiency: float = 0.01) -> float:
+        """
+        Calculates the efficiency of a stat based on a required value and a scaling factor.
+
+        :param stat_name: The name of the stat to consider.
+        :param required_value: The minimum value required for the stat.
+        :param scaling_factor: The scaling factor for the stat.
+        :param max_efficiency: The maximum efficiency value.
+        :param min_efficiency: The minimum efficiency value.
+        :return: The calculated efficiency value.
+        """
+        stat_value = self.initiator.get_stat(stat_name)
+
+        if required_value > 0:
+            ratio = stat_value / required_value
+            normalized_log = math.log10(1 + ratio) / math.log10(2)
+            skill_efficiency = normalized_log * (1 + scaling_factor)
+        else:
+            skill_efficiency = min_efficiency * (1 + scaling_factor)
+
+        return max(min(max_efficiency, skill_efficiency), min_efficiency)

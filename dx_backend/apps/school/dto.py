@@ -1,5 +1,5 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 from typing_extensions import TypedDict
 
@@ -20,6 +20,8 @@ class Formula(TypedDict):
     base: int
     requires: List[StatRequirement]
     scaling: List[Scaling]
+    max_efficiency: Optional[float]
+    min_efficiency: Optional[float]
 
 
 class Impact(TypedDict):
