@@ -80,4 +80,4 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
-        return self.cycle.actions.filter(performed=False)
+        return self.cycle.actions.filter(performed=False).select_related("initiator", "skill", "item", "position")
