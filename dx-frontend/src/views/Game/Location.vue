@@ -35,6 +35,7 @@
             :playerImage="playerGeneralInfo.biography.avatar"
         />
         <EffectsHolder :effects="activeEffects"/>
+        <ShieldHolder :shields="shields" />
         <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
       </div>
       <div class="center-center">
@@ -103,7 +104,7 @@ import {
   ActionGameApi,
   CharacterGameApi,
   EffectsGameApi,
-  ItemsGameApi,
+  ItemsGameApi, ShieldsGameApi,
   SkillsGameApi,
   WorldGameApi
 } from "@/api/backendService.js";
@@ -128,10 +129,12 @@ import {CharacterInfoGameService} from "@/services/characterInfoService.js";
 import ItemCell from "@/components/Item/ItemCell.vue";
 import ItemHolder from "@/components/Item/ItemHolder.vue";
 import InventoryButton from "@/components/Action/InventoryButton.vue";
+import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    ShieldHolder,
     InventoryButton,
     ItemHolder,
     ItemCell,
@@ -169,6 +172,7 @@ export default {
       diceResult: null,
       inventoryItems: null,
       activeEffects: [],
+      shields: [],
 
       diceVisible: false,
       inventoryVisible: false,
@@ -296,6 +300,9 @@ export default {
     async selectSelf() {
       this.selectedGameObjectId = this.playerInfo.id;
     },
+    async refreshShields() {
+      this.shields = (await ShieldsGameApi.shieldsActiveList()).data;
+    },
     async cancelAction() {
       this.selectedGameObjectId = null;
     },
@@ -312,6 +319,7 @@ export default {
       await this.getPlayerInfo();
       await this.getPlayerSkills();
       await this.getActiveEffects();
+      await this.refreshShields();
     },
     async diceRoll({dice, index}) {
       // sleep for 1 second

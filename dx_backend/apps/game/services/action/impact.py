@@ -9,6 +9,7 @@ from apps.game.exceptions import GameException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
 from apps.game.services.character.core import CharacterService
 from apps.game.services.rand_dice import DiceService
+from apps.game.services.shield import ActiveShieldImpactService, ShieldAssessmentService
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
 from apps.world.models import Position
@@ -83,6 +84,10 @@ class ImpactAction(CharacterActionServicePrototype):
 
         if action.skill.type == SkillTypes.ATTACK:
             self._perform_damage(action, calculated_impacts, dice_result, multiplier)
+            return
+
+        if action.skill.type == SkillTypes.DEFENSE:
+            self._perform_defense(action, calculated_impacts, dice_result, multiplier)
             return
 
         raise GameException("Skill type not implemented")
@@ -169,10 +174,27 @@ class ImpactAction(CharacterActionServicePrototype):
                 f"Calculated impact damage {calculated_impact['value']} for action {action.id} in cycle {action.cycle_id}")
             for target in action.targets.filter(is_active=True):
                 target_character = CharacterService(target)
+                shields_service = ActiveShieldImpactService(target_character.get_shields())
+                calculated_impact = shields_service.apply_impact(calculated_impact)
                 target_character.impacted(action, calculated_impact, dice_result)
                 rs = [self._register_impact(action, target, calculated_impact, dice_result), ]
                 self.logger.debug(
                     f"Applied impact to target character {target.id} from action {action.id} in cycle {action.cycle_id}",
+                    extra={
+                        "impacts": rs
+                    })
+
+    def _perform_defense(self, action, calculated_impacts, dice_result, multiplier):
+        for calculated_impact in calculated_impacts:
+            calculated_impact['value'] = int(calculated_impact['value'] * multiplier.multiplier)
+            self.logger.debug(
+                f"Calculated impact deface {calculated_impact['value']} for action {action.id} in cycle {action.cycle_id}")
+            for target in action.targets.filter(is_active=True):
+                shields_service = ShieldAssessmentService(target)
+                shields_service.assign_shield(calculated_impact, dice_result)
+                rs = [self._register_impact(action, target, calculated_impact, dice_result), ]
+                self.logger.debug(
+                    f"Applied shield to target character {target.id} from action {action.id} in cycle {action.cycle_id}",
                     extra={
                         "impacts": rs
                     })

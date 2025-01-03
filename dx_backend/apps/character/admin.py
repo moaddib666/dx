@@ -8,6 +8,7 @@ from polymorphic.admin import PolymorphicChildModelAdmin
 from .models import Organization, Rank, Character, CharacterBiography, Stat
 from ..effects.models import ActiveEffect
 from ..items.models import CharacterItem
+from ..shields.models import ActiveShield
 from ..skills.models import LearnedSchool, LearnedSkill
 
 
@@ -150,6 +151,33 @@ class OwnedItemsInline(admin.TabularInline):
     duplicate_item.short_description = "Duplicate Item"
 
 
+class ActiveShieldsInline(admin.TabularInline):
+    model = ActiveShield
+    extra = 1
+    fields = ('shield', 'shield_details', 'health', 'cycles_left',)
+    readonly_fields = ('shield_details',)
+    can_delete = True
+
+    def shield_details(self, obj):
+        if obj.shield and obj.shield.icon:
+            return mark_safe(
+                f'''
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="{obj.shield.icon.url}"
+                         alt="Shield Icon"
+                         style="height: 50px; width: 50px; border-radius: 8px; object-fit: cover; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" />
+                    <div>
+                        <strong style="color: #333; font-size: 14px;">{obj.shield.id} Lv. {obj.level} ({obj.efficiency})</strong>
+                        <div style="font-size: 12px; color: #555;">Base Health: {obj.health}</div>
+                    </div>
+                </div>
+                '''
+            )
+        return "No Shield Data Available"
+
+    shield_details.short_description = "Shield Details"
+
+
 class LearnedSchoolsInline(admin.TabularInline):
     """
     Inline for displaying and editing learned schools directly in the Character admin interface.
@@ -273,7 +301,7 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )
     inlines = [CharacterBiographyInline, StatInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
-               ActiveEffectsInline, ]
+               ActiveEffectsInline, ActiveShieldsInline]
     actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
 
     def pictogram(self, obj):

@@ -14,6 +14,7 @@ from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder,
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.school.models import Skill
+from apps.shields.models import ActiveShield
 
 
 class CharacterService:
@@ -252,3 +253,6 @@ class CharacterService:
 
     def has_effects(self, effects: [EffectType]) -> bool:
         return self.character.effects.filter(effect__in=effects, active=True).exists()
+
+    def get_shields(self) -> [ActiveShield]:
+        return self.character.shields.all()

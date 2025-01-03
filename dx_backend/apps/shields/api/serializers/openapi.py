@@ -11,6 +11,8 @@ class ShieldSerializer(serializers.ModelSerializer):
 
 class ActiveShieldSerializer(serializers.ModelSerializer):
     shield = ShieldSerializer()
+    level = serializers.IntegerField()
+    efficiency = serializers.FloatField()
 
     class Meta:
         model = ActiveShield

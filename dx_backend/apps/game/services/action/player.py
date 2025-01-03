@@ -5,8 +5,10 @@ from django.db.models import QuerySet
 from apps.action.models import Cycle
 from apps.character.models import Character
 from apps.core.models import EffectType
+from apps.shields.models import ActiveShield
 from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
 from ..character.core import CharacterService
+from ..shield import ActiveShieldLifeCycleService
 
 if typing.TYPE_CHECKING:
     from .factory import CharacterActionFactory
@@ -15,6 +17,7 @@ if typing.TYPE_CHECKING:
 
 class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     char_svc_cls = CharacterService
+    active_shields_cls = ActiveShieldLifeCycleService
 
     def __init__(self, cycle: Cycle, factory: "CharacterActionFactory", notify_svc: "ActionResultNotifier",
                  effects_apply_factory: "ApplyEffectFactory",
@@ -27,10 +30,11 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.effects_manager_factory = effects_manager_factory
 
     def prepare(self):
-        pass
+        ...
 
     def post(self):
         self.update_characters()
+        self.active_shields_cls(self.get_active_shields()).decrease_cycles()
 
     def play(self):
         self.prepare()
@@ -80,4 +84,9 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
-        return self.cycle.actions.filter(performed=False).select_related("initiator", "skill", "item", "position")
+        return self.cycle.actions.filter(performed=False).order_by(
+            "order"
+        ).select_related("initiator", "skill", "item", "position")
+
+    def get_active_shields(self) -> QuerySet:
+        return ActiveShield.objects.all()

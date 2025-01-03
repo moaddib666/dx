@@ -90,5 +90,5 @@ if __name__ == "__main__":
     calculator = BalanceSkillCalculator()
 
     # Calculate based on Action Points
-    result_ap = calculator.calculate(ap=3)
+    result_ap = calculator.calculate(ap=5)
     print("Calculation for AP:", result_ap)

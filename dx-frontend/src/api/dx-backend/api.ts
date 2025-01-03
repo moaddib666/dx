@@ -171,6 +171,55 @@ export interface ActiveEffect {
 /**
  * 
  * @export
+ * @interface ActiveShield
+ */
+export interface ActiveShield {
+    /**
+     * 
+     * @type {string}
+     * @memberof ActiveShield
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Shield}
+     * @memberof ActiveShield
+     */
+    'shield': Shield;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
+    'cycles_left'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
+    'health'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
+    'efficiency'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
+    'level'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActiveShield
+     */
+    'target': string;
+}
+/**
+ * 
+ * @export
  * @interface Area
  */
 export interface Area {
@@ -422,6 +471,12 @@ export interface CharacterAction {
      * @memberof CharacterAction
      */
     'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterAction
+     */
+    'item'?: string | null;
 }
 
 
@@ -569,6 +624,12 @@ export interface CharacterActionRequest {
      * @memberof CharacterActionRequest
      */
     'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterActionRequest
+     */
+    'item'?: string | null;
 }
 
 
@@ -1027,22 +1088,16 @@ export interface CharacterItem {
     'id': string;
     /**
      * 
+     * @type {WorldItem}
+     * @memberof CharacterItem
+     */
+    'world_item': WorldItem;
+    /**
+     * 
      * @type {string}
      * @memberof CharacterItem
      */
     'character': string;
-    /**
-     * 
-     * @type {Item}
-     * @memberof CharacterItem
-     */
-    'item': Item;
-    /**
-     * 
-     * @type {number}
-     * @memberof CharacterItem
-     */
-    'amount'?: number;
 }
 /**
  * 
@@ -1064,10 +1119,10 @@ export interface CharacterLogActionImpact {
     'type': TypeBf3Enum;
     /**
      * 
-     * @type {ViolationEnum}
+     * @type {ImpactViolationEnum}
      * @memberof CharacterLogActionImpact
      */
-    'violation': ViolationEnum;
+    'violation': ImpactViolationEnum;
     /**
      * 
      * @type {number}
@@ -1103,10 +1158,10 @@ export interface CharacterLogActionImpactRequest {
     'type': TypeBf3Enum;
     /**
      * 
-     * @type {ViolationEnum}
+     * @type {ImpactViolationEnum}
      * @memberof CharacterLogActionImpactRequest
      */
-    'violation': ViolationEnum;
+    'violation': ImpactViolationEnum;
     /**
      * 
      * @type {number}
@@ -1632,13 +1687,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -1798,10 +1853,10 @@ export interface DuelInvitationRequest {
 export interface Effect {
     /**
      * 
-     * @type {IdEnum}
+     * @type {EffectIdEnum}
      * @memberof Effect
      */
-    'id'?: IdEnum;
+    'id'?: EffectIdEnum;
     /**
      * 
      * @type {string}
@@ -1821,6 +1876,29 @@ export interface Effect {
      */
     'ends_in'?: number | null;
 }
+
+
+/**
+ * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold
+ * @export
+ * @enum {string}
+ */
+
+export const EffectIdEnum = {
+    KnockedOut: 'Knocked out',
+    Coma: 'Coma',
+    None: 'None',
+    Burning: 'Burning',
+    Poisoned: 'Poisoned',
+    Sleeping: 'Sleeping',
+    Confused: 'Confused',
+    Paralyzed: 'Paralyzed',
+    Fear: 'Fear',
+    Slowness: 'Slowness',
+    Cold: 'Cold'
+} as const;
+
+export type EffectIdEnum = typeof EffectIdEnum[keyof typeof EffectIdEnum];
 
 
 /**
@@ -2076,7 +2154,7 @@ export interface FightTurnAction {
      * @type {number}
      * @memberof FightTurnAction
      */
-    'order': number | null;
+    'order': number;
     /**
      * 
      * @type {boolean}
@@ -2101,6 +2179,12 @@ export interface FightTurnAction {
      * @memberof FightTurnAction
      */
     'skill'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightTurnAction
+     */
+    'item'?: string | null;
     /**
      * 
      * @type {string}
@@ -2164,6 +2248,12 @@ export interface FightTurnActionRequest {
      * @memberof FightTurnActionRequest
      */
     'skill'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightTurnActionRequest
+     */
+    'item'?: string | null;
     /**
      * 
      * @type {string}
@@ -2366,6 +2456,12 @@ export interface GameMasterCharacterAction {
      * @memberof GameMasterCharacterAction
      */
     'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterCharacterAction
+     */
+    'item'?: string | null;
 }
 
 
@@ -2411,6 +2507,12 @@ export interface GameMasterCharacterActionRequest {
      * @memberof GameMasterCharacterActionRequest
      */
     'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterCharacterActionRequest
+     */
+    'item'?: string | null;
 }
 
 
@@ -2427,29 +2529,6 @@ export const GenderEnum = {
 } as const;
 
 export type GenderEnum = typeof GenderEnum[keyof typeof GenderEnum];
-
-
-/**
- * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold
- * @export
- * @enum {string}
- */
-
-export const IdEnum = {
-    KnockedOut: 'Knocked out',
-    Coma: 'Coma',
-    None: 'None',
-    Burning: 'Burning',
-    Poisoned: 'Poisoned',
-    Sleeping: 'Sleeping',
-    Confused: 'Confused',
-    Paralyzed: 'Paralyzed',
-    Fear: 'Fear',
-    Slowness: 'Slowness',
-    Cold: 'Cold'
-} as const;
-
-export type IdEnum = typeof IdEnum[keyof typeof IdEnum];
 
 
 /**
@@ -2618,7 +2697,7 @@ export interface ItemRequest {
      * @type {string}
      * @memberof ItemRequest
      */
-    'description': string;
+    'description'?: string;
     /**
      * 
      * @type {File}
@@ -2636,48 +2715,30 @@ export interface ItemRequest {
      * @type {number}
      * @memberof ItemRequest
      */
-    'weight': number;
+    'charges'?: number;
     /**
      * 
      * @type {number}
      * @memberof ItemRequest
      */
-    'ap_cost'?: number;
+    'weight'?: number;
     /**
      * 
      * @type {number}
      * @memberof ItemRequest
      */
-    'hp_cost'?: number;
+    'visibility'?: number;
     /**
      * 
      * @type {number}
      * @memberof ItemRequest
      */
-    'ep_cost'?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ItemRequest
-     */
-    'once_per_fight'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ItemRequest
-     */
-    'once_per_turn'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ItemRequest
-     */
-    'once'?: boolean;
+    'base_price'?: number;
 }
 
 
 /**
- * * `weapon` - Weapon * `armor` - Armor * `artifact` - Potion * `amulet` - Food * `material` - Material * `quest` - Quest * `misc` - Misc
+ * * `weapon` - weapon * `armor` - armor * `artifact` - artifact * `amulet` - amulet * `material` - material * `quest` - quest * `misc` - misc * `food` - food * `rune` - rune
  * @export
  * @enum {string}
  */
@@ -2689,7 +2750,9 @@ export const ItemTypeEnum = {
     Amulet: 'amulet',
     Material: 'material',
     Quest: 'quest',
-    Misc: 'misc'
+    Misc: 'misc',
+    Food: 'food',
+    Rune: 'rune'
 } as const;
 
 export type ItemTypeEnum = typeof ItemTypeEnum[keyof typeof ItemTypeEnum];
@@ -2929,6 +2992,12 @@ export interface Nested {
     'updated_at': string;
     /**
      * 
+     * @type {boolean}
+     * @memberof Nested
+     */
+    'is_active'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof Nested
      */
@@ -2965,12 +3034,6 @@ export interface Nested {
     'current_active_points'?: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof Nested
-     */
-    'is_active'?: boolean;
-    /**
-     * 
      * @type {number}
      * @memberof Nested
      */
@@ -2981,6 +3044,30 @@ export interface Nested {
      * @memberof Nested
      */
     'npc'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof Nested
+     */
+    'polymorphic_ctype': number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Nested
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Nested
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Nested
+     */
+    'campaign'?: string | null;
     /**
      * 
      * @type {string}
@@ -3013,28 +3100,10 @@ export interface Nested {
     'place_of_birth'?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof Nested
-     */
-    'dimension'?: number | null;
-    /**
-     * 
      * @type {string}
      * @memberof Nested
      */
     'fight'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Nested
-     */
-    'campaign'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Nested
-     */
-    'position'?: string | null;
     /**
      * 
      * @type {string}
@@ -3056,6 +3125,12 @@ export interface NestedRequest {
     'created_at'?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof NestedRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
      * @type {string}
      * @memberof NestedRequest
      */
@@ -3092,12 +3167,6 @@ export interface NestedRequest {
     'current_active_points'?: number;
     /**
      * 
-     * @type {boolean}
-     * @memberof NestedRequest
-     */
-    'is_active'?: boolean;
-    /**
-     * 
      * @type {number}
      * @memberof NestedRequest
      */
@@ -3108,6 +3177,24 @@ export interface NestedRequest {
      * @memberof NestedRequest
      */
     'npc'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof NestedRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof NestedRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NestedRequest
+     */
+    'campaign'?: string | null;
     /**
      * 
      * @type {string}
@@ -3140,28 +3227,10 @@ export interface NestedRequest {
     'place_of_birth'?: string | null;
     /**
      * 
-     * @type {number}
-     * @memberof NestedRequest
-     */
-    'dimension'?: number | null;
-    /**
-     * 
      * @type {string}
      * @memberof NestedRequest
      */
     'fight'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof NestedRequest
-     */
-    'campaign'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof NestedRequest
-     */
-    'position'?: string | null;
     /**
      * 
      * @type {string}
@@ -3525,7 +3594,7 @@ export interface OpenaiSchool {
      * @type {Array<string>}
      * @memberof OpenaiSchool
      */
-    'path': Array<string>;
+    'path'?: Array<string>;
 }
 /**
  * 
@@ -3857,43 +3926,25 @@ export interface PatchedItemRequest {
      * @type {number}
      * @memberof PatchedItemRequest
      */
+    'charges'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedItemRequest
+     */
     'weight'?: number;
     /**
      * 
      * @type {number}
      * @memberof PatchedItemRequest
      */
-    'ap_cost'?: number;
+    'visibility'?: number;
     /**
      * 
      * @type {number}
      * @memberof PatchedItemRequest
      */
-    'hp_cost'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedItemRequest
-     */
-    'ep_cost'?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PatchedItemRequest
-     */
-    'once_per_fight'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PatchedItemRequest
-     */
-    'once_per_turn'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof PatchedItemRequest
-     */
-    'once'?: boolean;
+    'base_price'?: number;
 }
 
 
@@ -4232,6 +4283,39 @@ export interface School {
 /**
  * 
  * @export
+ * @interface Shield
+ */
+export interface Shield {
+    /**
+     * 
+     * @type {ImpactViolationEnum}
+     * @memberof Shield
+     */
+    'id'?: ImpactViolationEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'base_health'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'base_efficiency'?: number;
+}
+
+
+/**
+ * 
+ * @export
  * @interface Spell
  */
 export interface Spell {
@@ -4397,7 +4481,7 @@ export interface SubscribeRequest {
     'channel': string;
 }
 /**
- * 
+ * References an existing position by coordinates only.
  * @export
  * @interface TeleportCoordinates
  */
@@ -4407,28 +4491,22 @@ export interface TeleportCoordinates {
      * @type {number}
      * @memberof TeleportCoordinates
      */
-    'grid_x'?: number;
+    'grid_x': number;
     /**
      * 
      * @type {number}
      * @memberof TeleportCoordinates
      */
-    'grid_y'?: number;
+    'grid_y': number;
     /**
      * 
      * @type {number}
      * @memberof TeleportCoordinates
      */
-    'grid_z'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof TeleportCoordinates
-     */
-    'id': string;
+    'grid_z': number;
 }
 /**
- * 
+ * References an existing position by coordinates only.
  * @export
  * @interface TeleportCoordinatesRequest
  */
@@ -4438,22 +4516,22 @@ export interface TeleportCoordinatesRequest {
      * @type {number}
      * @memberof TeleportCoordinatesRequest
      */
-    'grid_x'?: number;
+    'grid_x': number;
     /**
      * 
      * @type {number}
      * @memberof TeleportCoordinatesRequest
      */
-    'grid_y'?: number;
+    'grid_y': number;
     /**
      * 
      * @type {number}
      * @memberof TeleportCoordinatesRequest
      */
-    'grid_z'?: number;
+    'grid_z': number;
 }
 /**
- * 
+ * References an existing position by ID only.
  * @export
  * @interface TeleportPosition
  */
@@ -4466,7 +4544,7 @@ export interface TeleportPosition {
     'id': string;
 }
 /**
- * 
+ * References an existing position by ID only.
  * @export
  * @interface TeleportPositionRequest
  */
@@ -4635,25 +4713,54 @@ export type TypeBf3Enum = typeof TypeBf3Enum[keyof typeof TypeBf3Enum];
 
 
 /**
- * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
+ * 
  * @export
- * @enum {string}
+ * @interface WorldItem
  */
-
-export const ViolationEnum = {
-    Physical: 'Physical',
-    Mental: 'Mental',
-    Energy: 'Energy',
-    Heat: 'Heat',
-    Cold: 'Cold',
-    Light: 'Light',
-    Darkness: 'Darkness',
-    None: 'None'
-} as const;
-
-export type ViolationEnum = typeof ViolationEnum[keyof typeof ViolationEnum];
-
-
+export interface WorldItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldItem
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Item}
+     * @memberof WorldItem
+     */
+    'item': Item;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof WorldItem
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldItem
+     */
+    'charges_left'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldItem
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldItem
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldItem
+     */
+    'campaign'?: string | null;
+}
 
 /**
  * ActionApi - axios parameter creator
@@ -11661,6 +11768,188 @@ export class SchoolApi extends BaseAPI {
 
 
 /**
+ * ShieldsApi - axios parameter creator
+ * @export
+ */
+export const ShieldsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsActiveList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/shields/active/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this active shield.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsActiveRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('shieldsActiveRetrieve', 'id', id)
+            const localVarPath = `/api/shields/active/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ShieldsApi - functional programming interface
+ * @export
+ */
+export const ShieldsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ShieldsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async shieldsActiveList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ActiveShield>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.shieldsActiveList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShieldsApi.shieldsActiveList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this active shield.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async shieldsActiveRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ActiveShield>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.shieldsActiveRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShieldsApi.shieldsActiveRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ShieldsApi - factory interface
+ * @export
+ */
+export const ShieldsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ShieldsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsActiveList(options?: any): AxiosPromise<Array<ActiveShield>> {
+            return localVarFp.shieldsActiveList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this active shield.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsActiveRetrieve(id: string, options?: any): AxiosPromise<ActiveShield> {
+            return localVarFp.shieldsActiveRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ShieldsApi - object-oriented interface
+ * @export
+ * @class ShieldsApi
+ * @extends {BaseAPI}
+ */
+export class ShieldsApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShieldsApi
+     */
+    public shieldsActiveList(options?: RawAxiosRequestConfig) {
+        return ShieldsApiFp(this.configuration).shieldsActiveList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id A UUID string identifying this active shield.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShieldsApi
+     */
+    public shieldsActiveRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return ShieldsApiFp(this.configuration).shieldsActiveRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * SkillsApi - axios parameter creator
  * @export
  */
@@ -13156,13 +13445,15 @@ export const WorldApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} id A UUID string identifying this character.
-         * @param {TeleportCoordinatesRequest} [teleportCoordinatesRequest] 
+         * @param {TeleportCoordinatesRequest} teleportCoordinatesRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        worldPositionTeleportToCoordinatesCreate: async (id: string, teleportCoordinatesRequest?: TeleportCoordinatesRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        worldPositionTeleportToCoordinatesCreate: async (id: string, teleportCoordinatesRequest: TeleportCoordinatesRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('worldPositionTeleportToCoordinatesCreate', 'id', id)
+            // verify required parameter 'teleportCoordinatesRequest' is not null or undefined
+            assertParamExists('worldPositionTeleportToCoordinatesCreate', 'teleportCoordinatesRequest', teleportCoordinatesRequest)
             const localVarPath = `/api/world/position/{id}/teleport_to_coordinates/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -13456,11 +13747,11 @@ export const WorldApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} id A UUID string identifying this character.
-         * @param {TeleportCoordinatesRequest} [teleportCoordinatesRequest] 
+         * @param {TeleportCoordinatesRequest} teleportCoordinatesRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest?: TeleportCoordinatesRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TeleportCoordinates>> {
+        async worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest: TeleportCoordinatesRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TeleportCoordinates>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.worldPositionTeleportToCoordinatesCreate(id, teleportCoordinatesRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldApi.worldPositionTeleportToCoordinatesCreate']?.[localVarOperationServerIndex]?.url;
@@ -13635,11 +13926,11 @@ export const WorldApiFactory = function (configuration?: Configuration, basePath
         /**
          * 
          * @param {string} id A UUID string identifying this character.
-         * @param {TeleportCoordinatesRequest} [teleportCoordinatesRequest] 
+         * @param {TeleportCoordinatesRequest} teleportCoordinatesRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest?: TeleportCoordinatesRequest, options?: any): AxiosPromise<TeleportCoordinates> {
+        worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest: TeleportCoordinatesRequest, options?: any): AxiosPromise<TeleportCoordinates> {
             return localVarFp.worldPositionTeleportToCoordinatesCreate(id, teleportCoordinatesRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -13842,12 +14133,12 @@ export class WorldApi extends BaseAPI {
     /**
      * 
      * @param {string} id A UUID string identifying this character.
-     * @param {TeleportCoordinatesRequest} [teleportCoordinatesRequest] 
+     * @param {TeleportCoordinatesRequest} teleportCoordinatesRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof WorldApi
      */
-    public worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest?: TeleportCoordinatesRequest, options?: RawAxiosRequestConfig) {
+    public worldPositionTeleportToCoordinatesCreate(id: string, teleportCoordinatesRequest: TeleportCoordinatesRequest, options?: RawAxiosRequestConfig) {
         return WorldApiFp(this.configuration).worldPositionTeleportToCoordinatesCreate(id, teleportCoordinatesRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
