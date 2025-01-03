@@ -42,19 +42,22 @@ class CharacterAction(BaseModel):
     item = models.ForeignKey('items.WorldItem', on_delete=models.CASCADE, null=True, blank=True)
     position = models.ForeignKey('world.Position', on_delete=models.CASCADE, null=True, blank=True)
 
-    def accept(self):
+    order = models.FloatField(default=1)
+
+    def accept(self, order: float):
         self.accepted = True
-        self.save(update_fields=['accepted'])
+        self.order = order
+        self.save(update_fields=['accepted', 'order', 'updated_at'])
 
     def perform(self):
         self.performed = True
-        self.save(update_fields=['performed'])
+        self.save(update_fields=['performed', "updated_at"])
 
     def __str__(self):
         return f"{self.initiator.name} - {self.action_type}"
 
     class Meta:
-        ordering = ['-cycle', '-created_at']
+        ordering = ['-cycle', '-order']
 
 
 class ActionImpact(BaseModel):

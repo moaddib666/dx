@@ -80,6 +80,4 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
-        # TODO: include speed and action size in ordering
-        # so that first we execute action that take less action points and the fastest player been first
-        return self.cycle.actions.filter(performed=False).order_by("cycle", "created_at")
+        return self.cycle.actions.filter(performed=False)

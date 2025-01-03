@@ -127,7 +127,6 @@ class ImpactAction(CharacterActionServicePrototype):
         self.check_acceptance(action)
         self._accept(action, self.character_svc_cls(action.initiator))
         SkillCostService(action.skill).apply(action.initiator)
-        action.accept()
 
     # TODO: refactor this to use performers instead
     def _perform_special(self, action, calculated_impacts, dice_result, multiplier):

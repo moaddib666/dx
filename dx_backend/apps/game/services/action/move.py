@@ -31,4 +31,3 @@ class CharacterActionPositionMoveService(CharacterActionServicePrototype):
         self.check_acceptance(action)
         char_svc = self.character_svc_cls(action.initiator)
         char_svc.spend_all_ap()
-        action.accept()

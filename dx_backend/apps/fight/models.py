@@ -50,5 +50,4 @@ class FightTurn(BaseModel):
 class FightTurnAction(CharacterAction):
 
     turn = models.ForeignKey('fight.FightTurn', on_delete=models.CASCADE, related_name='actions')
-    order = models.PositiveIntegerField(blank=True, null=True)
     is_finished = models.BooleanField(default=False)

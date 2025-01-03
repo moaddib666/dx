@@ -44,5 +44,4 @@ class DiceRollActionService(CharacterActionServicePrototype):
 
     def accept(self, action: CharacterAction):
         self.check_acceptance(action)
-        action.accept()
         self.perform(action)

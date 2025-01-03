@@ -9,6 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from apps.core.models import GameMasterImpactAction
+from apps.game.services.action.accept import ActionAcceptor
 from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
     GameMasterActionFactory
 from ..serializers.openapi import CharacterActionSerializer, CharacterActionLogSerializer, \
@@ -61,9 +62,11 @@ class CharacterActionsViewSet(
         serializer.validated_data['cycle'] = Cycle.objects.current()
         super().perform_create(serializer)
         instance = serializer.instance
-        svc = self.action_factory.from_action(instance)
-        svc.check_acceptance(instance)
-        svc.accept(instance)
+        acceptor = ActionAcceptor(
+            action=instance,
+            factory=self.action_factory,
+        )
+        acceptor.accept()
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=serializers.Serializer)
@@ -91,7 +94,7 @@ class CharacterActionsViewSet(
 class GameMasterActionsViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = CharacterAction.objects.all().order_by('-created_at')
+    queryset = CharacterAction.objects.all()
     serializer_class = CharacterActionLogSerializer
     permission_classes = [permissions.IsAdminUser]
     pagination_class = LimitOffsetPagination
@@ -99,7 +102,8 @@ class GameMasterActionsViewSet(
         SearchFilter,
     ]
 
-    action_factory = CharacterActionFactory()
+    char_action_factory = CharacterActionFactory()
+    action_acceptor_cls = ActionAcceptor
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=RegisterImpactActionSerializer)
@@ -108,12 +112,13 @@ class GameMasterActionsViewSet(
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # FIXME: Implement the logic to register the impact
-        char_action_factory = CharacterActionFactory()
         factory = GameMasterActionFactory()
         act = factory.construct_player_action(GameMasterImpactAction(**serializer.validated_data))
-        svc = char_action_factory.from_action(act)
-        svc.accept(act)
+        acceptor = self.action_acceptor_cls(
+            action=act,
+            factory=self.char_action_factory,
+        )
+        acceptor.accept()
         # TMP: Apply the impact immediately
         # svc.perform(act)
         return Response(data=serializer.data)
@@ -128,6 +133,9 @@ class GameMasterActionsViewSet(
         serializer.validated_data['cycle'] = Cycle.objects.current()
         super().perform_create(serializer)
         instance = serializer.instance
-        svc = self.action_factory.from_action(instance)
-        svc.accept(instance)
+        acceptor = self.action_acceptor_cls(
+            action=instance,
+            factory=self.char_action_factory,
+        )
+        acceptor.accept()
         return Response(data=serializer.data)
