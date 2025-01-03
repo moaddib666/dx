@@ -191,6 +191,18 @@ export interface ActiveShield {
      * @type {number}
      * @memberof ActiveShield
      */
+    'level': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
+    'efficiency': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ActiveShield
+     */
     'cycles_left'?: number;
     /**
      * 
@@ -198,18 +210,6 @@ export interface ActiveShield {
      * @memberof ActiveShield
      */
     'health'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ActiveShield
-     */
-    'efficiency'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ActiveShield
-     */
-    'level'?: number;
     /**
      * 
      * @type {string}
@@ -11855,6 +11855,50 @@ export const ShieldsApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {string} [target] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsGmActiveList: async (target?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/shields/gm/active/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (target !== undefined) {
+                localVarQueryParameter['target'] = target;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -11888,6 +11932,18 @@ export const ShieldsApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['ShieldsApi.shieldsActiveRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {string} [target] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async shieldsGmActiveList(target?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ActiveShield>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.shieldsGmActiveList(target, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ShieldsApi.shieldsGmActiveList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -11914,6 +11970,15 @@ export const ShieldsApiFactory = function (configuration?: Configuration, basePa
          */
         shieldsActiveRetrieve(id: string, options?: any): AxiosPromise<ActiveShield> {
             return localVarFp.shieldsActiveRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} [target] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        shieldsGmActiveList(target?: string, options?: any): AxiosPromise<Array<ActiveShield>> {
+            return localVarFp.shieldsGmActiveList(target, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11944,6 +12009,17 @@ export class ShieldsApi extends BaseAPI {
      */
     public shieldsActiveRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return ShieldsApiFp(this.configuration).shieldsActiveRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} [target] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ShieldsApi
+     */
+    public shieldsGmActiveList(target?: string, options?: RawAxiosRequestConfig) {
+        return ShieldsApiFp(this.configuration).shieldsGmActiveList(target, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -33,6 +33,7 @@
                 :playerImage="selectedCharacterInfo.biography.avatar"
                 :extended="true"
             />
+            <ShieldHolder v-if="selectedCharacterShields.length > 0" :shields="selectedCharacterShields"/>
             <TeleportComponent @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
           </DynamicBackground>
         </div>
@@ -59,7 +60,7 @@ import GameMasterImpact from "@/components/GameMaster/GameMasterImpact.vue";
 import EndTurnComponent from "@/components/GameMaster/EndTurnComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue";
-import {ActionGameApi, CharacterGameApi} from "@/api/backendService.js";
+import {ActionGameApi, CharacterGameApi, ShieldsGameApi} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
 import GameObjectRawSelector from "@/components/GameMaster/GameObjectRawSelector.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
@@ -68,9 +69,11 @@ import {LocationInfoGameService} from "@/services/locationInfoService.js";
 import DynamicBackground from "@/components/Background/DynamicBackground.vue";
 import VerticalPlayerList from "@/components/GameMaster/PlayerList/VerticalPlayerList.vue";
 import TeleportComponent from "@/components/GameMaster/TeleportComponent.vue";
+import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 
 export default {
   components: {
+    ShieldHolder,
     TeleportComponent,
     VerticalPlayerList,
     DynamicBackground,
@@ -91,6 +94,7 @@ export default {
       selectedCharacterInfo: null,
       selectedCharacterData: null,
       locationGMService: LocationInfoGameService,
+      selectedCharacterShields: [],
     };
   },
   async mounted() {
@@ -99,11 +103,17 @@ export default {
     await this.refreshActivePlayersCharacters();
   },
   methods: {
+    async refreshSelectedCharacterShields() {
+      this.selectedCharacterShields = (await ShieldsGameApi.shieldsGmActiveList(
+          this.selectedCharacterId,
+      )).data;
+    },
     async teleportToCoordinates(x, y, z) {
       await this.locationGMService.teleportToCoordinates(this.selectedCharacterId, x, y, z);
       await this.refresh()
       await this.refreshCharacterPosition();
       await this.refreshCharacters();
+      await this.refreshSelectedCharacterShields();
     },
     async teleportToPosition(id) {
       await this.locationGMService.teleportToPosition(this.selectedCharacterId, id);
@@ -180,6 +190,7 @@ export default {
     },
     selectedCharacterId() {
       this.refreshSelectedTargets();
+      this.refreshSelectedCharacterShields();
     },
     selectedCharacterData() {
       this.refreshCharacterPosition();
@@ -257,10 +268,12 @@ export default {
   height: 3rem;
   width: 3rem;
 }
+
 .card-holder * * *:first-child {
   height: 3rem;
   width: 3rem;
 }
+
 .card-holder * * *:last-child {
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
