@@ -4,6 +4,7 @@
     <BackgroundView
         :key="position.id"
         :background="position.image"
+        :movementActivated="isMoving"
         class="background-view"
     ></BackgroundView>
 
@@ -35,7 +36,7 @@
             :playerImage="playerGeneralInfo.biography.avatar"
         />
         <EffectsHolder :effects="activeEffects"/>
-        <ShieldHolder :shields="shields" />
+        <ShieldHolder :shields="shields"/>
         <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
       </div>
       <div class="center-center">
@@ -49,7 +50,7 @@
         <DiceVisualizer v-if="isDiceVisible" :result="diceResult" @close="toogleDice"
                         @selectedDice="diceRoll"/>
         <CompassComponent
-          v-if="isCompassVisible"
+            v-if="isCompassVisible"
             :connections="activeConnections"
             centerAction="true"
             centerLabel="Up"
@@ -64,6 +65,7 @@
                            @applyAction="applyAction"
                            @cancelAction="closeActionConstructor"
                            class="action-constructor"
+                           :isSafe="position ? position.is_safe : false"
         />
 
 
@@ -177,6 +179,7 @@ export default {
       diceVisible: false,
       inventoryVisible: false,
       actionConstructorVisible: false,
+      isMoving: false,
     };
   },
   computed: {
@@ -265,6 +268,12 @@ export default {
       this.selectedGameObjectId = null;
       console.debug("Closing action constructor");
     },
+    async setMovement() {
+      this.isMoving = true;
+    },
+    async unsetMovement() {
+      this.isMoving = false;
+    },
     async toogleDice() {
       if (this.diceVisible) {
         await this.closeDice();
@@ -315,6 +324,7 @@ export default {
       await this.openActionConstructor();
     },
     async updateAll() {
+      await this.unsetMovement();
       await this.getCurrentPositionInfo();
       await this.getPlayerInfo();
       await this.getPlayerSkills();
@@ -332,6 +342,7 @@ export default {
       await this.actionService.move(new_postion_id);
       // await this.getCurrentPositionInfo();
       await this.getPlayerInfo();
+      await this.setMovement();
     },
     async resolveCharacter(characterId) {
       const data = await CharacterInfoGameService.getCharacterInfo(characterId);
@@ -466,6 +477,7 @@ export default {
   gap: 0.5rem;
 
 }
+
 .left-action-group {
   display: flex;
   justify-content: flex-start;

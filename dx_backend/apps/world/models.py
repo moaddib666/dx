@@ -137,7 +137,7 @@ class Position(Model):
     grid_z = models.BigIntegerField(default=0)
     sub_location = models.ForeignKey(SubLocation, on_delete=models.CASCADE)
     labels = models.JSONField(default=list)
-
+    is_safe = models.BooleanField(default=False)
     image = models.ImageField(upload_to='positions/', null=True, blank=True)
 
     @property

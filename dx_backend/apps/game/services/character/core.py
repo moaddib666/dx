@@ -256,3 +256,6 @@ class CharacterService:
 
     def get_shields(self) -> [ActiveShield]:
         return self.character.shields.all()
+
+    def is_in_safe_place(self) -> bool:
+        return self.character.position.is_safe

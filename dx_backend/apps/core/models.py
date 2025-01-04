@@ -37,6 +37,7 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     MOVE = "MOVE"
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
     DICE_ROLL = "DICE_ROLL"
+    LONG_REST = "LONG_REST"
 
 
 class ItemType(DjangoChoicesMixin, StrEnum):
@@ -63,6 +64,10 @@ class EffectType(DjangoChoicesMixin, StrEnum):
     FEAR = "Fear"  # The concentration, mental strand is decreased
     SLOWNESS = "Slowness"  # Decrease speed
     COLD = "Cold"  # Decrease health points with ice damage every turn
+    CURSED = "Cursed"  # Decrease luck points
+    BLINDNESS = "Blindness"  # Decrease accuracy
+
+    MARKED_FOR_DEATH = "Marked"  # The character is marked for being attacked by NPC
 
 
 class EffectViolation(DjangoChoicesMixin, StrEnum):

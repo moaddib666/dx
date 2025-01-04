@@ -1,6 +1,9 @@
 <template>
   <div :class="['background', backgroundClass]">
-    <!--    <slot></slot>-->
+    <div
+        class="overlay"
+        :class="{ 'overlay-visible': movementActivated }">
+    </div>
   </div>
 </template>
 
@@ -11,6 +14,10 @@ export default {
     background: {
       type: String,
       required: true,
+    },
+    movementActivated: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -49,5 +56,23 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+
+  /* Smooth transition effect for background */
+  transition: background-image 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+.overlay {
+  background: url("@/assets/images/backgrounds/moveOverlay.webp") no-repeat center;
+  display: flex;
+  background-blend-mode: hard-light;
+  opacity: 0; /* Start fully transparent */
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  transition: opacity 2s ease-in-out; /* Smooth transition */
+}
+
+.overlay-visible {
+  opacity: 0.5; /* Normal opacity */
 }
 </style>

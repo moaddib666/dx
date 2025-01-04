@@ -8,6 +8,10 @@
           <img alt="Move" src="@/assets/images/action/move.png"/>
           <span> Move </span>
         </div>
+        <div v-else-if="action.action_type === 'LONG_REST'" class="action-icon">
+          <img alt="Move" src="@/assets/images/action/long-rest.webp"/>
+          <span> Long Rest </span>
+        </div>
         <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">
           <DiceComponent/>
           <span> Dice Roll </span>

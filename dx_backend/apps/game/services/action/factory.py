@@ -11,6 +11,7 @@ from apps.game.services.action.base_service import CharacterActionServicePrototy
 from apps.game.services.action.dice import DiceRollActionService
 from apps.game.services.action.dimension_action import DimensionActionService
 from apps.game.services.action.impact import ImpactAction
+from apps.game.services.action.long_rest import CharacterLongRestService
 from apps.game.services.action.move import CharacterActionPositionMoveService
 from apps.game.services.action.notify import ConsoleResultNotifyService
 from apps.game.services.action.player import ManualCharacterActionPlayerService
@@ -45,6 +46,7 @@ class CharacterActionFactory:
         CharacterActionType.DICE_ROLL: DiceRollActionService(),
         CharacterActionType.USE_SKILL: ImpactAction(),
         CharacterActionType.USE_ITEM: UseItemActionService(ImpactAction()),
+        CharacterActionType.LONG_REST: CharacterLongRestService(),
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:

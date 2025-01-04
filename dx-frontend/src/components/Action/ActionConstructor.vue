@@ -14,6 +14,7 @@
       [
           { id: 'skillSelector', name: 'Skills' },
           { id: 'itemSelector', name: 'Items' },
+          { id: 'specialSelector', name: 'Special' },
       ]
       "
                  @tab-switched="switchTab"
@@ -32,6 +33,11 @@
           :characterItems="availableItems"
           @item-selected="updateSelectedItem"
       />
+      <SpecialSelector
+          v-if="currentTab === 'specialSelector'"
+          :isSafe="isSafe"
+          @special-selected="updateSelectedSpecial"
+      ></SpecialSelector>
     </div>
   </div>
 </template>
@@ -44,10 +50,12 @@ import SkillSelector from "@/components/Selectors/SkillSelector.vue";
 import GlassButton from "@/components/btn/Glass.vue";
 import ItemSelector from "@/components/Selectors/ItemSelector.vue";
 import TabSwitcher from "@/components/Tabs/TabSwitcher.vue";
+import SpecialSelector from "@/components/Selectors/SpecialSelector.vue";
 
 export default {
   name: "ActionConstructor",
   components: {
+    SpecialSelector,
     TabSwitcher,
     ItemSelector,
     GlassButton,
@@ -58,10 +66,20 @@ export default {
   },
   computed: {
     computedSelectedSkill() {
-      return this.selectedSkill || this.selectedItem?.item?.skill;
+      return this.selectedSkill || this.selectedItem?.item?.skill || this.selectedSpecial?.skill;
     },
     actionData() {
-      if (!this.selectedItem && !this.selectedSkill) return null;
+      if (!this.selectedItem && !this.selectedSkill && !this.selectedSpecial) return null;
+
+      if (this.selectedSpecial) {
+        return {
+          actionType: this.selectedSpecial.actionType,
+          actionData: this.selectedSpecial.actionData,
+          skill: null,
+          item: null,
+          targets: [this.selectedGameObjectId], // Selected game object as target
+        };
+      }
       return {
         actionType: this.selectedItem ? "USE_ITEM" : "USE_SKILL",
         actionData: {},
@@ -75,6 +93,10 @@ export default {
     availableGameObjects: {
       type: Array,
       required: true,
+    },
+    isSafe: {
+      type: Boolean,
+      required: false,
     },
     availableSkills: {
       type: Array,
@@ -99,6 +121,7 @@ export default {
       selectedGameObjectId: null,
       selectedSkill: null,
       selectedItem: null,
+      selectedSpecial: null,
       currentTab: "skillSelector",
     };
   },
@@ -116,9 +139,13 @@ export default {
       this.selectedItem = null;
     },
     applyAction() {
-      if (!(this.selectedSkill || this.selectedItem) || !this.selectedGameObjectId) return;
+      if (!(this.selectedSkill || this.selectedItem || this.selectedSpecial) || !this.selectedGameObjectId) return;
       this.$emit("applyAction", this.actionData);
       this.reset();
+    },
+    updateSelectedSpecial(special) {
+      this.reset()
+      this.selectedSpecial = special;
     },
     updateSelectedGameObjectId(id) {
       this.selectedGameObjectId = id;

@@ -183,7 +183,7 @@ class PositionSerializer(serializers.ModelSerializer):
         model = Position
         fields = (
             'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
-            "image")
+            "image", 'is_safe')
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""

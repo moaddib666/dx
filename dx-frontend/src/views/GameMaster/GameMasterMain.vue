@@ -46,7 +46,7 @@
       <GameObjectRawSelector @gameObjectSelected="selectCharacter" item-name="Character"
                              placeholder="Enter Character UUID"/>
 
-      <VerticalPlayerList :game-objects="activePlayersCharacters" @item-selected="selectCharacter"/>
+      <VerticalPlayerList :game-objects="activePlayersCharacters" @item-selected="selectCharacter" class="characters-vertical"/>
     </div>
 
     <CurrentTurnComponent @turnChanged="refresh" class="current-turn"/>
@@ -205,6 +205,7 @@ export default {
   display: flex;
   gap: 0.3rem;
   box-sizing: border-box;
+  max-height: 85vh;
 }
 
 /* Left Full Height Section */
@@ -278,5 +279,11 @@ export default {
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
+}
+.characters-vertical {
+  max-height: 40vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
 }
 </style>

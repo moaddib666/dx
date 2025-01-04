@@ -17,6 +17,7 @@
     </div>
     <div class="icon">
       <img v-if="icon" :src="icon" alt="Skill Icon"/>
+      <slot v-else-if="useSlotIcon"/>
       <img v-else alt="Skill Icon" src="@/assets/images/skill/default.webp"/>
     </div>
     <div class="skill-name">
@@ -31,6 +32,10 @@ export default {
     skill: {
       type: Object,
       required: true
+    },
+    useSlotIcon: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

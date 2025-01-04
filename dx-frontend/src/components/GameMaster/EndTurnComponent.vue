@@ -1,7 +1,8 @@
 <template>
   <div class="end-turn-container">
     <!-- Small End Turn Button -->
-    <button class="end-turn-button" @click="confirmEndTurn">⏳</button>
+    <button class="end-turn-button" @click="confirmEndTurn">
+    </button>
 
     <!-- Confirmation Modal -->
     <div v-if="isConfirming" class="modal-overlay" @click.self="cancelConfirmation">
@@ -75,19 +76,24 @@ export default {
   font-size: 1.5rem;
   font-weight: bold;
   color: white;
-  background: #007bff;
+  background: url("@/assets/images/action/end-turn.webp") center center / cover;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.7), 0 0 30px rgba(138, 43, 226, 0.5);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .end-turn-button:hover {
-  background: #0056b3;
   transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(0, 123, 255, 1);
+  box-shadow: 0 0 25px rgba(138, 43, 226, 1), 0 0 35px rgba(138, 43, 226, 0.8);
 }
+
+.end-turn-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.8), 0 0 25px rgba(138, 43, 226, 0.6);
+}
+
 
 /* Modal Overlay */
 .modal-overlay {

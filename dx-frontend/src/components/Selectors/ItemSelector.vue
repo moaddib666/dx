@@ -35,8 +35,8 @@ export default {
   display: flex;
   flex-wrap: wrap; /* Allow wrapping of icons */
   gap: 0.5rem; /* Space between icons */
-  justify-content: center; /* Center icons */
-  align-items: center; /* Align icons */
+  justify-content: flex-start; /* Center icons */
+  align-items: flex-start; /* Align icons */
   padding: 0.5rem;
   box-sizing: border-box;
 }
