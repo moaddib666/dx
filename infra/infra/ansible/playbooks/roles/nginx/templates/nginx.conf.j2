@@ -1,0 +1,24 @@
+user www-data;
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    upstream backend {
+        server {{ upstream_backend }};
+    }
+
+    upstream frontend {
+        server {{ upstream_frontend }};
+    }
+
+    include /etc/nginx/sites-enabled/*;
+}

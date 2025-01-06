@@ -1,0 +1,8 @@
+---
+- name: Set up Ubuntu server with Nginx and Certbot
+  hosts: ubuntu_server
+  become: true
+
+  roles:
+    - nginx
+    - docker

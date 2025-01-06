@@ -1,0 +1,61 @@
+---
+- name: Install Nginx and Certbot
+  apt:
+    name:
+      - nginx
+      - python3-certbot-nginx
+    state: present
+
+- name: Create media and static folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  loop:
+    - "{{ media_folder }}"
+    - "{{ static_folder }}"
+
+- name: Deploy Nginx global configuration
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+
+- name: Deploy Nginx site configuration
+  template:
+    src: site.conf.j2
+    dest: /etc/nginx/sites-available/{{ domain_name }}
+  notify: restart nginx
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/{{ domain_name }}
+    dest: /etc/nginx/sites-enabled/{{ domain_name }}
+    state: link
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Test Nginx configuration
+  command: nginx -t
+  register: nginx_test
+  ignore_errors: yes
+
+- name: Restart Nginx if configuration is valid
+  service:
+    name: nginx
+    state: restarted
+  when: nginx_test.rc == 0
+
+- name: Obtain SSL certificate
+  shell: >
+    certbot --nginx
+    -d {{ domain_name }}
+    --non-interactive
+    --agree-tos
+    --email admin@game.awsome.live
+  args:
+    creates: /etc/letsencrypt/live/{{ domain_name }}

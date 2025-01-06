@@ -1,0 +1,6 @@
+---
+- name: Sync media and static folders
+  hosts: all
+  become: true
+  roles:
+    - rsync

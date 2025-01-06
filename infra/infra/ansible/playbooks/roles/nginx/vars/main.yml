@@ -1,0 +1,6 @@
+domain_name: "game.awsome.live"
+frontend_folder: "/var/www/{{ domain_name }}"
+media_folder: "/var/www/{{ domain_name }}/media"
+static_folder: "/var/www/{{ domain_name }}/static"
+upstream_backend: "127.0.0.1:8000"
+upstream_frontend: "127.0.0.1:3000"

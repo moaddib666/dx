@@ -1,0 +1,8 @@
+# Source paths on the local machine
+source_media: "/Users/moaddib/development/development/dx/dx_backend/media"
+source_static: "/Users/moaddib/development/development/dx/dx_backend/static"
+source_frontend: "/Users/moaddib/development/development/dx/dx-frontend/dist"
+# Destination paths on the remote machine
+destination_media: "/var/www/game.awsome.live/media"
+destination_static: "/var/www/game.awsome.live/static"
+destination_frontend: "/var/www/game.awsome.live"

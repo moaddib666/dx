@@ -1,0 +1,40 @@
+---
+- name: Ensure destination directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+  loop:
+    - "{{ destination_media }}"
+    - "{{ destination_static }}"
+
+- name: Rsync frontend folder
+  synchronize:
+    src: "{{ source_frontend }}/"
+    dest: "{{ destination_frontend }}/"
+    rsync_opts:
+      - "--rsh='ssh -p {{ ansible_port }}'"
+    recursive: true
+    delete: false
+
+- name: Rsync media folder
+  synchronize:
+    src: "{{ source_media }}/"
+    dest: "{{ destination_media }}/"
+    rsync_opts:
+      - "--rsh='ssh -p {{ ansible_port }}'"
+    recursive: true
+    delete: false
+
+- name: Rsync static folder
+  synchronize:
+    src: "{{ source_static }}/"
+    dest: "{{ destination_static }}/"
+    rsync_opts:
+      - "--rsh='ssh -p {{ ansible_port }}'"
+    recursive: true
+    delete: false
+
+
