@@ -452,8 +452,22 @@ from django.db import models as django_models
 
 
 class GameObject(DjangoBaseModel, PolymorphicModel):
-    position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL, blank=True, default=None)
+    position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL, blank=True,
+                                        default=None)
     dimension = django_models.ForeignKey("world.Dimension", on_delete=django_models.SET_NULL, null=True, blank=True,
                                          default=1)
     is_active = django_models.BooleanField(default=True)
-    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True, default=None)
+    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True,
+                                        default=None)
+
+
+class StatObject(DjangoBaseModel, PolymorphicModel):
+    id = django_models.CharField(choices=CharacterStats.choices(), max_length=100, primary_key=True)
+    icon = django_models.ImageField(upload_to='icons/stats/', null=True, blank=True)
+    description = django_models.TextField(null=True, blank=True)
+
+
+class ViolationObject(DjangoBaseModel, PolymorphicModel):
+    id = django_models.CharField(choices=ImpactViolationType.choices(), max_length=100, primary_key=True)
+    icon = django_models.ImageField(upload_to='icons/violation/', null=True, blank=True)
+    description = django_models.TextField(null=True, blank=True)

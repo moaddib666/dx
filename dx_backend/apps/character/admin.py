@@ -108,8 +108,8 @@ class StatInline(admin.TabularInline):
     """
     model = Stat
     extra = 1  # Number of extra blank rows
-    fields = ('name', 'value',)
-    readonly_fields = ('name',)
+    fields = ('name', 'base_value', "additional_value")
+    readonly_fields = ('name', "value")
     can_delete = False
 
 
@@ -350,7 +350,8 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
     def reset_stats(self, request, queryset):
         for character in queryset:
             for stat in character.stats.all():
-                stat.value = 0
+                stat.base_value = 0
+                stat.additional_value = 0
                 stat.save()
         self.message_user(request, f"Stats reset for {queryset.count()} character(s).")
 

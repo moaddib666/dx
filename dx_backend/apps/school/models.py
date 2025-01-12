@@ -22,7 +22,7 @@ class ThePath(BaseModel):
 class School(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    path = models.ManyToManyField(ThePath,blank=True, null=True)
+    path = models.ManyToManyField(ThePath, blank=True, related_name='schools')
     icon = models.ImageField(upload_to='icons/school/', null=True, blank=True)
     is_base = models.BooleanField(default=False)
 

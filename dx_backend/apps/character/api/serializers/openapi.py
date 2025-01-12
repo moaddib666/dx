@@ -2,8 +2,10 @@ import uuid
 
 from rest_framework import serializers
 
-from apps.character.models import Character, CharacterBiography
+from apps.action.models import DiceRollResult
+from apps.character.models import Character, CharacterBiography, Stat, Rank
 from apps.core.models import AttributeType, GenderEnum
+from apps.school.models import ThePath
 
 
 class OpenaiCharacterBioSerializer(serializers.ModelSerializer):
@@ -12,8 +14,22 @@ class OpenaiCharacterBioSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ThePathSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThePath
+        fields = ['name', 'description', "icon", "id"]
+
+
+class RankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rank
+        fields = ['name', 'grade', 'experience_needed']
+
+
 class OpenaiCharacterSerializer(serializers.ModelSerializer):
     biography = OpenaiCharacterBioSerializer()
+    rank = RankSerializer()
+    path = ThePathSerializer()
 
     def validate_age(self, value):
         if not (18 <= value <= 200):
@@ -22,10 +38,10 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        fields = ['id', 'name', 'biography', "npc"]
+        fields = ['id', 'name', 'biography', "npc", "rank", "path", "experience", "tags", "resetting_base_stats", "is_active"]
 
 
-class CharacterStatsSerializer(serializers.Serializer):
+class CharacterAttrsSerializer(serializers.Serializer):
     health = serializers.IntegerField()
     max_health = serializers.IntegerField()
     energy = serializers.IntegerField()
@@ -60,6 +76,20 @@ class CharacterInfoSerializer(serializers.Serializer):
     location = serializers.UUIDField()
     fight = serializers.UUIDField(allow_null=True)
     duel_invitations = serializers.ListField(child=serializers.UUIDField())
+
+
+class StatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Stat
+        exclude = ['created_at', 'updated_at', "character"]
+
+
+class CharacterStatsSerializer(serializers.ModelSerializer):
+    stats = StatSerializer(many=True)
+
+    class Meta:
+        model = Character
+        fields = ['stats']
 
 
 class CharacterPathSerializer(serializers.ModelSerializer):
@@ -158,3 +188,31 @@ class CharacterGenericDataSerializer(serializers.Serializer):
     items = serializers.ListField(child=serializers.UUIDField())
     schools = serializers.ListField(child=serializers.UUIDField())
     spells = serializers.ListField(child=serializers.IntegerField())
+
+
+class DiceRollResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiceRollResult
+        fields = ['dice_side', ]
+
+
+class DetailStatSerializer(serializers.ModelSerializer):
+    dice_rolls = DiceRollResultSerializer(many=True)
+
+    class Meta:
+        model = Stat
+        exclude = ['created_at', 'updated_at']
+
+
+class SwipeBaseStatSerializer(serializers.Serializer):
+    from_stat = serializers.UUIDField(
+        help_text="The first result of the base stat generation."
+    )
+    to_stat = serializers.UUIDField(
+        help_text="The second result of the base stat generation.",
+    )
+
+    def validate(self, attrs):
+        if attrs["from_stat"] == attrs["to_stat"]:
+            raise serializers.ValidationError("The stats must be different.")
+        return attrs

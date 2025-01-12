@@ -34,6 +34,8 @@
         <PlayerComponent
             :player="playerInfo"
             :playerImage="playerGeneralInfo.biography.avatar"
+            @click="openInfo"
+            style="cursor: pointer"
         />
         <EffectsHolder :effects="activeEffects"/>
         <ShieldHolder :shields="shields"/>
@@ -330,6 +332,12 @@ export default {
       await this.getPlayerSkills();
       await this.getActiveEffects();
       await this.refreshShields();
+    },
+    openInfo() {
+      // open window with character info
+      const routePath = this.$router.resolve({name: 'CharacterInfo'}).href;
+      // Open in a new floating window
+      window.open(routePath, '_blank', 'width=1024,height=1280,scrollbars=yes,resizable=yes');
     },
     async diceRoll({dice, index}) {
       // sleep for 1 second

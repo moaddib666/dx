@@ -34,7 +34,8 @@ class CharacterBiography(BaseModel):
     background = models.TextField(blank=True)
     appearance = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True)
-    character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='biography')
+    character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
+                                     related_name='biography')
 
 
 class Character(GameObject):
@@ -70,14 +71,23 @@ class Character(GameObject):
     last_safe_position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
                                            related_name='characters_in_safe')
 
+    resetting_base_stats = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
 
 
 class Stat(BaseModel):
     name = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
-    value = models.IntegerField()
+    additional_value = models.IntegerField(default=0)
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='stats')
+
+    base_value = models.IntegerField(default=0)
+    dice_rolls = models.ManyToManyField('action.DiceRollResult', related_name='base_stat_results')
+
+    @property
+    def value(self) -> int:
+        return self.base_value + self.additional_value
 
     def __str__(self):
         return self.name

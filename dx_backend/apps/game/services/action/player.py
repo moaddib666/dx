@@ -7,6 +7,7 @@ from apps.character.models import Character
 from apps.core.models import EffectType
 from apps.shields.models import ActiveShield
 from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
+from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
 from ..shield import ActiveShieldLifeCycleService
 
@@ -28,9 +29,10 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.notify_svc = notify_svc
         self.effects_apply_factory = effects_apply_factory
         self.effects_manager_factory = effects_manager_factory
+        self.base_stats_applier = BaseStatChangesApplier()
 
     def prepare(self):
-        ...
+        self.base_stats_applier.apply()
 
     def post(self):
         self.update_characters()

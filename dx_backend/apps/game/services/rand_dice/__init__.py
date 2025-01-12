@@ -11,7 +11,7 @@ from apps.core.models import RollOutcome, DiceRollResult
 class CharacterProtocol(Protocol):
 
     @property
-    def id(self) -> str:
+    def pk(self) -> str:
         ...
 
 
@@ -25,11 +25,11 @@ class DiceService:
         self.min_value = 1
         self.base_luck = base_luck
         self.random_gen = self.create_random_gen_for_character()
-        self.logger.debug(f"Created dice service d{sides} for character {self.character.id} with luck {self.luck}")
+        self.logger.debug(f"Created dice service d{sides} for character {self.character.pk} with luck {self.luck}")
 
     def create_random_gen_for_character(self):
         # Create a unique seed based on the character's unique ID and possibly other factors
-        unique_string = str(self.character.id) + str(self.luck + time.time())
+        unique_string = str(self.character.pk) + str(self.luck + time.time())
         seed = int(hashlib.md5(unique_string.encode()).hexdigest(), 16) % (2 ** 32 - 1)
         return random.Random(seed)
 
@@ -40,7 +40,7 @@ class DiceService:
         luck_adjustment = (self.luck - self.base_luck) / self.base_luck * 1.3
         adjusted_roll = base_roll + (luck_adjustment * self.random_gen.randint(0, 1))
         adjusted_roll = max(self.min_value, min(self.sides, round(adjusted_roll)))
-        self.logger.debug(f"Character {self.character.id} rolled {adjusted_roll} luck adjustment {luck_adjustment}")
+        self.logger.debug(f"Character {self.character.pk} rolled {adjusted_roll} luck adjustment {luck_adjustment}")
         return adjusted_roll
 
     def _calculate_multiplier(self) -> tuple[int, float, RollOutcome]:
@@ -70,7 +70,7 @@ class DiceService:
 
     def multiplier_roll(self) -> DiceRollResult:
         roll, multiplier, outcome = self._calculate_multiplier()
-        self.logger.debug(f"Character {self.character.id} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
+        self.logger.debug(f"Character {self.character.pk} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
         return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
 
 

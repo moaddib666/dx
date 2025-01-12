@@ -1,18 +1,24 @@
 from django.db import transaction
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from apps.character.api.filters.character import CharacterFilter, NPCFilter
 from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, CharacterInfoSerializer, \
     CharacterPathSerializer, \
-    CharacterTemplateFullSerializer, CharacterGenericDataSerializer
-from apps.character.models import Character
+    CharacterTemplateFullSerializer, CharacterGenericDataSerializer, CharacterStatsSerializer, \
+    DetailStatSerializer, SwipeBaseStatSerializer
+from apps.character.models import Character, Stat
 from apps.core.models import CharacterGenericData
 from apps.game.services.character import CharacterFactory
+from apps.game.services.character.character_base_stats import CharacterBaseStatsService
 from apps.game.services.character.core import CharacterService
 from apps.game.services.character.template import CharacterTemplateService
+from apps.game.services.rand_dice import DiceService
 
 
 class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,10 +57,24 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
         )
         serializer.instance = character
 
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def character_details(self, request):
+        user = request.user
+        character = user.main_character
+        if not character:
+            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(character)
+        return Response(data=serializer.data)
+
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated],
             serializer_class=CharacterInfoSerializer)
     def character_info(self, request):
         user = request.user
+        try:
+            user.last_login = timezone.now()
+            user.save(update_fields=['last_login'])
+        except Exception as e:
+            pass
         try:
             character = user.main_character
             service = CharacterService(character)
@@ -98,7 +118,17 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
         svc = CharacterFactory(user)
         char_svc = svc.import_character(CharacterGenericData(**serializer.validated_data))
         character_info = char_svc.get_character_info()
+        user.main_character = char_svc.character
+        user.save(update_fields=['main_character'])
         return Response(data=character_info.model_dump())
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated],
+            serializer_class=CharacterStatsSerializer)
+    def character_stats(self, request):
+        user = request.user
+        character = user.main_character
+        serializer = self.get_serializer(character)
+        return Response(data=serializer.data)
 
 
 class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
@@ -119,3 +149,54 @@ class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(data=character_info.model_dump())
         except Character.DoesNotExist:
             return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class OpenAICharacterManageBaseStats(viewsets.ReadOnlyModelViewSet):
+    queryset = Stat.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    serializer_class = DetailStatSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return super().get_queryset().filter(
+            character=user.main_character,
+        )
+
+    @extend_schema(
+        request=None,  # No request body expected
+        responses=DetailStatSerializer(many=True),
+    )
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @transaction.atomic
+    def reset_base_stats(self, request):
+        user = request.user
+        character = user.main_character
+        if not character.resetting_base_stats:
+            return Response({"detail": "Character is not resetting base stats."}, status=status.HTTP_400_BAD_REQUEST)
+        service = CharacterBaseStatsService(character, DiceService)
+        instance = service.reset_base_stats()
+        serializer = self.get_serializer(instance, many=True)
+        return Response(data=serializer.data)
+
+    @extend_schema(
+        request=SwipeBaseStatSerializer,
+    )
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @transaction.atomic
+    def swipe_base_stat(self, request, pk=None):
+        user = request.user
+        character = user.main_character
+        if not character.resetting_base_stats:
+            return Response({"detail": "Character is not resetting base stats."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = SwipeBaseStatSerializer(data=request.data, context={})
+        serializer.is_valid(raise_exception=True)
+        service = CharacterBaseStatsService(character, DiceService)
+        stat_from = get_object_or_404(Stat, pk=serializer.validated_data['from_stat'])
+        stat_to = get_object_or_404(Stat, pk=serializer.validated_data['to_stat'])
+        service.switch_base_stats(
+            stat_1=stat_from,
+            stat_2=stat_to
+        )
+        response_serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(data=response_serializer.data)

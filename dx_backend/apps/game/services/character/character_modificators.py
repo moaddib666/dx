@@ -36,8 +36,9 @@ class CharacterModificatorService:
         for stat_modificator in modificator.statmodificator_set.all():
             try:
                 charecter_stat = character.stats.get(name=stat_modificator.stat)
-                charecter_stat.value += stat_modificator.value
-                charecter_stat.save(update_fields=['value'])
+                # FIXME: make this computed
+                charecter_stat.additional_value += stat_modificator.value
+                charecter_stat.save(update_fields=['additional_value', ])
             except Exception as e:
                 self.logger.warning(f'Failed to apply modificator {modificator} to character {character}: {e}')
 

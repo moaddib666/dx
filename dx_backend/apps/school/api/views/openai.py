@@ -2,7 +2,8 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.school.api.serializers.openapi import OpenaiSchoolSerializer, OpenaiSkillSerializer, OpenaiPathSerializer
+from apps.school.api.serializers.openapi import OpenaiSchoolSerializer, OpenaiSkillSerializer, OpenaiPathSerializer, \
+    OpenaiPathWithSchoolsSerializer
 from apps.school.models import School, Skill, ThePath
 
 
@@ -11,14 +12,19 @@ class OpenAIPathManagementViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OpenaiPathSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return OpenaiPathWithSchoolsSerializer
+        return super().get_serializer_class()
+
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
         if user.is_superuser:
             return qs
-        return qs.filter(school__path=user.character.path)
+        return qs.filter(id=user.main_character.path_id)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],)
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[], )
     def get_all_paths(self, request):
         paths = ThePath.objects.all()
         serializer = OpenaiPathSerializer(paths, many=True, context=self.get_serializer_context())
@@ -47,7 +53,7 @@ class OpenAISchoolManagementViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = OpenaiSchoolSerializer(schools, many=True, context=self.get_serializer_context())
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],)
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[], )
     def get_all_skills(self, request, school_pk=None):
         skills = Skill.objects.all()
         serializer = OpenaiSkillSerializer(skills, many=True, context=self.get_serializer_context())

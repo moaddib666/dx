@@ -32,4 +32,4 @@ class OpenAICharacterModificatorsViewSet(
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        return qs.filter(character=user.character)
+        return qs.filter(character=user.main_character)

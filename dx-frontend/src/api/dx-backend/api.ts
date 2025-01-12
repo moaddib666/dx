@@ -96,7 +96,7 @@ export interface ActionModel {
 
 
 /**
- * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `DICE_ROLL` - DICE_ROLL
+ * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `DICE_ROLL` - DICE_ROLL * `LONG_REST` - LONG_REST
  * @export
  * @enum {string}
  */
@@ -113,7 +113,8 @@ export const ActionTypeEnum = {
     StartFight: 'START_FIGHT',
     Move: 'MOVE',
     BackToSafeZone: 'BACK_TO_SAFE_ZONE',
-    DiceRoll: 'DICE_ROLL'
+    DiceRoll: 'DICE_ROLL',
+    LongRest: 'LONG_REST'
 } as const;
 
 export type ActionTypeEnum = typeof ActionTypeEnum[keyof typeof ActionTypeEnum];
@@ -329,10 +330,10 @@ export interface Art {
 export interface Attribute {
     /**
      * 
-     * @type {NameEnum}
+     * @type {NameDeeEnum}
      * @memberof Attribute
      */
-    'name': NameEnum;
+    'name': NameDeeEnum;
     /**
      * 
      * @type {number}
@@ -651,7 +652,8 @@ export const CharacterActionType = {
     StartFight: 'START_FIGHT',
     Move: 'MOVE',
     BackToSafeZone: 'BACK_TO_SAFE_ZONE',
-    DiceRoll: 'DICE_ROLL'
+    DiceRoll: 'DICE_ROLL',
+    LongRest: 'LONG_REST'
 } as const;
 
 export type CharacterActionType = typeof CharacterActionType[keyof typeof CharacterActionType];
@@ -665,10 +667,10 @@ export type CharacterActionType = typeof CharacterActionType[keyof typeof Charac
 export interface CharacterAttribute {
     /**
      * 
-     * @type {NameEnum}
+     * @type {NameDeeEnum}
      * @memberof CharacterAttribute
      */
-    'name': NameEnum;
+    'name': NameDeeEnum;
     /**
      * 
      * @type {number}
@@ -1321,6 +1323,19 @@ export interface CharacterStatRequest {
 /**
  * 
  * @export
+ * @interface CharacterStats
+ */
+export interface CharacterStats {
+    /**
+     * 
+     * @type {Array<Stat>}
+     * @memberof CharacterStats
+     */
+    'stats': Array<Stat>;
+}
+/**
+ * 
+ * @export
  * @interface CharacterTemplate
  */
 export interface CharacterTemplate {
@@ -1698,6 +1713,45 @@ export interface Data {
 /**
  * 
  * @export
+ * @interface DetailStat
+ */
+export interface DetailStat {
+    /**
+     * 
+     * @type {string}
+     * @memberof DetailStat
+     */
+    'id': string;
+    /**
+     * 
+     * @type {StatEnum}
+     * @memberof DetailStat
+     */
+    'name'?: StatEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof DetailStat
+     */
+    'value': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DetailStat
+     */
+    'base_value': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetailStat
+     */
+    'character': string;
+}
+
+
+/**
+ * 
+ * @export
  * @interface DiceRollResult
  */
 export interface DiceRollResult {
@@ -1879,7 +1933,7 @@ export interface Effect {
 
 
 /**
- * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold
+ * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold * `Cursed` - Cursed * `Blindness` - Blindness * `Marked` - Marked
  * @export
  * @enum {string}
  */
@@ -1895,7 +1949,10 @@ export const EffectIdEnum = {
     Paralyzed: 'Paralyzed',
     Fear: 'Fear',
     Slowness: 'Slowness',
-    Cold: 'Cold'
+    Cold: 'Cold',
+    Cursed: 'Cursed',
+    Blindness: 'Blindness',
+    Marked: 'Marked'
 } as const;
 
 export type EffectIdEnum = typeof EffectIdEnum[keyof typeof EffectIdEnum];
@@ -2957,13 +3014,13 @@ export interface ModificatorRequest {
  * @enum {string}
  */
 
-export const NameEnum = {
+export const NameDeeEnum = {
     Health: 'Health',
     Energy: 'Energy',
     ActionPoints: 'Action Points'
 } as const;
 
-export type NameEnum = typeof NameEnum[keyof typeof NameEnum];
+export type NameDeeEnum = typeof NameDeeEnum[keyof typeof NameDeeEnum];
 
 
 /**
@@ -3044,6 +3101,12 @@ export interface Nested {
      * @memberof Nested
      */
     'npc'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Nested
+     */
+    'resetting_base_stats'?: boolean;
     /**
      * 
      * @type {number}
@@ -3177,6 +3240,12 @@ export interface NestedRequest {
      * @memberof NestedRequest
      */
     'npc'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NestedRequest
+     */
+    'resetting_base_stats'?: boolean;
     /**
      * 
      * @type {string}
@@ -3434,6 +3503,36 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'npc'?: boolean;
+    /**
+     * 
+     * @type {Rank}
+     * @memberof OpenaiCharacter
+     */
+    'rank': Rank;
+    /**
+     * 
+     * @type {ThePath}
+     * @memberof OpenaiCharacter
+     */
+    'path': ThePath;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpenaiCharacter
+     */
+    'experience'?: number;
+    /**
+     * 
+     * @type {any}
+     * @memberof OpenaiCharacter
+     */
+    'tags'?: any;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OpenaiCharacter
+     */
+    'resetting_base_stats'?: boolean;
 }
 /**
  * 
@@ -3538,6 +3637,55 @@ export interface OpenaiPath {
      * 
      * @type {string}
      * @memberof OpenaiPath
+     */
+    'icon'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface OpenaiPathWithSchools
+ */
+export interface OpenaiPathWithSchools {
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Array<OpenaiSchool>}
+     * @memberof OpenaiPathWithSchools
+     */
+    'schools': Array<OpenaiSchool>;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
+     */
+    'created_at'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
+     */
+    'updated_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiPathWithSchools
      */
     'icon'?: string | null;
 }
@@ -4106,6 +4254,12 @@ export interface Position {
      * @memberof Position
      */
     'image': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Position
+     */
+    'is_safe'?: boolean;
 }
 /**
  * * `openai` - OpenAI * `google` - Google * `local` - Local
@@ -4122,6 +4276,31 @@ export const ProviderEnum = {
 export type ProviderEnum = typeof ProviderEnum[keyof typeof ProviderEnum];
 
 
+/**
+ * 
+ * @export
+ * @interface Rank
+ */
+export interface Rank {
+    /**
+     * 
+     * @type {string}
+     * @memberof Rank
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Rank
+     */
+    'grade'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Rank
+     */
+    'experience_needed': number;
+}
 /**
  * 
  * @export
@@ -4358,17 +4537,31 @@ export interface Stat {
     'id': string;
     /**
      * 
-     * @type {string}
+     * @type {StatEnum}
      * @memberof Stat
      */
-    'name': string;
+    'name'?: StatEnum;
     /**
      * 
      * @type {number}
      * @memberof Stat
      */
     'value': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Stat
+     */
+    'base_value': number;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof Stat
+     */
+    'dice_rolls': Array<string>;
 }
+
+
 /**
  * * `Physical Strength` - Physical Strength * `Mental Strength` - Mental Strength * `Flow Resonance` - Flow Resonance * `Concentration` - Concentration * `Flow Manipulation` - Flow Manipulation * `Flow Connection` - Flow Connection * `Knowledge` - Knowledge * `Speed` - Speed * `Luck` - Luck * `Charisma` - Charisma
  * @export
@@ -4409,6 +4602,33 @@ export interface StatModificatorRequest {
      * @memberof StatModificatorRequest
      */
     'value'?: number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface StatObject
+ */
+export interface StatObject {
+    /**
+     * 
+     * @type {StatEnum}
+     * @memberof StatObject
+     */
+    'id': StatEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof StatObject
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof StatObject
+     */
+    'description'?: string | null;
 }
 
 
@@ -4479,6 +4699,25 @@ export interface SubscribeRequest {
      * @memberof SubscribeRequest
      */
     'channel': string;
+}
+/**
+ * 
+ * @export
+ * @interface SwipeBaseStatRequest
+ */
+export interface SwipeBaseStatRequest {
+    /**
+     * The first result of the base stat generation.
+     * @type {string}
+     * @memberof SwipeBaseStatRequest
+     */
+    'from_stat': string;
+    /**
+     * The second result of the base stat generation.
+     * @type {string}
+     * @memberof SwipeBaseStatRequest
+     */
+    'to_stat': string;
 }
 /**
  * References an existing position by coordinates only.
@@ -4553,6 +4792,37 @@ export interface TeleportPositionRequest {
      * 
      * @type {string}
      * @memberof TeleportPositionRequest
+     */
+    'id': string;
+}
+/**
+ * 
+ * @export
+ * @interface ThePath
+ */
+export interface ThePath {
+    /**
+     * 
+     * @type {string}
+     * @memberof ThePath
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ThePath
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ThePath
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ThePath
      */
     'id': string;
 }
@@ -4710,6 +4980,33 @@ export const TypeBf3Enum = {
 } as const;
 
 export type TypeBf3Enum = typeof TypeBf3Enum[keyof typeof TypeBf3Enum];
+
+
+/**
+ * 
+ * @export
+ * @interface ViolationObject
+ */
+export interface ViolationObject {
+    /**
+     * 
+     * @type {ImpactViolationEnum}
+     * @memberof ViolationObject
+     */
+    'id': ImpactViolationEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof ViolationObject
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ViolationObject
+     */
+    'description'?: string | null;
+}
 
 
 /**
@@ -6433,8 +6730,86 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        characterPlayerCharacterDetailsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/player/character_details/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         characterPlayerCharacterInfoRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/character/player/character_info/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerCharacterStatsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/player/character_stats/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -6671,6 +7046,172 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/stats/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsResetBaseStatsCreate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/stats/reset_base_stats/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this stat.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('characterStatsRetrieve', 'id', id)
+            const localVarPath = `/api/character/stats/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {SwipeBaseStatRequest} swipeBaseStatRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsSwipeBaseStatCreate: async (swipeBaseStatRequest: SwipeBaseStatRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'swipeBaseStatRequest' is not null or undefined
+            assertParamExists('characterStatsSwipeBaseStatCreate', 'swipeBaseStatRequest', swipeBaseStatRequest)
+            const localVarPath = `/api/character/stats/swipe_base_stat/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(swipeBaseStatRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -6723,10 +7264,32 @@ export const CharacterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async characterPlayerCharacterDetailsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterDetailsRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterDetailsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async characterPlayerCharacterInfoRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterInfo>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterInfoRetrieve(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterInfoRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerCharacterStatsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterStats>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterStatsRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterStatsRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -6788,6 +7351,52 @@ export const CharacterApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterStatsList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DetailStat>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterStatsList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterStatsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterStatsResetBaseStatsCreate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DetailStat>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterStatsResetBaseStatsCreate(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterStatsResetBaseStatsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this stat.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterStatsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DetailStat>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterStatsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterStatsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {SwipeBaseStatRequest} swipeBaseStatRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterStatsSwipeBaseStatCreate(swipeBaseStatRequest: SwipeBaseStatRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DetailStat>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterStatsSwipeBaseStatCreate(swipeBaseStatRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterStatsSwipeBaseStatCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -6831,8 +7440,24 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        characterPlayerCharacterDetailsRetrieve(options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterPlayerCharacterDetailsRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         characterPlayerCharacterInfoRetrieve(options?: any): AxiosPromise<CharacterInfo> {
             return localVarFp.characterPlayerCharacterInfoRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerCharacterStatsRetrieve(options?: any): AxiosPromise<CharacterStats> {
+            return localVarFp.characterPlayerCharacterStatsRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6877,6 +7502,40 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
          */
         characterPlayerRetrieve(id: string, options?: any): AxiosPromise<OpenaiCharacter> {
             return localVarFp.characterPlayerRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsList(options?: any): AxiosPromise<Array<DetailStat>> {
+            return localVarFp.characterStatsList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsResetBaseStatsCreate(options?: any): AxiosPromise<Array<DetailStat>> {
+            return localVarFp.characterStatsResetBaseStatsCreate(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this stat.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsRetrieve(id: string, options?: any): AxiosPromise<DetailStat> {
+            return localVarFp.characterStatsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SwipeBaseStatRequest} swipeBaseStatRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterStatsSwipeBaseStatCreate(swipeBaseStatRequest: SwipeBaseStatRequest, options?: any): AxiosPromise<DetailStat> {
+            return localVarFp.characterStatsSwipeBaseStatCreate(swipeBaseStatRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6928,8 +7587,28 @@ export class CharacterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CharacterApi
      */
+    public characterPlayerCharacterDetailsRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerCharacterDetailsRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
     public characterPlayerCharacterInfoRetrieve(options?: RawAxiosRequestConfig) {
         return CharacterApiFp(this.configuration).characterPlayerCharacterInfoRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerCharacterStatsRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerCharacterStatsRetrieve(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6984,6 +7663,48 @@ export class CharacterApi extends BaseAPI {
      */
     public characterPlayerRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return CharacterApiFp(this.configuration).characterPlayerRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterStatsList(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterStatsList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterStatsResetBaseStatsCreate(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterStatsResetBaseStatsCreate(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id A UUID string identifying this stat.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterStatsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterStatsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SwipeBaseStatRequest} swipeBaseStatRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterStatsSwipeBaseStatCreate(swipeBaseStatRequest: SwipeBaseStatRequest, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterStatsSwipeBaseStatCreate(swipeBaseStatRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -7601,6 +8322,130 @@ export const CoreApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreStatsList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/core/stats/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CoreStatsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreStatsRetrieve: async (id: CoreStatsRetrieveIdEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('coreStatsRetrieve', 'id', id)
+            const localVarPath = `/api/core/stats/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreViolationsList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/core/violations/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CoreViolationsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreViolationsRetrieve: async (id: CoreViolationsRetrieveIdEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('coreViolationsRetrieve', 'id', id)
+            const localVarPath = `/api/core/violations/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -7622,6 +8467,52 @@ export const CoreApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['CoreApi.coreCharacterStatsList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async coreStatsList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<StatObject>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.coreStatsList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CoreApi.coreStatsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CoreStatsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async coreStatsRetrieve(id: CoreStatsRetrieveIdEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StatObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.coreStatsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CoreApi.coreStatsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async coreViolationsList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ViolationObject>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.coreViolationsList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CoreApi.coreViolationsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CoreViolationsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async coreViolationsRetrieve(id: CoreViolationsRetrieveIdEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ViolationObject>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.coreViolationsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CoreApi.coreViolationsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -7639,6 +8530,40 @@ export const CoreApiFactory = function (configuration?: Configuration, basePath?
          */
         coreCharacterStatsList(options?: any): AxiosPromise<Array<CharacterStat>> {
             return localVarFp.coreCharacterStatsList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreStatsList(options?: any): AxiosPromise<Array<StatObject>> {
+            return localVarFp.coreStatsList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CoreStatsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreStatsRetrieve(id: CoreStatsRetrieveIdEnum, options?: any): AxiosPromise<StatObject> {
+            return localVarFp.coreStatsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreViolationsList(options?: any): AxiosPromise<Array<ViolationObject>> {
+            return localVarFp.coreViolationsList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CoreViolationsRetrieveIdEnum} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreViolationsRetrieve(id: CoreViolationsRetrieveIdEnum, options?: any): AxiosPromise<ViolationObject> {
+            return localVarFp.coreViolationsRetrieve(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7659,8 +8584,80 @@ export class CoreApi extends BaseAPI {
     public coreCharacterStatsList(options?: RawAxiosRequestConfig) {
         return CoreApiFp(this.configuration).coreCharacterStatsList(options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoreApi
+     */
+    public coreStatsList(options?: RawAxiosRequestConfig) {
+        return CoreApiFp(this.configuration).coreStatsList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CoreStatsRetrieveIdEnum} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoreApi
+     */
+    public coreStatsRetrieve(id: CoreStatsRetrieveIdEnum, options?: RawAxiosRequestConfig) {
+        return CoreApiFp(this.configuration).coreStatsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoreApi
+     */
+    public coreViolationsList(options?: RawAxiosRequestConfig) {
+        return CoreApiFp(this.configuration).coreViolationsList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CoreViolationsRetrieveIdEnum} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoreApi
+     */
+    public coreViolationsRetrieve(id: CoreViolationsRetrieveIdEnum, options?: RawAxiosRequestConfig) {
+        return CoreApiFp(this.configuration).coreViolationsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
+/**
+ * @export
+ */
+export const CoreStatsRetrieveIdEnum = {
+    PhysicalStrength: 'Physical Strength',
+    MentalStrength: 'Mental Strength',
+    FlowResonance: 'Flow Resonance',
+    Concentration: 'Concentration',
+    FlowManipulation: 'Flow Manipulation',
+    FlowConnection: 'Flow Connection',
+    Knowledge: 'Knowledge',
+    Speed: 'Speed',
+    Luck: 'Luck',
+    Charisma: 'Charisma'
+} as const;
+export type CoreStatsRetrieveIdEnum = typeof CoreStatsRetrieveIdEnum[keyof typeof CoreStatsRetrieveIdEnum];
+/**
+ * @export
+ */
+export const CoreViolationsRetrieveIdEnum = {
+    Physical: 'Physical',
+    Mental: 'Mental',
+    Energy: 'Energy',
+    Heat: 'Heat',
+    Cold: 'Cold',
+    Light: 'Light',
+    Darkness: 'Darkness',
+    None: 'None'
+} as const;
+export type CoreViolationsRetrieveIdEnum = typeof CoreViolationsRetrieveIdEnum[keyof typeof CoreViolationsRetrieveIdEnum];
 
 
 /**
@@ -11429,7 +12426,7 @@ export const SchoolApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async schoolPathsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiPath>> {
+        async schoolPathsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiPathWithSchools>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.schoolPathsRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SchoolApi.schoolPathsRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -11562,7 +12559,7 @@ export const SchoolApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        schoolPathsRetrieve(id: string, options?: any): AxiosPromise<OpenaiPath> {
+        schoolPathsRetrieve(id: string, options?: any): AxiosPromise<OpenaiPathWithSchools> {
             return localVarFp.schoolPathsRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**

@@ -121,18 +121,18 @@ export default {
             }
           }
         },
-        {
-          label: "Stats",
-          component: ActionPointAllocator,
-          data: {
-            currentPlayerStats: this.playerData?.data.stats,
-            stats: this.availableStats,
-            totalPoints: this.playerData?.validation.max_stats_points_count || 100,
-            setPlayerStats: (stats) => {
-              this.playerData.data.stats = stats;
-            },
-          }
-        },
+        // {
+        //   label: "Stats",
+        //   component: ActionPointAllocator,
+        //   data: {
+        //     currentPlayerStats: this.playerData?.data.stats,
+        //     stats: this.availableStats,
+        //     totalPoints: this.playerData?.validation.max_stats_points_count || 100,
+        //     setPlayerStats: (stats) => {
+        //       this.playerData.data.stats = stats;
+        //     },
+        //   }
+        // },
         {
           label: "School & Spells",
           component: SchoolAndSpellSelector,
@@ -244,8 +244,7 @@ export default {
       console.log("Character Creation Finished", this.steps.map(step => step.data));
       try {
         await this.submitCharacter();
-        await this.getPlayerTemplate();
-        this.currentStep = 0;
+        this.$router.push({name: 'CharacterInfo'})
       } catch (error) {
         console.error(error);
       }
@@ -269,7 +268,7 @@ export default {
       this.availableSchools = (await SchoolGameApi.schoolSchoolsGetAllSchoolsRetrieve()).data;
     },
     async submitCharacter() {
-      await CharacterGameApi.characterImportCharacterCreate(this.playerData.data);
+      await CharacterGameApi.characterPlayerImportCharacterCreate(this.playerData.data);
     }
   },
 };
