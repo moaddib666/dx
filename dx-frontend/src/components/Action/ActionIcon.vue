@@ -29,6 +29,10 @@
 export default {
   name: "SkillIcon",
   props: {
+    fade: {
+      type: Boolean,
+      default: false
+    },
     skill: {
       type: Object,
       required: true
@@ -49,7 +53,7 @@ export default {
       return this.skill.icon || null;
     },
     typeClass() {
-      return `skill-${this.type}`;
+      return `skill-${this.type}` + (this.fade ? " fade" : "");
     },
     typeIcon() {
       const icons = {
@@ -216,5 +220,10 @@ export default {
   position: absolute;
   bottom: 0.1rem;
 
+}
+
+.fade {
+  filter: grayscale(100%);
+  opacity: 0.5;
 }
 </style>

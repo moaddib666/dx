@@ -47,7 +47,7 @@
               :class="['spell-item', { disabled: spell.grade < playerRank, selected: selectedSpells.includes(spell.id) }]"
               @click="spell.grade < playerRank ? null : toggleSpell(spell.id)"
           >
-            <SkillIcon :skill="spell"/>
+            <SkillIcon :skill="spell" :fade="spell.grade < playerRank"/>
             <!--            <span>{{ spell.name }}</span>-->
             <!--            <div-->
             <!--                class="spell-hover"-->
@@ -133,7 +133,9 @@ export default {
   computed: {
     filteredSchools() {
       // Filters schools by the chosen path
-      return this.schools.filter((school) => school.path.includes(this.chosenPath));
+      return this.schools.filter(
+          (school) => school.path.includes(this.chosenPath) && !school.is_base
+      );
     },
     selectedSchoolsDetails() {
       // Returns details of selected schools

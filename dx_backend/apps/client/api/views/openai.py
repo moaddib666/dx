@@ -11,7 +11,11 @@ class OpenAIClientManagementViewSet(viewsets.ModelViewSet):
     serializer_class = OpenAIClientManagementSerializer
     permission_classes = [permissions.IsAdminUser]
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny], serializer_class=RegistrationFormSerializer)
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.AllowAny],
+            serializer_class=RegistrationFormSerializer,
+            authentication_classes=[],
+            )
     def register_local_client(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

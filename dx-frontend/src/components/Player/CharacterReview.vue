@@ -34,15 +34,15 @@
             </ul>
           </div>
 
-          <!-- Stats -->
-          <div class="stats-section">
-            <h3>Stats</h3>
-            <ul>
-              <li v-for="stat in stats" :key="stat.name">
-                <strong>{{ stat.name }}</strong>: {{ stat.value }}
-              </li>
-            </ul>
-          </div>
+<!--          &lt;!&ndash; Stats &ndash;&gt;-->
+<!--          <div class="stats-section">-->
+<!--            <h3>Stats</h3>-->
+<!--            <ul>-->
+<!--              <li v-for="stat in stats" :key="stat.name">-->
+<!--                <strong>{{ stat.name }}</strong>: {{ stat.value }}-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </div>-->
 
           <!-- Spells -->
           <div class="spells-section">
@@ -117,8 +117,8 @@ export default {
         if (!this.character.path)
           this.validationErrors.push("Character path is not selected.");
         if (this.character.rank === undefined) this.validationErrors.push("Character rank is missing.");
-        if (!this.character.modificators || this.character.modificators.length === 0)
-          this.validationErrors.push("No modificators selected.");
+        // if (!this.character.modificators || this.character.modificators.length === 0)
+        //   this.validationErrors.push("No modificators selected.");
         if (!this.character.stats || this.character.stats.length === 0)
           this.validationErrors.push("No stats allocated.");
         if (!this.character.spells || this.character.spells.length === 0)

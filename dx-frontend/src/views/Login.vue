@@ -43,7 +43,7 @@ export default {
 
         const { access, refresh } = response.data;
         this.$store.dispatch("login", { token: access });
-        this.$router.push({ name: "CharacterSubmit" });
+        this.$router.push({ name: "Characters" });
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.errorMessage = "Invalid email or password.";
