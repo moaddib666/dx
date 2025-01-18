@@ -42,6 +42,7 @@ export default createStore({
       }
       return false;
     },
+    getAuthToken: state => state.token,
   },
   modules: {}
 });
