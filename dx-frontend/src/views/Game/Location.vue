@@ -261,7 +261,6 @@ export default {
     },
     async openActionConstructor() {
       await this.hideAll();
-      await this.selectSelf();
       this.actionConstructorVisible = true;
       console.debug("Opening action constructor", this.selectedGameObjectId);
     },
