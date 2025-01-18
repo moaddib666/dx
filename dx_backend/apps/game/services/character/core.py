@@ -1,6 +1,8 @@
+import functools
 import logging
 import uuid
 from datetime import timedelta
+from functools import partial
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
@@ -13,6 +15,7 @@ from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder,
     ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
+from apps.game.services.rand_dice import DiceService
 from apps.school.models import Skill
 from apps.shields.models import ActiveShield
 
@@ -22,6 +25,9 @@ class CharacterService:
 
     def __init__(self, character: Character):
         self.character = character
+
+    def get_dice_service(self) -> partial[DiceService]:
+        return functools.partial(DiceService, self.character, self.get_stat(CharacterStats.LUCK))
 
     @property
     def model(self):

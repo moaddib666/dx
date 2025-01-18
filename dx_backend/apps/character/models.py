@@ -1,7 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from apps.core.models import CharacterStats, GenderEnum, GameObject
+from apps.core.models import CharacterStats, GenderEnum, GameObject, BehaviorModel
 from apps.core.utils.models import BaseModel
 
 
@@ -63,10 +63,7 @@ class Character(GameObject):
 
     #
     npc = models.BooleanField(default=False)
-    # FIXME: implement migration moved to GameObject
-    # campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
-    # position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
-    #                              related_name='characters')
+    behavior = models.CharField(max_length=20, choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE, db_index=True)
 
     last_safe_position = models.ForeignKey('world.Position', on_delete=models.SET_NULL, null=True, blank=True,
                                            related_name='characters_in_safe')

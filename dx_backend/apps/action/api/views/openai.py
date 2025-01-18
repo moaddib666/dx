@@ -73,8 +73,7 @@ class CharacterActionsViewSet(
     @transaction.atomic
     def next_cycle(self, request):
         svc = self.cycle_player_factory(cycle=Cycle.objects.current(), factory=self.action_factory)
-        svc.play()
-        cycle = Cycle.objects.next()
+        cycle = svc.play()
         return Response(data={'id': cycle.id})
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])

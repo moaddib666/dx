@@ -1,4 +1,5 @@
 import typing
+from functools import partial
 
 from django.db.models import QuerySet
 
@@ -6,9 +7,12 @@ from apps.action.models import Cycle
 from apps.character.models import Character
 from apps.core.models import EffectType
 from apps.shields.models import ActiveShield
+from .accept import ActionAcceptor
 from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
+from .npc_action_scheduler import NpcActionScheduler
 from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
+from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
 
 if typing.TYPE_CHECKING:
@@ -30,18 +34,26 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.effects_apply_factory = effects_apply_factory
         self.effects_manager_factory = effects_manager_factory
         self.base_stats_applier = BaseStatChangesApplier()
+        self.npc_actions_scheduler = NpcActionScheduler(
+            BehaviorFactory(
+                actions_acceptor=partial(ActionAcceptor, factory=factory)
+            )
+        )
 
     def prepare(self):
         self.base_stats_applier.apply()
+        self.npc_actions_scheduler.schedule_actions()
 
     def post(self):
         self.update_characters()
         self.active_shields_cls(self.get_active_shields()).decrease_cycles()
 
-    def play(self):
-        self.prepare()
+    def play(self) -> Cycle:
         self._play()
         self.post()
+        next_cycle = Cycle.objects.next()
+        self.prepare()
+        return next_cycle
 
     def _play(self):
         self.apply_effects()
@@ -51,7 +63,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         for action in self.get_actions():
             try:
                 action_service = self.factory.from_action(action)
-                action_service.check(action)
+                action_service.check(action) # FIXME: it looks like the dead chars perform actions after death
                 action_service.perform(action)
                 action.perform()
                 self.notify_svc.notify(action)
@@ -86,7 +98,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
 
     def get_actions(self) -> QuerySet:
-        return self.cycle.actions.filter(performed=False).order_by(
+        return self.cycle.actions.filter(performed=False, accepted=True).order_by(
             "order"
         ).select_related("initiator", "skill", "item", "position")
 

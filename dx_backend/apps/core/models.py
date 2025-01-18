@@ -471,3 +471,9 @@ class ViolationObject(DjangoBaseModel, PolymorphicModel):
     id = django_models.CharField(choices=ImpactViolationType.choices(), max_length=100, primary_key=True)
     icon = django_models.ImageField(upload_to='icons/violation/', null=True, blank=True)
     description = django_models.TextField(null=True, blank=True)
+
+
+class BehaviorModel(DjangoChoicesMixin, StrEnum):
+    PASSIVE = "Passive"  # Disabled NPC Interaction
+    AGGRESSIVE = "Aggressive"  # Attack when in range
+    FRIENDLY = "Friendly"  # Help when in range
