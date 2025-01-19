@@ -61,14 +61,17 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
     def apply_actions(self):
         for action in self.get_actions():
-            try:
-                action_service = self.factory.from_action(action)
-                action_service.check(action) # FIXME: it looks like the dead chars perform actions after death
-                action_service.perform(action)
-                action.perform()
-                self.notify_svc.notify(action)
-            except Exception as e:
-                self.notify_svc.notify(action, e)
+            self.apply_single_action(action)
+
+    def apply_single_action(self, action):
+        try:
+            action_service = self.factory.from_action(action)
+            action_service.check(action)  # FIXME: it looks like the dead chars perform actions after death
+            action_service.perform(action)
+            action.perform()
+            self.notify_svc.notify(action)
+        except Exception as e:
+            self.notify_svc.notify(action, e)
 
     def apply_effects(self):
         qs = Character.objects.filter(is_active=True)

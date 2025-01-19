@@ -38,6 +38,7 @@ class Item(BaseModel):
 class WorldItem(GameObject):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     charges_left = models.PositiveIntegerField(default=1)
+    visibility = models.FloatField(default=1.0)  # 0.0 - 1.0 (0% - 100%)
 
     def __str__(self):
         return f"{self.item.name}"
@@ -47,3 +48,7 @@ class CharacterItem(BaseModel):
     character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
                                   related_name='equipped_items')
     world_item = models.ForeignKey(WorldItem, on_delete=models.CASCADE)
+
+    @property
+    def visibility(self) -> float:
+        return self.world_item.visibility

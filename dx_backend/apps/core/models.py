@@ -1,7 +1,7 @@
 import datetime
 import uuid
 from enum import StrEnum
-from typing import Optional
+from typing import Optional, List
 
 from polymorphic.models import PolymorphicModel
 from pydantic import BaseModel
@@ -35,9 +35,21 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     REJECT_DUEL_INVITATION = "REJECT_DUEL_INVITATION"
     START_FIGHT = "START_FIGHT"
     MOVE = "MOVE"
-    BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
     DICE_ROLL = "DICE_ROLL"
+
+    # SPECIAL ACTIONS
     LONG_REST = "LONG_REST"
+    BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
+    INSPECT = "INSPECT"
+    SNATCH = "SNATCH_ITEM"
+
+
+class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
+    INSPECT = "INSPECT"
+    SNATCH = "SNATCH_ITEM"
+    # BUY_ITEM = "BUY_ITEM"
+    LONG_REST = "LONG_REST"
+    BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
 
 
 class ItemType(DjangoChoicesMixin, StrEnum):
@@ -196,8 +208,8 @@ class AttributeType(DjangoChoicesMixin, StrEnum):
 
 class AttributeHolder(BaseModel):
     name: AttributeType
-    current: int
-    max: int
+    current: Optional[int]
+    max: Optional[int]
 
 
 class BriefCharacterInfo(BaseModel):
@@ -206,6 +218,36 @@ class BriefCharacterInfo(BaseModel):
     attributes: list[AttributeHolder]
     dimension: int
     rank_grade: int
+
+
+class CharacterInspectInfo(BaseModel):
+    id: uuid.UUID
+    name: str
+    attributes: list[AttributeHolder]
+    dimension: int
+    rank_grade: Optional[int]
+    path: Optional[uuid.UUID]
+
+    def model_dump(self, **kwargs):
+        data = super().model_dump(**kwargs)
+        data["id"] = str(data["id"])
+        data["path"] = str(data["path"])
+        return data
+
+
+class SnatchResult(BaseModel):
+    target: uuid.UUID
+    success: bool
+    discovered: List[uuid.UUID]
+    snatched: List[uuid.UUID]
+
+
+class MultipleSnatchResult(BaseModel):
+    targets: List[SnatchResult]
+
+
+class MultipleCharacterInspectInfo(BaseModel):
+    characters: list[CharacterInspectInfo]
 
 
 class DimensionInfo(BaseModel):

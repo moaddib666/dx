@@ -41,20 +41,36 @@ class CharacterService:
             update_fields=['current_health_points', 'current_active_points', 'current_energy_points', 'updated_at']
         )
 
+    def spend_attribute(self, name: AttributeType | str, amount: int):
+        if name == AttributeType.HEALTH:
+            self.spend_hp(amount)
+        elif name == AttributeType.ENERGY:
+            self.spend_energy(amount)
+        elif name == AttributeType.ACTION_POINTS:
+            self.spend_ap(amount)
+        else:
+            raise GameLogicException(f"Unknown attribute {name}")
+
     def spend_all_ap(self):
         self.character.current_active_points = 0
         self.character.save(update_fields=['current_active_points'])
 
     def spend_ap(self, amount: int):
         self.character.current_active_points -= amount
+        if self.character.current_active_points < 0:
+            self.character.current_active_points = 0
         self.character.save(update_fields=['current_active_points'])
 
     def spend_energy(self, amount: int):
         self.character.current_energy_points -= amount
+        if self.character.current_energy_points < 0:
+            self.character.current_energy_points = 0
         self.character.save(update_fields=['current_energy_points'])
 
     def spend_hp(self, amount: int):
         self.character.current_health_points -= amount
+        if self.character.current_health_points < 0:
+            self.character.current_health_points = 0
         self.character.save(update_fields=['current_health_points'])
 
     def add_hp(self, amount: int):
@@ -228,6 +244,9 @@ class CharacterService:
             return AttributeHolder(name=name, current=self.character.current_active_points, max=self.get_max_ap())
         raise GameLogicException(f"Unknown attribute {name}")
 
+    def get_attribute_value(self, name: AttributeType | str) -> int:
+        return self.get_attribute(name).current
+
     def get_brief_info(self) -> BriefCharacterInfo:
         return BriefCharacterInfo(
             id=self.character.id,
@@ -265,3 +284,11 @@ class CharacterService:
 
     def is_in_safe_place(self) -> bool:
         return self.character.position.is_safe
+
+    def not_alone(self) -> bool:
+        return Character.objects.filter(position=self.character.position, is_active=True).exclude(
+            id=self.character.id).exists()
+
+    @property
+    def rank_grade(self) -> int:
+        return self.character.rank.grade

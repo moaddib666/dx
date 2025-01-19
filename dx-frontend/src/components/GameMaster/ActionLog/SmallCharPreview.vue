@@ -18,7 +18,12 @@ export default {
     gmMode: Boolean,
   },
   async created() {
+    this.info = await CharacterInfoGameService.getCharacterInfo(this.char.id, this.gmMode);
     this.avatarLink = await CharacterInfoGameService.getAvatarUrl(this.char.id, this.gmMode) || this.placeholder;
+    if (this.info) {
+      this.char.name = this.info.name;
+      this.char.npc = this.info.npc;
+    }
   },
   computed: {},
   data() {

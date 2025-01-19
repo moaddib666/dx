@@ -96,12 +96,12 @@ export interface ActionModel {
 
 
 /**
- * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `DICE_ROLL` - DICE_ROLL * `LONG_REST` - LONG_REST
+ * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `DICE_ROLL` - DICE_ROLL * `LONG_REST` - LONG_REST * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `INSPECT` - INSPECT * `SNATCH_ITEM` - SNATCH_ITEM
  * @export
  * @enum {string}
  */
 
-export const ActionTypeEnum = {
+export const ActionType0a7Enum = {
     UseSkill: 'USE_SKILL',
     UseItem: 'USE_ITEM',
     DimensionShift: 'DIMENSION_SHIFT',
@@ -112,12 +112,14 @@ export const ActionTypeEnum = {
     RejectDuelInvitation: 'REJECT_DUEL_INVITATION',
     StartFight: 'START_FIGHT',
     Move: 'MOVE',
-    BackToSafeZone: 'BACK_TO_SAFE_ZONE',
     DiceRoll: 'DICE_ROLL',
-    LongRest: 'LONG_REST'
+    LongRest: 'LONG_REST',
+    BackToSafeZone: 'BACK_TO_SAFE_ZONE',
+    Inspect: 'INSPECT',
+    SnatchItem: 'SNATCH_ITEM'
 } as const;
 
-export type ActionTypeEnum = typeof ActionTypeEnum[keyof typeof ActionTypeEnum];
+export type ActionType0a7Enum = typeof ActionType0a7Enum[keyof typeof ActionType0a7Enum];
 
 
 /**
@@ -366,13 +368,13 @@ export interface AttributeHolder {
      * @type {number}
      * @memberof AttributeHolder
      */
-    'current': number;
+    'current': number | null;
     /**
      * 
      * @type {number}
      * @memberof AttributeHolder
      */
-    'max': number;
+    'max': number | null;
 }
 
 
@@ -389,6 +391,21 @@ export const AttributeType = {
 } as const;
 
 export type AttributeType = typeof AttributeType[keyof typeof AttributeType];
+
+
+/**
+ * * `Passive` - Passive * `Aggressive` - Aggressive * `Friendly` - Friendly
+ * @export
+ * @enum {string}
+ */
+
+export const BehaviorEnum = {
+    Passive: 'Passive',
+    Aggressive: 'Aggressive',
+    Friendly: 'Friendly'
+} as const;
+
+export type BehaviorEnum = typeof BehaviorEnum[keyof typeof BehaviorEnum];
 
 
 /**
@@ -450,10 +467,10 @@ export interface CharacterAction {
     'targets'?: Array<string>;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof CharacterAction
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -507,10 +524,10 @@ export interface CharacterActionLog {
     'targets': Array<Nested>;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof CharacterActionLog
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {Nested}
@@ -564,10 +581,10 @@ export interface CharacterActionLog {
 export interface CharacterActionLogRequest {
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof CharacterActionLogRequest
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {any}
@@ -603,10 +620,10 @@ export interface CharacterActionRequest {
     'targets'?: Array<string>;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof CharacterActionRequest
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -651,9 +668,11 @@ export const CharacterActionType = {
     RejectDuelInvitation: 'REJECT_DUEL_INVITATION',
     StartFight: 'START_FIGHT',
     Move: 'MOVE',
-    BackToSafeZone: 'BACK_TO_SAFE_ZONE',
     DiceRoll: 'DICE_ROLL',
-    LongRest: 'LONG_REST'
+    LongRest: 'LONG_REST',
+    BackToSafeZone: 'BACK_TO_SAFE_ZONE',
+    Inspect: 'INSPECT',
+    SnatchItem: 'SNATCH_ITEM'
 } as const;
 
 export type CharacterActionType = typeof CharacterActionType[keyof typeof CharacterActionType];
@@ -1702,13 +1721,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -1733,13 +1752,13 @@ export interface DetailStat {
      * @type {number}
      * @memberof DetailStat
      */
-    'value': number;
+    'additional_value'?: number;
     /**
      * 
      * @type {number}
      * @memberof DetailStat
      */
-    'base_value': number;
+    'base_value'?: number;
     /**
      * 
      * @type {string}
@@ -2202,10 +2221,16 @@ export interface FightTurnAction {
     'data'?: any;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {boolean}
      * @memberof FightTurnAction
      */
-    'action_type'?: ActionTypeEnum;
+    'immediate'?: boolean;
+    /**
+     * 
+     * @type {ActionType0a7Enum}
+     * @memberof FightTurnAction
+     */
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -2289,10 +2314,16 @@ export interface FightTurnActionRequest {
     'data'?: any;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {boolean}
      * @memberof FightTurnActionRequest
      */
-    'action_type'?: ActionTypeEnum;
+    'immediate'?: boolean;
+    /**
+     * 
+     * @type {ActionType0a7Enum}
+     * @memberof FightTurnActionRequest
+     */
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -2491,10 +2522,10 @@ export interface GameMasterCharacterAction {
     'targets'?: Array<string>;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof GameMasterCharacterAction
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -2542,10 +2573,10 @@ export interface GameMasterCharacterActionRequest {
     'targets'?: Array<string>;
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof GameMasterCharacterActionRequest
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {number}
@@ -3103,6 +3134,12 @@ export interface Nested {
     'npc'?: boolean;
     /**
      * 
+     * @type {BehaviorEnum}
+     * @memberof Nested
+     */
+    'behavior'?: BehaviorEnum;
+    /**
+     * 
      * @type {boolean}
      * @memberof Nested
      */
@@ -3174,6 +3211,8 @@ export interface Nested {
      */
     'last_safe_position'?: string | null;
 }
+
+
 /**
  * 
  * @export
@@ -3242,6 +3281,12 @@ export interface NestedRequest {
     'npc'?: boolean;
     /**
      * 
+     * @type {BehaviorEnum}
+     * @memberof NestedRequest
+     */
+    'behavior'?: BehaviorEnum;
+    /**
+     * 
      * @type {boolean}
      * @memberof NestedRequest
      */
@@ -3307,6 +3352,8 @@ export interface NestedRequest {
      */
     'last_safe_position'?: string | null;
 }
+
+
 /**
  * 
  * @export
@@ -3533,6 +3580,12 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'resetting_base_stats'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OpenaiCharacter
+     */
+    'is_active'?: boolean;
 }
 /**
  * 
@@ -3989,10 +4042,10 @@ export interface PaginatedLearnedSkillList {
 export interface PatchedCharacterActionLogRequest {
     /**
      * 
-     * @type {ActionTypeEnum}
+     * @type {ActionType0a7Enum}
      * @memberof PatchedCharacterActionLogRequest
      */
-    'action_type'?: ActionTypeEnum;
+    'action_type'?: ActionType0a7Enum;
     /**
      * 
      * @type {any}
@@ -4039,63 +4092,6 @@ export interface PatchedCurrencyTokenRequest {
      */
     'icon'?: File | null;
 }
-/**
- * 
- * @export
- * @interface PatchedItemRequest
- */
-export interface PatchedItemRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchedItemRequest
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchedItemRequest
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {File}
-     * @memberof PatchedItemRequest
-     */
-    'icon'?: File | null;
-    /**
-     * 
-     * @type {ItemTypeEnum}
-     * @memberof PatchedItemRequest
-     */
-    'type'?: ItemTypeEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedItemRequest
-     */
-    'charges'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedItemRequest
-     */
-    'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedItemRequest
-     */
-    'visibility'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedItemRequest
-     */
-    'base_price'?: number;
-}
-
-
 /**
  * 
  * @export
@@ -4187,6 +4183,55 @@ export interface PatchedOpenAIClientManagementRequest {
      * @memberof PatchedOpenAIClientManagementRequest
      */
     'user_permissions'?: Array<number>;
+}
+/**
+ * 
+ * @export
+ * @interface PatchedWorldItemRequest
+ */
+export interface PatchedWorldItemRequest {
+    /**
+     * 
+     * @type {ItemRequest}
+     * @memberof PatchedWorldItemRequest
+     */
+    'item'?: ItemRequest;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedWorldItemRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedWorldItemRequest
+     */
+    'charges_left'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedWorldItemRequest
+     */
+    'visibility'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedWorldItemRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedWorldItemRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedWorldItemRequest
+     */
+    'campaign'?: string | null;
 }
 /**
  * 
@@ -4495,6 +4540,73 @@ export interface Shield {
 /**
  * 
  * @export
+ * @interface SpecialAction
+ */
+export interface SpecialAction {
+    /**
+     * 
+     * @type {SpecialActionActionTypeEnum}
+     * @memberof SpecialAction
+     */
+    'action_type': SpecialActionActionTypeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpecialAction
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpecialAction
+     */
+    'description': string;
+    /**
+     * If true, the action will be performed immediately
+     * @type {boolean}
+     * @memberof SpecialAction
+     */
+    'immediate'?: boolean;
+    /**
+     * If true, the action will spend all remaining action points
+     * @type {boolean}
+     * @memberof SpecialAction
+     */
+    'final'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpecialAction
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {any}
+     * @memberof SpecialAction
+     */
+    'cost'?: any;
+}
+
+
+/**
+ * * `INSPECT` - INSPECT * `SNATCH_ITEM` - SNATCH_ITEM * `LONG_REST` - LONG_REST * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE
+ * @export
+ * @enum {string}
+ */
+
+export const SpecialActionActionTypeEnum = {
+    Inspect: 'INSPECT',
+    SnatchItem: 'SNATCH_ITEM',
+    LongRest: 'LONG_REST',
+    BackToSafeZone: 'BACK_TO_SAFE_ZONE'
+} as const;
+
+export type SpecialActionActionTypeEnum = typeof SpecialActionActionTypeEnum[keyof typeof SpecialActionActionTypeEnum];
+
+
+/**
+ * 
+ * @export
  * @interface Spell
  */
 export interface Spell {
@@ -4546,13 +4658,13 @@ export interface Stat {
      * @type {number}
      * @memberof Stat
      */
-    'value': number;
+    'additional_value'?: number;
     /**
      * 
      * @type {number}
      * @memberof Stat
      */
-    'base_value': number;
+    'base_value'?: number;
     /**
      * 
      * @type {Array<string>}
@@ -5041,6 +5153,12 @@ export interface WorldItem {
     'charges_left'?: number;
     /**
      * 
+     * @type {number}
+     * @memberof WorldItem
+     */
+    'visibility'?: number;
+    /**
+     * 
      * @type {string}
      * @memberof WorldItem
      */
@@ -5055,6 +5173,55 @@ export interface WorldItem {
      * 
      * @type {string}
      * @memberof WorldItem
+     */
+    'campaign'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface WorldItemRequest
+ */
+export interface WorldItemRequest {
+    /**
+     * 
+     * @type {ItemRequest}
+     * @memberof WorldItemRequest
+     */
+    'item': ItemRequest;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof WorldItemRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldItemRequest
+     */
+    'charges_left'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldItemRequest
+     */
+    'visibility'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldItemRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldItemRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldItemRequest
      */
     'campaign'?: string | null;
 }
@@ -5646,6 +5813,127 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialAvailableRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/action/special/available/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/action/special/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialRetrieve: async (actionType: ActionSpecialRetrieveActionTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'actionType' is not null or undefined
+            assertParamExists('actionSpecialRetrieve', 'actionType', actionType)
+            const localVarPath = `/api/action/special/{action_type}/`
+                .replace(`{${"action_type"}}`, encodeURIComponent(String(actionType)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -5815,6 +6103,40 @@ export const ActionApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['ActionApi.actionScheduledActionsRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async actionSpecialAvailableRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpecialAction>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.actionSpecialAvailableRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ActionApi.actionSpecialAvailableRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async actionSpecialList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SpecialAction>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.actionSpecialList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ActionApi.actionSpecialList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async actionSpecialRetrieve(actionType: ActionSpecialRetrieveActionTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpecialAction>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.actionSpecialRetrieve(actionType, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ActionApi.actionSpecialRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -5944,6 +6266,31 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
          */
         actionScheduledActionsRetrieve(options?: any): AxiosPromise<CharacterAction> {
             return localVarFp.actionScheduledActionsRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialAvailableRetrieve(options?: any): AxiosPromise<SpecialAction> {
+            return localVarFp.actionSpecialAvailableRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialList(options?: any): AxiosPromise<Array<SpecialAction>> {
+            return localVarFp.actionSpecialList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionSpecialRetrieve(actionType: ActionSpecialRetrieveActionTypeEnum, options?: any): AxiosPromise<SpecialAction> {
+            return localVarFp.actionSpecialRetrieve(actionType, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6100,8 +6447,49 @@ export class ActionApi extends BaseAPI {
     public actionScheduledActionsRetrieve(options?: RawAxiosRequestConfig) {
         return ActionApiFp(this.configuration).actionScheduledActionsRetrieve(options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionApi
+     */
+    public actionSpecialAvailableRetrieve(options?: RawAxiosRequestConfig) {
+        return ActionApiFp(this.configuration).actionSpecialAvailableRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionApi
+     */
+    public actionSpecialList(options?: RawAxiosRequestConfig) {
+        return ActionApiFp(this.configuration).actionSpecialList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionApi
+     */
+    public actionSpecialRetrieve(actionType: ActionSpecialRetrieveActionTypeEnum, options?: RawAxiosRequestConfig) {
+        return ActionApiFp(this.configuration).actionSpecialRetrieve(actionType, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
+/**
+ * @export
+ */
+export const ActionSpecialRetrieveActionTypeEnum = {
+    Inspect: 'INSPECT',
+    SnatchItem: 'SNATCH_ITEM',
+    LongRest: 'LONG_REST',
+    BackToSafeZone: 'BACK_TO_SAFE_ZONE'
+} as const;
+export type ActionSpecialRetrieveActionTypeEnum = typeof ActionSpecialRetrieveActionTypeEnum[keyof typeof ActionSpecialRetrieveActionTypeEnum];
 
 
 /**
@@ -7910,16 +8298,6 @@ export const ClientApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -10695,13 +11073,13 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {ItemRequest} itemRequest 
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldCreate: async (itemRequest: ItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'itemRequest' is not null or undefined
-            assertParamExists('itemsWorldCreate', 'itemRequest', itemRequest)
+        itemsWorldCreate: async (worldItemRequest: WorldItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'worldItemRequest' is not null or undefined
+            assertParamExists('itemsWorldCreate', 'worldItemRequest', worldItemRequest)
             const localVarPath = `/api/items/world/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -10731,7 +11109,7 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(itemRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(worldItemRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10740,7 +11118,7 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -10822,12 +11200,12 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {PatchedItemRequest} [patchedItemRequest] 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {PatchedWorldItemRequest} [patchedWorldItemRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldPartialUpdate: async (id: string, patchedItemRequest?: PatchedItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        itemsWorldPartialUpdate: async (id: string, patchedWorldItemRequest?: PatchedWorldItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('itemsWorldPartialUpdate', 'id', id)
             const localVarPath = `/api/items/world/{id}/`
@@ -10860,7 +11238,7 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(patchedItemRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedWorldItemRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10869,7 +11247,7 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -10912,16 +11290,16 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {ItemRequest} itemRequest 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldUpdate: async (id: string, itemRequest: ItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        itemsWorldUpdate: async (id: string, worldItemRequest: WorldItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('itemsWorldUpdate', 'id', id)
-            // verify required parameter 'itemRequest' is not null or undefined
-            assertParamExists('itemsWorldUpdate', 'itemRequest', itemRequest)
+            // verify required parameter 'worldItemRequest' is not null or undefined
+            assertParamExists('itemsWorldUpdate', 'worldItemRequest', worldItemRequest)
             const localVarPath = `/api/items/world/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -10952,7 +11330,7 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(itemRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(worldItemRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10994,19 +11372,19 @@ export const ItemsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {ItemRequest} itemRequest 
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemsWorldCreate(itemRequest: ItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldCreate(itemRequest, options);
+        async itemsWorldCreate(worldItemRequest: WorldItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldCreate(worldItemRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -11021,7 +11399,7 @@ export const ItemsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemsWorldList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Item>>> {
+        async itemsWorldList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<WorldItem>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldList']?.[localVarOperationServerIndex]?.url;
@@ -11029,24 +11407,24 @@ export const ItemsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {PatchedItemRequest} [patchedItemRequest] 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {PatchedWorldItemRequest} [patchedWorldItemRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemsWorldPartialUpdate(id: string, patchedItemRequest?: PatchedItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldPartialUpdate(id, patchedItemRequest, options);
+        async itemsWorldPartialUpdate(id: string, patchedWorldItemRequest?: PatchedWorldItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldPartialUpdate(id, patchedWorldItemRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldPartialUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemsWorldRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
+        async itemsWorldRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -11054,13 +11432,13 @@ export const ItemsApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {ItemRequest} itemRequest 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemsWorldUpdate(id: string, itemRequest: ItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldUpdate(id, itemRequest, options);
+        async itemsWorldUpdate(id: string, worldItemRequest: WorldItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.itemsWorldUpdate(id, worldItemRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11094,16 +11472,16 @@ export const ItemsApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
-         * @param {ItemRequest} itemRequest 
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldCreate(itemRequest: ItemRequest, options?: any): AxiosPromise<Item> {
-            return localVarFp.itemsWorldCreate(itemRequest, options).then((request) => request(axios, basePath));
+        itemsWorldCreate(worldItemRequest: WorldItemRequest, options?: any): AxiosPromise<WorldItem> {
+            return localVarFp.itemsWorldCreate(worldItemRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -11115,37 +11493,37 @@ export const ItemsApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldList(options?: any): AxiosPromise<Array<Item>> {
+        itemsWorldList(options?: any): AxiosPromise<Array<WorldItem>> {
             return localVarFp.itemsWorldList(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {PatchedItemRequest} [patchedItemRequest] 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {PatchedWorldItemRequest} [patchedWorldItemRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldPartialUpdate(id: string, patchedItemRequest?: PatchedItemRequest, options?: any): AxiosPromise<Item> {
-            return localVarFp.itemsWorldPartialUpdate(id, patchedItemRequest, options).then((request) => request(axios, basePath));
+        itemsWorldPartialUpdate(id: string, patchedWorldItemRequest?: PatchedWorldItemRequest, options?: any): AxiosPromise<WorldItem> {
+            return localVarFp.itemsWorldPartialUpdate(id, patchedWorldItemRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
+         * @param {string} id A UUID string identifying this world item.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldRetrieve(id: string, options?: any): AxiosPromise<Item> {
+        itemsWorldRetrieve(id: string, options?: any): AxiosPromise<WorldItem> {
             return localVarFp.itemsWorldRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {string} id A UUID string identifying this item.
-         * @param {ItemRequest} itemRequest 
+         * @param {string} id A UUID string identifying this world item.
+         * @param {WorldItemRequest} worldItemRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemsWorldUpdate(id: string, itemRequest: ItemRequest, options?: any): AxiosPromise<Item> {
-            return localVarFp.itemsWorldUpdate(id, itemRequest, options).then((request) => request(axios, basePath));
+        itemsWorldUpdate(id: string, worldItemRequest: WorldItemRequest, options?: any): AxiosPromise<WorldItem> {
+            return localVarFp.itemsWorldUpdate(id, worldItemRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11180,18 +11558,18 @@ export class ItemsApi extends BaseAPI {
 
     /**
      * 
-     * @param {ItemRequest} itemRequest 
+     * @param {WorldItemRequest} worldItemRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemsApi
      */
-    public itemsWorldCreate(itemRequest: ItemRequest, options?: RawAxiosRequestConfig) {
-        return ItemsApiFp(this.configuration).itemsWorldCreate(itemRequest, options).then((request) => request(this.axios, this.basePath));
+    public itemsWorldCreate(worldItemRequest: WorldItemRequest, options?: RawAxiosRequestConfig) {
+        return ItemsApiFp(this.configuration).itemsWorldCreate(worldItemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} id A UUID string identifying this item.
+     * @param {string} id A UUID string identifying this world item.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemsApi
@@ -11212,19 +11590,19 @@ export class ItemsApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} id A UUID string identifying this item.
-     * @param {PatchedItemRequest} [patchedItemRequest] 
+     * @param {string} id A UUID string identifying this world item.
+     * @param {PatchedWorldItemRequest} [patchedWorldItemRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemsApi
      */
-    public itemsWorldPartialUpdate(id: string, patchedItemRequest?: PatchedItemRequest, options?: RawAxiosRequestConfig) {
-        return ItemsApiFp(this.configuration).itemsWorldPartialUpdate(id, patchedItemRequest, options).then((request) => request(this.axios, this.basePath));
+    public itemsWorldPartialUpdate(id: string, patchedWorldItemRequest?: PatchedWorldItemRequest, options?: RawAxiosRequestConfig) {
+        return ItemsApiFp(this.configuration).itemsWorldPartialUpdate(id, patchedWorldItemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {string} id A UUID string identifying this item.
+     * @param {string} id A UUID string identifying this world item.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemsApi
@@ -11235,14 +11613,14 @@ export class ItemsApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} id A UUID string identifying this item.
-     * @param {ItemRequest} itemRequest 
+     * @param {string} id A UUID string identifying this world item.
+     * @param {WorldItemRequest} worldItemRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemsApi
      */
-    public itemsWorldUpdate(id: string, itemRequest: ItemRequest, options?: RawAxiosRequestConfig) {
-        return ItemsApiFp(this.configuration).itemsWorldUpdate(id, itemRequest, options).then((request) => request(this.axios, this.basePath));
+    public itemsWorldUpdate(id: string, worldItemRequest: WorldItemRequest, options?: RawAxiosRequestConfig) {
+        return ItemsApiFp(this.configuration).itemsWorldUpdate(id, worldItemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -263,16 +263,15 @@ export default {
 .card-holder * * {
   height: 5.5rem;
   width: 4rem;
+  font-size: 0.6rem;
 }
 
 .card-holder * * *:first-child {
-  height: 3rem;
-  width: 3rem;
-}
-
-.card-holder * * *:first-child {
-  height: 3rem;
-  width: 3rem;
+  display: flex;
+  height: 1.7rem;
+  width: 1.7rem;
+  padding: 0;
+  margin: 0;
 }
 
 .card-holder * * *:last-child {

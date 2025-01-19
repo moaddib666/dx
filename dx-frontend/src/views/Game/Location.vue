@@ -22,6 +22,7 @@
           v-if="npcCharacters.length > 0"
           :characters="npcCharacters"
           :selectedCharacterId="selectedCharacterId"
+          :additionalCharactersData="additionalCharactersData"
           class="top-right"
           @characterSelected="updateSelectedGameObjectId"
       />
@@ -61,6 +62,7 @@
         />
         <ActionConstructor v-if="isActionConstructorVisible"
                            :availableSkills="availableActions"
+                           :availableSpecials="playerSpecials"
                            :availableItems="availableItems"
                            :availableGameObjects="availableGameObjects"
                            :preSelectedTarget="selectedGameObjectId"
@@ -173,11 +175,12 @@ export default {
       actionService: new ActionService(ActionGameApi),
       playerService: null,
       playerSkills: null,
+      playerSpecials: null,
       diceResult: null,
       inventoryItems: null,
       activeEffects: [],
       shields: [],
-
+      additionalCharactersData: null,
       diceVisible: false,
       inventoryVisible: false,
       actionConstructorVisible: false,
@@ -246,6 +249,42 @@ export default {
     await this.updateAll();
   },
   methods: {
+    resetAdditionalPlayerData() {
+      this.additionalCharactersData = {};
+    },
+    updateAdditionalPlayerData(characters) {
+      console.debug("updating additional characters data", {characters});
+      if (!this.additionalCharactersData) {
+        this.additionalCharactersData = {};
+      }
+
+      // Iterate through the characters array
+      characters.forEach(character => {
+        const {id, name, attributes, dimension, rank_grade, path} = character;
+
+        // Prepare the formatted data for the character
+        const formattedData = {
+          name: name || "xx",
+          rankGrade: rank_grade !== undefined ? rank_grade : "xx",
+          dimension: dimension !== undefined ? dimension : "xx",
+          path: path || {name: "xx", icon: null},
+          attributes: {}
+        };
+
+        // Process attributes into a key-value structure
+        if (Array.isArray(attributes)) {
+          attributes.forEach(attr => {
+            formattedData.attributes[attr.name.toLowerCase()] = {
+              current: attr.current !== undefined ? attr.current : "xx",
+              max: attr.max !== undefined ? attr.max : "xx"
+            };
+          });
+        }
+
+        // Store the formatted data in resetAdditionalPlayerData
+        this.additionalCharactersData[id] = formattedData;
+      });
+    },
     async hideAll() {
       this.diceVisible = false;
       this.inventoryVisible = false;
@@ -317,20 +356,49 @@ export default {
       this.selectedGameObjectId = null;
     },
     async applyAction(action) {
-      await this.actionService.performAction(action);
-      await this.getPlayerInfo();
+      try {
+        const result = await this.actionService.performAction(action);
+        await this.getPlayerInfo();
+
+        // Ensure result is valid and handle based on action type
+        if (!result || !result.action_type) {
+          console.error("Invalid action result:", result);
+          return;
+        }
+
+        switch (result.action_type) {
+          case "INSPECT":
+            // Update additional player data if characters are present
+            if (result.data?.characters?.length) {
+              console.debug("result of inspection", {result});
+              this.updateAdditionalPlayerData(result.data.characters);
+            } else {
+              console.warn("No characters data found in INSPECT action.");
+            }
+            break;
+
+          default:
+            console.log(`Unhandled action type: ${result.action_type}`);
+            break;
+        }
+      } catch (error) {
+        console.error("Error applying action:", error);
+      }
     },
     async updateSelectedGameObjectId(id) {
       this.selectedGameObjectId = id;
       await this.openActionConstructor();
     },
     async updateAll() {
+      this.resetAdditionalPlayerData();
       await this.unsetMovement();
       await this.getCurrentPositionInfo();
       await this.getPlayerInfo();
       await this.getPlayerSkills();
       await this.getActiveEffects();
       await this.refreshShields();
+      await this.getPlayerSpecials();
+
     },
     openInfo() {
       // open window with character info
@@ -381,6 +449,9 @@ export default {
     },
     async getPlayerSkills() {
       this.playerSkills = (await SkillsGameApi.skillsSkillsList()).data;
+    },
+    async getPlayerSpecials() {
+      this.playerSpecials = (await ActionGameApi.actionSpecialAvailableRetrieve()).data;
     },
     async getActiveEffects() {
       this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;

@@ -18,6 +18,8 @@ class CharacterLongRestService(CharacterActionServicePrototype):
 
     def check_acceptance(self, action: CharacterAction):
         # Character must have action points to move at least 1 point
+
+        # TODO: reuse special action acceptance
         char_svc = self.character_svc_cls(action.initiator)
         if char_svc.get_current_ap() < 1:
             raise GameException("Not enough action points")

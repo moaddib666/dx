@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 
-from apps.items.api.serializers.openapi import CharacterItemSerializer, ItemSerializer
-from apps.items.models import CharacterItem, Item
+from apps.items.api.serializers.openapi import CharacterItemSerializer, ItemSerializer, WorldItemSerializer
+from apps.items.models import CharacterItem, Item, WorldItem
 
 
 class OpenAICharacterItemsViewSet(
@@ -22,6 +22,6 @@ class OpenAICharacterItemsViewSet(
 class WorldItemsViewSet(
     viewsets.ModelViewSet
 ):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    queryset = WorldItem.objects.all()
+    serializer_class = WorldItemSerializer
     permission_classes = [permissions.IsAdminUser]

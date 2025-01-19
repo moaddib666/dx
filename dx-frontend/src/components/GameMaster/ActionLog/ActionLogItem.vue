@@ -9,8 +9,29 @@
           <span> Move </span>
         </div>
         <div v-else-if="action.action_type === 'LONG_REST'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/long-rest.webp"/>
+          <img alt="Move" src="@/assets/images/action/long_rest.webp"/>
           <span> Long Rest </span>
+        </div>
+        <div v-else-if="action.action_type === 'SNATCH_ITEM'" class="action-icon">
+          <img alt="Move" src="@/assets/images/action/snatch.webp"/>
+          <span> Snatch </span>
+        </div>
+        <div v-else-if="action.action_type === 'INSPECT'" class="action-icon">
+          <img alt="Inspect" src="@/assets/images/action/inspect.webp"/>
+          <span> Inspect </span>
+          <div class="inspection-result" >
+            <SmallCharPreview
+                v-for="target in action.targets"
+                :key="target.id"
+                :char="target"
+                :gmMode="gmMode"
+                @select="handleSelect"
+            />
+            <InspectionResult :characters="action.data.characters" />
+
+          </div>
+
+
         </div>
         <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">
           <DiceComponent/>
@@ -46,6 +67,7 @@
             :impact="impact"
             @selectTarget="handleSelect"
         />
+        <SnatchAction  class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data" :data="target" v-for="target in action.data.targets" :key="target.id"/>
       </div>
     </div>
   </div>
@@ -57,10 +79,14 @@ import ImpactComponent from './ImpactComponent.vue';
 import SkillIcon from "@/components/Action/ActionIcon.vue";
 import ActionIconMini from "@/components/Action/ActionIconMini.vue";
 import DiceComponent from "@/components/Dice/DiceComponent.vue";
+import InspectionResult from "@/components/GameMaster/ActionLog/InspectionResult.vue";
+import SnatchAction from "@/components/GameMaster/ActionLog/SnatchAction.vue";
 
 export default {
   name: 'ActionLogItem',
   components: {
+    SnatchAction,
+    InspectionResult,
     DiceComponent,
     ActionIconMini,
     SkillIcon,
@@ -75,6 +101,9 @@ export default {
     }
   },
   methods: {
+    mapTargetById(id) {
+      return this.action.targets.find(target => target.id === id);
+    },
     handleSelect(id) {
       console.log('Selected ID:', id);
     },
@@ -173,4 +202,14 @@ h4 {
   height: 2em;
 }
 
+.inspection-result {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.snatch-action-impact {
+  display: flex;
+  flex-direction: row;
+}
 </style>

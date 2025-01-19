@@ -31,3 +31,11 @@ tr.non-current-cycle a {
     color: #666;
     text-decoration: none;
 }
+
+/* custom_admin.css */
+img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    background-color: #f9f9f9;
+}

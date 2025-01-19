@@ -14,6 +14,7 @@
           :class="{ selected: character.id === selectedCharacterId }"
           :icon="character.biography.avatar"
           :name="character.name"
+          :details="getCharDetails(character.id)"
           @click="selectCharacter(character.id)"
       />
     </div>
@@ -48,6 +49,12 @@ export default {
       type: Number,
       default: 8, // Number of visible characters at a time
     },
+    //* additionalCharactersData
+
+    additionalCharactersData: {
+      type: Object,
+      required: false,
+    }
   },
   data() {
     return {
@@ -67,6 +74,12 @@ export default {
     },
   },
   methods: {
+    getCharDetails(charId) {
+      if (this.additionalCharactersData === undefined) {
+        return
+      }
+      return this?.additionalCharactersData[charId]
+    },
     scrollLeft() {
       this.scrollIndex = Math.max(0, this.scrollIndex - this.visibleCount);
     },

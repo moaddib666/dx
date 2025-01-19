@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from apps.core.models import ImpactType, ImpactViolationType
-from ...models import CharacterAction, ActionImpact
+from ...models import CharacterAction, ActionImpact, SpecialAction
 
 
 class CharacterLogActionImpactSerializer(serializers.ModelSerializer):
@@ -74,3 +74,9 @@ class CharacterActionSerializer(serializers.ModelSerializer):
 class GameMasterCharacterActionSerializer(CharacterActionSerializer):
     class Meta(CharacterActionSerializer.Meta):
         read_only_fields = ['created_at', 'updated_at']
+
+
+class SpecialActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpecialAction
+        fields = "__all__"

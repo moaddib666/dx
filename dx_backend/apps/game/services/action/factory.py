@@ -7,15 +7,18 @@ from apps.core.models import CharacterActionType, GameMasterImpactAction, Attrib
     ImpactViolationType, CharacterStats
 from apps.fight.models import FightTurnAction
 from apps.game.exceptions import GameException
+from apps.game.services.action.back_to_safety import BackToSafeService
 from apps.game.services.action.base_service import CharacterActionServicePrototype
 from apps.game.services.action.dice import DiceRollActionService
 from apps.game.services.action.dimension_action import DimensionActionService
 from apps.game.services.action.impact import ImpactAction
+from apps.game.services.action.inspect import CharacterInspectorService
 from apps.game.services.action.long_rest import CharacterLongRestService
 from apps.game.services.action.move import CharacterActionPositionMoveService
 from apps.game.services.action.notify import ConsoleResultNotifyService
 from apps.game.services.action.player import ManualCharacterActionPlayerService
 from apps.game.services.action.skill_action import SkillActionService
+from apps.game.services.action.snatch import CharacterSnatchActionService
 from apps.game.services.action.use_item import UseItemActionService
 from apps.game.services.character.core import CharacterService
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
@@ -47,6 +50,9 @@ class CharacterActionFactory:
         CharacterActionType.USE_SKILL: ImpactAction(),
         CharacterActionType.USE_ITEM: UseItemActionService(ImpactAction()),
         CharacterActionType.LONG_REST: CharacterLongRestService(),
+        CharacterActionType.BACK_TO_SAFE_ZONE: BackToSafeService(),
+        CharacterActionType.INSPECT: CharacterInspectorService(),
+        CharacterActionType.SNATCH: CharacterSnatchActionService(),
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:

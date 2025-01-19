@@ -9,12 +9,35 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from apps.core.models import GameMasterImpactAction
+from apps.game.services.action import special
 from apps.game.services.action.accept import ActionAcceptor
 from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
     GameMasterActionFactory
+from apps.game.services.character.core import CharacterService
 from ..serializers.openapi import CharacterActionSerializer, CharacterActionLogSerializer, \
-    RegisterImpactActionSerializer, GameMasterCharacterActionSerializer
-from ...models import CharacterAction, Cycle
+    RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer
+from ...models import CharacterAction, Cycle, SpecialAction
+
+
+class SpecialActionsViewSet(
+    viewsets.ReadOnlyModelViewSet
+):
+    queryset = SpecialAction.objects.all()
+    serializer_class = SpecialActionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def available(self, request):
+        user = request.user
+        character = user.main_character
+        acceptable = []
+        factory = special.AcceptanceFactory()
+        for act in self.queryset:
+            rule = factory.from_action(act)
+            if rule.is_acceptable(CharacterService(character)):
+                acceptable.append(act)
+        serializer = self.get_serializer(acceptable, many=True, context=self.get_serializer_context())
+        return Response(data=serializer.data)
 
 
 class CharacterActionsLogViewSet(
@@ -67,6 +90,11 @@ class CharacterActionsViewSet(
             factory=self.action_factory,
         )
         acceptor.accept()
+        if instance.immediate:
+            svc = self.cycle_player_factory(cycle=Cycle.objects.current(), factory=self.action_factory)
+            svc.apply_single_action(
+                action=instance
+            )
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=serializers.Serializer)

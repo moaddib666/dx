@@ -1,7 +1,10 @@
 from django.db import models
 
-from apps.core.models import ImpactType, ImpactViolationType, CharacterActionType, RollOutcome
+from apps.core import fields
+from apps.core.models import ImpactType, ImpactViolationType, CharacterActionType, RollOutcome, \
+    CharacterSpecialActionType
 from apps.core.utils.models import BaseModel
+from apps.school.dto import Cost
 
 
 class CycleManager(models.Manager):
@@ -31,7 +34,7 @@ class CharacterAction(BaseModel):
     accepted = models.BooleanField(default=False)
     performed = models.BooleanField(default=False)
     data = models.JSONField(default=dict)
-
+    immediate = models.BooleanField(default=False)
     action_type = models.CharField(max_length=255, choices=ActionType.choices(), default=ActionType.USE_SKILL)
 
     initiator = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
@@ -71,6 +74,19 @@ class ActionImpact(BaseModel):
 
     def __str__(self):
         return f"{self.action} - {self.target.name} - {self.type}"
+
+
+class SpecialAction(models.Model):
+    action_type = models.CharField(max_length=255, choices=CharacterSpecialActionType.choices(), primary_key=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField()
+    immediate = models.BooleanField(default=False, help_text='If true, the action will be performed immediately')
+    final = models.BooleanField(default=False, help_text='If true, the action will spend all remaining action points')
+    icon = models.ImageField(upload_to='icons/specialActions', null=True, blank=True)
+    cost = fields.TypedJSONField(required_type=Cost, many=True, default=list)
+
+    def __str__(self):
+        return self.name or str(self.action_type)
 
 
 class DiceRollResult(BaseModel):

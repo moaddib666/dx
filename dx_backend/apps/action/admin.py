@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 
-from .models import Cycle, DiceRollResult
+from .models import Cycle, DiceRollResult, SpecialAction
 
 
 @admin.register(Cycle)
@@ -32,7 +32,8 @@ class ActionImpactInline(admin.TabularInline):
 
 @admin.register(CharacterAction)
 class CharacterActionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 'created_at')
+    list_display = (
+    'id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 'created_at')
     list_filter = ('accepted', 'action_type', 'cycle')  # Filter by cycle
     search_fields = ('initiator__name', 'data')
     actions = ['approve_selected_actions']
@@ -119,3 +120,58 @@ class DiceRollResultAdmin(admin.ModelAdmin):
     list_display = ('id', 'dice_side', 'multiplier', 'outcome')
     list_filter = ('outcome',)
     search_fields = ('outcome',)
+
+
+@admin.register(SpecialAction)
+class SpecialActionAdmin(admin.ModelAdmin):
+    list_display = ('action_type', 'final', 'immediate', 'icon_preview',)
+    list_filter = ('immediate', 'final')
+    search_fields = ('action_type', 'description')
+    readonly_fields = ('icon_preview', 'formatted_cost')  # Preview and formatted cost in detail view
+
+    def icon_preview(self, obj):
+        """
+        Display a thumbnail preview of the icon.
+        """
+        if obj.icon:
+            return format_html(
+                '<img src="{}" style="max-height: 50px; max-width: 50px;" />',
+                obj.icon.url
+            )
+        return "No Icon"
+
+    icon_preview.short_description = "Icon Preview"
+
+    def formatted_cost(self, obj):
+        """
+        Display the cost in a readable format.
+        """
+        if not obj.cost:
+            return "No Cost"
+        return format_html(
+            '<ul>{}</ul>',
+            ''.join(f'<li>{cost["kind"]}: {cost["value"]}</li>' for cost in obj.cost)
+        )
+
+    formatted_cost.short_description = "Cost"
+
+    def get_fieldsets(self, request, obj=None):
+        """
+        Organize the fields for better UX.
+        """
+        fieldsets = [
+            (None, {
+                'fields': (
+                'action_type', 'name', 'description', 'immediate', 'final', 'cost', 'formatted_cost', 'icon',
+                'icon_preview'),
+            }),
+        ]
+        return fieldsets
+
+    class Media:
+        """
+        Add any custom CSS or JS for enhanced UI/UX.
+        """
+        css = {
+            'all': ('admin/custom_admin.css',),
+        }

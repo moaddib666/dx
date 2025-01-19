@@ -36,6 +36,7 @@
       <SpecialSelector
           v-if="currentTab === 'specialSelector'"
           :isSafe="isSafe"
+          :special-actions="availableSpecials"
           @special-selected="updateSelectedSpecial"
       ></SpecialSelector>
     </div>
@@ -106,6 +107,10 @@ export default {
       type: Array,
       required: true,
     },
+    availableSpecials: {
+      type: Array,
+      required: true,
+    },
     preSelectedTarget: {
       type: String,
       default: null,
@@ -137,6 +142,7 @@ export default {
     reset() {
       this.selectedSkill = null;
       this.selectedItem = null;
+      this.selectedSpecial = null;
     },
     applyAction() {
       if (!(this.selectedSkill || this.selectedItem || this.selectedSpecial) || !this.selectedGameObjectId) return;
