@@ -16,6 +16,10 @@
           <img alt="Move" src="@/assets/images/action/snatch.webp"/>
           <span> Snatch </span>
         </div>
+        <div v-else-if="action.action_type === 'BACK_TO_SAFE_ZONE'" class="action-icon">
+          <img alt="Move" src="@/assets/images/action/safe.webp"/>
+          <span> Teleport To Safety </span>
+        </div>
         <div v-else-if="action.action_type === 'INSPECT'" class="action-icon">
           <img alt="Inspect" src="@/assets/images/action/inspect.webp"/>
           <span> Inspect </span>
