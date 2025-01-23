@@ -18,7 +18,7 @@
               :x2="vLine.x"
               :y1="vLine.y1"
               :y2="vLine.y2"
-              stroke="rgba(0,255,0,0.3)"
+              stroke="rgba(42, 250, 207, 0.5)"
               stroke-width="1"
           />
           <!-- Horizontal lines -->
@@ -29,7 +29,7 @@
               :x2="hLine.x2"
               :y1="hLine.y"
               :y2="hLine.y"
-              stroke="rgba(0,255,0,0.3)"
+              stroke="rgba(42, 250, 207, 0.5)"
               stroke-width="1"
           />
           <!-- Dots at cell centers -->
@@ -38,7 +38,7 @@
               :key="'dot' + idx"
               :cx="dot.x"
               :cy="dot.y"
-              fill="rgba(0,255,0,0.4)"
+              fill="rgba(42, 250, 207, 0.9)"
               r="1"
           />
         </g>
