@@ -1,101 +1,114 @@
 <template>
-  <g @click="onRoomClick">
-    <!-- Room Background Rectangle -->
+  <g>
+    <!-- Background rectangle -->
     <rect
-        :fill="fill"
-        :height="height"
-        :stroke="stroke"
-        :stroke-width="strokeWidth"
+        :fill="backgroundFill"
         :width="width"
         :x="left"
+        :height="height"
         :y="top"
+        :stroke="stroke"
+        :stroke-width="strokeWidth"
         rx="8"
         ry="8"
     />
 
-    <!-- Optional Label/Text -->
-    <text
-        v-if="showLabel"
-        :fill="labelColor"
-        :x="left + width / 2"
-        :y="top + height / 2"
-        dominant-baseline="middle"
-        font-size="12"
-        text-anchor="middle"
-    >
-      {{ label }}
-    </text>
+    <!-- Clipped circular image -->
+    <clipPath :id="clipId">
+      <circle
+          :cx="left + width / 2"
+          :cy="top + height / 2"
+          :r="Math.min(width, height) / 2 - padding"
+      />
+    </clipPath>
+    <image
+        v-if="backgroundImage"
+        :clip-path="`url(#${clipId})`"
+        :height="height"
+        :href="backgroundImageSrc"
+        :width="width"
+        :x="left"
+        :y="top"
+        preserveAspectRatio="xMidYMid slice"
+    />
   </g>
 </template>
 
 <script>
+import {RoomLabel, RoomType} from "@/utils/mapData.js";
+
 export default {
   name: "Room",
   props: {
-    positionData: {
-      type: Object,
-      required: true,
-    },
-    cellSize: {
-      type: Number,
-      required: true,
-    },
-    cellPadding: {
-      type: Number,
-      default: 10,
-    },
-    fill: {
-      type: String,
-      default: "#444",
-    },
-    stroke: {
-      type: String,
-      default: "#666",
-    },
-    strokeWidth: {
-      type: Number,
-      default: 2,
-    },
-    showLabel: {
-      type: Boolean,
-      default: true,
-    },
-    labelColor: {
-      type: String,
-      default: "#fff",
-    },
+    positionData: {type: Object, required: true},
+    cellSize: {type: Number, required: true},
+    cellPadding: {type: Number, default: 10},
+    fill: {type: String, default: "#444"},
+    stroke: {type: String, default: "#666"},
+    strokeWidth: {type: Number, default: 2},
+    padding: {type: Number, default: 8}, // Padding for the circle
+  },
+  data() {
+    return {
+      roomType: null,
+      roomLabel: null,
+      backgroundImage: null,
+    };
+  },
+  created() {
+    this.extractLabels();
+    this.loadIcon();
   },
   computed: {
-    // Calculate left position based on grid_x and cell size
     left() {
       return this.positionData.position.grid_x * this.cellSize + this.cellPadding / 2;
     },
-    // Calculate top position based on grid_y and cell size
     top() {
       return this.positionData.position.grid_y * this.cellSize + this.cellPadding / 2;
     },
-    // Adjusted width based on padding
     width() {
       return this.cellSize - this.cellPadding;
     },
-    // Adjusted height based on padding
     height() {
       return this.cellSize - this.cellPadding;
     },
-    // Use the last label as the room's label, or fallback to coordinates
-    label() {
-      const labels = this.positionData.labels || [];
-      return labels.length > 0 ? labels[labels.length - 1] : `${this.positionData.position.grid_x}x${this.positionData.position.grid_y}`;
+    backgroundFill() {
+      if (this.roomType && RoomType[this.roomType.toUpperCase()]) {
+        return RoomType[this.roomType.toUpperCase()].color;
+      }
+      return this.fill;
+    },
+    backgroundImageSrc() {
+      return this.backgroundImage ? this.backgroundImage.src : null;
+    },
+    clipId() {
+      // Unique ID for the clipPath to avoid conflicts
+      return `clip-${this.positionData.position.id}`;
+    },
+  },
+  watch: {
+    positionData: {
+      immediate: true,
+      handler() {
+        this.extractLabels();
+        this.loadIcon();
+      },
     },
   },
   methods: {
-    onRoomClick() {
-      this.$emit("room-click", this.positionData.position.id);
+    extractLabels() {
+      const labels = this.positionData.labels || [];
+      this.roomType = labels[0] || null;
+      this.roomLabel = labels[1] || null;
+    },
+    loadIcon() {
+      const icon = RoomLabel.getIcon(this.roomLabel);
+      if (icon instanceof HTMLImageElement) {
+        this.backgroundImage = icon;
+      } else {
+        this.backgroundImage = null;
+      }
     },
   },
 };
 </script>
-
-<style scoped>
-/* Add optional styling here if needed */
-</style>

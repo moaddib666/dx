@@ -1,4 +1,5 @@
 import {reactive} from "vue";
+import StairsIconPath from "@/assets/map/stairs.png";
 import EnemyIconPath from "@/assets/map/enemy.png";
 import ChestIconPath from "@/assets/map/chest.png";
 import GateIconPath from "@/assets/map/gate.png";
@@ -27,7 +28,8 @@ const DeathIcon = new Image();
 DeathIcon.src = DeathIconPath;
 const QuestIcon = new Image();
 QuestIcon.src = QuestIconPath;
-
+const StairsIcon = new Image();
+StairsIcon.src = StairsIconPath;
 
 const RoomLabel = {
     ENEMY: {value: "enemy", label: "Enemy",},
@@ -39,7 +41,8 @@ const RoomLabel = {
     PUZZLE: {value: "puzzle", label: "Puzzle",},
     DEATH: {value: "death", label: "Death",},
     QUEST: {value: "quest", label: "Quest",},
-
+    None: {value: "none", label: "None",},
+    STAIRS: {value: "stairs", label: "Stairs",},
     getIcon(value) {
         switch (value) {
             case "enemy":
@@ -60,6 +63,8 @@ const RoomLabel = {
                 return DeathIcon;
             case "quest":
                 return QuestIcon;
+            case "stairs":
+                return StairsIcon;
             default:
                 return undefined;
         }
@@ -194,7 +199,7 @@ const MapData = reactive({
 });
 
 const RoomType = {
-    DEFAULT: {value: "default", label: "Default", color: "lightblue"},
+    DEFAULT: {value: "default", label: "Default", color: "#444"},
     START: {value: "start", label: "Start", color: "green"},
     HUB: {value: "hub", label: "Hub", color: "purple"},
     BOSS: {value: "boss", label: "Boss", color: "red"},

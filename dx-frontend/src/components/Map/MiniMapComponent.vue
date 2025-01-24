@@ -106,8 +106,8 @@ export default {
   },
   data() {
     return {
-      svgWidth: 300,
-      svgHeight: 300,
+      svgWidth: 250,
+      svgHeight: 250,
       padding: 20,
       // Radius in "map units" for how far around the current position we show
       radius: 2.05,

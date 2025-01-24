@@ -18,6 +18,7 @@ from ..shield import ActiveShieldLifeCycleService
 if typing.TYPE_CHECKING:
     from .factory import CharacterActionFactory
     from ..effect.facctory import ApplyEffectFactory, ManagerEffectFactory
+    from ..world.auto_map import AutoMapService
 
 
 class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
@@ -26,7 +27,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
     def __init__(self, cycle: Cycle, factory: "CharacterActionFactory", notify_svc: "ActionResultNotifier",
                  effects_apply_factory: "ApplyEffectFactory",
-                 effects_manager_factory: "ManagerEffectFactory"
+                 effects_manager_factory: "ManagerEffectFactory",
+                 auto_map_svc: "AutoMapService",
                  ):
         self.cycle = cycle
         self.factory = factory
@@ -39,10 +41,12 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
                 actions_acceptor=partial(ActionAcceptor, factory=factory)
             )
         )
+        self.auto_map_svc = auto_map_svc
 
     def prepare(self):
         self.base_stats_applier.apply()
         self.npc_actions_scheduler.schedule_actions()
+        self.auto_map_svc.map_characters()
 
     def post(self):
         self.update_characters()

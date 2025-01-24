@@ -18,11 +18,15 @@ import Register from "@/views/Register.vue";
 import GameMasterMain from "@/views/GameMaster/GameMasterMain.vue";
 import CharacterSkills from "@/views/CharacterSkills.vue";
 import CharacterInfo from "@/views/CharacterInfo.vue";
+import MiniMap from "@/views/Cartograph/MiniMap.vue";
+import UserMap from "@/views/Cartograph/UserMap.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
     {path: '/story', name: 'Story', component: Story, meta: {requiresAuth: false}},
     {path: '/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false}},
+    {path: '/map/', name: 'UserMap', component: UserMap, meta: {requiresAuth: true}},
+    {path: '/map/mini', name: 'MiniMap', component: MiniMap, meta: {requiresAuth: true}},
     {path: '/characters', name: 'Characters', component: Characters, meta: {requiresAuth: false}},
     {path: '/characters/submit', name: 'CharacterSubmit', component: CharacterSubmit, meta: {requiresAuth: false}},
     {path: '/characters/info', name: 'CharacterInfo', component: CharacterInfo, meta: {requiresAuth: true}},

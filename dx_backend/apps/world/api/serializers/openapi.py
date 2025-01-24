@@ -2,7 +2,7 @@ from django.db import models
 from rest_framework import serializers
 
 from apps.character.models import Character
-from apps.world.models import Area, Location, Dimension, City, SubLocation
+from apps.world.models import Area, Location, Dimension, City, SubLocation, MapPosition, Map
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -221,3 +221,138 @@ class PositionSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             return request.build_absolute_uri(image)
         return image
+
+
+class GenericPositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = ('id', 'grid_x', 'grid_y', 'grid_z', 'sub_location')
+
+
+class GenericPositionIdSerializer(serializers.Serializer):
+    id = serializers.UUIDField(required=True)
+
+    def validate(self, attrs):
+        position_id = attrs.get('id')
+        if not position_id:
+            raise serializers.ValidationError({"id": "This field is required."})
+        try:
+            # Validate that the Position exists
+            self.instance = Position.objects.get(id=position_id)
+        except Position.DoesNotExist:
+            raise serializers.ValidationError({"id": "Position does not exist."})
+        return attrs
+
+
+class MapPositionSerializer(serializers.ModelSerializer):
+    position = GenericPositionSerializer()
+
+    class Meta:
+        model = MapPosition
+        fields = ('position', "is_active", "labels")
+
+
+class MapPositionMutableSerializer(serializers.Serializer):
+    position_id = serializers.UUIDField()
+    labels = serializers.ListField(child=serializers.CharField(), required=False)
+
+
+class NewCoordinatesSerializer(serializers.Serializer):
+    grid_x = serializers.IntegerField()
+    grid_y = serializers.IntegerField()
+    grid_z = serializers.IntegerField()
+    labels = serializers.ListField(child=serializers.CharField(), required=False)
+
+    def validate(self, attrs):
+        """ Find existing position by coordinates"""
+        try:
+            self.instance = Position.objects.get(
+                grid_x=attrs['grid_x'],
+                grid_y=attrs['grid_y'],
+                grid_z=attrs['grid_z']
+            )
+        except Position.DoesNotExist:
+            raise serializers.ValidationError("Position does not exist.")
+        return attrs
+
+
+class CharacterPositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        fields = ('id', 'position',)
+
+
+class PositionConnectionMinimalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PositionConnection
+        fields = ('position_from', 'position_to', 'is_vertical', 'is_locked')
+        read_only_fields = ('is_vertical', 'is_locked')
+
+
+class MapSerializer(serializers.ModelSerializer):
+    positions = serializers.SerializerMethodField()
+    connections = serializers.SerializerMethodField()
+    characters = serializers.SerializerMethodField()
+    current_position = serializers.SerializerMethodField(
+        help_text="The position of the current user's character on the map."
+    )
+
+    class Meta:
+        model = Map
+        fields = (
+            'id', 'name', 'organization', 'is_active', 'positions', 'connections', 'characters', 'current_position')
+
+    def _get_current_character(self):
+        request = self.context.get('request')
+        if not request:
+            raise serializers.ValidationError("Request context is required.")
+        if not request.user.main_character:
+            raise serializers.ValidationError("Main character is required.")
+        return request.user.main_character
+
+    def get_current_position(self, obj):
+        current_character = self._get_current_character()
+        return current_character.position_id
+
+    def _get_positions(self, obj):
+        return obj.map_positions.all()
+
+    def get_positions(self, obj):
+        # Fetch positions related to the map
+        positions = self._get_positions(obj)
+        return MapPositionSerializer(positions, many=True).data
+
+    def _get_connections(self, obj):
+        # Fetch connections related to the map positions
+        positions = self._get_positions(obj).values_list('position', flat=True)
+        connections = PositionConnection.objects.filter(
+            position_from__in=positions, position_to__in=positions
+        )
+        return connections
+
+    def get_connections(self, obj):
+        # Fetch connections related to the map positions
+        connections = self._get_connections(obj)
+        return PositionConnectionMinimalSerializer(connections, many=True).data
+
+    def _get_characters(self, obj):
+        return obj.organization.character_set.all()
+
+    def get_characters(self, obj):
+        # Fetch characters related to the map's organization
+        characters = self._get_characters(obj)
+        return CharacterPositionSerializer(characters, many=True).data
+
+
+class MiniMapSerializer(MapSerializer):
+
+    def _get_positions(self, obj):
+        return obj.map_positions.filter(
+            is_active=True,
+            position__grid_z=self._get_current_character().position.grid_z
+        )
+
+    def _get_characters(self, obj):
+        return obj.organization.character_set.filter(
+            position__grid_z=self._get_current_character().position.grid_z
+        )

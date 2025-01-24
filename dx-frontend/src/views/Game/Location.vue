@@ -75,6 +75,7 @@
 
       </div>
       <div class="center-right">
+        <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
       </div>
     </div>
     <!-- Bottom Row -->
@@ -110,7 +111,8 @@ import {
   ActionGameApi,
   CharacterGameApi,
   EffectsGameApi,
-  ItemsGameApi, ShieldsGameApi,
+  ItemsGameApi,
+  ShieldsGameApi,
   SkillsGameApi,
   WorldGameApi
 } from "@/api/backendService.js";
@@ -136,10 +138,12 @@ import ItemCell from "@/components/Item/ItemCell.vue";
 import ItemHolder from "@/components/Item/ItemHolder.vue";
 import InventoryButton from "@/components/Action/InventoryButton.vue";
 import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
+import MiniMapComponent from "@/components/Map/MiniMapComponent.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    MiniMapComponent,
     ShieldHolder,
     InventoryButton,
     ItemHolder,
@@ -185,6 +189,7 @@ export default {
       inventoryVisible: false,
       actionConstructorVisible: false,
       isMoving: false,
+      mapData: null,
     };
   },
   computed: {
@@ -249,6 +254,9 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async refreshMiniMap() {
+      this.mapData = (await WorldGameApi.worldMapsMiniMapRetrieve()).data;
+    },
     resetAdditionalPlayerData() {
       this.additionalCharactersData = {};
     },
@@ -398,6 +406,7 @@ export default {
       await this.getActiveEffects();
       await this.refreshShields();
       await this.getPlayerSpecials();
+      await this.refreshMiniMap();
 
     },
     openInfo() {
@@ -589,5 +598,12 @@ export default {
     flex-direction: column;
     align-items: center;
   }
+}
+
+.mini-map {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  border: 0.1rem solid #fff;
+  box-shadow: 0 0 1rem 0.3rem #fff;
 }
 </style>

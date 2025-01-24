@@ -22,6 +22,7 @@ from apps.game.services.action.snatch import CharacterSnatchActionService
 from apps.game.services.action.use_item import UseItemActionService
 from apps.game.services.character.core import CharacterService
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
+from apps.game.services.world.auto_map import AutoMapService
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
 from apps.school.models import School, Skill
@@ -272,4 +273,5 @@ ManualCharacterActionPlayerServiceFactory = partial(
     notify_svc=ConsoleResultNotifyService(),
     effects_manager_factory=ManagerEffectFactory(),
     effects_apply_factory=ApplyEffectFactory(),
+    auto_map_svc=AutoMapService(),
 )

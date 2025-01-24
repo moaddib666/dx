@@ -83,7 +83,7 @@
               :positionData="posObj"
               :fill="getPositionFill(posObj)"
               :stroke="isSelected(posObj.position.id) ? 'orange' : '#666'"
-              stroke-width="2"
+              :stroke-width="2"
               :showLabel="true"
           />
           <!-- Position label -->
@@ -104,7 +104,7 @@
 
 <script>
 import {WorldGameApi} from "@/api/backendService.js";
-import Room from "@/components/Map/Room.vue";
+import Room from "@/components/Map/MapRoomComponent.vue";
 
 export default {
   name: "GridMap",

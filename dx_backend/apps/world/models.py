@@ -199,3 +199,29 @@ class PositionConnection(models.Model):
         if self.position_from.id > self.position_to.id:
             self.position_from, self.position_to = self.position_to, self.position_from
         super().save(*args, **kwargs)
+
+
+class Map(BaseModel):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    organization = models.OneToOneField('character.Organization', on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class MapPosition(BaseModel):
+    map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name='map_positions')
+    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
+    labels = models.JSONField(default=list, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('map', 'position')
+        indexes = [
+            models.Index(fields=['map', 'position'])
+        ]
+
+    def __str__(self):
+        return f"{self.map.name} - {self.position.sub_location.name} - {self.position.coordinates}"

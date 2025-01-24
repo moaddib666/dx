@@ -227,3 +227,13 @@ class JsonDumper:
             connection_list.append(connection_data)
 
         return connection_list
+
+
+class MiniMapDumper:
+    """
+    Dumps the data across the character like a minimap. The data is used to visualize the character's surroundings.
+    The size of the minimap is 5x5 - 25 rooms.
+    The minimap show only 9x9 rooms around the character. with NPC and other characters.
+    Other is fog of war unless the character has been there or somebody use the cartography and map the area.
+    """
+    pass
