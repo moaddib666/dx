@@ -1,6 +1,6 @@
 <template>
   <div class="mini-map-container">
-    <svg :height="svgHeight" :width="svgWidth">
+    <svg :height="svgHeight" :width="svgWidth" class="map">
       <defs>
         <clipPath id="circleClip">
           <circle :cx="svgWidth / 2" :cy="svgHeight / 2" :r="circleRadius"/>
@@ -106,9 +106,9 @@ export default {
   },
   data() {
     return {
-      svgWidth: 250,
-      svgHeight: 250,
-      padding: 20,
+      svgWidth: 210,
+      svgHeight: 210,
+      padding: 5,
       // Radius in "map units" for how far around the current position we show
       radius: 2.05,
     };
@@ -303,7 +303,19 @@ export default {
 
 <style scoped>
 .mini-map-container {
-  display: inline-block;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.grid {
+  stroke-dasharray: 2 2;
+}
+
+.map {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.7);
+}
+
 </style>

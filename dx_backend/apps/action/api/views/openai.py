@@ -14,8 +14,9 @@ from apps.game.services.action.accept import ActionAcceptor
 from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
     GameMasterActionFactory
 from apps.game.services.character.core import CharacterService
-from ..serializers.openapi import CharacterActionSerializer, CharacterActionLogSerializer, \
-    RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer
+from ..serializers.openapi import CharacterActionSerializer, GameMasterCharacterActionLogSerializer, \
+    RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer, \
+    CharacterActionLogSerializer
 from ...models import CharacterAction, Cycle, SpecialAction
 
 
@@ -54,8 +55,28 @@ class CharacterActionsLogViewSet(
 
     # all actions for now
     def get_queryset(self):
+        """
+        Return actions for:
+         1. the current user main character
+         2. the current user main character as a target
+         3. the current user main character position
+        """
         user = self.request.user
-        qs = super().get_queryset()
+        main_character = user.main_character
+        current_cycle = Cycle.objects.current()
+        depth = 3  # 3 cycles back
+        cycle__in = []
+        for i in range(depth):
+            computed_cycle = current_cycle.id - i
+            if computed_cycle > 0:
+                cycle__in.append(computed_cycle)
+
+        qs = super().get_queryset().filter(
+            accepted=True,
+            performed=True,
+            cycle__in=cycle__in,
+            position=main_character.position,
+        )
         return qs
 
 
@@ -122,7 +143,7 @@ class GameMasterActionsViewSet(
     viewsets.ModelViewSet
 ):
     queryset = CharacterAction.objects.all()
-    serializer_class = CharacterActionLogSerializer
+    serializer_class = GameMasterCharacterActionLogSerializer
     permission_classes = [permissions.IsAdminUser]
     pagination_class = LimitOffsetPagination
     filter_backends = [

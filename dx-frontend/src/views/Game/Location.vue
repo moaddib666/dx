@@ -74,8 +74,9 @@
 
 
       </div>
-      <div class="center-right">
+      <div class="center-right" v-if="centerAreaNotInteractive">
         <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
+        <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
       </div>
     </div>
     <!-- Bottom Row -->
@@ -139,10 +140,14 @@ import ItemHolder from "@/components/Item/ItemHolder.vue";
 import InventoryButton from "@/components/Action/InventoryButton.vue";
 import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 import MiniMapComponent from "@/components/Map/MiniMapComponent.vue";
+import UserActionLogItem from "@/components/ActionLog/UserActionLogItem.vue";
+import UserActionLog from "@/components/ActionLog/UserActionLog.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    UserActionLog,
+    UserActionLogItem,
     MiniMapComponent,
     ShieldHolder,
     InventoryButton,
@@ -190,9 +195,13 @@ export default {
       actionConstructorVisible: false,
       isMoving: false,
       mapData: null,
+      actionLog: null,
     };
   },
   computed: {
+    centerAreaNotInteractive() {
+      return !this.isDiceVisible && !this.isInventoryVisible && !this.isActionConstructorVisible;
+    },
     isCompassVisible() {
       return this.hasActionPoints && !this.isActionConstructorVisible && !this.isDiceVisible && !this.isInventoryVisible;
     },
@@ -254,6 +263,9 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async refreshActionLog() {
+      this.actionLog = (await ActionGameApi.actionLogList()).data;
+    },
     async refreshMiniMap() {
       this.mapData = (await WorldGameApi.worldMapsMiniMapRetrieve()).data;
     },
@@ -407,6 +419,7 @@ export default {
       await this.refreshShields();
       await this.getPlayerSpecials();
       await this.refreshMiniMap();
+      await this.refreshActionLog();
 
     },
     openInfo() {
@@ -515,9 +528,12 @@ export default {
 .center-right {
   flex: 1;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
+  align-items: flex-start;
+  justify-content: flex-start;
   gap: 1rem;
+  display: flex;
+  height: 100%;
+  margin-right: 0.5rem;
 }
 
 
@@ -580,8 +596,9 @@ export default {
   align-items: flex-end;
   flex-direction: row;
   z-index: 20;
-  padding-right: 1rem;
+  margin-right: 0.5rem;
   gap: 1rem;
+  height: 3rem;
 }
 
 .right-action-group * {
@@ -601,9 +618,26 @@ export default {
 }
 
 .mini-map {
+  display: flex;
+  justify-self: flex-end;
+  align-self: flex-end;
+}
+.action-log {
+  display: flex;
+  flex: 1;
+  width: 90%;
   background: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  border: 0.1rem solid #fff;
-  box-shadow: 0 0 1rem 0.3rem #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  max-height: 30vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+  scroll-behavior: smooth;
+  font-size: 0.6rem;
+}
+.center-left {
+  margin-left: 0.5rem;
 }
 </style>

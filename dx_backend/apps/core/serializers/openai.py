@@ -181,6 +181,34 @@ class ModificatorPresentor(ModelPresentor):
         )
         self.stream.write(line + "\n")
 
+class RankPresentor(ModelPresentor):
+    def describe_model(self):
+        """
+        Provide a description of the Rank model.
+        """
+        self.stream.write(
+            f"Model: {self.model.__name__}. Represents ranks that define character progression "
+            "with grades, experience requirements, and potential next rank transitions.\n"
+        )
+
+    def describe_instance(self, instance):
+        """
+        Provide a single-line detailed description of the rank.
+        """
+        # General rank details
+        name = getattr(instance, "name", "Unnamed Rank")
+        grade = getattr(instance, "grade", "Unknown Grade")
+        description = getattr(instance, "description", "No description available.")
+        next_rank = getattr(instance, "next_rank", None)
+        next_rank_text = next_rank.name if next_rank else "None"
+
+        # Build single-line description in the desired format
+        line = (
+            f"Rank - {name} [{grade}] Description: {description} Next Rank:({next_rank_text})"
+        )
+        self.stream.write(line + "\n")
+
+
 
 class Serializer(PythonSerializer):
     repository = {
@@ -189,6 +217,7 @@ class Serializer(PythonSerializer):
         "Modificator": ModificatorPresentor,
         "School": SchoolPresentor,
         "ThePath": PathPresenter,
+        "Rank": RankPresentor,
     }
     default_presentor = ModelPresentor
 

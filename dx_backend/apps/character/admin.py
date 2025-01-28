@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from polymorphic.admin import PolymorphicChildModelAdmin
 
-from .models import Organization, Rank, Character, CharacterBiography, Stat
+from .models import Organization, Rank, Character, CharacterBiography, Stat, StatModifier
 from ..effects.models import ActiveEffect
 from ..items.models import CharacterItem
 from ..shields.models import ActiveShield
@@ -38,9 +38,37 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 @admin.register(Rank)
 class RankAdmin(admin.ModelAdmin):
-    list_display = ('name', 'experience_needed', 'grade')
-    search_fields = ('name',)
-    list_filter = ('experience_needed',)
+    """
+    Admin configuration for the Rank model.
+    """
+    list_display = (
+        "name",
+        "grade",
+        "grade_rank",
+        "experience_needed",
+        "additional_stat_points",
+        "next_rank_display"
+    )
+    list_filter = ("grade", "grade_rank")
+    search_fields = ("name", "description")
+    ordering = ("-grade", "grade_rank")
+    readonly_fields = ("experience_needed",)
+    fieldsets = (
+        (None, {
+            "fields": ("name", "description")
+        }),
+        ("Rank Details", {
+            "fields": ("grade", "grade_rank", "additional_stat_points", "experience_needed", "next_rank")
+        }),
+    )
+
+    def next_rank_display(self, obj):
+        """
+        Display the name of the next rank, if it exists.
+        """
+        return obj.next_rank.name if obj.next_rank else "None"
+
+    next_rank_display.short_description = "Next Rank"
 
 
 class CharacterBiographyInline(admin.StackedInline):
@@ -110,6 +138,17 @@ class StatInline(admin.TabularInline):
     extra = 1  # Number of extra blank rows
     fields = ('name', 'base_value', "additional_value")
     readonly_fields = ('name', "value")
+    can_delete = False
+
+
+class StatModifierInline(admin.TabularInline):
+    """
+    Inline for displaying and editing stat modifiers directly in the Character admin interface.
+    """
+    model = StatModifier
+    extra = 1  # Number of extra blank rows
+    fields = ('name', 'value', 'applied_by_effect')
+    readonly_fields = ('applied_by_effect', )
     can_delete = False
 
 
@@ -300,7 +339,7 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
     list_filter = (
         'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
     )
-    inlines = [CharacterBiographyInline, StatInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
+    inlines = [CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
                ActiveEffectsInline, ActiveShieldsInline]
     actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
 

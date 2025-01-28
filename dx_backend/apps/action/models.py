@@ -50,7 +50,9 @@ class CharacterAction(BaseModel):
     def accept(self, order: float):
         self.accepted = True
         self.order = order
-        self.save(update_fields=['accepted', 'order', 'updated_at'])
+        if not self.position_id:
+            self.position_id = self.initiator.position_id
+        self.save(update_fields=['accepted', 'order', 'updated_at', 'position_id'])
 
     def perform(self):
         self.performed = True

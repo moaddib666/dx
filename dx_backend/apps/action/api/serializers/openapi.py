@@ -2,10 +2,10 @@
 from rest_framework import serializers
 
 from apps.core.models import ImpactType, ImpactViolationType
-from ...models import CharacterAction, ActionImpact, SpecialAction
+from ...models import CharacterAction, ActionImpact, SpecialAction, DiceRollResult
 
 
-class CharacterLogActionImpactSerializer(serializers.ModelSerializer):
+class GameMasterCharacterLogActionImpactSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActionImpact
         exclude = ['created_at', 'updated_at', 'action']
@@ -15,8 +15,28 @@ class CharacterLogActionImpactSerializer(serializers.ModelSerializer):
         }
 
 
-class CharacterActionLogSerializer(serializers.ModelSerializer):
-    impacts = CharacterLogActionImpactSerializer(many=True, read_only=True)
+class DiceRollResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiceRollResult
+        fields = [
+            "dice_side",
+            "outcome",
+        ]
+
+
+class CharacterLogActionImpactSerializer(serializers.ModelSerializer):
+    dice_roll_result = DiceRollResultSerializer()
+
+    class Meta:
+        model = ActionImpact
+        exclude = ['created_at', 'updated_at', 'action']
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
+
+
+class GameMasterCharacterActionLogSerializer(serializers.ModelSerializer):
+    impacts = GameMasterCharacterLogActionImpactSerializer(many=True, read_only=True)
 
     class Meta:
         model = CharacterAction
@@ -40,6 +60,22 @@ class CharacterActionLogSerializer(serializers.ModelSerializer):
             'skill': {'required': False},
             'id': {'read_only': True},
         }
+
+
+class CharacterActionLogSerializer(serializers.ModelSerializer):
+    impacts = CharacterLogActionImpactSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = CharacterAction
+        fields = [
+            'id',
+            'initiator',
+            'action_type',
+            'skill',
+            'data',
+            'impacts',
+            'cycle',
+        ]
 
 
 class RegisterImpactActionSerializer(serializers.Serializer):

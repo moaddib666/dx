@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ fontSize: size }" class="skill-icon-inline">
+  <div class="skill-icon-inline">
     <img v-if="icon" :src="icon" alt="Skill Icon" class="skill-icon"/>
     <img v-else alt="Default Skill Icon" class="skill-icon" src="@/assets/images/skill/default.webp"/>
     <span class="skill-name">{{ name }}</span>
@@ -13,10 +13,6 @@ export default {
     skill: {
       type: Object,
       required: true,
-    },
-    size: {
-      type: String,
-      default: "0.7rem", // Default font size and icon size
     },
   },
   computed: {
