@@ -1,14 +1,13 @@
 import logging
-from django.contrib import admin, messages
+
+from django.contrib import admin
 from django.forms import ModelForm, ValidationError
 
 from .models import (
-    Dimension, Planet, Continent, Country, City, Area, Location, SubLocation,
-    Position, PositionConnection
+    Dimension, Planet, Continent, Country, City, Area, Location, PositionConnection, MapPosition, Map
 )
 
 logger = logging.getLogger(__name__)
-
 
 from django import forms
 from django.shortcuts import render, redirect
@@ -122,7 +121,6 @@ class PositionForm(ModelForm):
         return cleaned_data
 
 
-
 # Position Admin with Bulk Action
 
 @admin.register(Position)
@@ -154,6 +152,7 @@ class PositionAdmin(admin.ModelAdmin):
 
     def label_summary(self, obj):
         return ", ".join(obj.labels) if obj.labels else "No Labels"
+
     label_summary.short_description = 'Labels'
 
     @admin.action(description='Change Sub-Location for selected positions')
@@ -213,9 +212,28 @@ class PositionConnectionForm(ModelForm):
 class PositionConnectionAdmin(admin.ModelAdmin):
     form = PositionConnectionForm
     list_display = ('id', 'position_from', 'position_to', 'is_active', 'is_public', 'is_locked', "is_vertical")
-    list_filter = ('is_active', 'is_public')
+    list_filter = ('is_active', 'is_public', 'is_locked', 'position_from__sub_location')
     search_fields = ('position_from__id', 'position_to__id')
     ordering = ('position_from', 'position_to')
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('position_from', 'position_to')
+
+
+@admin.register(Map)
+class MapAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'organization', 'is_active')
+    list_filter = ('is_active', 'organization')
+    search_fields = ('name', 'description', 'organization__name')
+    ordering = ('name',)
+
+
+@admin.register(MapPosition)
+class MapPositionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'map', 'position', 'is_active')
+    list_filter = ('is_active', 'map__name')
+    search_fields = ('map__name', 'position__sub_location__name', 'position__coordinates')
+    ordering = ('map', 'position')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('map', 'position')

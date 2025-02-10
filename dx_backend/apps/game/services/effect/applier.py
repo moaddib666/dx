@@ -57,21 +57,25 @@ class DefaultActiveEffectService(BaseActiveEffectService, ABC):
 
     def _update_counters(self) -> None:
         self.active_effect.duration += 1
-        if self._is_last_application():
-            self.active_effect.active = False
+        # if self._is_last_application():
+        #     self.active_effect.active = False
         self.active_effect.save(update_fields=['duration', 'active', 'updated_at'])
 
     def _is_first_application(self) -> bool:
         return self.active_effect.duration == 1
 
     def _is_last_application(self) -> bool:
+        if self.active_effect.effect.permanent:
+            return False
+        if self.active_effect.ends_in:
+            return self.active_effect.duration >= self.active_effect.ends_in
         return self.active_effect.duration >= self.active_effect.effect.ends_in
 
 
 class UnknownActiveEffectService(DefaultActiveEffectService):
 
     def is_applicable(self, target: 'Character') -> bool:
-        return False
+        return True
 
     def apply(self, target: 'Character') -> None:
         pass
@@ -93,7 +97,7 @@ class KnockOutActiveEffectService(DefaultActiveEffectService):
 
     def on_finish(self, target: 'Character') -> None:
         super().on_finish(target)
-        self.effect_assign_svc().assign_effect(EffectType.COMA, target, initiator=target)
+        self.effect_assign_svc().assign_world_effect(EffectType.COMA, self.char_svc(target))
 
 
 class KomaActiveEffectService(DefaultActiveEffectService):

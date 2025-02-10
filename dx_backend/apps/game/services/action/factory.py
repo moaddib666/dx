@@ -48,8 +48,12 @@ class CharacterActionFactory:
     mapping = {
         CharacterActionType.MOVE.value: CharacterActionPositionMoveService(MovementService()),
         CharacterActionType.DICE_ROLL: DiceRollActionService(),
-        CharacterActionType.USE_SKILL: ImpactAction(),
-        CharacterActionType.USE_ITEM: UseItemActionService(ImpactAction()),
+        CharacterActionType.USE_SKILL: ImpactAction(
+            ManagerEffectFactory().default(),
+        ),
+        CharacterActionType.USE_ITEM: UseItemActionService(ImpactAction(
+            ManagerEffectFactory().default(),
+        )),
         CharacterActionType.LONG_REST: CharacterLongRestService(),
         CharacterActionType.BACK_TO_SAFE_ZONE: BackToSafeService(),
         CharacterActionType.INSPECT: CharacterInspectorService(),

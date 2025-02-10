@@ -1,12 +1,13 @@
 import typing
 from functools import partial
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q, F
 
 from apps.action.models import Cycle
 from apps.character.models import Character
 from apps.core.models import EffectType
 from apps.shields.models import ActiveShield
+from apps.world.models import SubLocation
 from .accept import ActionAcceptor
 from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
 from .npc_action_scheduler import NpcActionScheduler
@@ -86,23 +87,52 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
     def update_characters(self):
         for char in self._get_suitable_characters():
+
+            if not char.model.npc:
+                print(char.model)
+            self.remove_inactive_effects(char)
             if char.is_knocked_out():
                 if not char.has_effects([EffectType.KNOCKED_OUT, EffectType.COMA]):
-                    manager = self.effects_manager_factory.from_effect_id(EffectType)
-                    manager.remove_all_effects(char.model)
-                    manager.assign_effect(EffectType.KNOCKED_OUT, char.model, initiator=char.model)
+                    manager = self.effects_manager_factory.from_effect_id(EffectType.KNOCKED_OUT)
+                    manager.remove_all_effects(char)
+                    manager.assign_world_effect(EffectType.KNOCKED_OUT, char)
                 continue
             if char.has_effects([EffectType.KNOCKED_OUT]):
                 manager = self.effects_manager_factory.from_effect_id(EffectType.COMA)
-                manager.remove_effect(EffectType.KNOCKED_OUT, char.model, initiator=char.model)
+                manager.remove_effect(EffectType.KNOCKED_OUT, char)
+
             char.refill_ap()
+
+    def remove_inactive_effects(self, char: CharacterService):
+        expired_e = char.model.effects.filter(
+            Q(effect__permanent=False) & Q(duration__gte=0) & Q(duration__gte=F("ends_in"))
+        ).select_related("effect")
+        self.effects_manager_factory.default().remove_many([
+            effect.effect.id for effect in expired_e
+        ], char)
+
+    def _active_sub_loactions(self) -> [SubLocation]:
+        """
+        Retrutn sub locaton where at least one non npc character is active
+        """
+        return Character.objects.filter(is_active=True, npc=False).values_list("position__sub_location",
+                                                                               flat=True).distinct()
 
     def _get_suitable_characters(self) -> ["CharacterService"]:
         """
         take characters that have hp > 0 and not stunned
         :return:
         """
-        return (self.char_svc_cls(char) for char in Character.objects.filter(is_active=True))
+        # Lets make performance better and fiend only
+        # 1. active non-npc characters
+        # 2. active npc characters that has characters in current or current + 3 positions
+
+        filtered = (
+                Character.objects.filter(is_active=True, npc=False) |
+                Character.objects.filter(is_active=True, npc=True, position__sub_location__in=self._active_sub_loactions())
+        )
+
+        return (self.char_svc_cls(char) for char in filtered)
 
     def get_actions(self) -> QuerySet:
         return self.cycle.actions.filter(performed=False, accepted=True).order_by(

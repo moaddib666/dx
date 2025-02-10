@@ -1,5 +1,4 @@
 import random
-import random
 import typing as t
 
 from apps.action.models import CharacterAction, Cycle

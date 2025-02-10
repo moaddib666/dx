@@ -12,7 +12,7 @@ from .models import Item, CharacterItem, WorldItem
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = (
-        'name', 'type', 'weight', 'canonical', 'icon_preview'
+        'name', 'type', 'weight', 'canonical', 'icon_preview', "skill",
     )
     list_filter = ('type', 'canonical')
     search_fields = ('name', 'description')

@@ -5,6 +5,7 @@ from datetime import timedelta
 from functools import partial
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.utils import timezone
 
 from apps.action.models import CharacterAction, DiceRollResult, ActionImpact
@@ -28,6 +29,9 @@ class CharacterService:
 
     def get_dice_service(self) -> partial[DiceService]:
         return functools.partial(DiceService, self.character, self.get_stat(CharacterStats.LUCK))
+
+    def roll_dice(self, sides: int) -> int:
+        return self.get_dice_service()(sides=sides).roll()
 
     @property
     def model(self):
@@ -165,6 +169,11 @@ class CharacterService:
         return self.get_stat(CharacterStats.SPEED) * self.character.dimension.speed
 
     def get_stat(self, param: CharacterStats) -> int:
+        modifier = self.character.stats_modifiers.filter(name=param).aggregate(models.Sum('value'))['value__sum'] or 0
+        real_stat = self.get_real_stat(param)
+        return real_stat + modifier
+
+    def get_real_stat(self, param: CharacterStats) -> int:
         if param not in CharacterStats._value2member_map_:
             raise GameLogicException(f"Unknown stat {param}")
         # TODO: Calculate the impact if any
@@ -292,3 +301,6 @@ class CharacterService:
     @property
     def rank_grade(self) -> int:
         return self.character.rank.grade
+
+    def __str__(self):
+        return f"CharacterService({self.model})"

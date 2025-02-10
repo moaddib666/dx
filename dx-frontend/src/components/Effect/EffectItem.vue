@@ -24,8 +24,7 @@ export default {
   },
   computed: {
     timeLeft() {
-
-      return this.effectData.effect.ends_in - this.effectData.duration
+      return this.effectData.cycle_left;
     },
   },
   methods: {

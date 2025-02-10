@@ -267,7 +267,11 @@ export default {
       this.actionLog = (await ActionGameApi.actionLogList()).data;
     },
     async refreshMiniMap() {
-      this.mapData = (await WorldGameApi.worldMapsMiniMapRetrieve()).data;
+      try {
+        this.mapData = (await WorldGameApi.worldMapsMiniMapRetrieve()).data;
+      } catch (error) {
+        console.debug("Problem refreshing mini map:", error);
+      }
     },
     resetAdditionalPlayerData() {
       this.additionalCharactersData = {};
@@ -420,7 +424,7 @@ export default {
       await this.getPlayerSpecials();
       await this.refreshMiniMap();
       await this.refreshActionLog();
-
+      await this.refreshInventory();
     },
     openInfo() {
       // open window with character info

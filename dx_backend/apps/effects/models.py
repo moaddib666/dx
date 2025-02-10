@@ -36,6 +36,7 @@ class ActiveEffectManager(models.Manager):
 class ActiveEffect(BaseModel):
     objects = ActiveEffectManager()
     effect = models.ForeignKey(Effect, on_delete=models.CASCADE)
+    ends_in = models.PositiveIntegerField(default=1, null=True, blank=True)
     duration = models.PositiveIntegerField(default=0)
     impact = models.JSONField(default=dict, null=True, blank=True)
     # Fixme - on reverse relation .effects.all() returns all effects, not only active
@@ -51,6 +52,16 @@ class ActiveEffect(BaseModel):
 
     def get_internal_data(self) -> dict:
         return self._data
+
+    @property
+    def cycle_left(self) -> int:
+        if self.effect.permanent:
+            return 999
+        if self.ends_in is not None:
+            return self.ends_in - self.duration
+        if self.effect.ends_in is not None:
+            return self.effect.ends_in - self.duration
+        return 0
 
     def __str__(self):
         return f'{self.effect} - {self.target.name}'

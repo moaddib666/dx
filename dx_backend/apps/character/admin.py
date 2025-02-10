@@ -295,8 +295,8 @@ class ActiveEffectsInline(admin.TabularInline):
     """
     model = ActiveEffect
     extra = 1  # Number of extra blank rows
-    fields = ('effect', 'effect_details', 'duration', 'active',)
-    readonly_fields = ('effect_details',)
+    fields = ('effect', 'effect_details', 'duration', 'ends_in', 'cycle_left', 'active',)
+    readonly_fields = ('effect_details', 'cycle_left')
     can_delete = True  # Allow deletion of rows
 
     def effect_details(self, obj):

@@ -119,7 +119,6 @@ class CharacterActionsViewSet(
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=serializers.Serializer)
-    @transaction.atomic
     def next_cycle(self, request):
         svc = self.cycle_player_factory(cycle=Cycle.objects.current(), factory=self.action_factory)
         cycle = svc.play()

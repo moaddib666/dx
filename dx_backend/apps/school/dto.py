@@ -1,3 +1,4 @@
+import typing
 import uuid
 from typing import List, Optional
 
@@ -8,7 +9,7 @@ from apps.core.models import ImpactType, ImpactViolationType, AttributeType, Cha
 
 class StatRequirement(TypedDict):
     stat: CharacterStats
-    value: float
+    value: int
 
 
 class Scaling(TypedDict):
@@ -38,10 +39,25 @@ class Cost(TypedDict):
     value: int
 
 
-class Effect(TypedDict):
+class Modifier(TypedDict):
+    label: typing.AnyStr
+    formula: Formula
+
+
+class AssignableEffect(TypedDict):
+    """
+    {
+        "name": "Burn",
+        "base_chance": 0.1,
+        "duration_modifier": {"value": 1, "formula": {"base": 1, "requires": [{"stat": "Flow Manipulation", "value": 5}], "scaling": [{"stat": "Flow Manipulation", "value": 0.2}]}},
+        "stat_modifiers": [{"value": 5, "formula": {"base": 5, "requires": [{"stat": "Flow Manipulation", "value": 5}], "scaling": [{"stat": "Flow Manipulation", "value": 0.2}}}]
+    }
+    """
     name: EffectType
-    chance: float
-    duration: int
+    impact: Optional[Impact]
+    base_chance: float
+    duration_modifier: Modifier
+    stat_modifiers: List[Modifier]
 
 
 class BaseSkill(TypedDict):
@@ -52,5 +68,5 @@ class BaseSkill(TypedDict):
     type: SkillTypes
     grade: int
     cost: List[Cost]
-    effect: List[Effect]
+    effect: List[AssignableEffect]
     impact: List[Impact]

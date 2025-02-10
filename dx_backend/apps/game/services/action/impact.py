@@ -1,5 +1,6 @@
 import abc
 import logging
+import typing as t
 
 from apps.action.models import CharacterAction, DiceRollResult
 from apps.character.models import Character
@@ -13,6 +14,9 @@ from apps.game.services.shield import ActiveShieldImpactService, ShieldAssessmen
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
 from apps.world.models import Position
+
+if t.TYPE_CHECKING:
+    from apps.game.services.effect.assigner import BaseEffectAssigner
 
 
 class AbstractImpactActionApplicator(abc.ABC):
@@ -61,8 +65,9 @@ class ImpactAction(CharacterActionServicePrototype):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, gm_mode: bool = False):
+    def __init__(self, effect_assigner: "BaseEffectAssigner", gm_mode: bool = False, ):
         self.gm_mode = gm_mode
+        self.effect_assigner = effect_assigner
 
     def perform(self, action: CharacterAction):
         initiator = CharacterService(action.initiator)
@@ -90,10 +95,23 @@ class ImpactAction(CharacterActionServicePrototype):
             self._perform_defense(action, calculated_impacts, dice_result, multiplier)
             return
 
+        if action.skill.type == SkillTypes.BUFF:
+            self._assign_effect(action, calculated_impacts, dice_result, multiplier)
+            return
+
         raise GameException("Skill type not implemented")
 
     def check(self, action: CharacterAction):
         pass
+
+    def _assign_effect(self, action, calculated_impacts, dice_result, multiplier):
+        for target in action.targets.filter(is_active=True):
+            if action.skill.effect:
+                if isinstance(action.skill.effect, list):
+                    for effect in action.skill.effect:
+                        self.effect_assigner.assign_effect(effect, CharacterService(target), CharacterService(action.initiator))
+                    return
+                self.effect_assigner.assign_effect(action.skill.effect, CharacterService(target), CharacterService(action.initiator))
 
     def check_acceptance(self, action: CharacterAction):
         """

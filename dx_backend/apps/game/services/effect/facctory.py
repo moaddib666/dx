@@ -16,6 +16,9 @@ class ManagerEffectFactory:
     def from_action(self, action: 'CharacterAction') -> DefaultEffectManager:
         return DefaultEffectManager()
 
+    def default(self) -> DefaultEffectManager:
+        return DefaultEffectManager()
+
 
 class ApplyEffectFactory:
     mapping = {

@@ -7,7 +7,7 @@ from typing_extensions import TypedDict
 
 from apps.core.models import SkillTypes
 from apps.core.utils.models import BaseModel
-from apps.school.dto import Impact, Cost, Effect
+from apps.school.dto import Impact, Cost, AssignableEffect
 
 
 class ThePath(BaseModel):
@@ -42,7 +42,7 @@ class Skill(BaseModel):
     type = models.CharField(max_length=10, choices=Types.choices, default=Types.ATTACK)
 
     impact = models.JSONField(default=list, help_text='A list of dictionaries representing the impact of the skill.',
-                              verbose_name='Impact', blank=False)
+                              verbose_name='Impact', blank=True)
     cost = models.JSONField(default=list, help_text='A list of dictionaries representing the cost of the skill.',
                             verbose_name='Cost', blank=False)
     effect = models.JSONField(default=list, help_text='A list of dictionaries representing the effects of the skill.',
@@ -64,9 +64,9 @@ class Skill(BaseModel):
         Ensures that fields are either empty lists or lists of dictionaries conforming to a specified TypedDict.
         """
         super().clean()
-        self.validate_json_field(self.impact, Impact, 'impact')
-        self.validate_json_field(self.cost, Cost, 'cost')
-        self.validate_json_field(self.effect, Effect, 'effect')
+        # self.validate_json_field(self.impact, Impact, 'impact')
+        # self.validate_json_field(self.cost, Cost, 'cost')
+        # self.validate_json_field(self.effect, AssignableEffect, 'effect')
 
     def validate_json_field(self, field: List[Dict], field_type: TypedDict, field_name: str):
         if not isinstance(field, list):

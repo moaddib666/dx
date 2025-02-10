@@ -24,8 +24,16 @@ class AggressiveBehaviorService(BaseBehaviorService):
 
     @functools.cache
     def get_potential_enemies(self) -> [Character]:
-        return Character.objects.filter(
-            position=self.character.position,
+        return (
+                Character.objects.filter(
+                    is_active=True,
+                    position=self.character.position,
+                ) |
+                Character.objects.filter(
+                    is_active=True,
+                    npc=False,
+                    position=self.character.position,
+                )
         ).exclude(
             organization=self.character.organization,
         )
@@ -33,6 +41,7 @@ class AggressiveBehaviorService(BaseBehaviorService):
     @functools.cache
     def get_potential_friends(self) -> [Character]:
         return Character.objects.filter(
+            is_active=True,
             position=self.character.position,
             organization=self.character.organization,
         )

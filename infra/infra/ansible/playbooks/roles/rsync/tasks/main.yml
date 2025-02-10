@@ -28,6 +28,16 @@
     recursive: true
     delete: false
 
+- name: Rsync remote media folder back (Pull from Remote)
+  synchronize:
+    src: "{{ destination_media }}/"
+    dest: "{{ source_media }}/"
+    mode: pull
+    rsync_opts:
+      - "--rsh='ssh -p {{ ansible_port }}'"
+    recursive: true
+    delete: false
+
 - name: Rsync static folder
   synchronize:
     src: "{{ source_static }}/"

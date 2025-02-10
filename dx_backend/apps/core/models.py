@@ -78,6 +78,10 @@ class EffectType(DjangoChoicesMixin, StrEnum):
     COLD = "Cold"  # Decrease health points with ice damage every turn
     CURSED = "Cursed"  # Decrease luck points
     BLINDNESS = "Blindness"  # Decrease accuracy
+    HASTE = "Haste"  # Increase speed
+    REGENERATION = "Regeneration"  # Increase health points every turn
+    BLESSED = "Blessed"  # Increase luck points
+    ARCANE_SURGE = "Arcane Surge"  # Increase magic skills
 
     MARKED_FOR_DEATH = "Marked"  # The character is marked for being attacked by NPC
 
