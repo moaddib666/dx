@@ -34,6 +34,17 @@ class CharacterItemsService:
         self.character.equipped_items.create(world_item=item)
         self.logger.debug(f"WorldItem {item.id} added to character {self.character.id}.")
 
+    def drop_world_item(self, world_item: WorldItem) -> WorldItem:
+        self.logger.info(
+            f"Dropping WorldItem {world_item.id} ({world_item}) from character {self.character.id}"
+        )
+        character_item = self.character.equipped_items.get(world_item=world_item)
+        character_item.delete()
+        self.logger.debug(
+            f"WorldItem {world_item.id} dropped from character {self.character.id}."
+        )
+        return world_item
+
     def drop_item(self, item: CharacterItem) -> WorldItem:
         self.logger.info(
             f"Dropping item {item.pk} ({item.world_item}) from character {self.character.id}"
@@ -64,4 +75,4 @@ class CharacterItemsServiceFactory:
         return CharacterItemsService(character)
 
 
-defaullt_items_svc_factory = CharacterItemsServiceFactory()
+default_items_svc_factory = CharacterItemsServiceFactory()

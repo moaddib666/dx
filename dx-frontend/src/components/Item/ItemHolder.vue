@@ -1,7 +1,7 @@
 <template>
   <div class="item-holder">
     <!-- Header with slot and close button -->
-    <div class="header">
+    <div class="header" v-if="showHeader">
       <slot name="header"></slot>
       <button class="close-btn" @click="close">✖</button>
     </div>
@@ -51,6 +51,10 @@ export default {
     ItemCell,
   },
   props: {
+    showHeader: {
+      type: Boolean,
+      default: true, // Show the UI by default
+    },
     items: {
       type: Array,
       required: true, // List of items to display
@@ -147,8 +151,8 @@ export default {
 }
 
 .grid-cell {
-  width: 100%;
-  height: 100%;
+  width: 5rem;
+  height: 5rem;
   display: flex;
   align-items: center;
   justify-content: center;

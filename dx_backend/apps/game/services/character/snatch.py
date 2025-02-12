@@ -3,13 +3,13 @@ import random
 
 from apps.character.models import Character
 from apps.core.models import SnatchResult, CharacterStats
-from .character_items import defaullt_items_svc_factory
+from .character_items import default_items_svc_factory
 from .core import CharacterService
 
 
 class CharacterSnatchService:
     logger = logging.getLogger("game.services.character.snatch")
-    item_svc_factory = defaullt_items_svc_factory
+    item_svc_factory = default_items_svc_factory
 
     def __init__(self, character_svc_cls: type[CharacterService] = None):
         self.character_svc_cls = character_svc_cls or CharacterService

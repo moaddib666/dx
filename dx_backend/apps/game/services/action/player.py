@@ -20,6 +20,7 @@ if typing.TYPE_CHECKING:
     from .factory import CharacterActionFactory
     from ..effect.facctory import ApplyEffectFactory, ManagerEffectFactory
     from ..world.auto_map import AutoMapService
+    from ..bargain.bargaincleanupservice import BargainCleanupService
 
 
 class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
@@ -30,6 +31,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
                  effects_apply_factory: "ApplyEffectFactory",
                  effects_manager_factory: "ManagerEffectFactory",
                  auto_map_svc: "AutoMapService",
+                 bargain_cleanup_svc: "BargainCleanupService"
                  ):
         self.cycle = cycle
         self.factory = factory
@@ -43,6 +45,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
             )
         )
         self.auto_map_svc = auto_map_svc
+        self.bargain_cleanup_svc = bargain_cleanup_svc
 
     def prepare(self):
         self.base_stats_applier.apply()
@@ -52,6 +55,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     def post(self):
         self.update_characters()
         self.active_shields_cls(self.get_active_shields()).decrease_cycles()
+        self.bargain_cleanup_svc.cleanup()
 
     def play(self) -> Cycle:
         self._play()

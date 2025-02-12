@@ -34,15 +34,17 @@
         <!-- Player Component (Left) -->
         <PlayerComponent
             :player="playerInfo"
-            :playerImage="playerGeneralInfo.biography.avatar"
+            :playerImage="playerGeneralInfo?.biography?.avatar"
             @click="openInfo"
             style="cursor: pointer"
         />
         <EffectsHolder :effects="activeEffects"/>
         <ShieldHolder :shields="shields"/>
-        <CoordinatesDisplay :coordinates="playerInfo.coordinates"/>
+        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>
       </div>
       <div class="center-center">
+        <BargainComponent :inventory="inventoryItems" v-if="isBargainVisible" @bargain-completed="toggleBargain"
+                          :bargain-id="currentBargainId" />
         <ItemHolder
             v-if="isInventoryVisible"
             :items="inventoryItems" @item-clicked="alert('itemClicked')" @close="toggleInventory">
@@ -142,10 +144,13 @@ import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 import MiniMapComponent from "@/components/Map/MiniMapComponent.vue";
 import UserActionLogItem from "@/components/ActionLog/UserActionLogItem.vue";
 import UserActionLog from "@/components/ActionLog/UserActionLog.vue";
+import BargainComponent from "@/components/bargain/BargainComponent.vue";
+import bargainService from "@/services/bargainService.js";
 
 export default {
   name: 'LocationView',
   components: {
+    BargainComponent,
     UserActionLog,
     UserActionLogItem,
     MiniMapComponent,
@@ -191,25 +196,33 @@ export default {
       shields: [],
       additionalCharactersData: null,
       diceVisible: false,
+      bargainVisible: false,
       inventoryVisible: false,
       actionConstructorVisible: false,
       isMoving: false,
       mapData: null,
       actionLog: null,
+      bargains: null,
     };
   },
   computed: {
+    currentBargainId() {
+      return this.bargains?.[0]?.id;
+    },
     centerAreaNotInteractive() {
       return !this.isDiceVisible && !this.isInventoryVisible && !this.isActionConstructorVisible;
     },
     isCompassVisible() {
-      return this.hasActionPoints && !this.isActionConstructorVisible && !this.isDiceVisible && !this.isInventoryVisible;
+      return this.hasActionPoints && !this.isActionConstructorVisible && !this.isDiceVisible && !this.isInventoryVisible && !this.bargainVisible;
     },
     isActionConstructorVisible() {
       return this.hasActionPoints && this.actionConstructorVisible;
     },
     isDiceVisible() {
       return this.diceVisible;
+    },
+    isBargainVisible() {
+      return this.bargainVisible && this.bargains?.length > 0;
     },
     isInventoryVisible() {
       return this.inventoryVisible;
@@ -263,6 +276,9 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async refreshBargains() {
+      this.bargains = await bargainService.getOpenBargains();
+    },
     async refreshActionLog() {
       this.actionLog = (await ActionGameApi.actionLogList()).data;
     },
@@ -313,6 +329,7 @@ export default {
       this.diceVisible = false;
       this.inventoryVisible = false;
       this.actionConstructorVisible = false;
+      this.bargainVisible = false;
     },
     async toggleActionConstructor() {
       console.debug("Toggling action constructor");
@@ -351,6 +368,19 @@ export default {
     },
     async closeDice() {
       this.diceVisible = false;
+    },
+    async openBargain() {
+      await this.refreshBargains();
+      await this.hideAll();
+      this.bargainVisible = true;
+    },
+    async toggleBargain() {
+      await this.refreshInventory();
+      if (this.bargainVisible) {
+        this.bargainVisible = false;
+      } else {
+        this.bargainVisible = true;
+      }
     },
     async toggleInventory() {
       if (this.inventoryVisible) {
@@ -400,7 +430,9 @@ export default {
               console.warn("No characters data found in INSPECT action.");
             }
             break;
-
+          case "GIFT":
+            await this.openBargain();
+            break;
           default:
             console.log(`Unhandled action type: ${result.action_type}`);
             break;
@@ -425,6 +457,7 @@ export default {
       await this.refreshMiniMap();
       await this.refreshActionLog();
       await this.refreshInventory();
+      await this.refreshBargains();
     },
     openInfo() {
       // open window with character info
@@ -626,6 +659,7 @@ export default {
   justify-self: flex-end;
   align-self: flex-end;
 }
+
 .action-log {
   display: flex;
   flex: 1;
@@ -641,6 +675,7 @@ export default {
   scroll-behavior: smooth;
   font-size: 0.6rem;
 }
+
 .center-left {
   margin-left: 0.5rem;
 }

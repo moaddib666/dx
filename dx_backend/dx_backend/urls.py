@@ -46,7 +46,7 @@ urlpatterns = [
     path('api/currency/', include('apps.currency.urls')),
     path('api/gallery/', include('apps.gallery.urls')),
     path('api/modificators/', include('apps.modificators.urls')),
-
+    path('api/bargain/', include('apps.bargain.urls')),
     # Adapters
     path('api/adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]

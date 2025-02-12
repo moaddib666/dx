@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     # 'channels',
+    'apps.bargain',
     'apps.gallery',
     'apps.core',
     'apps.effects',

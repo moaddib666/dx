@@ -37,6 +37,8 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     MOVE = "MOVE"
     DICE_ROLL = "DICE_ROLL"
 
+    GIFT = "GIFT"
+
     # SPECIAL ACTIONS
     LONG_REST = "LONG_REST"
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
@@ -47,6 +49,8 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
 class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
     INSPECT = "INSPECT"
     SNATCH = "SNATCH_ITEM"
+    BARGAIN = "BARGAIN"
+    GIFT = "GIFT"
     # BUY_ITEM = "BUY_ITEM"
     LONG_REST = "LONG_REST"
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"

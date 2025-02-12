@@ -14,13 +14,14 @@ import {
     EffectsApi,
     ItemsApi,
     ShieldsApi,
+    BargainApi
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
     basePath: import.meta.env.VITE_API_BASE_URL,
     accessToken: () => store.getters.getAuthToken,
 })
-
+export const BargainGameApi = new BargainApi(GameApiConfig);
 export const ActionGameApi = new ActionApi(GameApiConfig);
 export const ClientGameApi = new ClientApi(GameApiConfig);
 export const CharacterGameApi = new CharacterApi(GameApiConfig);

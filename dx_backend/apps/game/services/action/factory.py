@@ -8,6 +8,7 @@ from apps.core.models import CharacterActionType, GameMasterImpactAction, Attrib
 from apps.fight.models import FightTurnAction
 from apps.game.exceptions import GameException
 from apps.game.services.action.back_to_safety import BackToSafeService
+from apps.game.services.action.bargain import CharacterGiftService
 from apps.game.services.action.base_service import CharacterActionServicePrototype
 from apps.game.services.action.dice import DiceRollActionService
 from apps.game.services.action.dimension_action import DimensionActionService
@@ -26,7 +27,7 @@ from apps.game.services.world.auto_map import AutoMapService
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
 from apps.school.models import School, Skill
-
+from apps.game.services.bargain.bargaincleanupservice import bargain_cleaner
 
 class ActionFactory:
     pass
@@ -58,6 +59,7 @@ class CharacterActionFactory:
         CharacterActionType.BACK_TO_SAFE_ZONE: BackToSafeService(),
         CharacterActionType.INSPECT: CharacterInspectorService(),
         CharacterActionType.SNATCH: CharacterSnatchActionService(),
+        CharacterActionType.GIFT: CharacterGiftService(),
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:
@@ -278,4 +280,5 @@ ManualCharacterActionPlayerServiceFactory = partial(
     effects_manager_factory=ManagerEffectFactory(),
     effects_apply_factory=ApplyEffectFactory(),
     auto_map_svc=AutoMapService(),
+    bargain_cleanup_svc=bargain_cleaner,
 )

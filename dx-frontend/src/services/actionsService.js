@@ -82,7 +82,7 @@ class ActionService {
         if (!position) {
             throw new Error("Position is required for MOVE action.");
         }
-        return await this.performAction({actionType: "MOVE", position});
+        return await this.performAction({actionType: "MOVE", actionData: {position: position}});
     }
 
     /**

@@ -84,6 +84,21 @@ class SnatchItemAcceptance(SpecialActionAcceptance):
             raise GameException("Nobody to snatch item from")
 
 
+class BargainAcceptance(SpecialActionAcceptance):
+    def check_acceptance(self, initiator: CharacterService):
+        """
+        Character has enough AP to perform snatch item
+        Character is not dead
+        Character sees anybody in the same location
+        """
+        if initiator.get_current_ap() < 1:
+            raise GameException("Not enough action points")
+        if initiator.get_current_hp() < 1:
+            raise GameException("Character is dead")
+        if not initiator.not_alone():
+            raise GameException("Nobody to bargain with")
+
+
 class InspectionAcceptance(SpecialActionAcceptance):
     def check_acceptance(self, initiator: CharacterService):
         """
@@ -119,6 +134,8 @@ class AcceptanceFactory:
     mapping = {
         CharacterSpecialActionType.LONG_REST: LongRestAcceptance,
         CharacterSpecialActionType.SNATCH: SnatchItemAcceptance,
+        CharacterSpecialActionType.BARGAIN: BargainAcceptance,
+        CharacterSpecialActionType.GIFT: BargainAcceptance,
         CharacterSpecialActionType.INSPECT: InspectionAcceptance,
         CharacterSpecialActionType.BACK_TO_SAFE_ZONE: BackToSafeAcceptance,
     }
