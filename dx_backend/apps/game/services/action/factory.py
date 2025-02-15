@@ -3,9 +3,9 @@ from functools import partial
 
 from apps.action.models import CharacterAction, Cycle
 from apps.character.models import Character
+from apps.core.bus import event_bus
 from apps.core.models import CharacterActionType, GameMasterImpactAction, AttributeType, ImpactType, \
     ImpactViolationType, CharacterStats
-from apps.fight.models import FightTurnAction
 from apps.game.exceptions import GameException
 from apps.game.services.action.back_to_safety import BackToSafeService
 from apps.game.services.action.bargain import CharacterGiftService
@@ -23,6 +23,7 @@ from apps.game.services.action.snatch import CharacterSnatchActionService
 from apps.game.services.action.use_item import UseItemActionService
 from apps.game.services.character.core import CharacterService
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
+from apps.game.services.notifier.base import BaseNotifier
 from apps.game.services.world.auto_map import AutoMapService
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
@@ -31,18 +32,6 @@ from apps.game.services.bargain.bargaincleanupservice import bargain_cleaner
 
 class ActionFactory:
     pass
-
-
-class FightActionFactory:
-    mapping = {
-        CharacterActionType.USE_SKILL: SkillActionService,
-        CharacterActionType.DIMENSION_SHIFT: DimensionActionService,
-    }
-
-    def from_action(self, action: FightTurnAction):
-        initiator = CharacterService(action.initiator)
-        targets = [CharacterService(target) for target in action.targets.all()]
-        return self.mapping[action.action_type](action, initiator, targets)
 
 
 class CharacterActionFactory:
@@ -281,4 +270,7 @@ ManualCharacterActionPlayerServiceFactory = partial(
     effects_apply_factory=ApplyEffectFactory(),
     auto_map_svc=AutoMapService(),
     bargain_cleanup_svc=bargain_cleaner,
+    notify=BaseNotifier(
+        event_bus
+    ),
 )

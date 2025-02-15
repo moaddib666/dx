@@ -10,13 +10,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('character', '0001_initial'),
-        ('fight', '0001_initial'),
+        # ('fight', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='character',
-            name='fight',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fight.fight'),
-        ),
+        # migrations.AddField(
+        #     model_name='character',
+        #     name='fight',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='fight.fight'),
+        # ),
     ]

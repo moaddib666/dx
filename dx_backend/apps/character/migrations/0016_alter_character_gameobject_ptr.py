@@ -17,8 +17,8 @@ class Migration(migrations.Migration):
         ('action', '0010_alter_actionimpact_target'),
         ('action', '0011_alter_characteraction_initiator'),
         ('action', '0012_alter_characteraction_targets'),
-        ('fight', '0002_alter_duelinvitation_initiator_and_more'),
-        ('fight', '0003_remove_fight_side_a_participants_and_more'),
+        # ('fight', '0002_alter_duelinvitation_initiator_and_more'),
+        # ('fight', '0003_remove_fight_side_a_participants_and_more'),
         ('client', '0002_alter_client_main_character'),
     ]
 

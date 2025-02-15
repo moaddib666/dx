@@ -100,7 +100,7 @@ class Character(GameObject):
     # dimension = models.ForeignKey("world.Dimension", on_delete=models.SET_NULL, null=True, blank=True, default=1)
     # is_active = models.BooleanField(default=True)
 
-    fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True)
+    # fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True)
 
     school_slots = models.PositiveIntegerField(default=2)
 

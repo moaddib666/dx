@@ -17,6 +17,7 @@ from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
 
 if typing.TYPE_CHECKING:
+    from ..notifier.base import BaseNotifier
     from .factory import CharacterActionFactory
     from ..effect.facctory import ApplyEffectFactory, ManagerEffectFactory
     from ..world.auto_map import AutoMapService
@@ -31,7 +32,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
                  effects_apply_factory: "ApplyEffectFactory",
                  effects_manager_factory: "ManagerEffectFactory",
                  auto_map_svc: "AutoMapService",
-                 bargain_cleanup_svc: "BargainCleanupService"
+                 bargain_cleanup_svc: "BargainCleanupService",
+                 notify: "BaseNotifier",
                  ):
         self.cycle = cycle
         self.factory = factory
@@ -46,6 +48,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         )
         self.auto_map_svc = auto_map_svc
         self.bargain_cleanup_svc = bargain_cleanup_svc
+        self.notify = notify
 
     def prepare(self):
         self.base_stats_applier.apply()
@@ -62,6 +65,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.post()
         next_cycle = Cycle.objects.next()
         self.prepare()
+        self.notify.new_cycle(next_cycle)
         return next_cycle
 
     def _play(self):
@@ -133,7 +137,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
         filtered = (
                 Character.objects.filter(is_active=True, npc=False) |
-                Character.objects.filter(is_active=True, npc=True, position__sub_location__in=self._active_sub_loactions())
+                Character.objects.filter(is_active=True, npc=True,
+                                         position__sub_location__in=self._active_sub_loactions())
         )
 
         return (self.char_svc_cls(char) for char in filtered)

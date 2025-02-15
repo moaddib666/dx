@@ -49,7 +49,7 @@
       <VerticalPlayerList :game-objects="activePlayersCharacters" @item-selected="selectCharacter" class="characters-vertical"/>
     </div>
 
-    <CurrentTurnComponent @turnChanged="refresh" class="current-turn"/>
+    <CurrentTurnComponent :current-turn="currentCycleNumber" class="current-turn"/>
     <EndTurnComponent class="end-turn"/>
   </div>
 </template>
@@ -70,6 +70,7 @@ import DynamicBackground from "@/components/Background/DynamicBackground.vue";
 import VerticalPlayerList from "@/components/GameMaster/PlayerList/VerticalPlayerList.vue";
 import TeleportComponent from "@/components/GameMaster/TeleportComponent.vue";
 import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
+import {ensureConnection} from "@/api/dx-websocket/index.ts";
 
 export default {
   components: {
@@ -95,14 +96,25 @@ export default {
       selectedCharacterData: null,
       locationGMService: LocationInfoGameService,
       selectedCharacterShields: [],
+      currentCycleNumber: null,
     };
   },
   async mounted() {
     await this.refresh();
     await this.refreshCharacters();
     await this.refreshActivePlayersCharacters();
+    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id
+    // Subscribe to the event bus when component mounts
+    this.bus = ensureConnection();
+    this.bus.on("world::new_cycle", this.handleCycleChange);
   },
   methods: {
+    async handleCycleChange(data) {
+      if (data.id !== this.currentCycleNumber) {
+        this.currentCycleNumber = data.id;
+        await this.refresh();
+      }
+    },
     async refreshSelectedCharacterShields() {
       this.selectedCharacterShields = (await ShieldsGameApi.shieldsGmActiveList(
           this.selectedCharacterId,

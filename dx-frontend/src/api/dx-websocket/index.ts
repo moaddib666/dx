@@ -3,19 +3,27 @@ import {EventCategory, GameEvent} from "./events";
 import {SubscriptionResolver} from "./router";
 import {v4 as uuidv4} from "uuid";
 import {EventBus} from "./emmiter";
+import mitt from "mitt";
 
+export const eventbus = mitt()
 
-export class DxSocketClient {
+class DxSocketClient {
     protected centrifuge: Centrifuge | null = null;
     private eventBus: EventBus;
     private router: SubscriptionResolver;
+    private connected: boolean;
 
     constructor(eventBus: EventBus) {
         this.eventBus = eventBus;
         this.router = new SubscriptionResolver();
+        this.connected = false
     }
 
     connect(url: string): void {
+        if (this.connected) {
+            console.warn('Already connected to WebSocket');
+            return;
+        }
         this.centrifuge = new Centrifuge(url, {});
 
         this.centrifuge.on('connected', this.OnSocketConnected.bind(this));
@@ -25,8 +33,8 @@ export class DxSocketClient {
         this.centrifuge.on('subscribing', this.OnSubscribing.bind(this));
         this.centrifuge.on('unsubscribed', this.OnUnsubscribed.bind(this));
         this.centrifuge.on('publication', this.OnPublication.bind(this));
-
         this.centrifuge.connect();
+        this.connected = true;
     }
 
     sendMessage(message: GameEvent): void {
@@ -83,7 +91,14 @@ export class DxSocketClient {
     OnPublication(ctx: any): void {
         console.debug('Publication received from server-side channel:', ctx.channel, ctx.data, typeof ctx.data);
         const event: GamepadEvent = JSON.parse(ctx.data);
-        console.debug("Emitting event:", event.category +"::" +event.name, event.data);
-        this.eventBus.emit(event.category +"::" +event.name, event.data);
+        console.debug("Emitting event:", event.category + "::" + event.name, event.data);
+        this.eventBus.emit(event.category + "::" + event.name, event.data);
     }
+}
+
+
+export const GameEventsClient = new DxSocketClient(eventbus);
+export const ensureConnection = () => {
+    GameEventsClient.connect(import.meta.env.VITE_WS_BASE_URL as string)
+    return eventbus
 }

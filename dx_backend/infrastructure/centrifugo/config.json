@@ -9,30 +9,13 @@
   "log_level": "debug",
   "namespaces": [
     {
-      "name": "fight",
+      "name": "world",
       "presence": true,
       "history_size": 100,
       "history_ttl": "300s",
       "force_recovery": true,
       "publish": false,
       "proxy_publish": false
-    },
-    {
-      "name": "player",
-      "presence": true,
-      "history_size": 100,
-      "history_ttl": "300s",
-      "force_recovery": true,
-      "publish": false,
-      "proxy_publish": false
-    },
-    {
-      "name": "player_actions",
-      "presence": true,
-      "history_size": 100,
-      "history_ttl": "300s",
-      "force_recovery": true,
-      "proxy_publish": true
     }
   ],
   "proxy_http_headers": [
@@ -44,9 +27,9 @@
     "X-Forwarded-For",
     "X-Request-Id"
   ],
-  "proxy_connect_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/connect/",
-  "proxy_publish_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/publish/",
-  "proxy_subscribe_endpoint": "http://host.docker.internal:8000/adapters/centrifugo/subscribe/",
+  "proxy_connect_endpoint": "http://host.docker.internal:8000/api/adapters/centrifugo/connect/",
+  "proxy_publish_endpoint": "http://host.docker.internal:8000/api/adapters/centrifugo/publish/",
+  "proxy_subscribe_endpoint": "http://host.docker.internal:8000/api/adapters/centrifugo/subscribe/",
   "port": "8050",
   "internal_port": "8060"
 }

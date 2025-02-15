@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('action', '0014_characteraction_item'),
-        ('fight', '0005_remove_fightturnaction_order'),
+        # ('fight', '0005_remove_fightturnaction_order'),
     ]
 
     operations = [

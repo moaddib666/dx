@@ -2,7 +2,7 @@
   <div class="current-turn">
     <!-- Display the current turn number -->
     <div class="turn-number">
-      {{ currentTurn?.id || "..." }}
+      {{ currentTurn || "..." }}
     </div>
   </div>
 </template>
@@ -12,34 +12,20 @@ import { ActionGameApi } from "@/api/backendService.js";
 
 export default {
   name: "CurrentTurnComponent",
-  data() {
-    return {
-      currentTurn: null, // Holds the current turn information
-      previousTurnId: null, // Tracks the previous turn ID to detect changes
-      intervalId: null, // Interval ID for periodic API calls
-    };
+  props: {
+    currentTurn: Number, // Current turn number
   },
   methods: {
     async fetchCurrentTurn() {
       try {
         const newTurn = (await ActionGameApi.actionCurrentCycleRetrieve()).data;
-        if (this.previousTurnId !== newTurn.id) {
-          this.previousTurnId = newTurn.id;
-          this.currentTurn = newTurn;
-          this.$emit("turnChanged", newTurn); // Emit event when the turn changes
-        }
       } catch (error) {
-        console.error("Failed to fetch the current turn:", error);
+        console.error("Failed to fetch current turn:", error);
       }
     },
   },
-  mounted() {
-    this.fetchCurrentTurn(); // Initial fetch
-    this.intervalId = setInterval(this.fetchCurrentTurn, 5000); // Fetch every 5 seconds
-  },
-  beforeUnmount() {
-    clearInterval(this.intervalId); // Clean up interval on unmount
-  },
+  mounted() {},
+  beforeUnmount() {},
 };
 </script>
 

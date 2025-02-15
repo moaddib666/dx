@@ -66,7 +66,7 @@ INSTALLED_APPS = [
     'apps.shields',
     'apps.character',
     'apps.game',
-    'apps.fight',
+    # 'apps.fight',
     'apps.action',
     'apps.skills',
     'apps.items',
@@ -207,7 +207,7 @@ SPECTACULAR_SETTINGS = {
 
     'SCHEMA_PATH_PREFIX': '/api',  # Ensure paths have the /api prefix
     # FIXME: comment the line before - to generation api clients
-    # 'SCHEMA_PATH_PREFIX_TRIM': True,
+    'SCHEMA_PATH_PREFIX_TRIM': True,
     'SERVERS': [
         {'url': '/api', 'description': 'API Server'},  # Set the base path for generated clients
     ],

@@ -3,7 +3,7 @@ import logging
 from django.db import transaction
 from django.db.models import QuerySet
 
-from apps.adapters.protocol.sender import Sender
+from apps.core.bus.protocol import Sender
 from apps.core.bus.events.fight.produced import CharacterNewTurnGameEvent
 from apps.core.models import CurrentTurn, FIGHT_TURN_DURATION_SECONDS
 from apps.fight.models import Fight, FightTurn

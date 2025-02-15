@@ -141,10 +141,10 @@ class CharacterService:
             ],
             dimension=self.character.dimension_id,
             rank_grade=self.character.rank.grade,
-            fight=self.character.fight_id,
-            duel_invitations=self.character.duel_invitations_received.exclude(
-                is_accepted=True, is_rejected=True, created_at__gte=timezone.now() - timedelta(minutes=5)
-            ).values_list('id', flat=True),
+            # fight=None,
+            # duel_invitations=self.character.duel_invitations_received.exclude(
+            #     is_accepted=True, is_rejected=True, created_at__gte=timezone.now() - timedelta(minutes=5)
+            # ).values_list('id', flat=True),
 
         )
 
@@ -274,7 +274,7 @@ class CharacterService:
         return str(self.character.id)
 
     def in_fight(self) -> bool:
-        return self.character.fight_id is not None
+        return False
 
     def get_fight_id(self):
         return self.character.fight_id

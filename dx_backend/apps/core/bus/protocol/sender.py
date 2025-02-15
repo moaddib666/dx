@@ -1,12 +1,10 @@
 from typing import Protocol
 
-from apps.adapters.name_resolver import GroupsNameResolver
-from apps.adapters.protocol.serializer import EventSerializer
 from apps.core.bus.base import GameEvent
+from apps.core.bus.protocol.serializer import EventSerializer
 
 
 class Sender(Protocol):
-    name_resolver: GroupsNameResolver
     serializer: EventSerializer
 
     def send(self, message: GameEvent, channel: str) -> None:

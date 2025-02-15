@@ -2,6 +2,7 @@ import time
 import uuid
 from enum import StrEnum
 from inspect import isabstract
+from typing import Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +10,9 @@ from ..registry import EventsRegistry, DEFAULT_EVENT_REGISTRY
 
 
 class GameEventData(BaseModel):
-    pass
+
+    class Config:
+        from_attributes = True
 
 
 class EventCategory(StrEnum):
@@ -17,6 +20,7 @@ class EventCategory(StrEnum):
     LOCATION = "location"
     FIGHT = "fight"
     GAME = "game"
+    WORLD = "world"
 
 
 class EventDirection(StrEnum):
@@ -29,7 +33,7 @@ class GameEvent(BaseModel):
     timestamp: int = Field(default_factory=time.time)
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     category: EventCategory = EventCategory.GAME
-    data: GameEventData = None
+    data: Optional[Union[list, dict]]
 
     __produced__: bool = False
     __consumed__: bool = False
@@ -58,13 +62,13 @@ class GameEvent(BaseModel):
         return f"{self.category}.{self.name}"
 
     @classmethod
-    def create(cls, category: str, name: str, data: GameEventData) -> "GameEvent":
+    def create(cls, category: EventCategory, name: str, data: GameEventData) -> "GameEvent":
         return cls(
             id=uuid.uuid4(),
-            timestamp=time.time(),
+            timestamp=int(time.time()),
             category=category,
             name=name,
-            data=data,
+            data=data.model_dump(),
         )
 
 

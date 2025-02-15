@@ -87,7 +87,7 @@
       <div class="left-action-group">
         <CurrentTurnComponent
             class="current-turn-component"
-            @turnChanged="updateAll"
+            :current-turn="currentCycleNumber"
         />
       </div>
       <!-- Dice Component (Bottom, Right) -->
@@ -146,6 +146,7 @@ import UserActionLogItem from "@/components/ActionLog/UserActionLogItem.vue";
 import UserActionLog from "@/components/ActionLog/UserActionLog.vue";
 import BargainComponent from "@/components/bargain/BargainComponent.vue";
 import bargainService from "@/services/bargainService.js";
+import {ensureConnection} from "@/api/dx-websocket/index.ts";
 
 export default {
   name: 'LocationView',
@@ -177,6 +178,7 @@ export default {
   },
   data() {
     return {
+      bus: undefined,
       selectedGameObjectId: null,
       selectedAction: null,
       position: null,
@@ -203,7 +205,13 @@ export default {
       mapData: null,
       actionLog: null,
       bargains: null,
+      currentCycleNumber: null,
     };
+  },
+  async mounted() {
+    this.bus = ensureConnection();
+    this.bus.on("world::new_cycle", this.handleCycleChange);
+    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id
   },
   computed: {
     currentBargainId() {
@@ -276,6 +284,15 @@ export default {
     await this.updateAll();
   },
   methods: {
+    async handleCycleChange(data) {
+      console.log("Cycle change event received", data);
+      if (data.id === this.currentCycleNumber) {
+        console.debug("Cycle number is the same, skipping update");
+        return;
+      }
+      this.currentCycleNumber = data.id;
+      await this.updateAll();
+    },
     async refreshBargains() {
       this.bargains = await bargainService.getOpenBargains();
     },

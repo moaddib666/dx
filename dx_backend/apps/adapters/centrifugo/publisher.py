@@ -2,8 +2,8 @@ import logging
 
 from apps.adapters.centrifugo.client import CentrifugoClient
 from apps.adapters.centrifugo.serializer import JsonSerializer
-from apps.adapters.protocol.sender import Sender
-from apps.adapters.protocol.serializer import EventSerializer
+from apps.core.bus.protocol import Sender
+from apps.core.bus.protocol.serializer import EventSerializer
 from apps.core.bus.base import GameEvent
 
 WSS_CLIENT = CentrifugoClient()
@@ -21,3 +21,5 @@ class CentrifugoPublisher(Sender):
     def broadcast(self, message: GameEvent, channels: list[str]) -> None:
         self.logger.debug(f"Broadcasting message {message.full_event_name} to {channels}")
         self.client.broadcast(channels, self.serializer(message))
+
+CENTRIFUGO_PUBLISHER = CentrifugoPublisher()
