@@ -48,15 +48,8 @@ class CentrifugoViewSet(viewsets.ViewSet):
             channels = [
                 Channel.WORLD,
             ]
-
-            # character_name_resolver = self.p_name_resolver()
-            # action_name_resolver = self.a_name_resolver()
-
-            # channels.append(character_name_resolver.construct_character_online_group_name())  # character::online
-            # channels.append(
-            #     character_name_resolver.construct_character_online_id_group_name(character_id))  # character::online::<character_id>
-            # channels.append(
-            #     action_name_resolver.construct_character_action_group_name(character_id))  # character_action::<character_id>
+            if request.user.is_superuser:
+                channels.append(Channel.MASTER)
 
             response_data = {
                 "result": {

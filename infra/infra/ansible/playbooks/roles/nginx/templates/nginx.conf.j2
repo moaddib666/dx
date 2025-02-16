@@ -21,5 +21,9 @@ http {
         server {{ upstream_frontend }};
     }
 
+    upstream gateway {
+        server {{ upstream_gateway }};
+    }
+
     include /etc/nginx/sites-enabled/*;
 }

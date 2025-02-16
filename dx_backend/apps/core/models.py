@@ -203,6 +203,33 @@ class CharacterStats(DjangoChoicesMixin, StrEnum):
     CHARISMA = "Charisma"  # Ability to influence others and maintain relationships
 
 
+class RegisteredDiceRoll(BaseModel):
+    dice_side: int
+    outcome: str
+
+
+class RegisteredImpact(BaseModel):
+    """
+     {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "dice_roll_result": {
+            "dice_side": 9223372036854776000,
+            "outcome": "Critical Fail"
+          },
+          "type": "None",
+          "violation": "Physical",
+          "size": 9223372036854776000,
+          "target": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        }
+    """
+    id: uuid.UUID
+    dice_roll_result: RegisteredDiceRoll
+    type: ImpactType
+    violation: ImpactViolationType
+    size: int
+    target: uuid.UUID
+
+
 class CharacterStatHolder(BaseModel):
     name: CharacterStats
     value: int

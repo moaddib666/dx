@@ -101,15 +101,37 @@ export default {
   },
   async mounted() {
     await this.refresh();
+    await this.refreshActions();
     await this.refreshCharacters();
     await this.refreshActivePlayersCharacters();
     this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id
     // Subscribe to the event bus when component mounts
     this.bus = ensureConnection();
     this.bus.on("world::new_cycle", this.handleCycleChange);
+    this.bus.on("world::action_accepted", this.handleNewAction);
+    this.bus.on("world::action_performed", this.handleNewAction);
+  },
+  async beforeUnmount() {
+    // Unsubscribe to prevent memory leaks
+    this.bus.off("world::new_cycle", this.handleCycleChange);
+    this.bus.off("world::action_accepted", this.handleNewAction);
+    this.bus.off("world::action_performed", this.handleNewAction);
   },
   methods: {
+    async handleNewAction(data) {
+      console.debug("New Action Accepted:", {data});
+      // check if data.id in this.actions then replace it else add it
+      const index = this.actions.findIndex((action) => action.id === data.id);
+      if (index !== -1) {
+        this.actions[index] = data;
+      } else {
+        this.actions.push(data);
+      }
+      // re-render the actions
+      this.actions = [...this.actions];
+    },
     async handleCycleChange(data) {
+      console.debug("New Cycle:", {data});
       if (data.id !== this.currentCycleNumber) {
         this.currentCycleNumber = data.id;
         await this.refresh();
@@ -148,7 +170,7 @@ export default {
       this.selectedLocationId = id;
     },
     async refresh() {
-      await this.refreshActions();
+      // await this.refreshActions();
       if (this.selectedCharacterId) {
         await this.selectCharacter(this.selectedCharacterId);
       }
@@ -192,7 +214,7 @@ export default {
     },
     handleImpact(impact) {
       console.log("Impact Applied:", impact);
-      this.refreshActions();
+      // this.refreshActions();
     },
   },
   watch: {

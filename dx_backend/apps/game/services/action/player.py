@@ -9,7 +9,7 @@ from apps.core.models import EffectType
 from apps.shields.models import ActiveShield
 from apps.world.models import SubLocation
 from .accept import ActionAcceptor
-from .base_service import CharacterActionPlayerServicePrototype, ActionResultNotifier
+from .base_service import CharacterActionPlayerServicePrototype
 from .npc_action_scheduler import NpcActionScheduler
 from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
@@ -28,7 +28,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     char_svc_cls = CharacterService
     active_shields_cls = ActiveShieldLifeCycleService
 
-    def __init__(self, cycle: Cycle, factory: "CharacterActionFactory", notify_svc: "ActionResultNotifier",
+    def __init__(self, cycle: Cycle, factory: "CharacterActionFactory",
                  effects_apply_factory: "ApplyEffectFactory",
                  effects_manager_factory: "ManagerEffectFactory",
                  auto_map_svc: "AutoMapService",
@@ -37,7 +37,6 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
                  ):
         self.cycle = cycle
         self.factory = factory
-        self.notify_svc = notify_svc
         self.effects_apply_factory = effects_apply_factory
         self.effects_manager_factory = effects_manager_factory
         self.base_stats_applier = BaseStatChangesApplier()
@@ -82,9 +81,9 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
             action_service.check(action)  # FIXME: it looks like the dead chars perform actions after death
             action_service.perform(action)
             action.perform()
-            self.notify_svc.notify(action)
+            self.notify.action_performed(action)
         except Exception as e:
-            self.notify_svc.notify(action, e)
+            self.notify.action_failed(action, e)
 
     def apply_effects(self):
         qs = Character.objects.filter(is_active=True)

@@ -52,6 +52,8 @@ class GameMasterCharacterActionLogSerializer(serializers.ModelSerializer):
             'cycle',
             'accepted',
             'performed',
+            'order',
+            'immediate',
         ]
         read_only_fields = ['created_at', 'updated_at', "initiator"]
         depth = 1

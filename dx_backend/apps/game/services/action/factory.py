@@ -11,24 +11,21 @@ from apps.game.services.action.back_to_safety import BackToSafeService
 from apps.game.services.action.bargain import CharacterGiftService
 from apps.game.services.action.base_service import CharacterActionServicePrototype
 from apps.game.services.action.dice import DiceRollActionService
-from apps.game.services.action.dimension_action import DimensionActionService
 from apps.game.services.action.impact import ImpactAction
 from apps.game.services.action.inspect import CharacterInspectorService
 from apps.game.services.action.long_rest import CharacterLongRestService
 from apps.game.services.action.move import CharacterActionPositionMoveService
-from apps.game.services.action.notify import ConsoleResultNotifyService
 from apps.game.services.action.player import ManualCharacterActionPlayerService
-from apps.game.services.action.skill_action import SkillActionService
 from apps.game.services.action.snatch import CharacterSnatchActionService
 from apps.game.services.action.use_item import UseItemActionService
-from apps.game.services.character.core import CharacterService
+from apps.game.services.bargain.bargaincleanupservice import bargain_cleaner
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
 from apps.game.services.notifier.base import BaseNotifier
 from apps.game.services.world.auto_map import AutoMapService
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
 from apps.school.models import School, Skill
-from apps.game.services.bargain.bargaincleanupservice import bargain_cleaner
+
 
 class ActionFactory:
     pass
@@ -265,7 +262,6 @@ class GameMasterActionFactory:
 
 ManualCharacterActionPlayerServiceFactory = partial(
     ManualCharacterActionPlayerService,
-    notify_svc=ConsoleResultNotifyService(),
     effects_manager_factory=ManagerEffectFactory(),
     effects_apply_factory=ApplyEffectFactory(),
     auto_map_svc=AutoMapService(),

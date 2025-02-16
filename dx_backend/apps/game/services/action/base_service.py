@@ -61,9 +61,3 @@ class CharacterActionPlayerServicePrototype(abc.ABC):
     @abc.abstractmethod
     def play(self):
         raise GameException("Not implemented")
-
-
-class ActionResultNotifier(abc.ABC):
-    @abc.abstractmethod
-    def notify(self, action: CharacterAction, error: Exception = None):
-        raise GameException("Not implemented")

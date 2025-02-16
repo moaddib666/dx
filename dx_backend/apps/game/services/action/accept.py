@@ -4,6 +4,7 @@ from apps.core.models import CharacterStats
 from apps.game.services.character.core import CharacterService
 
 if typing.TYPE_CHECKING:
+    from apps.game.services.notifier.base import BaseNotifier
     from apps.action.models import CharacterAction
     from apps.game.services.action.factory import CharacterActionFactory
 
@@ -11,16 +12,22 @@ if typing.TYPE_CHECKING:
 class ActionAcceptor:
     character_svc_cls = CharacterService
 
-    def __init__(self, action: "CharacterAction", factory: "CharacterActionFactory"):
+    def __init__(self, action: "CharacterAction", factory: "CharacterActionFactory", notify: "BaseNotifier"):
         self.action = action
         self.action_service = factory.from_action(action)
+        self.notify = notify
 
     def accept(self):
-        self.action_service.check_acceptance(self.action)
-        self.action_service.accept(self.action)
-        self.action.accept(
-            order=self.calculate_order(),
-        )
+        try:
+            self.action_service.check_acceptance(self.action)
+            self.action_service.accept(self.action)
+            self.action.accept(
+                order=self.calculate_order(),
+            )
+        except Exception as e:
+            self.notify.action_not_accepted(self.action, e)
+            raise e
+        self.notify.action_accepted(self.action)
 
     def calculate_order(self) -> float:
         """

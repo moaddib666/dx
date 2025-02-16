@@ -8,12 +8,14 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
+from apps.core.bus import event_bus
 from apps.core.models import GameMasterImpactAction
 from apps.game.services.action import special
 from apps.game.services.action.accept import ActionAcceptor
 from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
     GameMasterActionFactory
 from apps.game.services.character.core import CharacterService
+from apps.game.services.notifier.base import BaseNotifier
 from ..serializers.openapi import CharacterActionSerializer, GameMasterCharacterActionLogSerializer, \
     RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer, \
     CharacterActionLogSerializer
@@ -92,7 +94,9 @@ class CharacterActionsViewSet(
 
     action_factory = CharacterActionFactory()
     cycle_player_factory = ManualCharacterActionPlayerServiceFactory
-
+    notifier = BaseNotifier(
+        event_bus
+    )
     def get_queryset(self):
         user = self.request.user
         character = user.main_character
@@ -109,6 +113,7 @@ class CharacterActionsViewSet(
         acceptor = ActionAcceptor(
             action=instance,
             factory=self.action_factory,
+            notify=self.notifier,
         )
         acceptor.accept()
         if instance.immediate:

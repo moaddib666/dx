@@ -86,6 +86,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # "allauth.account.middleware.AccountMiddleware",
+    "dx_backend.middleware.ThreadLocalMiddleware",
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.UUIDField'

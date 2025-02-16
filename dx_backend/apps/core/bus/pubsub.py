@@ -11,7 +11,7 @@ class EventBusProto(Protocol):
     def on_new_message(self, event: GameEvent):
         pass
 
-    def subscribe(self, topic, callback):
+    def subscribe(self, chanel, callback):
         pass
 
     def publish(self, event: GameEvent):
@@ -30,13 +30,24 @@ class _PubSub(EventBusProto):
         self.logger.debug(f"Received event {event}")
         pass
 
-    def subscribe(self, topic, callback):
-        self.logger.debug(f"Subscribing to {topic}")
+    def subscribe(self, chanel, callback):
+        self.logger.debug(f"Subscribing to {chanel}")
         pass
 
     def publish(self, event: GameEvent):
         self.logger.debug(f"Publishing event {event}")
-        self.publisher.send(event, Channel.WORLD)
+        # FIXME: add abstraction of target
+        #  Where:
+        #  - target Character
+        #  - target Group
+        #  - target Position
+        #  - target Location
+        #  - target World
+        #  - target System
+        #  - target GameMaster
+        if event.name == "new_cycle":
+            self.publisher.send(event, Channel.WORLD)
+        self.publisher.send(event, Channel.MASTER)
 
     @classmethod
     def set_publisher(cls, publisher: Sender):
