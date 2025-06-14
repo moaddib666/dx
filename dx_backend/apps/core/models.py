@@ -38,12 +38,14 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     DICE_ROLL = "DICE_ROLL"
 
     GIFT = "GIFT"
+    ANOMALY = "ANOMALY"
 
     # SPECIAL ACTIONS
     LONG_REST = "LONG_REST"
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
     INSPECT = "INSPECT"
     SNATCH = "SNATCH_ITEM"
+
 
 
 class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
@@ -563,3 +565,20 @@ class BehaviorModel(DjangoChoicesMixin, StrEnum):
     PASSIVE = "Passive"  # Disabled NPC Interaction
     AGGRESSIVE = "Aggressive"  # Attack when in range
     FRIENDLY = "Friendly"  # Help when in range
+
+
+class DimensionAnomalyEffect(DjangoChoicesMixin, StrEnum):
+    Positive = "Positive"  # Enhances characters and objects within its range
+    Negative = "Negative"  # Harms characters and objects within its range
+    Neutral = "Neutral"  # Does not affect characters and objects within its range
+
+
+class DimensionAnomaly(GameObject):
+    """
+    Represents a dimension anomaly that can affect characters and objects within its range.
+    """
+    known = django_models.BooleanField(default=False) # Indicates if the anomaly is known to the players and could be
+    # deleted afer all actions of cuurent turn done
+    level = django_models.PositiveIntegerField(default=1)
+    effect = django_models.CharField(choices=DimensionAnomalyEffect.choices(), max_length=50,
+                                     default=DimensionAnomalyEffect.Positive)

@@ -30,7 +30,7 @@ class BaseNotifier:
                 dice_side=imp.dice_roll_result.dice_side,
                 outcome=imp.dice_roll_result.outcome,
             ) if imp.dice_roll_result else None,
-            type=imp.type,
+            type=imp.effect,
             violation=imp.violation,
             size=imp.size,
             target=imp.target.id,
