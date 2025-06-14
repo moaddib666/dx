@@ -45,6 +45,10 @@
           <DiceComponent/>
           <span> Dice Roll </span>
         </div>
+        <div v-else-if="action.action_type === 'ANOMALY'" class="action-icon">
+          <img alt="Anomaly" src="@/assets/images/action/anomaly.png"/>
+          <span> Anomaly </span>
+        </div>
         <div v-else>
           <span class="action-id">ID: {{ action.id }}</span>
           <span class="action-type">Type: {{ action.action_type }}</span>

@@ -82,7 +82,7 @@
         <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
         <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
       </div>
-      <DimensionalGlitch v-for="an in position.anomalies" :key="an" :force-visible="true"
+      <DimensionalGlitch v-for="an in position.anomalies" :key="an" :force-visible="false"
                          :glitch-id="an" @glitch-found="handleAnomalyClick"/>
     </div>
     <!-- Bottom Row -->
@@ -465,6 +465,13 @@ export default {
             break;
           case "GIFT":
             await this.openBargain();
+            break;
+          case "ANOMALY":
+            // Handle anomaly action result
+            console.debug("Anomaly action result:", {result});
+            // Refresh player info and action log to reflect changes from anomaly interaction
+            await this.getPlayerInfo();
+            await this.refreshActionLog();
             break;
           default:
             console.log(`Unhandled action type: ${result.action_type}`);
