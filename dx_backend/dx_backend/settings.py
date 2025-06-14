@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'apps.currency',
     'apps.adapters',
     'apps.adapters.centrifugo',
+    'apps.gamemaster',
 ]
 
 MIDDLEWARE = [
