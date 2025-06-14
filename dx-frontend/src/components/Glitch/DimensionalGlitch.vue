@@ -16,9 +16,51 @@
         width="100%"
     >
       <defs>
-        <filter id="glass-effect">
+        <!-- Effect 1: Saturate and blur -->
+        <filter :id="`glitch-effect-1-${glitchId}`">
           <feGaussianBlur stdDeviation="1"/>
-          <feColorMatrix type="saturate" values="0.3"/>
+          <feColorMatrix type="saturate" values="0.4"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        <!-- Effect 2: Hue rotate and saturate -->
+        <filter :id="`glitch-effect-2-${glitchId}`">
+          <feColorMatrix type="hueRotate" values="180"/>
+          <feColorMatrix type="saturate" values="0.6"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        <!-- Effect 3: Contrast and saturate -->
+        <filter :id="`glitch-effect-3-${glitchId}`">
+          <feComponentTransfer>
+            <feFuncR intercept="-0.1" slope="1.2" type="linear"/>
+            <feFuncG intercept="-0.1" slope="1.2" type="linear"/>
+            <feFuncB intercept="-0.1" slope="1.2" type="linear"/>
+          </feComponentTransfer>
+          <feColorMatrix type="saturate" values="0.5"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        <!-- Effect 4: Sepia and saturate -->
+        <filter :id="`glitch-effect-4-${glitchId}`">
+          <feColorMatrix type="matrix"
+                         values="0.393 0.769 0.189 0 0
+                    0.349 0.686 0.168 0 0
+                    0.272 0.534 0.131 0 0
+                    0 0 0 1 0"/>
+          <feColorMatrix type="saturate" values="0.7"/>
+          <feComposite in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        <!-- Effect 5: Blur and brightness -->
+        <filter :id="`glitch-effect-5-${glitchId}`">
+          <feGaussianBlur stdDeviation="0.5"/>
+          <feComponentTransfer>
+            <feFuncR slope="0.8" type="linear"/>
+            <feFuncG slope="0.8" type="linear"/>
+            <feFuncB slope="0.8" type="linear"/>
+          </feComponentTransfer>
+          <feComposite in2="SourceGraphic" operator="in"/>
         </filter>
       </defs>
 
@@ -26,8 +68,8 @@
           :points="polygonPoints"
           :stroke="strokeColor"
           :stroke-width="strokeWidth"
-          fill="rgba(255, 255, 255, 0.05)"
-          filter="url(#glass-effect)"
+          :filter="glitchFilterUrl"
+          fill="rgba(255, 255, 255, 0.3)"
       />
     </svg>
   </div>
@@ -60,7 +102,8 @@ export default {
       rotation: 0,
       polygonPoints: '',
       pulsePhase: 0,
-      pulseInterval: null
+      pulseInterval: null,
+      selectedEffectIndex: Math.floor(Math.random() * 5) + 1
     };
   },
   computed: {
@@ -74,21 +117,16 @@ export default {
         transform: `rotate(${this.rotation}deg)`,
         cursor: 'pointer',
         zIndex: 1000,
-        backdropFilter: this.backdropEffect,
-        WebkitBackdropFilter: this.backdropEffect,
         filter: 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
         transition: this.isShaking ? 'none' : 'all 0.3s ease'
       };
     },
-    backdropEffect() {
-      const effects = [
-        'saturate(0.4) blur(1px)',
-        'hue-rotate(180deg) saturate(0.6)',
-        'contrast(1.2) saturate(0.5)',
-        'sepia(0.3) saturate(0.7)',
-        'blur(0.5px) brightness(0.8)'
-      ];
-      return effects[Math.floor(Math.random() * effects.length)];
+    effectIndex() {
+      // Use the pre-selected effect index for consistency
+      return this.selectedEffectIndex;
+    },
+    glitchFilterUrl() {
+      return `url(#glitch-effect-${this.effectIndex}-${this.glitchId})`;
     },
     strokeColor() {
       if (this.forceVisible) {
@@ -99,7 +137,7 @@ export default {
     },
     strokeWidth() {
       return this.forceVisible ? '2' : '0';
-    }
+    },
   },
   mounted() {
     this.generateGlitch();
