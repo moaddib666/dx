@@ -5,7 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from typing_extensions import TypedDict
 
-from apps.core.models import SkillTypes
+from apps.core.models import SkillTypes, SpecialSkillType
 from apps.core.utils.models import BaseModel
 from apps.school.dto import Impact, Cost, AssignableEffect
 
@@ -32,6 +32,7 @@ class School(BaseModel):
 
 class Skill(BaseModel):
     Types = SkillTypes
+    SpecialTypes = SpecialSkillType
 
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -47,7 +48,8 @@ class Skill(BaseModel):
                             verbose_name='Cost', blank=False)
     effect = models.JSONField(default=list, help_text='A list of dictionaries representing the effects of the skill.',
                               verbose_name='Effect', blank=True)
-
+    special = models.CharField(max_length=30, choices=SpecialSkillType.choices, default=SpecialSkillType.REGULAR_ACTION,
+                               help_text='Special type of the skill', verbose_name='Special Type')
     icon = models.ImageField(upload_to='icons/skill/', null=True, blank=True)
 
     def __str__(self):
