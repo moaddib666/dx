@@ -10,8 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='character',
-            name='fight',
-        ),
+        # No-op: fight field was already removed from model manually
+        # migrations.RemoveField(
+        #     model_name='character',
+        #     name='fight',
+        # ),
     ]

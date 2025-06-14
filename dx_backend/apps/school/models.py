@@ -7,7 +7,6 @@ from typing_extensions import TypedDict
 
 from apps.core.models import SkillTypes, SpecialSkillType
 from apps.core.utils.models import BaseModel
-from apps.school.dto import Impact, Cost, AssignableEffect
 
 
 class ThePath(BaseModel):
@@ -51,6 +50,7 @@ class Skill(BaseModel):
     special = models.CharField(max_length=30, choices=SpecialSkillType.choices, default=SpecialSkillType.REGULAR_ACTION,
                                help_text='Special type of the skill', verbose_name='Special Type')
     icon = models.ImageField(upload_to='icons/skill/', null=True, blank=True)
+    immediate = models.BooleanField(default=False, help_text='If true, the skill will be performed immediately')
 
     def __str__(self):
         return self.name

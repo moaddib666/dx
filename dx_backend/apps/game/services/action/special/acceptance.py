@@ -4,6 +4,7 @@ from apps.action.models import SpecialAction
 from apps.core.models import CharacterSpecialActionType
 from apps.game.exceptions import GameException
 from apps.game.services.character.core import CharacterService
+from apps.game.services.cost import CostService
 
 
 class SpecialActionAcceptance:
@@ -36,7 +37,8 @@ class DefaultSpecialActionAcceptance(SpecialActionAcceptance):
         Character is not dead
         Character is in safe location
         """
-        if initiator.get_current_ap() < self.action.ap_cost:
+        cost = CostService(self.action.cost)
+        if initiator.get_current_ap() < cost.get_ap_cost():
             raise GameException("Not enough action points")
         if initiator.get_current_hp() < 1:
             raise GameException("Character is dead")

@@ -8,12 +8,12 @@ from apps.core.models import CharacterStats, SkillTypes
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
+from apps.game.services.action.skills import SpecialActionFactory
 from apps.game.services.character.core import CharacterService
 from apps.game.services.rand_dice import DiceService
 from apps.game.services.shield import ActiveShieldImpactService, ShieldAssessmentService
 from apps.game.services.skills.cost_validator import SkillCostService
 from apps.game.services.skills.impact_calculator import SkillImpactService
-from apps.world.models import Position
 
 if t.TYPE_CHECKING:
     from apps.game.services.effect.assigner import BaseEffectAssigner
@@ -65,9 +65,11 @@ class ImpactAction(CharacterActionServicePrototype):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, effect_assigner: "BaseEffectAssigner", gm_mode: bool = False, ):
+    def __init__(self, effect_assigner: "BaseEffectAssigner", gm_mode: bool = False,
+                 special_action_factory: "SpecialActionFactory" = None):
         self.gm_mode = gm_mode
         self.effect_assigner = effect_assigner
+        self.special_action_factory = special_action_factory or SpecialActionFactory()
 
     def perform(self, action: CharacterAction):
         initiator = CharacterService(action.initiator)
@@ -109,9 +111,11 @@ class ImpactAction(CharacterActionServicePrototype):
             if action.skill.effect:
                 if isinstance(action.skill.effect, list):
                     for effect in action.skill.effect:
-                        self.effect_assigner.assign_effect(effect, CharacterService(target), CharacterService(action.initiator))
+                        self.effect_assigner.assign_effect(effect, CharacterService(target),
+                                                           CharacterService(action.initiator))
                     return
-                self.effect_assigner.assign_effect(action.skill.effect, CharacterService(target), CharacterService(action.initiator))
+                self.effect_assigner.assign_effect(action.skill.effect, CharacterService(target),
+                                                   CharacterService(action.initiator))
 
     def check_acceptance(self, action: CharacterAction):
         """
@@ -150,6 +154,8 @@ class ImpactAction(CharacterActionServicePrototype):
         self.check_acceptance(action)
         self._accept(action, self.character_svc_cls(action.initiator))
         SkillCostService(action.skill).apply(action.initiator)
+        action.immediate = action.skill.immediate
+        action.save(update_fields=["immediate"])
 
     # TODO: refactor this to use performers instead
     def _perform_special(self, action, calculated_impacts, dice_result, multiplier):
@@ -158,26 +164,17 @@ class ImpactAction(CharacterActionServicePrototype):
                 f"Special action failed for action {action.id} in cycle {action.cycle_id} due to dice roll")
             return
 
-        if action.skill_id == 168:  # case 1: teleport to safe place
-            # TODO: use location service for this
-            action.initiator.position = action.initiator.last_safe_position or Position.objects.get(
-                grid_x=0, grid_y=1, grid_z=1,
+        try:
+            special_action = self.special_action_factory.create(action.skill)
+            calculated_impacts = special_action.perform(
+                action, calculated_impacts=calculated_impacts, dice_result=dice_result, multiplier=multiplier
             )
-            action.initiator.save(
-                update_fields=["position", "updated_at"]
-            )
-            for impact in calculated_impacts:
-                self._register_impact(action, action.initiator, impact, dice_result)
-            return
-        if action.skill_id == 167:  # case 2: accumulate energy
-            char_svc = CharacterService(action.initiator)
-            calculate_amount = (char_svc.get_max_energy() * 0.7) * multiplier.multiplier
-            char_svc.add_energy(calculate_amount)
-            for impact in calculated_impacts:
-                impact['value'] = calculate_amount
-                self._register_impact(action, action.initiator, impact, dice_result)
-            return
-        raise GameException("Special action not implemented")
+        except GameException as e:
+            self.logger.error(f"Failed to perform special action for skill {action.skill_id}: {e}")
+            raise e
+
+        for impact in calculated_impacts:
+            self._register_impact(action, action.initiator, impact, dice_result)
 
     def _perform_heal(self, action, calculated_impacts, dice_result, multiplier):
         # TODO: refactor this to use performers instead and give up hack w

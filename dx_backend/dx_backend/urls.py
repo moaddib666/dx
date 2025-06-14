@@ -48,7 +48,7 @@ urlpatterns = [
     path('api/modificators/', include('apps.modificators.urls')),
     path('api/bargain/', include('apps.bargain.urls')),
     # Game Master API
-    path('api/gamemaster/', include('apps.gamemaster.urls')),
+    # path('api/gamemaster/', include('apps.gamemaster.urls')),
     # Adapters
     path('api/adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]

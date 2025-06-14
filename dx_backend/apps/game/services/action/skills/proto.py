@@ -17,9 +17,15 @@ class SpecialSkillActionPrototype:
         """
         self.skill = skill
 
-    def perform(self, action: "CharacterAction") -> [t.Any]:
+    def perform(self, action: "CharacterAction", calculated_impacts=None, dice_result=None, multiplier=None) -> t.Iterable[t.Any]:
         """
         Executes the skill action on the target. Returns a list of calculated impacts.
+
+        Args:
+            action: The character action being performed
+            calculated_impacts: List of calculated impacts for the action
+            dice_result: The result of the dice roll
+            multiplier: The multiplier for the action
         """
         # Implement the logic to perform the skill action on the target
         pass
@@ -31,7 +37,7 @@ class SpecialSkillActionFactoryPrototype:
     """
 
     @staticmethod
-    def create(skill: "Skill") -> "SpecialSkillAction":
+    def create(skill: "Skill") -> "SpecialSkillActionPrototype":
         """
         Creates a SpecialSkillAction instance based on the provided skill.
         """

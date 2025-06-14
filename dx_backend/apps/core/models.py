@@ -56,6 +56,15 @@ class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
 
 
+class SpecialSkillType(DjangoChoicesMixin, StrEnum):
+    REGULAR_ACTION = "ACTION"
+    TELEPORT = "TELEPORT"
+    TELEPORT_TO_CHARACTER = "TELEPORT_TO_CHARACTER"
+    TELEPORT_TO_SAFE_ZONE = "TELEPORT_TO_SAFE_ZONE"
+    RESET_STATS = "RESET_STATS"
+    FLOW_ACCUMULATION = "FLOW_ACCUMULATION"
+
+
 class ItemType(DjangoChoicesMixin, StrEnum):
     WEAPON = 'weapon'
     ARMOR = 'armor'

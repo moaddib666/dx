@@ -46,7 +46,7 @@ class SkillAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('name', 'grade', 'description', 'type', 'special', 'multi_target', 'school', 'icon')
+            'fields': ('name', 'grade', 'description', 'type', 'special', 'immediate', 'multi_target', 'school', 'icon')
         }),
         ('JSON Fields', {
             'fields': ('impact', 'cost', 'effect'),
