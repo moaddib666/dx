@@ -1,10 +1,6 @@
 <template>
   <div class="character-card-holder">
-    <button
-        v-if="canScrollLeft"
-        class="scroll-btn left"
-        @click="scrollLeft"
-    >
+    <button v-if="canScrollLeft" class="scroll-btn left" @click="scrollLeft">
       ←
     </button>
     <div ref="cardRow" class="character-card-row">
@@ -18,11 +14,7 @@
           @click="selectCharacter(character.id)"
       />
     </div>
-    <button
-        v-if="canScrollRight"
-        class="scroll-btn right"
-        @click="scrollRight"
-    >
+    <button v-if="canScrollRight" class="scroll-btn right" @click="scrollRight">
       →
     </button>
   </div>
@@ -33,41 +25,51 @@ import CharacterCard from './CharacterCard.vue';
 
 export default {
   name: "CharacterCardHolder",
-  components: {
-    CharacterCard,
-  },
+  components: { CharacterCard },
   props: {
-    characters: {
-      type: Array,
-      required: true, // Array of character objects
-    },
-    selectedCharacterId: {
-      type: String,
-      default: null,
-    },
-    visibleCount: {
-      type: Number,
-      default: 8, // Number of visible characters at a time
-    },
-    /**
+    characters: { type: Array, required: true },
+    selectedCharacterId: { type: String, default: null },
+    visibleCount: { type: Number, default: 8 },
+    /* additionalCharactersData:
      * Additional character data to be displayed in the character card details
      * @type {Object}
-     * {"3f7d8e07-cf63-45fd-a9b0-19568b64234f":{"name":"Ororon","rankGrade":9,"dimension":1,"path":{"name":"xx","icon":null},"attributes":{"energy":{"current":150,"max":150},"health":{"current":75,"max":75}, "action_points":{"current":1,"max":10}}}}
+     * {"f3c4216f-cbaa-4792-b6e6-1cedd502defe":{
+     *     "id": "f3c4216f-cbaa-4792-b6e6-1cedd502defe",
+     *     "name": "The Veiled Arbiter",
+     *     "rank_grade": 2,
+     *     "attributes": [
+     *         {
+     *             "name": "Health",
+     *             "current": 59,
+     *             "max": 90
+     *         },
+     *         {
+     *             "name": "Energy",
+     *             "current": 130,
+     *             "max": 166
+     *         },
+     *         {
+     *             "name": "Action Points",
+     *             "current": 1196,
+     *             "max": 12
+     *         }
+     *     ],
+     *     "dimension": 1,
+     *     "position": "00000000-0000-0000-0000-0193cb146bce",
+     *     "coordinates": {
+     *         "x": 2,
+     *         "y": 1,
+     *         "z": 1
+     *     }
+     * }}
      */
-
-    additionalCharactersData: {
-      type: Object,
-      required: false,
-    }
+    additionalCharactersData: { type: Object, default: () => ({}) },
   },
   data() {
-    return {
-      scrollIndex: 0, // Tracks the current scroll position in terms of items
-    };
+    return { scrollIndex: 0 };
   },
   computed: {
     visibleCharacters() {
-      // Calculate the visible characters based on scrollIndex and visibleCount
       return this.characters.slice(this.scrollIndex, this.scrollIndex + this.visibleCount);
     },
     canScrollLeft() {
@@ -79,10 +81,7 @@ export default {
   },
   methods: {
     getCharDetails(charId) {
-      if (this.additionalCharactersData === undefined) {
-        return
-      }
-      return this?.additionalCharactersData[charId]
+      return this.additionalCharactersData[charId] || {};
     },
     scrollLeft() {
       this.scrollIndex = Math.max(0, this.scrollIndex - this.visibleCount);
@@ -101,95 +100,66 @@ export default {
 </script>
 
 <style scoped>
-/* Character Card Holder Styling */
 .character-card-holder {
   display: flex;
   align-items: center;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  box-sizing: border-box;
   position: relative;
+  width: 100%;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: 0.1rem solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
   overflow: hidden;
-  height: auto; /* Ensure no vertical scroll */
 }
 
-/* Scroll Buttons */
+/* Scroll buttons using rem units */
 .scroll-btn {
-  width: 2rem;
-  height: 2rem;
   background: rgba(255, 255, 255, 0.4);
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
   border: none;
   border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
+  z-index: 2;
+  transition: background 0.2s ease;
 }
 
 .scroll-btn:hover {
   background: rgba(255, 255, 255, 0.3);
-  color: white;
 }
 
 .scroll-btn.left {
   position: absolute;
   left: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .scroll-btn.right {
   position: absolute;
   right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
-/* Character Card Row */
+/* Card row styles */
 .character-card-row {
   display: flex;
-  flex-wrap: nowrap;
   gap: 1rem;
   overflow: hidden;
-  padding: 0 1rem;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  width: 100%;
 }
 
-/* Selected Character Styling */
-.selected {
-  border: 0.2rem solid rgba(255, 215, 0, 1); /* Gold border for selected character */
-  transform: scale(1.1);
-}
-
-/* Hover Effect for Cards */
-.character-card-row > *:hover {
-  transform: scale(1.05);
-  transition: transform 0.2s ease-in-out;
-  position: relative;
-  z-index: 1;
-}
-
-/* Responsive Card Holder */
-@media (max-width: 768px) {
-  .character-card-holder {
-    padding: 0.25rem;
-  }
-
+/* Responsive adjustments */
+@media (max-width: 48em) {
   .scroll-btn {
     width: 1.5rem;
     height: 1.5rem;
     font-size: 0.75rem;
   }
-
   .character-card-row {
     gap: 0.5rem;
   }

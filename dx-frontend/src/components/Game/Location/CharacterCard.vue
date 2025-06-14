@@ -3,33 +3,7 @@
     <!-- Character Icon with Overlay -->
     <div :style="{ backgroundImage: `url(${icon})` }" class="character-icon">
       <!-- Display Overlay Only if Details Exist -->
-      <div class="icon-overlay" v-if="details && Object.keys(details).length > 0">
-        <!-- Display Rank -->
-        <div class="overlay-item rank" v-if="details.rankGrade">
-          <span class="rank-title">Rank:</span>
-          <span class="rank-value">{{ details.rankGrade }}</span>
-        </div>
-
-        <!-- Display Attributes -->
-        <div
-            v-for="(attribute, key) in details.attributes || {}"
-            :key="key"
-            class="overlay-item attribute"
-        >
-<!--          <span :class="`${key}-name`">-->
-<!--            {{ key.charAt(0).toUpperCase() + key.slice(1) }}:-->
-<!--          </span>-->
-          <span>
-            <span :class="`${key}-value`">
-              {{ attribute.current !== undefined ? attribute.current : "xx" }}
-            </span>
-            /
-            <span :class="`${key}-value`">
-              {{ attribute.max !== undefined ? attribute.max : "xx" }}
-            </span>
-          </span>
-        </div>
-      </div>
+      <CharacterCardDetails v-if="details && Object.keys(details).length > 0" :details="details"  />
     </div>
 
     <!-- Character Name -->
@@ -38,8 +12,11 @@
 </template>
 
 <script>
+import CharacterCardDetails from "@/components/Game/Location/CharacterCardDetails.vue";
+
 export default {
   name: "CharacterCard",
+  components: {CharacterCardDetails},
   props: {
     name: {
       type: String,

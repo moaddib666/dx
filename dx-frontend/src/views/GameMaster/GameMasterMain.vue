@@ -13,6 +13,7 @@
             :characters="characters"
             :selectedCharacterId="selectedCharacterId"
             class="top-center-left card-holder"
+            :additional-characters-data="additionalCharactersData"
             @characterSelected="selectCharacter"
         />
         <CharacterCardHolder
@@ -61,7 +62,7 @@ import EndTurnComponent from "@/components/GameMaster/EndTurnComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue";
 import {ActionGameApi, CharacterGameApi, ShieldsGameApi} from "@/api/backendService.js";
-import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
+import CharacterCardHolder from "@/components/GameMaster/Character/CharacterCardHolder.vue";
 import GameObjectRawSelector from "@/components/GameMaster/GameObjectRawSelector.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
@@ -97,6 +98,7 @@ export default {
       locationGMService: LocationInfoGameService,
       selectedCharacterShields: [],
       currentCycleNumber: null,
+      additionalCharactersData: {},
     };
   },
   async mounted() {
@@ -110,14 +112,20 @@ export default {
     this.bus.on("world::new_cycle", this.handleCycleChange);
     this.bus.on("world::action_accepted", this.handleNewAction);
     this.bus.on("world::action_performed", this.handleNewAction);
+    this.bus.on("world::character_changed", this.handleCharacterChange);
   },
   async beforeUnmount() {
     // Unsubscribe to prevent memory leaks
     this.bus.off("world::new_cycle", this.handleCycleChange);
     this.bus.off("world::action_accepted", this.handleNewAction);
     this.bus.off("world::action_performed", this.handleNewAction);
+    this.bus.off("world::character_changed", this.handleCharacterChange);
   },
   methods: {
+    async handleCharacterChange(data) {
+      console.debug("Character Changed:", {data});
+      this.additionalCharactersData[data.id] = data;
+    },
     async handleNewAction(data) {
       console.debug("New Action Accepted:", {data});
       // check if data.id in this.actions then replace it else add it
@@ -127,8 +135,9 @@ export default {
       } else {
         this.actions.push(data);
       }
-      // re-render the actions
-      this.actions = [...this.actions];
+      // re-render the actions and re order them by order
+      this.actions = [...this.actions].sort((a, b) => b.order - a.order);
+
     },
     async handleCycleChange(data) {
       console.debug("New Cycle:", {data});
@@ -294,25 +303,6 @@ export default {
   right: 2rem;
 }
 
-.card-holder * * {
-  height: 5.5rem;
-  width: 4rem;
-  font-size: 0.6rem;
-}
-
-.card-holder * * *:first-child {
-  display: flex;
-  height: 1.7rem;
-  width: 1.7rem;
-  padding: 0;
-  margin: 0;
-}
-
-.card-holder * * *:last-child {
-  background: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-}
 .characters-vertical {
   max-height: 40vh;
   overflow-y: auto;

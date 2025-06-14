@@ -14,6 +14,7 @@
           v-if="characters.length > 0"
           :characters="characters"
           :selectedCharacterId="selectedCharacterId"
+          :additionalCharactersData="additionalCharactersData"
           class="top-left"
           @characterSelected="updateSelectedGameObjectId"
       />
@@ -307,6 +308,7 @@ export default {
       }
     },
     resetAdditionalPlayerData() {
+      console.log("resetting additional characters data");
       this.additionalCharactersData = {};
     },
     updateAdditionalPlayerData(characters) {
@@ -318,7 +320,7 @@ export default {
       // Iterate through the characters array
       characters.forEach(character => {
         const {id, name, attributes, dimension, rank_grade, path} = character;
-
+        console.debug("Processing character:", {id, name, attributes, dimension, rank_grade, path});
         // Prepare the formatted data for the character
         const formattedData = {
           name: name || "xx",
@@ -330,6 +332,7 @@ export default {
 
         // Process attributes into a key-value structure
         if (Array.isArray(attributes)) {
+          console.debug("Processing attributes:", attributes);
           attributes.forEach(attr => {
             formattedData.attributes[attr.name.toLowerCase()] = {
               current: attr.current !== undefined ? attr.current : "xx",
@@ -337,7 +340,7 @@ export default {
             };
           });
         }
-
+        console.debug("Formatted data:", formattedData, "for character:", id);
         // Store the formatted data in resetAdditionalPlayerData
         this.additionalCharactersData[id] = formattedData;
       });
@@ -436,7 +439,7 @@ export default {
           console.error("Invalid action result:", result);
           return;
         }
-
+        console.debug("Action result:", {result});
         switch (result.action_type) {
           case "INSPECT":
             // Update additional player data if characters are present
