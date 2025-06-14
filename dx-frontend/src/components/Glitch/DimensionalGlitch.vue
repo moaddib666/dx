@@ -21,9 +21,9 @@
     <div :style="redLayerStyle" class="rgb-layer red-layer">
       <svg height="100%" width="100%">
         <polygon
-            :filter="redFilterUrl"
             :points="polygonPoints"
             fill="rgba(255, 0, 0, 0.4)"
+            :filter="redFilterUrl"
         />
       </svg>
     </div>
@@ -31,9 +31,9 @@
     <div :style="greenLayerStyle" class="rgb-layer green-layer">
       <svg height="100%" width="100%">
         <polygon
-            :filter="greenFilterUrl"
             :points="polygonPoints"
             fill="rgba(0, 255, 0, 0.4)"
+            :filter="greenFilterUrl"
         />
       </svg>
     </div>
@@ -41,9 +41,9 @@
     <div :style="blueLayerStyle" class="rgb-layer blue-layer">
       <svg height="100%" width="100%">
         <polygon
-            :filter="blueFilterUrl"
             :points="polygonPoints"
             fill="rgba(0, 0, 255, 0.4)"
+            :filter="blueFilterUrl"
         />
       </svg>
     </div>
@@ -56,11 +56,10 @@
         class="main-glitch"
     >
       <defs>
-        <!-- Enhanced glitch effects -->
+        <!-- Enhanced glitch effects - Sharp and digital -->
         <filter :id="`glitch-effect-1-${glitchId}`">
-          <feGaussianBlur stdDeviation="0.8"/>
           <feColorMatrix type="saturate" values="2.5"/>
-          <feOffset dx="2" dy="1"/>
+          <feOffset dx="1" dy="0"/>
           <feComposite in2="SourceGraphic" operator="multiply"/>
         </filter>
 
@@ -73,44 +72,43 @@
 
         <filter :id="`glitch-effect-3-${glitchId}`">
           <feComponentTransfer>
-            <feFuncR intercept="0.2" slope="1.8" type="linear"/>
-            <feFuncG intercept="-0.2" slope="1.4" type="linear"/>
-            <feFuncB intercept="0.1" slope="2.0" type="linear"/>
+            <feFuncR intercept="0.1" slope="1.8" type="linear"/>
+            <feFuncG intercept="-0.1" slope="1.4" type="linear"/>
+            <feFuncB intercept="0.2" slope="2.0" type="linear"/>
           </feComponentTransfer>
-          <feColorMatrix type="saturate" values="2.8"/>
-          <feOffset dx="-1" dy="-2"/>
+          <feColorMatrix type="saturate" values="2.5"/>
+          <feOffset dx="0" dy="-1"/>
         </filter>
 
         <filter :id="`glitch-effect-4-${glitchId}`">
-          <feTurbulence baseFrequency="0.9" numOctaves="4" result="noise"/>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3"/>
-          <feColorMatrix type="saturate" values="0.3"/>
+          <feTurbulence baseFrequency="0.5" numOctaves="1" result="noise" seed="2"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/>
+          <feColorMatrix type="saturate" values="2"/>
         </filter>
 
         <filter :id="`glitch-effect-5-${glitchId}`">
-          <feGaussianBlur stdDeviation="0.3"/>
           <feColorMatrix type="matrix"
-                         values="1.2 -0.2 0.8 0 0.1
-                                 0.3 1.5 -0.1 0 -0.05
-                                 -0.1 0.4 1.8 0 0.02
+                         values="1.5 -0.2 0.3 0 0.05
+                                 0.2 1.8 -0.1 0 -0.02
+                                 -0.1 0.1 1.6 0 0.03
                                  0 0 0 1 0"/>
           <feOffset :dx="digitalOffset" dy="0"/>
         </filter>
 
-        <!-- RGB channel filters -->
+        <!-- RGB channel filters - Sharp and crisp -->
         <filter :id="`red-filter-${glitchId}`">
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0"/>
-          <feOffset dx="2" dy="0"/>
+          <feColorMatrix type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0"/>
+          <feOffset dx="1" dy="0"/>
         </filter>
 
         <filter :id="`green-filter-${glitchId}`">
-          <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0.4 0"/>
-          <feOffset dx="-1" dy="1"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 0.5 0"/>
+          <feOffset dx="-1" dy="0"/>
         </filter>
 
         <filter :id="`blue-filter-${glitchId}`">
-          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0.5 0"/>
-          <feOffset dx="1" dy="-1"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 0.6 0"/>
+          <feOffset dx="0" dy="-1"/>
         </filter>
       </defs>
 
@@ -125,21 +123,22 @@
       <!-- Additional corrupted fragments -->
       <polygon
           v-for="(fragment, index) in corruptedFragments"
+          v-show="forceVisible || clickCount > 0"
           :key="index"
+          :points="fragment.points"
           :fill="fragment.color"
           :filter="fragment.filter"
           :opacity="fragment.opacity"
-          :points="fragment.points"
       />
     </svg>
 
     <!-- Digital artifacts -->
-    <div class="digital-artifacts">
+    <div v-show="forceVisible || clickCount > 0" class="digital-artifacts">
       <div
           v-for="(artifact, index) in digitalArtifacts"
           :key="index"
-          :style="artifact.style"
           class="artifact"
+          :style="artifact.style"
       ></div>
     </div>
   </div>
@@ -198,6 +197,8 @@ export default {
   },
   computed: {
     glitchStyle() {
+      const isSubtle = !this.forceVisible && this.clickCount === 0;
+
       return {
         position: 'absolute',
         left: this.position.x + 'px',
@@ -209,13 +210,17 @@ export default {
         zIndex: 1000,
         filter: this.forceVisible
             ? 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)) saturate(1.5)'
-            : 'drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.3))',
+            : isSubtle
+                ? 'drop-shadow(1px 1px 3px rgba(100, 150, 255, 0.3)) saturate(1.1)'
+                : 'drop-shadow(2px 2px 8px rgba(0, 255, 255, 0.6)) saturate(1.8)',
         transition: this.isShaking ? 'none' : 'all 0.3s ease',
-        mixBlendMode: 'screen'
+        mixBlendMode: isSubtle ? 'normal' : 'screen',
+        opacity: isSubtle ? 0.8 : 1
       };
     },
 
     scanLinesStyle() {
+      const baseOpacity = this.forceVisible ? 0.4 : (this.clickCount > 0 ? 0.6 : 0.15);
       return {
         position: 'absolute',
         top: 0,
@@ -226,16 +231,17 @@ export default {
           0deg,
           transparent,
           transparent 1px,
-          rgba(0, 255, 255, 0.1) 1px,
-          rgba(0, 255, 255, 0.1) 2px
+          rgba(120, 200, 255, ${baseOpacity}) 1px,
+          rgba(120, 200, 255, ${baseOpacity}) 2px
         )`,
         transform: `translateY(${this.scanLinePosition}px)`,
-        opacity: this.glitchActive ? 0.6 : 0.2,
+        opacity: this.glitchActive ? 0.8 : baseOpacity,
         pointerEvents: 'none'
       };
     },
 
     staticStyle() {
+      const baseOpacity = this.forceVisible ? 0.2 : (this.clickCount > 0 ? 0.3 : 0.08);
       return {
         position: 'absolute',
         top: 0,
@@ -243,52 +249,58 @@ export default {
         width: '100%',
         height: '100%',
         background: `
-          radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
-          radial-gradient(circle, rgba(0,255,255,0.05) 1px, transparent 1px)
+          radial-gradient(circle, rgba(100,150,255,${baseOpacity}) 1px, transparent 1px),
+          radial-gradient(circle, rgba(255,100,200,${baseOpacity * 0.7}) 1px, transparent 1px)
         `,
-        backgroundSize: '4px 4px, 6px 6px',
+        backgroundSize: '3px 3px, 5px 5px',
         backgroundPosition: '0 0, 2px 2px',
-        opacity: this.staticOpacity,
+        opacity: this.clickCount > 0 ? this.staticOpacity : baseOpacity,
         pointerEvents: 'none',
-        animation: 'static-flicker 0.1s infinite linear'
+        animation: this.clickCount > 0 ? 'static-flicker 0.1s infinite linear' : 'none'
       };
     },
 
     redLayerStyle() {
+      const isSubtle = !this.forceVisible && this.clickCount === 0;
       return {
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        transform: `translate(${this.rgbDisplacement.red.x}px, ${this.rgbDisplacement.red.y}px)`,
-        mixBlendMode: 'screen',
+        transform: `translate(${isSubtle ? 0.5 : this.rgbDisplacement.red.x}px, ${isSubtle ? 0 : this.rgbDisplacement.red.y}px)`,
+        mixBlendMode: isSubtle ? 'normal' : 'screen',
+        opacity: isSubtle ? 0.2 : 1,
         pointerEvents: 'none'
       };
     },
 
     greenLayerStyle() {
+      const isSubtle = !this.forceVisible && this.clickCount === 0;
       return {
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        transform: `translate(${this.rgbDisplacement.green.x}px, ${this.rgbDisplacement.green.y}px)`,
-        mixBlendMode: 'screen',
+        transform: `translate(${isSubtle ? -0.5 : this.rgbDisplacement.green.x}px, ${isSubtle ? 0.5 : this.rgbDisplacement.green.y}px)`,
+        mixBlendMode: isSubtle ? 'normal' : 'screen',
+        opacity: isSubtle ? 0.15 : 1,
         pointerEvents: 'none'
       };
     },
 
     blueLayerStyle() {
+      const isSubtle = !this.forceVisible && this.clickCount === 0;
       return {
         position: 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        transform: `translate(${this.rgbDisplacement.blue.x}px, ${this.rgbDisplacement.blue.y}px)`,
-        mixBlendMode: 'screen',
+        transform: `translate(${isSubtle ? 0 : this.rgbDisplacement.blue.x}px, ${isSubtle ? -0.5 : this.rgbDisplacement.blue.y}px)`,
+        mixBlendMode: isSubtle ? 'normal' : 'screen',
+        opacity: isSubtle ? 0.25 : 1,
         pointerEvents: 'none'
       };
     },
@@ -318,11 +330,19 @@ export default {
         const opacity = (Math.sin(this.pulsePhase) + 1) / 2;
         return `rgba(0, 255, 255, ${0.4 + opacity * 0.6})`;
       }
-      return this.glitchActive ? 'rgba(255, 0, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)';
+
+      // Visible but subtle - looks like a UI border or outline
+      if (this.clickCount === 0) {
+        return 'rgba(100, 150, 255, 0.4)';
+      }
+
+      return this.glitchActive ? 'rgba(255, 0, 255, 0.9)' : 'rgba(0, 255, 255, 0.7)';
     },
 
     strokeWidth() {
-      return this.forceVisible ? '3' : (this.glitchActive ? '2' : '1');
+      if (this.forceVisible) return '2';
+      if (this.clickCount === 0) return '1';
+      return this.glitchActive ? '3' : '2';
     },
 
     mainFillColor() {
@@ -330,7 +350,13 @@ export default {
         const pulse = (Math.sin(this.pulsePhase * 2) + 1) / 2;
         return `rgba(255, 255, 255, ${0.2 + pulse * 0.3})`;
       }
-      return this.glitchActive ? 'rgba(0, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.1)';
+
+      // Visible but looks like subtle UI element
+      if (this.clickCount === 0) {
+        return 'rgba(100, 150, 255, 0.15)';
+      }
+
+      return this.glitchActive ? 'rgba(0, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.25)';
     }
   },
 
@@ -485,6 +511,9 @@ export default {
       if (this.clickCount === 1) {
         this.performShake();
         this.intensifyGlitch();
+        // Restart animation with faster timing
+        this.stopGlitchAnimation();
+        this.startGlitchAnimation();
       } else if (this.clickCount === 2) {
         this.$emit('glitch-found', this.glitchId);
         this.hidden = true;
@@ -549,32 +578,57 @@ export default {
     startGlitchAnimation() {
       if (this.glitchInterval) return;
 
+      const updateInterval = () => {
+        const isSubtle = !this.forceVisible && this.clickCount === 0;
+        return isSubtle ? 500 : 100;
+      };
+
       this.glitchInterval = setInterval(() => {
-        // Animate glitch properties
-        this.hueRotateValue = Math.random() * 360;
-        this.offsetX = (Math.random() - 0.5) * 6;
-        this.offsetY = (Math.random() - 0.5) * 6;
-        this.digitalOffset = (Math.random() - 0.5) * 4;
-        this.scanLinePosition = (Math.random() - 0.5) * 10;
-        this.staticOpacity = Math.random() * 0.3;
+        const isSubtle = !this.forceVisible && this.clickCount === 0;
 
-        // RGB displacement
-        this.rgbDisplacement.red.x = (Math.random() - 0.5) * 4;
-        this.rgbDisplacement.red.y = (Math.random() - 0.5) * 2;
-        this.rgbDisplacement.green.x = (Math.random() - 0.5) * 3;
-        this.rgbDisplacement.green.y = (Math.random() - 0.5) * 3;
-        this.rgbDisplacement.blue.x = (Math.random() - 0.5) * 5;
-        this.rgbDisplacement.blue.y = (Math.random() - 0.5) * 2;
+        if (isSubtle) {
+          // Subtle but noticeable animations - like UI elements with slight issues
+          this.hueRotateValue = Math.random() * 60; // Moderate range
+          this.offsetX = (Math.random() - 0.5) * 2; // Small but visible displacement
+          this.offsetY = (Math.random() - 0.5) * 2;
+          this.digitalOffset = (Math.random() - 0.5) * 1;
+          this.scanLinePosition = (Math.random() - 0.5) * 4;
+          this.staticOpacity = Math.random() * 0.1 + 0.05; // Subtle but present
 
-        // Occasionally regenerate fragments for more chaos
-        if (Math.random() < 0.1) {
-          this.generateCorruptedFragments();
+          // Subtle RGB displacement - creates the "something's off" feeling
+          this.rgbDisplacement.red.x = (Math.random() - 0.5) * 1;
+          this.rgbDisplacement.red.y = (Math.random() - 0.5) * 0.5;
+          this.rgbDisplacement.green.x = (Math.random() - 0.5) * 1;
+          this.rgbDisplacement.green.y = (Math.random() - 0.5) * 0.5;
+          this.rgbDisplacement.blue.x = (Math.random() - 0.5) * 1;
+          this.rgbDisplacement.blue.y = (Math.random() - 0.5) * 0.5;
+        } else {
+          // Full dramatic glitch effects after first click
+          this.hueRotateValue = Math.random() * 360;
+          this.offsetX = (Math.random() - 0.5) * 6;
+          this.offsetY = (Math.random() - 0.5) * 6;
+          this.digitalOffset = (Math.random() - 0.5) * 4;
+          this.scanLinePosition = (Math.random() - 0.5) * 10;
+          this.staticOpacity = Math.random() * 0.3;
+
+          // Full RGB displacement
+          this.rgbDisplacement.red.x = (Math.random() - 0.5) * 4;
+          this.rgbDisplacement.red.y = (Math.random() - 0.5) * 2;
+          this.rgbDisplacement.green.x = (Math.random() - 0.5) * 3;
+          this.rgbDisplacement.green.y = (Math.random() - 0.5) * 3;
+          this.rgbDisplacement.blue.x = (Math.random() - 0.5) * 5;
+          this.rgbDisplacement.blue.y = (Math.random() - 0.5) * 2;
+
+          // Occasionally regenerate fragments for more chaos
+          if (Math.random() < 0.1) {
+            this.generateCorruptedFragments();
+          }
+
+          if (Math.random() < 0.05) {
+            this.generateDigitalArtifacts();
+          }
         }
-
-        if (Math.random() < 0.05) {
-          this.generateDigitalArtifacts();
-        }
-      }, 100);
+      }, updateInterval());
     },
 
     stopGlitchAnimation() {
@@ -594,7 +648,12 @@ export default {
 }
 
 .dimensional-glitch:hover {
-  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.4)) saturate(2) !important;
+  filter: drop-shadow(0 0 6px rgba(100, 150, 255, 0.5)) saturate(1.3) !important;
+}
+
+.dimensional-glitch:hover.clicked-once,
+.dimensional-glitch:hover.force-visible {
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.7)) saturate(2.2) !important;
 }
 
 .force-visible {
