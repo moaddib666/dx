@@ -47,7 +47,6 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     SNATCH = "SNATCH_ITEM"
 
 
-
 class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
     INSPECT = "INSPECT"
     SNATCH = "SNATCH_ITEM"
@@ -567,6 +566,12 @@ class BehaviorModel(DjangoChoicesMixin, StrEnum):
     FRIENDLY = "Friendly"  # Help when in range
 
 
+class DimensionAnomalyInteractionResult(BaseModel):
+    gained_items: List[uuid.UUID]  # Items obtained from the anomaly
+    gained_impacts: List[ActionImpactModel]  # Impacts applied to characters or objects
+    dice_roll_result: Optional[DiceRollResult]  # Result of the dice roll during interaction
+
+
 class DimensionAnomalyEffect(DjangoChoicesMixin, StrEnum):
     Positive = "Positive"  # Enhances characters and objects within its range
     Negative = "Negative"  # Harms characters and objects within its range
@@ -577,7 +582,7 @@ class DimensionAnomaly(GameObject):
     """
     Represents a dimension anomaly that can affect characters and objects within its range.
     """
-    known = django_models.BooleanField(default=False) # Indicates if the anomaly is known to the players and could be
+    known = django_models.BooleanField(default=False)  # Indicates if the anomaly is known to the players and could be
     # deleted afer all actions of cuurent turn done
     level = django_models.PositiveIntegerField(default=1)
     effect = django_models.CharField(choices=DimensionAnomalyEffect.choices(), max_length=50,

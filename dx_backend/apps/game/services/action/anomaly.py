@@ -1,4 +1,8 @@
-from apps.action.models import CharacterAction
+import typing as t
+from uuid import UUID
+
+from apps.action.models import CharacterAction, DiceRollResult
+from apps.core.models import ActionImpactModel
 from apps.core.models import DimensionAnomaly, AttributeType
 from apps.game.exceptions import GameLogicException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
@@ -22,7 +26,35 @@ class CharacterAnomalyInteractionService(CharacterActionServicePrototype):
         character_svc = self.character_svc_cls(action.initiator)
         anomalies = action.targets.instance_of(DimensionAnomaly)
         for anomaly in anomalies:
-            self.detector_svc_cls(anomaly).detect(character_svc)
+            result = self.detector_svc_cls(anomaly).detect(character_svc)
+            dice_roll_result = DiceRollResult.objects.create(
+                multiplier=result.dice_roll_result.multiplier,
+                dice_side=result.dice_roll_result.dice_side,
+                outcome=result.dice_roll_result.outcome,
+            )
+            for r in result.gained_impacts:
+                self._register_impact(action, r, dice_roll_result)
+            if result.gained_items:
+                self._register_items(action, result.gained_items)
+
+    def _register_items(self, action: CharacterAction, items: t.List["UUID"]):
+        """
+        Register items gained from anomaly interaction.
+        """
+        if not isinstance(action.data, list):
+            action.data = []
+        action.data.extend(items)
+        action.save(update_fields=["data"])
+
+    def _register_impact(self, action, calculated_impact: "ActionImpactModel",
+                         dice_roll_result: "DiceRollResult"):
+        action.impacts.create(
+            target=action.initiator,
+            type=calculated_impact.type,
+            violation=calculated_impact.violation,
+            size=calculated_impact.size,
+            dice_roll_result=dice_roll_result
+        )
 
     def check(self, action: CharacterAction):
         """

@@ -108,6 +108,7 @@ class CharacterActionsViewSet(
         # add initiator to the data
         serializer.validated_data['initiator'] = self.request.user.main_character
         serializer.validated_data['cycle'] = Cycle.objects.current()
+        serializer.validated_data['position'] = serializer.validated_data['initiator'].position
         super().perform_create(serializer)
         instance = serializer.instance
         acceptor = ActionAcceptor(
