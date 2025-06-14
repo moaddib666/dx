@@ -188,7 +188,7 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def get_anomalies(self, obj):
         """Retrieve all anomalies in the current position."""
-        return [t.id for t in obj.gameobject_set.instance_of(DimensionAnomaly)]
+        return [t.id for t in obj.gameobject_set.instance_of(DimensionAnomaly) if not t.known]
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""
