@@ -44,6 +44,7 @@
         <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>
       </div>
       <div class="center-center">
+        <!-- Add more glitches with empty content for a more distributed cracked screen effect -->
         <BargainComponent :inventory="inventoryItems" v-if="isBargainVisible" @bargain-completed="toggleBargain"
                           :bargain-id="currentBargainId" />
         <ItemHolder
@@ -81,6 +82,8 @@
         <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
         <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
       </div>
+      <DimensionalGlitch v-for="an in position.anomalies" :key="an" :force-visible="true"
+                         :glitch-id="an" @glitch-found="handleAnomalyClick"/>
     </div>
     <!-- Bottom Row -->
     <div class="bottom">
@@ -148,10 +151,12 @@ import UserActionLog from "@/components/ActionLog/UserActionLog.vue";
 import BargainComponent from "@/components/bargain/BargainComponent.vue";
 import bargainService from "@/services/bargainService.js";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
+import DimensionalGlitch from "@/components/Glitch/DimensionalGlitch.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    DimensionalGlitch,
     BargainComponent,
     UserActionLog,
     UserActionLogItem,
@@ -428,6 +433,14 @@ export default {
     },
     async cancelAction() {
       this.selectedGameObjectId = null;
+    },
+    async handleAnomalyClick(anomalyId) {
+      const action = {
+        actionType: "ANOMALY",
+        targets: [anomalyId],
+      }
+      console.debug("Anomaly clicked:", anomalyId, "Action to perform:", action);
+      await this.applyAction(action);
     },
     async applyAction(action) {
       try {

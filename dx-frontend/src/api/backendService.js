@@ -1,20 +1,19 @@
 import store from '@/store';
 import {
     ActionApi,
+    BargainApi,
     CharacterApi,
+    ClientApi,
     Configuration,
     CoreApi,
-    FightApi,
+    EffectsApi,
+    GalleryApi,
+    ItemsApi,
     ModificatorsApi,
     SchoolApi,
-    SkillsApi,
-    WorldApi,
-    ClientApi,
-    GalleryApi,
-    EffectsApi,
-    ItemsApi,
     ShieldsApi,
-    BargainApi
+    SkillsApi,
+    WorldApi
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
@@ -27,7 +26,6 @@ export const ClientGameApi = new ClientApi(GameApiConfig);
 export const CharacterGameApi = new CharacterApi(GameApiConfig);
 export const EffectsGameApi = new EffectsApi(GameApiConfig);
 export const SkillsGameApi = new SkillsApi(GameApiConfig);
-export const FightGameApi = new FightApi(GameApiConfig);
 export const SchoolGameApi = new SchoolApi(GameApiConfig);
 export const ModificatorsGameApi = new ModificatorsApi(GameApiConfig);
 export const CoreGameApi = new CoreApi(GameApiConfig);
