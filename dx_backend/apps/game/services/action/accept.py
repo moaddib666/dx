@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 class ActionAcceptor:
     character_svc_cls = CharacterService
 
-    def __init__(self, action: "CharacterAction", factory: "CharacterActionFactory", notify: "BaseNotifier"):
+    def __init__(self, action: "CharacterAction", factory: "CharacterActionFactory", notify: "BaseNotifier" = None):
         self.action = action
         self.action_service = factory.from_action(action)
         self.notify = notify
@@ -25,9 +25,11 @@ class ActionAcceptor:
                 order=self.calculate_order(),
             )
         except Exception as e:
-            self.notify.action_not_accepted(self.action, e)
+            if self.notify:
+                self.notify.action_not_accepted(self.action, e)
             raise e
-        self.notify.action_accepted(self.action)
+        if self.notify:
+            self.notify.action_accepted(self.action)
 
     def calculate_order(self) -> float:
         """

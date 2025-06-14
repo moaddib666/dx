@@ -1,12 +1,10 @@
 import functools
 import logging
 import uuid
-from datetime import timedelta
 from functools import partial
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.utils import timezone
 
 from apps.action.models import CharacterAction, DiceRollResult, ActionImpact
 from apps.character.models import Character
@@ -128,13 +126,21 @@ class CharacterService:
     def get_current_energy(self) -> int:
         return self.character.current_energy_points
 
-    def get_character_info(self) -> FullCharacterInfo:
-        self.character.refresh_from_db()
+    def get_character_info(self, refresh=True) -> FullCharacterInfo:
+        if refresh:
+            self.character.refresh_from_db()
+        coordinates = Coordinate(
+            x=0,
+            y=0,
+            z=0,
+        )
+        if self.character.position:
+            coordinates = Coordinate(x=self.character.position.grid_x, y=self.character.position.grid_y,
+                                     z=self.character.position.grid_z)
         return FullCharacterInfo(
             id=self.character.id,
             position=self.character.position_id,
-            coordinates=Coordinate(x=self.character.position.grid_x, y=self.character.position.grid_y,
-                                   z=self.character.position.grid_z),
+            coordinates=coordinates,
             name=self.character.name,
             attributes=[
                 self.get_attribute(attr_name) for attr_name in AttributeType

@@ -1,10 +1,12 @@
 import logging
 
 from apps.action.models import Cycle, CharacterAction
+from apps.character.models import Character
 from apps.core.bus import EventBusProto
 from apps.core.bus.base import GameEvent, EventCategory
 from apps.core.bus.events.world import NewCycleData, ActionAcceptedData
 from apps.core.models import RegisteredImpact, RegisteredDiceRoll
+from apps.game.services.character.core import CharacterService
 
 
 class BaseNotifier:
@@ -85,5 +87,15 @@ class BaseNotifier:
             name="action_failed",
             category=EventCategory.WORLD,
             data=action_data,
+        )
+        self.bus.publish(event)
+
+    def character_changed(self, character: Character):
+        self.logger.debug(f"Character {character} changed")
+        character_data = CharacterService(character).get_character_info()
+        event = GameEvent.create(
+            name="character_changed",
+            category=EventCategory.WORLD,
+            data=character_data,
         )
         self.bus.publish(event)

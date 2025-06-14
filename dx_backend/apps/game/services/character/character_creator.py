@@ -1,5 +1,6 @@
 from apps.character.models import Character, Rank, CharacterBiography
 from apps.core.models import CharacterGenericData
+from apps.world.models import Position
 
 
 class CharacterCreator:
@@ -32,6 +33,10 @@ class CharacterCreator:
     def import_character(self, dto: CharacterGenericData):
         # FIXME: Rank must be taken from the dto.rank field an resolved to the Rank object
         # Rank__id = c9a67bf5-76e0-4f89-b06b-2ab1d9aa4a3f // 9th grade
+        position = Position.objects.filter(
+            grid_z=1,
+            is_safe=True,
+        ).first()
         character = Character(
             owner=self.client,
             name=dto.name,
@@ -40,6 +45,7 @@ class CharacterCreator:
             tags=dto.tags,
             is_active=False,
         )
+        character.position = position
         character.save()
         CharacterBiography(
             age=dto.bio.age,

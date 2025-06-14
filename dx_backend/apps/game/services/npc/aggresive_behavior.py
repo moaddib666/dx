@@ -1,6 +1,8 @@
 import functools
 import typing as t
 
+from django.db.models import Q
+
 from apps.action.models import CharacterAction, Cycle
 from apps.character.models import Character
 from apps.core.models import CharacterStats, SkillTypes, AttributeType
@@ -24,16 +26,8 @@ class AggressiveBehaviorService(BaseBehaviorService):
 
     @functools.cache
     def get_potential_enemies(self) -> [Character]:
-        return (
-                Character.objects.filter(
-                    is_active=True,
-                    position=self.character.position,
-                ) |
-                Character.objects.filter(
-                    is_active=True,
-                    npc=False,
-                    position=self.character.position,
-                )
+        return Character.objects.filter(
+            position=self.character.position,
         ).exclude(
             organization=self.character.organization,
         )
