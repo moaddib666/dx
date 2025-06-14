@@ -2,7 +2,7 @@ from django.apps import apps
 from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelFilter
 
-from apps.core.models import GameObject, StatObject, ViolationObject
+from apps.core.models import GameObject, StatObject, ViolationObject, DimensionAnomaly
 
 
 @admin.register(GameObject)
@@ -20,19 +20,32 @@ class StatObjectAdmin(admin.ModelAdmin):
     base_model = StatObject
     list_filter = (PolymorphicChildModelFilter,)  # Optional
 
-    def get_child_models(self,):
+    def get_child_models(self, ):
         return []
 
-    def get_child_type_choices(self,*args, **kwargs):
+    def get_child_type_choices(self, *args, **kwargs):
         return []
+
 
 @admin.register(ViolationObject)
 class ViolationObjectAdmin(admin.ModelAdmin):
     base_model = ViolationObject
     list_filter = (PolymorphicChildModelFilter,)
 
-    def get_child_models(self,):
+    def get_child_models(self, ):
         return []
 
-    def get_child_type_choices(self,*args, **kwargs):
+    def get_child_type_choices(self, *args, **kwargs):
+        return []
+
+
+@admin.register(DimensionAnomaly)
+class DimensionAnomalyAdmin(admin.ModelAdmin):
+    base_model = DimensionAnomaly
+    list_filter = (PolymorphicChildModelFilter,)
+
+    def get_child_models(self, ):
+        return []
+
+    def get_child_type_choices(self, *args, **kwargs):
         return []

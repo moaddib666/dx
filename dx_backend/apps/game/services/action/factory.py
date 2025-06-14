@@ -7,6 +7,7 @@ from apps.core.bus import event_bus
 from apps.core.models import CharacterActionType, GameMasterImpactAction, AttributeType, ImpactType, \
     ImpactViolationType, CharacterStats
 from apps.game.exceptions import GameException
+from apps.game.services.action.anomaly import CharacterAnomalyInteractionService
 from apps.game.services.action.back_to_safety import BackToSafeService
 from apps.game.services.action.bargain import CharacterGiftService
 from apps.game.services.action.base_service import CharacterActionServicePrototype
@@ -46,6 +47,7 @@ class CharacterActionFactory:
         CharacterActionType.INSPECT: CharacterInspectorService(),
         CharacterActionType.SNATCH: CharacterSnatchActionService(),
         CharacterActionType.GIFT: CharacterGiftService(),
+        CharacterActionType.ANOMALY: CharacterAnomalyInteractionService()
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:

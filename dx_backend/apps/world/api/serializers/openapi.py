@@ -59,7 +59,7 @@ class CharacterInfoSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from apps.world.models import Position, PositionConnection
-from apps.core.models import DirectionEnum
+from apps.core.models import DirectionEnum, DimensionAnomaly
 
 
 class PositionConnectionSerializer(serializers.ModelSerializer):
@@ -178,12 +178,17 @@ class PositionSerializer(serializers.ModelSerializer):
     location = serializers.UUIDField(source='sub_location.location_id')
     characters = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    anomalies = serializers.SerializerMethodField()
 
     class Meta:
         model = Position
         fields = (
             'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
-            "image", 'is_safe')
+            "image", 'is_safe', 'anomalies')
+
+    def get_anomalies(self, obj):
+        """Retrieve all anomalies in the current position."""
+        return [t.id for t in obj.gameobject_set.instance_of(DimensionAnomaly)]
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""
