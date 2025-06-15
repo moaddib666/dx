@@ -52,6 +52,8 @@
             @room-updated="onRoomUpdated"
             @room-deleted="onRoomDeleted"
             @connection-removed="onConnectionDeleted"
+            @connection-updated="onConnectionUpdated"
+            @room-selected="onRoomSelected"
         />
       </div>
 
@@ -410,6 +412,16 @@ export default {
       } catch (error) {
         console.error('Failed to delete connection:', error);
         this.setLastAction('Failed to delete connection');
+      }
+    },
+
+    async onConnectionUpdated(connectionId, updates) {
+      try {
+        await this.service.updateConnection(connectionId, updates);
+        this.setLastAction('Connection updated');
+      } catch (error) {
+        console.error('Failed to update connection:', error);
+        this.setLastAction('Failed to update connection');
       }
     },
 

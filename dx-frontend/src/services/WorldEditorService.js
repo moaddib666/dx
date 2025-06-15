@@ -457,6 +457,47 @@ export class WorldEditorService {
     }
 
     /**
+     * Update connection properties
+     */
+    async updateConnection(connectionId, updates) {
+        try {
+            const connection = this.state.connections.get(connectionId);
+            if (!connection) {
+                throw new Error(`Connection with id ${connectionId} not found`);
+            }
+
+            // Apply updates to the connection
+            Object.assign(connection, updates);
+
+            // Update the connection in the rooms that reference it
+            const sourceRoom = this.state.rooms.get(connection.fromRoomId);
+            const targetRoom = this.state.rooms.get(connection.toRoomId);
+
+            if (sourceRoom) {
+                const connectionIndex = sourceRoom.connections.findIndex(conn => conn.id === connectionId);
+                if (connectionIndex !== -1) {
+                    sourceRoom.connections[connectionIndex] = connection;
+                }
+            }
+
+            if (targetRoom) {
+                const connectionIndex = targetRoom.connections.findIndex(conn => conn.id === connectionId);
+                if (connectionIndex !== -1) {
+                    targetRoom.connections[connectionIndex] = connection;
+                }
+            }
+
+            this.emit('connectionUpdated', connection);
+            this.emit('stateUpdated', this.state);
+
+            return connection;
+        } catch (error) {
+            console.error('Failed to update connection:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Spawn item in room
      */
     async spawnItem(roomId, itemData) {

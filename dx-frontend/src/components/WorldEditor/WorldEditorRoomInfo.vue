@@ -160,19 +160,39 @@
                 v-for="connection in roomConnections"
                 :key="connection.id"
                 class="connection-item"
+                @click="openConnectionInfo(connection)"
             >
               <div class="connection-info">
-                <span class="connection-direction">{{ getConnectionDirection(connection) }}</span>
-                <span class="connection-type">{{ connection.isVertical ? 'Vertical' : 'Horizontal' }}</span>
+                <div class="connection-header">
+                  <span class="connection-direction">{{ getConnectionDirection(connection) }}</span>
+                  <span class="connection-id">ID: {{
+                      typeof connection.id === 'string' ? connection.id.substring(0, 8) + '...' : connection.id
+                    }}</span>
+                </div>
+                <div class="connection-details">
+                  <span class="connection-type">{{ connection.isVertical ? 'Vertical' : 'Horizontal' }}</span>
+                  <span :class="{ 'locked': connection.type === 'locked' }" class="connection-status">
+                    {{ connection.type === 'locked' ? 'Locked' : 'Open' }}
+                  </span>
+                </div>
               </div>
-              <button
-                  v-if="editable"
-                  class="remove-connection-btn"
-                  title="Remove connection"
-                  @click="removeConnection(connection)"
-              >
-                <i class="icon-unlink"></i>
-              </button>
+              <div class="connection-actions">
+                <button
+                    class="view-connection-btn"
+                    title="View connection details"
+                    @click.stop="openConnectionInfo(connection)"
+                >
+                  <i class="icon-info-circle"></i>
+                </button>
+                <button
+                    v-if="editable"
+                    class="remove-connection-btn"
+                    title="Remove connection"
+                    @click.stop="removeConnection(connection)"
+                >
+                  <i class="icon-unlink"></i>
+                </button>
+              </div>
             </div>
           </div>
           <div v-else class="empty-connections">
@@ -180,6 +200,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Connection Information Modal -->
+      <WorldEditorConnectionInfo
+          v-if="selectedConnection"
+          :connection="selectedConnection"
+          :editable="editable"
+          :editorState="editorState"
+          @close="selectedConnection = null"
+          @connection-updated="onConnectionUpdated"
+          @connection-deleted="removeConnection"
+          @view-room="viewRoom"
+      />
 
       <!-- Room Actions -->
       <div v-if="editable" class="info-section">
@@ -210,8 +242,13 @@
 </template>
 
 <script>
+import WorldEditorConnectionInfo from '@/components/WorldEditor/WorldEditorConnectionInfo.vue';
+
 export default {
   name: 'WorldEditorRoomInfo',
+  components: {
+    WorldEditorConnectionInfo
+  },
   props: {
     room: {
       type: Object,
@@ -229,7 +266,8 @@ export default {
   data() {
     return {
       localRoom: null,
-      showDeleteConfirm: false
+      showDeleteConfirm: false,
+      selectedConnection: null
     };
   },
   computed: {
@@ -284,9 +322,23 @@ export default {
         return 'Unknown';
       }
 
+      if (!connection) {
+        console.error('Cannot get connection direction: connection is undefined');
+        return 'Unknown';
+      }
+
+      // Handle different property names (fromRoomId/toRoomId or sourceRoomId/targetRoomId)
+      const sourceRoomId = connection.fromRoomId || connection.sourceRoomId;
+      const targetRoomId = connection.toRoomId || connection.targetRoomId;
+
+      if (!sourceRoomId || !targetRoomId) {
+        console.error('Cannot get connection direction: sourceRoomId or targetRoomId is undefined');
+        return 'Unknown';
+      }
+
       // Determine if this room is the source or target
-      const isSource = connection.sourceRoomId === this.room.id;
-      const otherRoomId = isSource ? connection.targetRoomId : connection.sourceRoomId;
+      const isSource = sourceRoomId === this.room.id;
+      const otherRoomId = isSource ? targetRoomId : sourceRoomId;
 
       // Get the other room
       const otherRoom = this.editorState.rooms.get(otherRoomId);
@@ -329,8 +381,69 @@ export default {
       return 'Unknown';
     },
 
+    openConnectionInfo(connection) {
+      if (!connection) {
+        console.error('Cannot open connection info: connection is undefined');
+        return;
+      }
+      this.selectedConnection = connection;
+    },
+
+    onConnectionUpdated(connectionId, updates) {
+      if (!connectionId) {
+        console.error('Cannot update connection: connectionId is undefined');
+        return;
+      }
+
+      // Emit an event to update the connection in the parent component
+      this.$emit('connection-updated', connectionId, updates);
+    },
+
     removeConnection(connection) {
-      this.$emit('connection-removed', connection.id);
+      if (!connection) {
+        console.error('Cannot remove connection: connection is undefined');
+        return;
+      }
+
+      // If connection is an object, extract the ID
+      let connectionId;
+      if (typeof connection === 'object') {
+        if (!connection.id) {
+          console.error('Cannot remove connection: connection.id is undefined');
+          return;
+        }
+        connectionId = connection.id;
+      } else {
+        connectionId = connection;
+      }
+
+      this.$emit('connection-removed', connectionId);
+
+      // If the selected connection is being removed, close the modal
+      if (this.selectedConnection && this.selectedConnection.id === connectionId) {
+        this.selectedConnection = null;
+      }
+    },
+
+    viewRoom(roomId) {
+      if (!roomId) {
+        console.error('Cannot view room: roomId is undefined');
+        return;
+      }
+
+      if (!this.editorState || !this.editorState.rooms) {
+        console.error('Cannot view room: editorState or editorState.rooms is undefined');
+        return;
+      }
+
+      // Find the room in the editor state
+      const room = this.editorState.rooms.get(roomId);
+      if (room) {
+        // Emit an event to select the room in the parent component
+        this.$emit('room-selected', room);
+      } else {
+        console.error(`Cannot view room: room with id ${roomId} not found`);
+      }
     },
 
     duplicateRoom() {
@@ -616,9 +729,16 @@ export default {
 }
 
 .connection-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.connection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .connection-direction {
@@ -627,9 +747,53 @@ export default {
   font-weight: 500;
 }
 
+.connection-id {
+  color: #aaa;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+.connection-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .connection-type {
   color: #ccc;
   font-size: 0.8rem;
+}
+
+.connection-status {
+  font-size: 0.8rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  background: #4CAF50;
+  color: #fff;
+}
+
+.connection-status.locked {
+  background: #FFC107;
+  color: #333;
+}
+
+.connection-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.view-connection-btn {
+  padding: 0.25rem;
+  background: #1E90FF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-connection-btn:hover {
+  background: #4FC3F7;
 }
 
 .remove-connection-btn {
@@ -821,6 +985,10 @@ export default {
 
 .icon-unlink::before {
   content: '⛓';
+}
+
+.icon-info-circle::before {
+  content: 'ℹ️';
 }
 
 .icon-copy::before {
