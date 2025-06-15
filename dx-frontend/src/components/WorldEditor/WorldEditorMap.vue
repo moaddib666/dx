@@ -149,50 +149,50 @@
         </button>
       </div>
       <div class="legend-content">
-          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.PLAYERS) }" class="legend-item"
-               @click="toggleLayer(WorldEditorLayer.PLAYERS, $event)">
-            <div class="legend-icon">
-              <svg height="20" viewBox="0 0 20 20" width="20">
-                <circle class="entity-circle" cx="10" cy="10" fill="#00ff00" r="6" stroke="#000" stroke-width="1"/>
-                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">3</text>
-              </svg>
-            </div>
-            <div class="legend-label">Players (Top-Left)</div>
+        <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.PLAYERS) }" class="legend-item"
+             @click="toggleLayer(WorldEditorLayer.PLAYERS, $event)">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <circle class="entity-circle" cx="10" cy="10" fill="#00ff00" r="6" stroke="#000" stroke-width="1"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">3</text>
+            </svg>
           </div>
-          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.NPCS) }" class="legend-item"
-               @click="toggleLayer(WorldEditorLayer.NPCS, $event)">
-            <div class="legend-icon">
-              <svg height="20" viewBox="0 0 20 20" width="20">
-                <rect class="entity-square" fill="#ffff00" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
-                      width="12" x="4"
-                      y="4"/>
-                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">2</text>
-              </svg>
-            </div>
-            <div class="legend-label">NPCs (Top-Right)</div>
+          <div class="legend-label">Players (Top-Left)</div>
+        </div>
+        <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.NPCS) }" class="legend-item"
+             @click="toggleLayer(WorldEditorLayer.NPCS, $event)">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <rect class="entity-square" fill="#ffff00" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
+                    width="12" x="4"
+                    y="4"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">2</text>
+            </svg>
           </div>
-          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.ANOMALIES) }" class="legend-item"
-               @click="toggleLayer(WorldEditorLayer.ANOMALIES, $event)">
-            <div class="legend-icon">
-              <svg height="20" viewBox="0 0 20 20" width="20">
-                <circle class="entity-circle" cx="10" cy="10" fill="#ff0000" r="6" stroke="#000" stroke-width="1"/>
-                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
-              </svg>
-            </div>
-            <div class="legend-label">Anomalies (Top-Middle)</div>
+          <div class="legend-label">NPCs (Top-Right)</div>
+        </div>
+        <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.ANOMALIES) }" class="legend-item"
+             @click="toggleLayer(WorldEditorLayer.ANOMALIES, $event)">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <circle class="entity-circle" cx="10" cy="10" fill="#ff0000" r="6" stroke="#000" stroke-width="1"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
+            </svg>
           </div>
-          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.OBJECTS) }" class="legend-item"
-               @click="toggleLayer(WorldEditorLayer.OBJECTS, $event)">
-            <div class="legend-icon">
-              <svg height="20" viewBox="0 0 20 20" width="20">
-                <rect class="entity-square" fill="#0088ff" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
-                      width="12" x="4"
-                      y="4"/>
-                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">5</text>
-              </svg>
-            </div>
-            <div class="legend-label">Items (Left-Middle)</div>
+          <div class="legend-label">Anomalies (Top-Middle)</div>
+        </div>
+        <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.OBJECTS) }" class="legend-item"
+             @click="toggleLayer(WorldEditorLayer.OBJECTS, $event)">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <rect class="entity-square" fill="#0088ff" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
+                    width="12" x="4"
+                    y="4"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">5</text>
+            </svg>
           </div>
+          <div class="legend-label">Items (Left-Middle)</div>
+        </div>
       </div>
     </div>
 
@@ -246,6 +246,20 @@ export default {
       zoom: 1,
       isDragging: false,
       dragStart: {x: 0, y: 0},
+
+      // Debouncing for performance
+      lastUpdateTime: 0,
+      debounceDelay: 50,
+
+      // SVG readiness and viewBounds caching
+      svgReady: false,
+      cachedViewBounds: null,
+
+      // For triggering viewBounds recalculation on resize
+      windowSize: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
 
       // Interaction state
       dragMode: true,
@@ -354,33 +368,109 @@ export default {
     },
 
     viewBounds() {
-      // Calculate current view bounds for minimap
-      const rect = this.$refs.mapSvg?.getBoundingClientRect();
-      if (!rect) return null;
+      // Return cached bounds if SVG isn't ready yet
+      if (!this.svgReady || !this.$refs.mapSvg) {
+        return this.cachedViewBounds;
+      }
 
-      const factor = 1 / this.zoom;
-      return {
-        x: (-this.panX) * factor,
-        y: (-this.panY) * factor,
-        width: rect.width * factor,
-        height: rect.height * factor
-      };
+      try {
+        const rect = this.$refs.mapSvg.getBoundingClientRect();
+
+        // Ensure we have valid dimensions
+        if (!rect || rect.width === 0 || rect.height === 0) {
+          return this.cachedViewBounds;
+        }
+
+        const factor = 1 / this.zoom;
+        const bounds = {
+          x: (-this.panX) * factor,
+          y: (-this.panY) * factor,
+          width: rect.width * factor,
+          height: rect.height * factor,
+          // Include dependencies to trigger reactivity
+          _windowWidth: this.windowSize.width,
+          _windowHeight: this.windowSize.height,
+          _zoom: this.zoom,
+          _panX: this.panX,
+          _panY: this.panY
+        };
+
+        // Cache the valid bounds
+        this.cachedViewBounds = bounds;
+        return bounds;
+
+      } catch (error) {
+        console.warn('Error calculating viewBounds:', error);
+        return this.cachedViewBounds;
+      }
     }
   },
   mounted() {
-    this.centerMap();
+    // Wait for next tick to ensure DOM is ready
+    this.$nextTick(() => {
+      // Set initial view bounds
+      this.initializeViewBounds();
+
+      // Mark SVG as ready
+      this.svgReady = true;
+
+      // Center the map
+      this.centerMap();
+    });
 
     // If the legend is shown by default, add click-outside listener
     if (this.showLegend) {
       document.addEventListener('mousedown', this.handleClickOutside);
     }
+
+    // Add resize event listener to update viewBounds
+    window.addEventListener('resize', this.handleResize);
   },
 
   beforeUnmount() {
     // Clean up event listeners
     document.removeEventListener('mousedown', this.handleClickOutside);
+    window.removeEventListener('resize', this.handleResize);
   },
   methods: {
+    // Initialize view bounds safely
+    initializeViewBounds() {
+      try {
+        const rect = this.$refs.mapSvg?.getBoundingClientRect();
+        if (rect && rect.width > 0 && rect.height > 0) {
+          const factor = 1 / this.zoom;
+          this.cachedViewBounds = {
+            x: (-this.panX) * factor,
+            y: (-this.panY) * factor,
+            width: rect.width * factor,
+            height: rect.height * factor
+          };
+        }
+      } catch (error) {
+        console.warn('Error initializing viewBounds:', error);
+      }
+    },
+
+    // Handle window resize with debouncing
+    handleResize() {
+      const now = Date.now();
+      if (now - this.lastUpdateTime > this.debounceDelay) {
+        this.lastUpdateTime = now;
+        requestAnimationFrame(() => {
+          // Update windowSize to trigger viewBounds recalculation
+          this.windowSize = {
+            width: window.innerWidth,
+            height: window.innerHeight
+          };
+
+          // Recalculate view bounds
+          if (this.svgReady) {
+            this.initializeViewBounds();
+          }
+        });
+      }
+    },
+
     // Room positioning
     getRoomLeft(room) {
       return room.position.grid_x * this.cellSize + this.cellPadding / 2;
@@ -470,6 +560,11 @@ export default {
       if (this.isDragging && this.dragMode) {
         this.panX = e.clientX - this.dragStart.x;
         this.panY = e.clientY - this.dragStart.y;
+
+        // Update view bounds during pan
+        if (this.svgReady) {
+          this.initializeViewBounds();
+        }
       }
 
       // Update tool previews
@@ -496,6 +591,11 @@ export default {
       this.panX = mx - (mx - this.panX) * ratio;
       this.panY = my - (my - this.panY) * ratio;
       this.zoom = newZoom;
+
+      // Update view bounds after zoom
+      if (this.svgReady) {
+        this.initializeViewBounds();
+      }
     },
 
     // Click events
@@ -655,9 +755,14 @@ export default {
       const centerY = (minY + maxY) / 2 * this.cellSize;
 
       const rect = this.$refs.mapSvg?.getBoundingClientRect();
-      if (rect) {
+      if (rect && rect.width > 0 && rect.height > 0) {
         this.panX = rect.width / 2 - centerX * this.zoom;
         this.panY = rect.height / 2 - centerY * this.zoom;
+
+        // Update view bounds after centering
+        if (this.svgReady) {
+          this.initializeViewBounds();
+        }
       }
     },
 
@@ -669,12 +774,17 @@ export default {
       const contentHeight = (maxY - minY + 2) * this.cellSize;
 
       const rect = this.$refs.mapSvg?.getBoundingClientRect();
-      if (rect) {
+      if (rect && rect.width > 0 && rect.height > 0) {
         const scaleX = rect.width / contentWidth;
         const scaleY = rect.height / contentHeight;
         this.zoom = Math.min(scaleX, scaleY, 2); // Max zoom of 2x
 
         this.centerMap();
+
+        // Update view bounds after fitting
+        if (this.svgReady) {
+          this.initializeViewBounds();
+        }
       }
     },
 
@@ -684,6 +794,11 @@ export default {
       if (rect) {
         this.panX = rect.width / 2 - position.x * this.zoom;
         this.panY = rect.height / 2 - position.y * this.zoom;
+
+        // Update view bounds after navigation
+        if (this.svgReady) {
+          this.initializeViewBounds();
+        }
       }
     },
 

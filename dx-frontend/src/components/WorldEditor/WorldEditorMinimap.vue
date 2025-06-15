@@ -36,12 +36,12 @@
       <!-- View bounds indicator -->
       <rect
           v-if="viewBounds"
-          :height="viewBounds.height * scale"
-          :width="viewBounds.width * scale"
-          :x="viewBounds.x * scale"
-          :y="viewBounds.y * scale"
+          :height="transformedViewBounds.height"
+          :width="transformedViewBounds.width"
+          :x="transformedViewBounds.x"
+          :y="transformedViewBounds.y"
           class="view-bounds"
-          fill="none"
+          fill="rgba(30, 144, 255, 0.1)"
           stroke="#1E90FF"
           stroke-dasharray="4,2"
           stroke-width="2"
@@ -77,7 +77,9 @@ export default {
       // Minimap configuration
       padding: 10,
       roomSize: 4,
-      scale: 0.1 // Scale factor for converting map coordinates to minimap
+      scale: 0.1, // Scale factor for converting map coordinates to minimap
+      lastUpdateTime: 0, // For debouncing updates
+      debounceDelay: 50 // Milliseconds to wait before updating
     };
   },
   computed: {
@@ -103,11 +105,36 @@ export default {
       });
 
       return {minX, maxX, minY, maxY};
+    },
+
+    // Transform view bounds from main map to minimap coordinates
+    transformedViewBounds() {
+      if (!this.viewBounds) return null;
+
+      const {minX, minY} = this.mapBounds;
+      const cellSize = 80; // Same as in WorldEditorMap
+
+      // Convert main map coordinates to minimap coordinates
+      // Ignore any properties starting with underscore (like _windowWidth, _windowHeight)
+      return {
+        x: (this.viewBounds.x / cellSize - minX) * cellSize * this.scale + this.padding,
+        y: (this.viewBounds.y / cellSize - minY) * cellSize * this.scale + this.padding,
+        width: this.viewBounds.width * this.scale,
+        height: this.viewBounds.height * this.scale
+      };
     }
   },
   mounted() {
     // Adjust scale based on map bounds and minimap size
     this.updateScale();
+
+    // Add resize event listener
+    window.addEventListener('resize', this.handleResize);
+  },
+
+  beforeUnmount() {
+    // Clean up resize event listener
+    window.removeEventListener('resize', this.handleResize);
   },
   methods: {
     // Update scale factor based on map bounds and minimap size
@@ -160,6 +187,17 @@ export default {
 
       // Emit navigate event with map coordinates
       this.$emit('navigate', {x: mapX, y: mapY});
+    },
+
+    // Handle window resize with debouncing
+    handleResize() {
+      const now = Date.now();
+      if (now - this.lastUpdateTime > this.debounceDelay) {
+        this.lastUpdateTime = now;
+        requestAnimationFrame(() => {
+          this.updateScale();
+        });
+      }
     }
   },
   watch: {
@@ -168,6 +206,21 @@ export default {
       this.$nextTick(() => {
         this.updateScale();
       });
+    },
+
+    // Debounce viewBounds updates for better performance
+    viewBounds: {
+      handler() {
+        const now = Date.now();
+        if (now - this.lastUpdateTime > this.debounceDelay) {
+          this.lastUpdateTime = now;
+          // Use requestAnimationFrame for smooth visual updates
+          requestAnimationFrame(() => {
+            // The actual update happens through the transformedViewBounds computed property
+          });
+        }
+      },
+      deep: true
     }
   }
 };
