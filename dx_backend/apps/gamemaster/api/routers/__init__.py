@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from apps.gamemaster.api.views.character import GameMasterCharacterViewSet
 from apps.gamemaster.api.views.currency import GameMasterCurrencyTokenViewSet, GameMasterCharacterCurrencyViewSet
 from apps.gamemaster.api.views.effects import GameMasterEffectViewSet, GameMasterActiveEffectViewSet
+from apps.gamemaster.api.views.game_objects import GameObjectViewSet
 from apps.gamemaster.api.views.items import GameMasterItemViewSet, GameMasterWorldItemViewSet, GameMasterCharacterItemViewSet
 from apps.gamemaster.api.views.school import GameMasterSchoolViewSet, GameMasterSkillViewSet, GameMasterPathViewSet
 from apps.gamemaster.api.views.skills import GameMasterLearnedSkillViewSet, GameMasterLearnedSchoolViewSet
@@ -49,3 +50,6 @@ GameMasterRouter.register('paths', GameMasterPathViewSet, basename='gamemaster-p
 # Currency viewsets
 GameMasterRouter.register('currency-tokens', GameMasterCurrencyTokenViewSet, basename='gamemaster-currency-tokens')
 GameMasterRouter.register('character-currencies', GameMasterCharacterCurrencyViewSet, basename='gamemaster-character-currencies')
+
+# Game Objects viewset
+GameMasterRouter.register('game-objects', GameObjectViewSet, basename='gamemaster-game-objects')
