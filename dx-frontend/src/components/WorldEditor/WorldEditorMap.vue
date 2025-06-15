@@ -245,6 +245,7 @@ export default {
     'room-moved',
     'connection-created',
     'connection-deleted',
+    'connection-selected',
     'map-clicked',
     'show-entity-details',
     'layer-toggled',
@@ -642,6 +643,9 @@ export default {
     onConnectionClick(connection) {
       if (this.selectedTool === WorldEditorTool.DISCONNECT_ROOMS) {
         this.$emit('connection-deleted', connection.id);
+      } else {
+        // Emit connection-selected event for interactive connections
+        this.$emit('connection-selected', connection);
       }
     },
 

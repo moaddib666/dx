@@ -44,6 +44,7 @@
         <!-- Room Info Panel -->
         <WorldEditorRoomInfo
             v-if="selectedRoom"
+            ref="roomInfoPanel"
             :editable="isEditMode"
             :room="selectedRoom"
             :editorState="editorState"
@@ -70,6 +71,7 @@
             @room-moved="onRoomMoved"
             @connection-created="onConnectionCreated"
             @connection-deleted="onConnectionDeleted"
+            @connection-selected="onConnectionSelected"
             @map-clicked="onMapClicked"
             @show-entity-details="onShowEntityDetails"
             @layer-toggled="onLayerToggled"
@@ -454,6 +456,26 @@ export default {
       } catch (error) {
         console.error('Failed to delete connection:', error);
         this.setLastAction('Failed to delete connection');
+      }
+    },
+
+    onConnectionSelected(connection) {
+      // Find the source room for this connection
+      const fromRoom = this.editorState.rooms.get(connection.fromRoomId);
+      if (fromRoom) {
+        // Select the room
+        this.selectedRoom = fromRoom;
+        this.service.toggleRoomSelection(fromRoom.id);
+
+        // Use nextTick to ensure the room info component is mounted
+        this.$nextTick(() => {
+          // Access the room info component via ref and open the connection info
+          if (this.$refs.roomInfoPanel) {
+            this.$refs.roomInfoPanel.openConnectionInfo(connection);
+          }
+        });
+
+        this.setLastAction('Connection selected');
       }
     },
 
