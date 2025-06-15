@@ -84,8 +84,13 @@
                   :key="player.id"
                   class="entity-item"
               >
-                <span class="entity-name">{{ player.name || 'Unknown Player' }}</span>
-                <span class="entity-status">{{ player.status || 'Active' }}</span>
+                <div class="entity-avatar">
+                  <img :src="getPlayerAvatar(player.id)" alt="Player Avatar" class="avatar-image"/>
+                </div>
+                <div class="entity-info">
+                  <span class="entity-name">{{ player.name || 'Unknown Player' }}</span>
+                  <span class="entity-status">{{ player.status || 'Active' }}</span>
+                </div>
                 <EditInDjangoAdmin
                     :id="player.id"
                     :app="player.object_type?.app_label || 'world'"
@@ -107,6 +112,9 @@
                   :key="npc.id"
                   class="entity-item"
               >
+                <div class="entity-avatar">
+                  <img :src="getNpcAvatar(npc.id)" alt="NPC Avatar" class="avatar-image"/>
+                </div>
                 <div class="entity-info">
                   <span class="entity-name">{{ npc.name || 'Unknown NPC' }}</span>
                   <span class="entity-type">{{ npc.type || 'Neutral' }}</span>
@@ -277,6 +285,7 @@
 <script>
 import WorldEditorConnectionInfo from '@/components/WorldEditor/WorldEditorConnectionInfo.vue';
 import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
+import {CharacterInfoGameService} from '@/services/characterInfoService.js';
 
 export default {
   name: 'WorldEditorRoomInfo',
@@ -302,7 +311,10 @@ export default {
     return {
       localRoom: null,
       showDeleteConfirm: false,
-      selectedConnection: null
+      selectedConnection: null,
+      playerAvatars: new Map(), // Map to store player avatar URLs
+      npcAvatars: new Map(), // Map to store NPC avatar URLs
+      defaultAvatar: 'https://via.placeholder.com/24' // Default avatar URL
     };
   },
   computed: {
@@ -326,14 +338,57 @@ export default {
     room: {
       handler(newRoom) {
         this.localRoom = JSON.parse(JSON.stringify(newRoom));
+        this.fetchAvatars();
       },
       immediate: true,
       deep: true
     }
   },
+
+  created() {
+    this.fetchAvatars();
+  },
   methods: {
     closePanel() {
       this.$emit('close');
+    },
+
+    async fetchAvatars() {
+      if (!this.room || !this.room.players || !this.room.npcs) return;
+
+      // Fetch avatars for players
+      for (const player of this.room.players) {
+        if (player.id && !this.playerAvatars.has(player.id)) {
+          try {
+            const avatarUrl = await CharacterInfoGameService.getAvatarUrl(player.id, true) || this.defaultAvatar;
+            this.playerAvatars.set(player.id, avatarUrl);
+          } catch (error) {
+            console.error(`Error fetching avatar for player ${player.id}:`, error);
+            this.playerAvatars.set(player.id, this.defaultAvatar);
+          }
+        }
+      }
+
+      // Fetch avatars for NPCs
+      for (const npc of this.room.npcs) {
+        if (npc.id && !this.npcAvatars.has(npc.id)) {
+          try {
+            const avatarUrl = await CharacterInfoGameService.getAvatarUrl(npc.id, true) || this.defaultAvatar;
+            this.npcAvatars.set(npc.id, avatarUrl);
+          } catch (error) {
+            console.error(`Error fetching avatar for NPC ${npc.id}:`, error);
+            this.npcAvatars.set(npc.id, this.defaultAvatar);
+          }
+        }
+      }
+    },
+
+    getPlayerAvatar(playerId) {
+      return this.playerAvatars.get(playerId) || this.defaultAvatar;
+    },
+
+    getNpcAvatar(npcId) {
+      return this.npcAvatars.get(npcId) || this.defaultAvatar;
     },
 
     onRoomUpdated() {
@@ -724,6 +779,18 @@ export default {
   padding: 0.25rem 0.5rem;
   background: #555;
   border-radius: 4px;
+}
+
+.entity-avatar {
+  margin-right: 0.5rem;
+}
+
+.avatar-image {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #777;
 }
 
 .entity-info {
