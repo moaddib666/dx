@@ -14,6 +14,25 @@
         stroke-width="2"
     />
 
+    <!-- Clipped circular image -->
+    <clipPath :id="clipId">
+      <circle
+          :cx="roomLeft + roomWidth / 2"
+          :cy="roomTop + roomHeight / 2"
+          :r="Math.min(roomWidth, roomHeight) / 2 - 8"
+      />
+    </clipPath>
+    <image
+        v-if="backgroundImage"
+        :clip-path="`url(#${clipId})`"
+        :height="roomHeight"
+        :href="backgroundImageSrc"
+        :width="roomWidth"
+        :x="roomLeft"
+        :y="roomTop"
+        preserveAspectRatio="xMidYMid slice"
+    />
+
     <!-- Room type indicator -->
     <g v-if="showTypeIndicator" class="room-type-indicator">
       <circle
@@ -133,6 +152,7 @@
 
 <script>
 import {WorldEditorLayer} from '@/models/WorldEditorModels.js';
+import {RoomLabel} from "@/utils/mapData.js";
 
 export default {
   name: 'WorldEditorRoom',
@@ -162,7 +182,31 @@ export default {
       default: () => new Set()
     }
   },
+  data() {
+    return {
+      roomType: null,
+      roomLabel: null,
+      backgroundImage: null,
+    };
+  },
+  created() {
+    this.extractLabels();
+    this.loadIcon();
+  },
   methods: {
+    extractLabels() {
+      const labels = this.room.labels || [];
+      this.roomType = labels[0] || null;
+      this.roomLabel = labels[1] || null;
+    },
+    loadIcon() {
+      const icon = RoomLabel.getIcon(this.roomLabel);
+      if (icon instanceof HTMLImageElement) {
+        this.backgroundImage = icon;
+      } else {
+        this.backgroundImage = null;
+      }
+    },
     showEntityDetails(entityType) {
       // Emit an event to show detailed information about the entities
       this.$emit('show-entity-details', {
@@ -237,6 +281,14 @@ export default {
     }
   },
   computed: {
+    // Background image source
+    backgroundImageSrc() {
+      return this.backgroundImage ? this.backgroundImage.src : null;
+    },
+    // Unique ID for the clipPath to avoid conflicts
+    clipId() {
+      return `clip-${this.room.id}`;
+    },
     // Room positioning
     roomLeft() {
       return this.room.position.grid_x * this.cellSize + this.cellPadding / 2;
@@ -321,6 +373,15 @@ export default {
         anomalies: '#ff0000'  // Red
       };
     }
+  },
+  watch: {
+    room: {
+      immediate: true,
+      handler() {
+        this.extractLabels();
+        this.loadIcon();
+      },
+    },
   }
 };
 </script>
