@@ -85,7 +85,12 @@
                   class="entity-item"
               >
                 <div class="entity-avatar">
-                  <img :src="getPlayerAvatar(player.id)" alt="Player Avatar" class="avatar-image"/>
+                  <img
+                      :src="getPlayerAvatar(player.id)"
+                      alt="Player Avatar"
+                      class="avatar-image"
+                      @error="handleAvatarError"
+                  />
                 </div>
                 <div class="entity-info">
                   <span class="entity-name">{{ player.name || 'Unknown Player' }}</span>
@@ -113,7 +118,12 @@
                   class="entity-item"
               >
                 <div class="entity-avatar">
-                  <img :src="getNpcAvatar(npc.id)" alt="NPC Avatar" class="avatar-image"/>
+                  <img
+                      :src="getNpcAvatar(npc.id)"
+                      alt="NPC Avatar"
+                      class="avatar-image"
+                      @error="handleAvatarError"
+                  />
                 </div>
                 <div class="entity-info">
                   <span class="entity-name">{{ npc.name || 'Unknown NPC' }}</span>
@@ -314,7 +324,8 @@ export default {
       selectedConnection: null,
       playerAvatars: new Map(), // Map to store player avatar URLs
       npcAvatars: new Map(), // Map to store NPC avatar URLs
-      defaultAvatar: 'https://via.placeholder.com/24' // Default avatar URL
+      // Data URL for a simple colored circle as fallback avatar
+      defaultAvatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="%23555"/></svg>'
     };
   },
   computed: {
@@ -389,6 +400,11 @@ export default {
 
     getNpcAvatar(npcId) {
       return this.npcAvatars.get(npcId) || this.defaultAvatar;
+    },
+
+    handleAvatarError(event) {
+      // Replace the broken image with the default avatar
+      event.target.src = this.defaultAvatar;
     },
 
     onRoomUpdated() {
