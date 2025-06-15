@@ -149,8 +149,6 @@
         </button>
       </div>
       <div class="legend-content">
-        <div class="legend-section">
-          <h5>Entity Types</h5>
           <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.PLAYERS) }" class="legend-item"
                @click="toggleLayer(WorldEditorLayer.PLAYERS, $event)">
             <div class="legend-icon">
@@ -195,7 +193,6 @@
             </div>
             <div class="legend-label">Items (Left-Middle)</div>
           </div>
-        </div>
       </div>
     </div>
 

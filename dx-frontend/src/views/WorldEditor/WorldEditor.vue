@@ -67,6 +67,7 @@
             @connection-deleted="onConnectionDeleted"
             @map-clicked="onMapClicked"
             @show-entity-details="onShowEntityDetails"
+            @layer-toggled="onLayerToggled"
         />
       </div>
 
