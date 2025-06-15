@@ -237,12 +237,45 @@ export class WorldEditorState {
             connection = new WorldEditorConnection(connection);
         }
         this.connections.set(connection.id, connection);
+
+        // Add connection to the source and target rooms' connections arrays
+        const sourceRoom = this.rooms.get(connection.fromRoomId);
+        const targetRoom = this.rooms.get(connection.toRoomId);
+
+        if (sourceRoom) {
+            // Check if connection already exists in the array
+            if (!sourceRoom.connections.some(conn => conn.id === connection.id)) {
+                sourceRoom.connections.push(connection);
+            }
+        }
+
+        if (targetRoom) {
+            // Check if connection already exists in the array
+            if (!targetRoom.connections.some(conn => conn.id === connection.id)) {
+                targetRoom.connections.push(connection);
+            }
+        }
     }
 
     /**
      * Remove connection from state
      */
     removeConnection(connectionId) {
+        const connection = this.connections.get(connectionId);
+        if (connection) {
+            // Remove connection from the source and target rooms' connections arrays
+            const sourceRoom = this.rooms.get(connection.fromRoomId);
+            const targetRoom = this.rooms.get(connection.toRoomId);
+
+            if (sourceRoom) {
+                sourceRoom.connections = sourceRoom.connections.filter(conn => conn.id !== connectionId);
+            }
+
+            if (targetRoom) {
+                targetRoom.connections = targetRoom.connections.filter(conn => conn.id !== connectionId);
+            }
+        }
+
         this.connections.delete(connectionId);
     }
 }

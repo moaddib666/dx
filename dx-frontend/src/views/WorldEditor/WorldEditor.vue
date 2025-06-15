@@ -46,10 +46,12 @@
             v-if="selectedRoom"
             :editable="isEditMode"
             :room="selectedRoom"
+            :editorState="editorState"
             class="room-info-panel"
             @close="clearSelection"
             @room-updated="onRoomUpdated"
             @room-deleted="onRoomDeleted"
+            @connection-removed="onConnectionDeleted"
         />
       </div>
 

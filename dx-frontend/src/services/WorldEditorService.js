@@ -179,6 +179,11 @@ export class WorldEditorService {
 
         // Add connections from map data
         if (mapData.connections) {
+            // First, clear existing connections from rooms
+            for (const room of this.state.rooms.values()) {
+                room.connections = [];
+            }
+
             mapData.connections.forEach(connectionData => {
                 // Skip if connectionData is invalid
                 if (!connectionData || !connectionData.id || !connectionData.position_from || !connectionData.position_to) {

@@ -220,6 +220,10 @@ export default {
     editable: {
       type: Boolean,
       default: false
+    },
+    editorState: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -237,9 +241,12 @@ export default {
     },
 
     roomConnections() {
-      // This would be populated by the parent component
-      // For now, return empty array
-      return [];
+      if (!this.room || !this.localRoom) {
+        return [];
+      }
+
+      // Use the connections array from the localRoom
+      return this.localRoom.connections || [];
     }
   },
   watch: {
@@ -273,8 +280,53 @@ export default {
     },
 
     getConnectionDirection(connection) {
-      // This would calculate the direction based on room positions
-      return 'North'; // Placeholder
+      if (!this.editorState || !this.editorState.rooms) {
+        return 'Unknown';
+      }
+
+      // Determine if this room is the source or target
+      const isSource = connection.sourceRoomId === this.room.id;
+      const otherRoomId = isSource ? connection.targetRoomId : connection.sourceRoomId;
+
+      // Get the other room
+      const otherRoom = this.editorState.rooms.get(otherRoomId);
+      if (!otherRoom) {
+        return 'Unknown';
+      }
+
+      // If it's a vertical connection
+      if (connection.isVertical) {
+        // Compare z positions to determine if it's up or down
+        const thisZ = this.room.position.grid_z;
+        const otherZ = otherRoom.position.grid_z;
+
+        if (isSource) {
+          return thisZ < otherZ ? 'Up' : 'Down';
+        } else {
+          return thisZ > otherZ ? 'Up' : 'Down';
+        }
+      }
+
+      // For horizontal connections, compare x and y positions
+      const thisX = this.room.position.grid_x;
+      const thisY = this.room.position.grid_y;
+      const otherX = otherRoom.position.grid_x;
+      const otherY = otherRoom.position.grid_y;
+
+      // Determine the direction
+      if (isSource) {
+        if (thisX < otherX) return 'East';
+        if (thisX > otherX) return 'West';
+        if (thisY < otherY) return 'South';
+        if (thisY > otherY) return 'North';
+      } else {
+        if (thisX < otherX) return 'West';
+        if (thisX > otherX) return 'East';
+        if (thisY < otherY) return 'North';
+        if (thisY > otherY) return 'South';
+      }
+
+      return 'Unknown';
     },
 
     removeConnection(connection) {
