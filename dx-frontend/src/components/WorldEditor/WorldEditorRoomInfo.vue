@@ -1,0 +1,781 @@
+<template>
+  <div class="world-editor-room-info">
+    <div class="room-info-header">
+      <h3>Room Information</h3>
+      <button class="close-btn" title="Close" @click="closePanel">
+        <i class="icon-times"></i>
+      </button>
+    </div>
+
+    <div class="room-info-content">
+      <!-- Basic Room Info -->
+      <div class="info-section">
+        <h4>Basic Information</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Room ID:</label>
+            <span>{{ room.id }}</span>
+          </div>
+          <div class="info-item">
+            <label>Position:</label>
+            <span>({{ room.position.grid_x }}, {{ room.position.grid_y }}, {{ room.position.grid_z }})</span>
+          </div>
+          <div class="info-item">
+            <label>Type:</label>
+            <select v-model="localRoom.type" :disabled="!editable" @change="onRoomUpdated">
+              <option value="default">Default</option>
+              <option value="special">Special</option>
+              <option value="secret">Secret</option>
+              <option value="dangerous">Dangerous</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Labels -->
+      <div class="info-section">
+        <h4>Labels</h4>
+        <div class="labels-container">
+          <div class="label-list">
+            <div
+                v-for="(label, index) in localRoom.labels"
+                :key="index"
+                class="label-item"
+            >
+              <input
+                  v-model="localRoom.labels[index]"
+                  :disabled="!editable"
+                  class="label-input"
+                  @blur="onRoomUpdated"
+              />
+              <button
+                  v-if="editable"
+                  class="remove-label-btn"
+                  title="Remove label"
+                  @click="removeLabel(index)"
+              >
+                <i class="icon-times"></i>
+              </button>
+            </div>
+          </div>
+          <button
+              v-if="editable"
+              class="add-label-btn"
+              @click="addLabel"
+          >
+            <i class="icon-plus"></i> Add Label
+          </button>
+        </div>
+      </div>
+
+      <!-- Room Entities -->
+      <div class="info-section">
+        <h4>Entities</h4>
+        <div class="entities-container">
+          <!-- Players -->
+          <div v-if="room.players.length > 0" class="entity-group">
+            <div class="entity-header">
+              <i class="icon-users" style="color: #00ff00;"></i>
+              <span>Players ({{ room.players.length }})</span>
+            </div>
+            <div class="entity-list">
+              <div
+                  v-for="player in room.players"
+                  :key="player.id"
+                  class="entity-item"
+              >
+                <span class="entity-name">{{ player.name || 'Unknown Player' }}</span>
+                <span class="entity-status">{{ player.status || 'Active' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- NPCs -->
+          <div v-if="room.npcs.length > 0" class="entity-group">
+            <div class="entity-header">
+              <i class="icon-user-friends" style="color: #ffff00;"></i>
+              <span>NPCs ({{ room.npcs.length }})</span>
+            </div>
+            <div class="entity-list">
+              <div
+                  v-for="npc in room.npcs"
+                  :key="npc.id"
+                  class="entity-item"
+              >
+                <span class="entity-name">{{ npc.name || 'Unknown NPC' }}</span>
+                <span class="entity-type">{{ npc.type || 'Neutral' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Objects -->
+          <div v-if="room.objects.length > 0" class="entity-group">
+            <div class="entity-header">
+              <i class="icon-cube" style="color: #ff8800;"></i>
+              <span>Objects ({{ room.objects.length }})</span>
+            </div>
+            <div class="entity-list">
+              <div
+                  v-for="object in room.objects"
+                  :key="object.id"
+                  class="entity-item"
+              >
+                <span class="entity-name">{{ object.name || 'Unknown Object' }}</span>
+                <span class="entity-rarity">{{ object.rarity || 'Common' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Anomalies -->
+          <div v-if="room.anomalies.length > 0" class="entity-group">
+            <div class="entity-header">
+              <i class="icon-exclamation-triangle" style="color: #ff0088;"></i>
+              <span>Anomalies ({{ room.anomalies.length }})</span>
+            </div>
+            <div class="entity-list">
+              <div
+                  v-for="anomaly in room.anomalies"
+                  :key="anomaly.id"
+                  class="entity-item"
+              >
+                <span class="entity-name">{{ anomaly.name || 'Unknown Anomaly' }}</span>
+                <span class="entity-danger">{{ anomaly.danger || 'Low' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div v-if="!hasEntities" class="empty-entities">
+            <p>No entities in this room</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Connections -->
+      <div class="info-section">
+        <h4>Connections</h4>
+        <div class="connections-container">
+          <div v-if="roomConnections.length > 0" class="connection-list">
+            <div
+                v-for="connection in roomConnections"
+                :key="connection.id"
+                class="connection-item"
+            >
+              <div class="connection-info">
+                <span class="connection-direction">{{ getConnectionDirection(connection) }}</span>
+                <span class="connection-type">{{ connection.isVertical ? 'Vertical' : 'Horizontal' }}</span>
+              </div>
+              <button
+                  v-if="editable"
+                  class="remove-connection-btn"
+                  title="Remove connection"
+                  @click="removeConnection(connection)"
+              >
+                <i class="icon-unlink"></i>
+              </button>
+            </div>
+          </div>
+          <div v-else class="empty-connections">
+            <p>No connections from this room</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Actions -->
+      <div v-if="editable" class="info-section">
+        <h4>Actions</h4>
+        <div class="action-buttons">
+          <button class="action-btn" @click="duplicateRoom">
+            <i class="icon-copy"></i> Duplicate Room
+          </button>
+          <button class="action-btn danger" @click="confirmDelete">
+            <i class="icon-trash"></i> Delete Room
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div v-if="showDeleteConfirm" class="modal-overlay" @click="cancelDelete">
+      <div class="modal-content" @click.stop>
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this room? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="modal-btn" @click="cancelDelete">Cancel</button>
+          <button class="modal-btn danger" @click="deleteRoom">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'WorldEditorRoomInfo',
+  props: {
+    room: {
+      type: Object,
+      required: true
+    },
+    editable: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      localRoom: null,
+      showDeleteConfirm: false
+    };
+  },
+  computed: {
+    hasEntities() {
+      return this.room.players.length > 0 ||
+          this.room.npcs.length > 0 ||
+          this.room.objects.length > 0 ||
+          this.room.anomalies.length > 0;
+    },
+
+    roomConnections() {
+      // This would be populated by the parent component
+      // For now, return empty array
+      return [];
+    }
+  },
+  watch: {
+    room: {
+      handler(newRoom) {
+        this.localRoom = JSON.parse(JSON.stringify(newRoom));
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  methods: {
+    closePanel() {
+      this.$emit('close');
+    },
+
+    onRoomUpdated() {
+      this.$emit('room-updated', this.room, {
+        type: this.localRoom.type,
+        labels: this.localRoom.labels.filter(label => label.trim() !== '')
+      });
+    },
+
+    addLabel() {
+      this.localRoom.labels.push('');
+    },
+
+    removeLabel(index) {
+      this.localRoom.labels.splice(index, 1);
+      this.onRoomUpdated();
+    },
+
+    getConnectionDirection(connection) {
+      // This would calculate the direction based on room positions
+      return 'North'; // Placeholder
+    },
+
+    removeConnection(connection) {
+      this.$emit('connection-removed', connection.id);
+    },
+
+    duplicateRoom() {
+      this.$emit('room-duplicated', this.room);
+    },
+
+    confirmDelete() {
+      this.showDeleteConfirm = true;
+    },
+
+    cancelDelete() {
+      this.showDeleteConfirm = false;
+    },
+
+    deleteRoom() {
+      this.showDeleteConfirm = false;
+      this.$emit('room-deleted', this.room);
+    }
+  }
+};
+</script>
+
+<style scoped>
+.world-editor-room-info {
+  background: #2d2d2d;
+  border: 1px solid #555;
+  border-radius: 4px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.room-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #333;
+  border-bottom: 1px solid #555;
+}
+
+.room-info-header h3 {
+  margin: 0;
+  color: #1E90FF;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  padding: 0.25rem;
+  background: transparent;
+  color: #ccc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.room-info-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Info Sections */
+.info-section {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.info-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Basic Info Grid */
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item label {
+  color: #ccc;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.info-item span {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.info-item select {
+  background: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.info-item select:focus {
+  outline: none;
+  border-color: #1E90FF;
+}
+
+.info-item select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Labels */
+.labels-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label-input {
+  flex: 1;
+  background: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.label-input:focus {
+  outline: none;
+  border-color: #1E90FF;
+}
+
+.label-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.remove-label-btn {
+  padding: 0.25rem;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove-label-btn:hover {
+  background: #f44336;
+}
+
+.add-label-btn {
+  padding: 0.5rem;
+  background: #1E90FF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.add-label-btn:hover {
+  background: #4FC3F7;
+}
+
+/* Entities */
+.entities-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entity-group {
+  background: #444;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.entity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.entity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.entity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: #555;
+  border-radius: 4px;
+}
+
+.entity-name {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.entity-status,
+.entity-type,
+.entity-rarity,
+.entity-danger {
+  color: #ccc;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.empty-entities {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  padding: 2rem;
+}
+
+/* Connections */
+.connections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.connection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.connection-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #444;
+  border-radius: 4px;
+}
+
+.connection-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.connection-direction {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.connection-type {
+  color: #ccc;
+  font-size: 0.8rem;
+}
+
+.remove-connection-btn {
+  padding: 0.25rem;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove-connection-btn:hover {
+  background: #f44336;
+}
+
+.empty-connections {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.action-btn:hover {
+  background: #555;
+  border-color: #666;
+}
+
+.action-btn.danger {
+  background: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.action-btn.danger:hover {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #2d2d2d;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-content h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.modal-content p {
+  margin: 0 0 1.5rem 0;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 0.5rem 1rem;
+  background: #444;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-btn:hover {
+  background: #555;
+}
+
+.modal-btn.danger {
+  background: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.modal-btn.danger:hover {
+  background: #f44336;
+}
+
+/* Scrollbar Styling */
+.room-info-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.room-info-content::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.room-info-content::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.room-info-content::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .room-info-header {
+    padding: 0.75rem;
+  }
+
+  .room-info-content {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .info-section {
+    padding: 0.75rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+}
+
+/* Icon placeholders */
+.icon-times::before {
+  content: '✕';
+}
+
+.icon-plus::before {
+  content: '+';
+}
+
+.icon-users::before {
+  content: '👥';
+}
+
+.icon-user-friends::before {
+  content: '👫';
+}
+
+.icon-cube::before {
+  content: '📦';
+}
+
+.icon-exclamation-triangle::before {
+  content: '⚠️';
+}
+
+.icon-unlink::before {
+  content: '⛓';
+}
+
+.icon-copy::before {
+  content: '📋';
+}
+
+.icon-trash::before {
+  content: '🗑';
+}
+</style>

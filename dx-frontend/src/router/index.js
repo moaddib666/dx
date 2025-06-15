@@ -20,6 +20,7 @@ import CharacterSkills from "@/views/CharacterSkills.vue";
 import CharacterInfo from "@/views/CharacterInfo.vue";
 import MiniMap from "@/views/Cartograph/MiniMap.vue";
 import UserMap from "@/views/Cartograph/UserMap.vue";
+import WorldEditor from "@/views/WorldEditor/WorldEditor.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
@@ -41,6 +42,7 @@ const routes = [
     // TODO: Add route group here /game/* for game routes that require authentication
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
     {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true}},
+    {path: '/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true}},
     // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},
     {path: '/register', name: 'Register', component: Register, meta: {requiresAuth: false}},
