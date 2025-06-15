@@ -418,8 +418,14 @@ export default {
     },
 
     // Map event handlers
-    onRoomSelected(room) {
+    onRoomSelected(room, shiftKey = false) {
       this.selectedRoom = room;
+
+      // If shift key is not pressed, clear selection before selecting the new room
+      if (!shiftKey) {
+        this.service.clearSelection();
+      }
+
       this.service.toggleRoomSelection(room.id);
     },
 
@@ -465,6 +471,8 @@ export default {
       if (fromRoom) {
         // Select the room
         this.selectedRoom = fromRoom;
+        // Clear selection before selecting the new room (no shift key for connection selection)
+        this.service.clearSelection();
         this.service.toggleRoomSelection(fromRoom.id);
 
         // Use nextTick to ensure the room info component is mounted
@@ -580,6 +588,8 @@ export default {
         const room = this.editorState.rooms.get(details.roomId);
         if (room) {
           this.selectedRoom = room;
+          // Clear selection before selecting the new room (no shift key for entity details)
+          this.service.clearSelection();
           this.service.toggleRoomSelection(room.id);
         }
       }

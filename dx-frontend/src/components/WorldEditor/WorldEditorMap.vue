@@ -70,7 +70,7 @@
               v-for="room in visibleRooms"
               :key="'room-' + room.id"
               :class="['room-group', { 'room-selected': isRoomSelected(room.id) }]"
-              @click.stop="onRoomClick(room)"
+              @click.stop="onRoomClick(room, $event)"
               @mousedown.stop="onRoomMouseDown(room, $event)"
           >
             <!-- Room base -->
@@ -629,8 +629,8 @@ export default {
       });
     },
 
-    onRoomClick(room) {
-      this.handleRoomInteraction(room);
+    onRoomClick(room, event) {
+      this.handleRoomInteraction(room, event);
     },
 
     onRoomMouseDown(room, e) {
@@ -650,10 +650,10 @@ export default {
     },
 
     // Tool-specific interactions
-    handleRoomInteraction(room) {
+    handleRoomInteraction(room, event) {
       switch (this.selectedTool) {
         case WorldEditorTool.SELECT:
-          this.$emit('room-selected', room);
+          this.$emit('room-selected', room, event?.shiftKey || false);
           break;
 
         case WorldEditorTool.DELETE_ROOM:
@@ -665,7 +665,7 @@ export default {
           break;
 
         default:
-          this.$emit('room-selected', room);
+          this.$emit('room-selected', room, event?.shiftKey || false);
       }
     },
 
