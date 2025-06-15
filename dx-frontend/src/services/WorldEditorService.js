@@ -17,11 +17,19 @@ export class WorldEditorService {
      */
     async initialize() {
         try {
-            const [mapData] = await Promise.all([
+            console.log('Initializing WorldEditor...');
+
+            // Load both map data and game objects in parallel
+            const [mapData, gameObjects] = await Promise.all([
                 this.loadWorldMap(),
                 this.loadGameObjects()
             ]);
+
+            console.log(`Initialization data loaded: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
+
+            // Sync state with the loaded data
             this.syncStateWithMapData(mapData);
+
             this.emit('initialized', this.state);
             return this.state;
         } catch (error) {
@@ -35,9 +43,49 @@ export class WorldEditorService {
      */
     async loadGameObjects() {
         try {
+            // Fetch all game objects with no filters to get everything
             const response = await GameMasterApi.gamemasterGameObjectsList();
             console.log('Game objects data:', response.data);
-            this.gameObjects = response.data.results || [];
+
+            // Handle both response formats: array directly or object with results property
+            if (!response.data) {
+                console.warn('Game objects API response is empty');
+                this.gameObjects = [];
+                return [];
+            }
+
+            // Check if response.data is an array or has a results property
+            if (Array.isArray(response.data)) {
+                this.gameObjects = response.data;
+            } else if (response.data.results) {
+                this.gameObjects = response.data.results;
+            } else {
+                console.warn('Game objects API response has unexpected format:', response.data);
+                this.gameObjects = [];
+                return [];
+            }
+
+            console.log(`Loaded ${this.gameObjects.length} game objects`);
+
+            // Log some sample objects to understand their structure
+            if (this.gameObjects.length > 0) {
+                console.log('Sample game object:', this.gameObjects[0]);
+
+                // Count objects by type for debugging
+                const typeCount = {};
+                this.gameObjects.forEach(obj => {
+                    const type = obj.object_type?.model || 'unknown';
+                    typeCount[type] = (typeCount[type] || 0) + 1;
+                });
+                console.log('Game objects by type:', typeCount);
+
+                // Count objects with positions
+                const objectsWithPosition = this.gameObjects.filter(obj =>
+                    obj.position || obj.real_instance?.position
+                ).length;
+                console.log(`Objects with position: ${objectsWithPosition}/${this.gameObjects.length}`);
+            }
+
             return this.gameObjects;
         } catch (error) {
             console.error('Failed to load game objects:', error);
@@ -139,6 +187,7 @@ export class WorldEditorService {
      */
     extractEntitiesFromPosition(positionData, entityType) {
         if (!this.gameObjects || !this.gameObjects.length) {
+            console.log(`No game objects available for extraction (${entityType})`);
             return [];
         }
 
@@ -153,27 +202,67 @@ export class WorldEditorService {
 
         const positionId = positionInfo.id;
 
-        // Filter game objects by position and type
-        return this.gameObjects.filter(obj => {
-            // Check if the object is in this position
-            if (obj.position !== positionId) {
-                return false;
-            }
+        // Log the position ID we're filtering for
+        console.log(`Extracting ${entityType} for position: ${positionId}`);
 
-            // Categorize the object based on its type
-            switch (entityType) {
-                case 'players':
-                    return obj.type === 'player' || obj.type === 'character';
-                case 'npcs':
-                    return obj.type === 'npc';
-                case 'objects':
-                    return obj.type === 'item' || obj.type === 'object';
-                case 'anomalies':
-                    return obj.type === 'anomaly';
-                default:
+        // Filter and map game objects by position and type
+        const filteredObjects = this.gameObjects
+            .filter(obj => {
+                // Check if the object has a real_instance property
+                if (!obj.real_instance) {
                     return false;
-            }
-        });
+                }
+
+                // Get the real instance data
+                const realInstance = obj.real_instance;
+
+                // Check if the object has a position property
+                if (!realInstance.position && !obj.position) {
+                    return false;
+                }
+
+                // Check if the object is in this position
+                // The position might be in the real_instance or in the main object
+                const objPosition = realInstance.position || obj.position;
+                const objPositionId = typeof objPosition === 'string' ? objPosition : (objPosition?.id || '');
+                if (objPositionId !== positionId) {
+                    return false;
+                }
+
+                // Get the object type from object_type.model
+                const objTypeModel = obj.object_type?.model || '';
+
+                // Categorize the object based on its type
+                switch (entityType) {
+                    case 'players':
+                        return objTypeModel === 'character' && !realInstance.npc;
+                    case 'npcs':
+                        return objTypeModel === 'character' && realInstance.npc;
+                    case 'objects':
+                        return objTypeModel === 'worlditem' || objTypeModel === 'item';
+                    case 'anomalies':
+                        return objTypeModel === 'dimensionanomaly';
+                    default:
+                        return false;
+                }
+            })
+            .map(obj => {
+                // Return the real_instance with additional metadata
+                return {
+                    ...obj.real_instance,
+                    object_type: obj.object_type,
+                    original_object: obj
+                };
+            });
+
+        console.log(`Found ${filteredObjects.length} ${entityType} for position ${positionId}`);
+
+        // Log the first few objects for debugging
+        if (filteredObjects.length > 0) {
+            console.log(`Sample ${entityType} objects:`, filteredObjects.slice(0, 3));
+        }
+
+        return filteredObjects;
     }
 
     /**
@@ -519,11 +608,19 @@ export class WorldEditorService {
      */
     async refresh() {
         try {
-            const [mapData] = await Promise.all([
+            console.log('Refreshing world data...');
+
+            // Load both map data and game objects in parallel
+            const [mapData, gameObjects] = await Promise.all([
                 this.loadWorldMap(),
                 this.loadGameObjects()
             ]);
+
+            console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
+
+            // Sync state with the new data
             this.syncStateWithMapData(mapData);
+
             return this.state;
         } catch (error) {
             console.error('Failed to refresh world data:', error);
