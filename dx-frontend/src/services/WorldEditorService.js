@@ -10,6 +10,7 @@ export class WorldEditorService {
         this.state = new WorldEditorState();
         this.eventListeners = new Map();
         this.gameObjects = [];
+        this.isInitialized = false;
     }
 
     /**
@@ -31,10 +32,12 @@ export class WorldEditorService {
             // Sync state with the loaded data
             this.syncStateWithMapData(mapData);
 
+            this.isInitialized = true;
             this.emit('initialized', this.state);
             return this.state;
         } catch (error) {
             console.error('Failed to initialize WorldEditor:', error);
+            this.isInitialized = false;
             throw error;
         }
     }
@@ -51,21 +54,22 @@ export class WorldEditorService {
             // Handle both response formats: array directly or object with results property
             if (!response.data) {
                 console.warn('Game objects API response is empty');
-                this.gameObjects = [];
                 return [];
             }
 
+            let gameObjects = [];
             // Check if response.data is an array or has a results property
             if (Array.isArray(response.data)) {
-                this.gameObjects = response.data;
+                gameObjects = response.data;
             } else if (response.data.results) {
-                this.gameObjects = response.data.results;
+                gameObjects = response.data.results;
             } else {
                 console.warn('Game objects API response has unexpected format:', response.data);
-                this.gameObjects = [];
                 return [];
             }
 
+            // Only update this.gameObjects if we successfully loaded data
+            this.gameObjects = gameObjects;
             console.log(`Loaded ${this.gameObjects.length} game objects`);
 
             // Log some sample objects to understand their structure
@@ -121,88 +125,158 @@ export class WorldEditorService {
      * Sync internal state with map data from backend
      * @param {Object} mapData - The map data from the backend
      * @param {Number} [floor] - The floor level being loaded, used as default for positions without grid_z
+     * @param {Boolean} [preserveState] - Whether to preserve existing state on error
      */
-    syncStateWithMapData(mapData, floor = null) {
-        // Clear existing state
-        this.state.rooms.clear();
-        this.state.connections.clear();
-
-        // Add rooms from map data
-        if (mapData.positions) {
-            mapData.positions.forEach(positionData => {
-                // Handle different position data formats
-                // Some APIs return position data directly, others nested under a "position" property
-                let positionInfo = positionData.position || positionData;
-
-                // Skip if essential position data is missing
-                if (!positionInfo || !positionInfo.id) {
-                    console.warn('Invalid position data found:', positionData);
-                    return;
-                }
-
-                // Parse coordinates string if it exists
-                if (positionInfo.coordinates && typeof positionInfo.coordinates === 'string') {
-                    const coords = positionInfo.coordinates.split('x').map(Number);
-                    if (coords.length === 3) {
-                        positionInfo.grid_x = coords[0];
-                        positionInfo.grid_y = coords[1];
-                        positionInfo.grid_z = coords[2];
-                    }
-                }
-
-                // Determine the correct grid_z value
-                // If we're loading a specific floor and grid_z is missing, use the floor parameter
-                // Otherwise, use the grid_z from the position data or the current floor from state
-                const defaultGridZ = floor !== null ? floor : this.state.currentFloor;
-                const grid_z = positionInfo.grid_z !== undefined ? positionInfo.grid_z : defaultGridZ;
-
-                const room = new WorldEditorRoom({
-                    id: positionInfo.id,
-                    position: {
-                        x: positionInfo.x || 0,
-                        y: positionInfo.y || 0,
-                        z: positionInfo.z || 0,
-                        grid_x: positionInfo.grid_x || 0,
-                        grid_y: positionInfo.grid_y || 0,
-                        grid_z: grid_z
-                    },
-                    labels: positionData.labels || [],
-                    // Extract entities from position data
-                    players: this.extractEntitiesFromPosition(positionData, 'players'),
-                    npcs: this.extractEntitiesFromPosition(positionData, 'npcs'),
-                    objects: this.extractEntitiesFromPosition(positionData, 'objects'),
-                    anomalies: this.extractEntitiesFromPosition(positionData, 'anomalies')
-                });
-                this.state.addRoom(room);
-            });
+    syncStateWithMapData(mapData, floor = null, preserveState = false) {
+        // Validate mapData before proceeding
+        if (!mapData || typeof mapData !== 'object') {
+            console.error('Invalid map data provided to syncStateWithMapData:', mapData);
+            if (!preserveState) {
+                throw new Error('Invalid map data: cannot sync state');
+            }
+            return;
         }
 
-        // Add connections from map data
-        if (mapData.connections) {
-            // First, clear existing connections from rooms
-            for (const room of this.state.rooms.values()) {
-                room.connections = [];
+        // Backup current state in case we need to restore it
+        const stateBackup = preserveState ? {
+            rooms: new Map(this.state.rooms),
+            connections: new Map(this.state.connections),
+            currentFloor: this.state.currentFloor
+        } : null;
+
+        try {
+            // Create new state collections
+            const newRooms = new Map();
+            const newConnections = new Map();
+
+            // Add rooms from map data
+            if (mapData.positions && Array.isArray(mapData.positions)) {
+                mapData.positions.forEach(positionData => {
+                    try {
+                        // Handle different position data formats
+                        // Some APIs return position data directly, others nested under a "position" property
+                        let positionInfo = positionData.position || positionData;
+
+                        // Skip if essential position data is missing
+                        if (!positionInfo || !positionInfo.id) {
+                            console.warn('Invalid position data found:', positionData);
+                            return;
+                        }
+
+                        // Parse coordinates string if it exists
+                        if (positionInfo.coordinates && typeof positionInfo.coordinates === 'string') {
+                            const coords = positionInfo.coordinates.split('x').map(Number);
+                            if (coords.length === 3) {
+                                positionInfo.grid_x = coords[0];
+                                positionInfo.grid_y = coords[1];
+                                positionInfo.grid_z = coords[2];
+                            }
+                        }
+
+                        // Determine the correct grid_z value
+                        // If we're loading a specific floor and grid_z is missing, use the floor parameter
+                        // Otherwise, use the grid_z from the position data or the current floor from state
+                        const defaultGridZ = floor !== null ? floor : this.state.currentFloor;
+                        const grid_z = positionInfo.grid_z !== undefined ? positionInfo.grid_z : defaultGridZ;
+
+                        const room = new WorldEditorRoom({
+                            id: positionInfo.id,
+                            position: {
+                                x: positionInfo.x || 0,
+                                y: positionInfo.y || 0,
+                                z: positionInfo.z || 0,
+                                grid_x: positionInfo.grid_x || 0,
+                                grid_y: positionInfo.grid_y || 0,
+                                grid_z: grid_z
+                            },
+                            labels: positionData.labels || [],
+                            // Extract entities from position data
+                            players: this.extractEntitiesFromPosition(positionData, 'players'),
+                            npcs: this.extractEntitiesFromPosition(positionData, 'npcs'),
+                            objects: this.extractEntitiesFromPosition(positionData, 'objects'),
+                            anomalies: this.extractEntitiesFromPosition(positionData, 'anomalies')
+                        });
+                        newRooms.set(room.id, room);
+                    } catch (error) {
+                        console.error('Error processing position data:', positionData, error);
+                    }
+                });
             }
 
-            mapData.connections.forEach(connectionData => {
-                // Skip if connectionData is invalid
-                if (!connectionData || !connectionData.id || !connectionData.position_from || !connectionData.position_to) {
-                    console.warn('Invalid connection data found:', connectionData);
-                    return;
-                }
+            // Add connections from map data
+            if (mapData.connections && Array.isArray(mapData.connections)) {
+                mapData.connections.forEach(connectionData => {
+                    try {
+                        // Skip if connectionData is invalid
+                        if (!connectionData || !connectionData.id || !connectionData.position_from || !connectionData.position_to) {
+                            console.warn('Invalid connection data found:', connectionData);
+                            return;
+                        }
 
-                const connection = new WorldEditorConnection({
-                    id: connectionData.id,
-                    fromRoomId: connectionData.position_from,
-                    toRoomId: connectionData.position_to,
-                    isVertical: connectionData.is_vertical || false,
-                    type: connectionData.type || 'normal'
+                        const connection = new WorldEditorConnection({
+                            id: connectionData.id,
+                            fromRoomId: connectionData.position_from,
+                            toRoomId: connectionData.position_to,
+                            isVertical: connectionData.is_vertical || false,
+                            type: connectionData.type || 'normal'
+                        });
+                        newConnections.set(connection.id, connection);
+
+                        // Add connection to rooms
+                        const fromRoom = newRooms.get(connection.fromRoomId);
+                        const toRoom = newRooms.get(connection.toRoomId);
+
+                        if (fromRoom) {
+                            if (!fromRoom.connections) fromRoom.connections = [];
+                            fromRoom.connections.push(connection);
+                        }
+                        if (toRoom && toRoom.id !== fromRoom?.id) {
+                            if (!toRoom.connections) toRoom.connections = [];
+                            toRoom.connections.push(connection);
+                        }
+                    } catch (error) {
+                        console.error('Error processing connection data:', connectionData, error);
+                    }
                 });
-                this.state.addConnection(connection);
-            });
-        }
+            }
 
-        this.emit('stateUpdated', this.state);
+            // Only update state if we have valid data or explicitly allowing empty state
+            if (newRooms.size > 0 || mapData.positions?.length === 0) {
+                this.state.rooms.clear();
+                this.state.connections.clear();
+
+                // Add all new rooms and connections
+                newRooms.forEach((room, id) => this.state.rooms.set(id, room));
+                newConnections.forEach((connection, id) => this.state.connections.set(id, connection));
+
+                console.log(`State synchronized: ${newRooms.size} rooms, ${newConnections.size} connections`);
+            } else {
+                console.warn('No valid rooms found in map data, keeping existing state');
+                if (stateBackup) {
+                    // Restore state if we have a backup
+                    this.state.rooms = stateBackup.rooms;
+                    this.state.connections = stateBackup.connections;
+                    this.state.currentFloor = stateBackup.currentFloor;
+                }
+                return;
+            }
+
+            this.emit('stateUpdated', this.state);
+        } catch (error) {
+            console.error('Error during state synchronization:', error);
+
+            // Restore state from backup if available
+            if (stateBackup) {
+                console.log('Restoring state from backup due to sync error');
+                this.state.rooms = stateBackup.rooms;
+                this.state.connections = stateBackup.connections;
+                this.state.currentFloor = stateBackup.currentFloor;
+            }
+
+            if (!preserveState) {
+                throw error;
+            }
+        }
     }
 
     /**
@@ -600,28 +674,41 @@ export class WorldEditorService {
      * @param {Number} floor - The floor level to set
      */
     async setFloor(floor) {
-        // Update the current floor in state
-        this.state.currentFloor = floor;
+        if (!this.isInitialized) {
+            console.warn('WorldEditor not initialized, calling initialize first');
+            await this.initialize();
+        }
+
+        const previousFloor = this.state.currentFloor;
 
         try {
+            console.log(`Changing floor from ${previousFloor} to ${floor}`);
+
+            // Update the current floor in state first
+            this.state.currentFloor = floor;
+
             // Load map data specific to this floor
             const mapData = await this.loadWorldMap(floor);
 
             // Sync state with the floor-specific data, passing the floor parameter
-            this.syncStateWithMapData(mapData, floor);
+            // Use preserveState=true to avoid breaking state on errors
+            this.syncStateWithMapData(mapData, floor, true);
 
             // Emit events
-            console.log(`Floor changed to ${floor}`);
+            console.log(`Floor successfully changed to ${floor}`);
             this.emit('floorChanged', floor);
             this.emit('stateUpdated', this.state);
-            // Ugly hack to ensure the map is re-rendered
-            // FIXME: it's not a good practice to re initialize as we lose all current state totally and why we develop feature semitransparent upper or down flours room it could become the problem
-            await this.initialize();
+
         } catch (error) {
             console.error(`Failed to load data for floor ${floor}:`, error);
-            // Still emit the floor change event even if data loading fails
-            this.emit('floorChanged', floor);
-            this.emit('stateUpdated', this.state);
+
+            // Restore previous floor on error
+            this.state.currentFloor = previousFloor;
+
+            // Still emit the floor change event to notify UI of the failure
+            this.emit('floorChangeFailed', {targetFloor: floor, currentFloor: previousFloor, error});
+
+            throw error;
         }
     }
 
@@ -690,30 +777,54 @@ export class WorldEditorService {
 
     /**
      * Refresh data from backend
-     * @param {Boolean} loadAllFloors - Whether to load all floors or just the current floor
+     * @param {Boolean} forceFullReload - Whether to force a complete reload (like initialize)
      */
-    async refresh(loadAllFloors = false) {
+    async refresh(forceFullReload = false) {
+        if (!this.isInitialized && !forceFullReload) {
+            console.log('WorldEditor not initialized, calling initialize instead of refresh');
+            return await this.initialize();
+        }
+
         try {
             console.log('Refreshing world data...');
 
-            // Load both map data and game objects in parallel
-            // If loadAllFloors is true, load all floors, otherwise load only the current floor
             const currentFloor = this.state.currentFloor;
-            const [mapData, gameObjects] = await Promise.all([
-                loadAllFloors ? this.loadWorldMap() : this.loadWorldMap(currentFloor),
-                this.loadGameObjects()
-            ]);
 
-            console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
+            if (forceFullReload) {
+                // Force complete reinitialization
+                console.log('Force reloading all data...');
+                return await this.initialize();
+            } else {
+                // Smart refresh: reload current floor data and game objects
+                const [mapData, gameObjects] = await Promise.all([
+                    this.loadWorldMap(currentFloor),
+                    this.loadGameObjects()
+                ]);
 
-            // Sync state with the new data, passing the current floor if we're loading floor-specific data
-            this.syncStateWithMapData(mapData, loadAllFloors ? null : currentFloor);
+                console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
 
-            return this.state;
+                // Sync state with the new data, preserving state on errors
+                this.syncStateWithMapData(mapData, currentFloor, true);
+
+                this.emit('refreshed', this.state);
+                return this.state;
+            }
         } catch (error) {
             console.error('Failed to refresh world data:', error);
+            this.emit('refreshFailed', error);
             throw error;
         }
+    }
+
+    /**
+     * Reset the service to initial state
+     */
+    reset() {
+        this.state = new WorldEditorState();
+        this.gameObjects = [];
+        this.isInitialized = false;
+        console.log('WorldEditor service reset');
+        this.emit('reset');
     }
 }
 
