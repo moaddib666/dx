@@ -40,13 +40,6 @@
             @tool-selected="onToolSelected"
         />
 
-        <!-- Layer Controls -->
-        <WorldEditorLayers
-            :activeLayers="activeLayers"
-            :layerCounts="layerCounts"
-            class="layer-controls"
-            @layer-toggled="onLayerToggled"
-        />
 
         <!-- Room Info Panel -->
         <WorldEditorRoomInfo
@@ -78,7 +71,7 @@
       </div>
 
       <!-- Right Panel - Entity Management (only visible when it has content) -->
-      <div v-if="(isEditMode && selectedRoom) || showStatsPanel" class="right-panel">
+      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel" class="right-panel">
         <!-- Entity Spawner (only visible in edit mode) -->
         <WorldEditorEntitySpawner
             v-if="isEditMode && selectedRoom"
@@ -94,6 +87,15 @@
             :stats="worldStats"
             class="world-stats"
         />
+
+        <!-- Layer Controls -->
+        <WorldEditorLayers
+            v-if="showLayersPanel"
+            :activeLayers="activeLayers"
+            :layerCounts="layerCounts"
+            class="layer-controls"
+            @layer-toggled="onLayerToggled"
+        />
       </div>
     </div>
 
@@ -105,6 +107,9 @@
         <span class="status-item">Selected: {{ selectedRooms.length }}</span>
         <button class="stats-toggle-btn" title="Toggle Statistics Panel" @click="toggleStatsPanel">
           <i class="icon-stats"></i>
+        </button>
+        <button class="layers-toggle-btn" title="Toggle Layers Panel" @click="toggleLayersPanel">
+          <i class="icon-layers"></i>
         </button>
       </div>
       <div class="status-right">
@@ -152,6 +157,7 @@ export default {
       lastAction: '',
       currentTime: new Date().toLocaleTimeString(),
       showStatsPanel: false, // Stats panel visibility state
+      showLayersPanel: false, // Layers panel visibility state
 
       // Timer for current time update
       timeUpdateInterval: null
@@ -472,6 +478,11 @@ export default {
       this.setLastAction(this.showStatsPanel ? 'Statistics panel opened' : 'Statistics panel closed');
     },
 
+    toggleLayersPanel() {
+      this.showLayersPanel = !this.showLayersPanel;
+      this.setLastAction(this.showLayersPanel ? 'Layers panel opened' : 'Layers panel closed');
+    },
+
     onShowEntityDetails(details) {
       // Handle showing entity details
       // This could open a modal, update a sidebar, etc.
@@ -614,7 +625,7 @@ export default {
 }
 
 .layer-controls {
-  border-bottom: 1px solid #444;
+  flex: 1;
 }
 
 .room-info-panel {
@@ -677,6 +688,30 @@ export default {
 
 .icon-stats::before {
   content: '📊';
+}
+
+/* Layers Toggle Button */
+.layers-toggle-btn {
+  padding: 0.25rem 0.5rem;
+  background: #444;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.layers-toggle-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.icon-layers::before {
+  content: '🔍';
 }
 
 /* Button Styles */

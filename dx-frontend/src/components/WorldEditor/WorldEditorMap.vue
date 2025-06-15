@@ -141,7 +141,7 @@
     </div>
 
     <!-- Entity Legend -->
-    <div v-if="showLegend" class="entity-legend">
+    <div v-if="showLegend" ref="entityLegend" class="entity-legend">
       <div class="legend-header">
         <h4>Entity Legend</h4>
         <button class="legend-toggle-btn" @click="toggleLegend">
@@ -149,43 +149,52 @@
         </button>
       </div>
       <div class="legend-content">
-        <div class="legend-item">
-          <div class="legend-icon">
-            <svg height="20" viewBox="0 0 20 20" width="20">
-              <circle class="entity-circle" cx="10" cy="10" fill="#00ff00" r="6" stroke="#000" stroke-width="1"/>
-              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">3</text>
-            </svg>
+        <div class="legend-section">
+          <h5>Entity Types</h5>
+          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.PLAYERS) }" class="legend-item"
+               @click="toggleLayer(WorldEditorLayer.PLAYERS, $event)">
+            <div class="legend-icon">
+              <svg height="20" viewBox="0 0 20 20" width="20">
+                <circle class="entity-circle" cx="10" cy="10" fill="#00ff00" r="6" stroke="#000" stroke-width="1"/>
+                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">3</text>
+              </svg>
+            </div>
+            <div class="legend-label">Players (Top-Left)</div>
           </div>
-          <div class="legend-label">Players (Top-Left)</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-icon">
-            <svg height="20" viewBox="0 0 20 20" width="20">
-              <rect class="entity-square" fill="#ffff00" height="12" rx="2" ry="2" stroke="#000" stroke-width="1" width="12" x="4"
-                    y="4"/>
-              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">2</text>
-            </svg>
+          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.NPCS) }" class="legend-item"
+               @click="toggleLayer(WorldEditorLayer.NPCS, $event)">
+            <div class="legend-icon">
+              <svg height="20" viewBox="0 0 20 20" width="20">
+                <rect class="entity-square" fill="#ffff00" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
+                      width="12" x="4"
+                      y="4"/>
+                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">2</text>
+              </svg>
+            </div>
+            <div class="legend-label">NPCs (Top-Right)</div>
           </div>
-          <div class="legend-label">NPCs (Top-Right)</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-icon">
-            <svg height="20" viewBox="0 0 20 20" width="20">
-              <circle class="entity-circle" cx="10" cy="10" fill="#ff0000" r="6" stroke="#000" stroke-width="1"/>
-              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
-            </svg>
+          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.ANOMALIES) }" class="legend-item"
+               @click="toggleLayer(WorldEditorLayer.ANOMALIES, $event)">
+            <div class="legend-icon">
+              <svg height="20" viewBox="0 0 20 20" width="20">
+                <circle class="entity-circle" cx="10" cy="10" fill="#ff0000" r="6" stroke="#000" stroke-width="1"/>
+                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
+              </svg>
+            </div>
+            <div class="legend-label">Anomalies (Top-Middle)</div>
           </div>
-          <div class="legend-label">Anomalies (Top-Middle)</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-icon">
-            <svg height="20" viewBox="0 0 20 20" width="20">
-              <rect class="entity-square" fill="#0088ff" height="12" rx="2" ry="2" stroke="#000" stroke-width="1" width="12" x="4"
-                    y="4"/>
-              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">5</text>
-            </svg>
+          <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.OBJECTS) }" class="legend-item"
+               @click="toggleLayer(WorldEditorLayer.OBJECTS, $event)">
+            <div class="legend-icon">
+              <svg height="20" viewBox="0 0 20 20" width="20">
+                <rect class="entity-square" fill="#0088ff" height="12" rx="2" ry="2" stroke="#000" stroke-width="1"
+                      width="12" x="4"
+                      y="4"/>
+                <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">5</text>
+              </svg>
+            </div>
+            <div class="legend-label">Items (Left-Middle)</div>
           </div>
-          <div class="legend-label">Items (Left-Middle)</div>
         </div>
       </div>
     </div>
@@ -229,7 +238,8 @@ export default {
     'connection-created',
     'connection-deleted',
     'map-clicked',
-    'show-entity-details'
+    'show-entity-details',
+    'layer-toggled'
   ],
   data() {
     return {
@@ -251,6 +261,9 @@ export default {
       showMinimap: true,
       showLayerIndicators: true,
       showLegend: false,
+
+      // Make WorldEditorLayer available in template
+      WorldEditorLayer,
 
       // Configuration
       cellSize: WorldEditorConfig.cellSize,
@@ -359,6 +372,16 @@ export default {
   },
   mounted() {
     this.centerMap();
+
+    // If the legend is shown by default, add click-outside listener
+    if (this.showLegend) {
+      document.addEventListener('mousedown', this.handleClickOutside);
+    }
+  },
+
+  beforeUnmount() {
+    // Clean up event listeners
+    document.removeEventListener('mousedown', this.handleClickOutside);
   },
   methods: {
     // Room positioning
@@ -669,6 +692,43 @@ export default {
 
     toggleLegend() {
       this.showLegend = !this.showLegend;
+
+      if (this.showLegend) {
+        // Add click-outside event listener when legend is shown
+        this.$nextTick(() => {
+          // Use setTimeout to avoid immediate triggering of the event
+          setTimeout(() => {
+            document.addEventListener('mousedown', this.handleClickOutside);
+          }, 100);
+        });
+      } else {
+        // Remove click-outside event listener when legend is hidden
+        document.removeEventListener('mousedown', this.handleClickOutside);
+      }
+    },
+
+    handleClickOutside(event) {
+      // Close legend when clicking outside of it
+      if (this.$refs.entityLegend &&
+          !this.$refs.entityLegend.contains(event.target) &&
+          !event.target.closest('.legend-btn')) {
+        this.showLegend = false;
+        document.removeEventListener('mousedown', this.handleClickOutside);
+      }
+    },
+
+    isLayerActive(layer) {
+      return this.activeLayers.has(layer);
+    },
+
+    toggleLayer(layer, event) {
+      // Stop event propagation to prevent click-outside from triggering
+      if (event) {
+        event.stopPropagation();
+      }
+
+      // Emit event to parent component to toggle the layer
+      this.$emit('layer-toggled', layer);
     },
 
     onShowEntityDetails(details) {
@@ -872,6 +932,59 @@ export default {
 }
 
 .legend-label {
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.legend-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.legend-item.inactive {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+
+.legend-section {
+  margin-bottom: 15px;
+}
+
+.legend-section h5 {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: #1E90FF;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.layer-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layer-toggle-item {
+  display: flex;
+  align-items: center;
+}
+
+.layer-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.layer-toggle input[type="checkbox"] {
+  margin-right: 8px;
+  accent-color: #1E90FF;
+}
+
+.toggle-label {
   font-size: 0.85rem;
 }
 
