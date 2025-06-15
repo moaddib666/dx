@@ -13,7 +13,7 @@
       </div>
 
       <div class="toolbar-section floor-controls">
-        <button :disabled="currentFloor <= 1" @click="floorDown">Floor -</button>
+        <button @click="floorDown">Floor -</button>
         <span class="floor-display">Floor: {{ currentFloor }}</span>
         <button @click="floorUp">Floor +</button>
       </div>
@@ -163,7 +163,11 @@ export default {
       return this.editorState?.selectedTool || WorldEditorTool.SELECT;
     },
     currentFloor() {
-      return this.editorState?.currentFloor || 1;
+      const editorStateFloor = this.editorState?.currentFloor
+      if (editorStateFloor !== undefined) {
+        return editorStateFloor;
+      }
+      return 1; // Default to floor 1 if not set
     },
     activeLayers() {
       return this.editorState?.activeLayers || new Set();
@@ -319,16 +323,16 @@ export default {
       this.service.toggleLayer(layer);
     },
 
-    floorUp() {
-      this.service.setFloor(this.currentFloor + 1);
-      this.setLastAction(`Moved to floor ${this.currentFloor + 1}`);
+    async floorUp() {
+      const newFloor = this.currentFloor + 1;
+      await this.service.setFloor(newFloor);
+      this.setLastAction(`Moved to floor ${newFloor}`);
     },
 
-    floorDown() {
-      if (this.currentFloor > 1) {
-        this.service.setFloor(this.currentFloor - 1);
-        this.setLastAction(`Moved to floor ${this.currentFloor - 1}`);
-      }
+    async floorDown() {
+      const newFloor = this.currentFloor - 1;
+      await this.service.setFloor(newFloor);
+      this.setLastAction(`Moved to floor ${newFloor}`);
     },
 
     async refreshWorld() {

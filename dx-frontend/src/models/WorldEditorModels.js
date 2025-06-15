@@ -47,10 +47,10 @@ export class WorldEditorRoom {
         this.position = {
             x: data.position?.x || 0,
             y: data.position?.y || 0,
-            z: data.position?.z || 1,
+            z: data.position?.z || 0,
             grid_x: data.position?.grid_x || 0,
             grid_y: data.position?.grid_y || 0,
-            grid_z: data.position?.grid_z || 1
+            grid_z: data.position?.grid_z || 0
         };
         this.type = data.type || 'default';
         this.labels = data.labels || [];

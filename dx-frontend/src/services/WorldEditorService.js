@@ -20,6 +20,7 @@ export class WorldEditorService {
             console.log('Initializing WorldEditor...');
 
             // Load both map data and game objects in parallel
+            // Initially load all floors to get a complete view
             const [mapData, gameObjects] = await Promise.all([
                 this.loadWorldMap(),
                 this.loadGameObjects()
@@ -95,11 +96,20 @@ export class WorldEditorService {
 
     /**
      * Load world map data from the backend
+     * @param {Number} floor - The floor level to load (grid_z value)
      */
-    async loadWorldMap() {
+    async loadWorldMap(floor = null) {
         try {
-            const response = await GameMasterApi.gamemasterWorldMapMapRetrieve();
-            console.log('World map data:', response.data);
+            // If floor is provided, use gamemasterWorldMapList with gridZ parameter
+            // Otherwise, use gamemasterWorldMapMapRetrieve to get all floors
+            let response;
+            if (floor !== null) {
+                response = await GameMasterApi.gamemasterWorldMapList(floor);
+                console.log(`World map data for floor ${floor}:`, response.data);
+            } else {
+                response = await GameMasterApi.gamemasterWorldMapMapRetrieve();
+                console.log('World map data (all floors):', response.data);
+            }
             return response.data;
         } catch (error) {
             console.error('Failed to load world map:', error);
@@ -109,8 +119,10 @@ export class WorldEditorService {
 
     /**
      * Sync internal state with map data from backend
+     * @param {Object} mapData - The map data from the backend
+     * @param {Number} [floor] - The floor level being loaded, used as default for positions without grid_z
      */
-    syncStateWithMapData(mapData) {
+    syncStateWithMapData(mapData, floor = null) {
         // Clear existing state
         this.state.rooms.clear();
         this.state.connections.clear();
@@ -138,15 +150,21 @@ export class WorldEditorService {
                     }
                 }
 
+                // Determine the correct grid_z value
+                // If we're loading a specific floor and grid_z is missing, use the floor parameter
+                // Otherwise, use the grid_z from the position data or the current floor from state
+                const defaultGridZ = floor !== null ? floor : this.state.currentFloor;
+                const grid_z = positionInfo.grid_z !== undefined ? positionInfo.grid_z : defaultGridZ;
+
                 const room = new WorldEditorRoom({
                     id: positionInfo.id,
                     position: {
                         x: positionInfo.x || 0,
                         y: positionInfo.y || 0,
-                        z: positionInfo.z || 1,
+                        z: positionInfo.z || 0,
                         grid_x: positionInfo.grid_x || 0,
                         grid_y: positionInfo.grid_y || 0,
-                        grid_z: positionInfo.grid_z || 1
+                        grid_z: grid_z
                     },
                     labels: positionData.labels || [],
                     // Extract entities from position data
@@ -532,12 +550,33 @@ export class WorldEditorService {
     }
 
     /**
-     * Change current floor
+     * Change current floor and load floor-specific data
+     * @param {Number} floor - The floor level to set
      */
-    setFloor(floor) {
+    async setFloor(floor) {
+        // Update the current floor in state
         this.state.currentFloor = floor;
-        this.emit('floorChanged', floor);
-        this.emit('stateUpdated', this.state);
+
+        try {
+            // Load map data specific to this floor
+            const mapData = await this.loadWorldMap(floor);
+
+            // Sync state with the floor-specific data, passing the floor parameter
+            this.syncStateWithMapData(mapData, floor);
+
+            // Emit events
+            console.log(`Floor changed to ${floor}`);
+            this.emit('floorChanged', floor);
+            this.emit('stateUpdated', this.state);
+            // Ugly hack to ensure the map is re-rendered
+            // FIXME: it's not a good practice to re initialize as we lose all current state totally and why we develop feature semitransparent upper or down flours room it could become the problem
+            await this.initialize();
+        } catch (error) {
+            console.error(`Failed to load data for floor ${floor}:`, error);
+            // Still emit the floor change event even if data loading fails
+            this.emit('floorChanged', floor);
+            this.emit('stateUpdated', this.state);
+        }
     }
 
     /**
@@ -605,21 +644,24 @@ export class WorldEditorService {
 
     /**
      * Refresh data from backend
+     * @param {Boolean} loadAllFloors - Whether to load all floors or just the current floor
      */
-    async refresh() {
+    async refresh(loadAllFloors = false) {
         try {
             console.log('Refreshing world data...');
 
             // Load both map data and game objects in parallel
+            // If loadAllFloors is true, load all floors, otherwise load only the current floor
+            const currentFloor = this.state.currentFloor;
             const [mapData, gameObjects] = await Promise.all([
-                this.loadWorldMap(),
+                loadAllFloors ? this.loadWorldMap() : this.loadWorldMap(currentFloor),
                 this.loadGameObjects()
             ]);
 
             console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
 
-            // Sync state with the new data
-            this.syncStateWithMapData(mapData);
+            // Sync state with the new data, passing the current floor if we're loading floor-specific data
+            this.syncStateWithMapData(mapData, loadAllFloors ? null : currentFloor);
 
             return this.state;
         } catch (error) {
