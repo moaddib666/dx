@@ -73,6 +73,7 @@
             @connection-created="onConnectionCreated"
             @connection-deleted="onConnectionDeleted"
             @map-clicked="onMapClicked"
+            @show-entity-details="onShowEntityDetails"
         />
       </div>
 
@@ -455,6 +456,29 @@ export default {
           this.lastAction = '';
         }
       }, 5000);
+    },
+
+    onShowEntityDetails(details) {
+      // Handle showing entity details
+      // This could open a modal, update a sidebar, etc.
+      const entityTypeName = {
+        'players': 'Players',
+        'npcs': 'NPCs',
+        'objects': 'Objects',
+        'anomalies': 'Anomalies'
+      }[details.entityType] || 'Entities';
+
+      const count = details.entities.length;
+      this.setLastAction(`${entityTypeName} in room: ${count}`);
+
+      // Select the room
+      if (details.roomId) {
+        const room = this.editorState.rooms.get(details.roomId);
+        if (room) {
+          this.selectedRoom = room;
+          this.service.toggleRoomSelection(room.id);
+        }
+      }
     }
   }
 };

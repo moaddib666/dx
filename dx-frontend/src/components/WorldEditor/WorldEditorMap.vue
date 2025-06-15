@@ -65,7 +65,6 @@
           />
         </g>
 
-        <!-- Rooms -->
         <g class="rooms-layer">
           <g
               v-for="room in visibleRooms"
@@ -82,6 +81,7 @@
                 :editorState="editorState"
                 :room="room"
                 :selected="isRoomSelected(room.id)"
+                @show-entity-details="onShowEntityDetails"
             />
 
             <!-- Room label -->
@@ -90,24 +90,11 @@
                 :y="getRoomBottom(room) - 5"
                 class="room-label"
                 fill="#fff"
-                font-size="10"
+                font-size="7.5"
                 text-anchor="middle"
             >
               {{ getRoomLabel(room) }}
             </text>
-
-            <!-- Layer indicators -->
-            <g v-if="showLayerIndicators" class="layer-indicators">
-              <circle
-                  v-for="(layer, index) in getActiveRoomLayers(room)"
-                  :key="layer"
-                  :cx="getRoomLeft(room) + 10 + (index * 15)"
-                  :cy="getRoomTop(room) + 10"
-                  :fill="getLayerColor(layer)"
-                  class="layer-indicator"
-                  r="4"
-              />
-            </g>
           </g>
         </g>
 
@@ -152,6 +139,61 @@
           @navigate="onMinimapNavigate"
       />
     </div>
+
+    <!-- Entity Legend -->
+    <div v-if="showLegend" class="entity-legend">
+      <div class="legend-header">
+        <h4>Entity Legend</h4>
+        <button class="legend-toggle-btn" @click="toggleLegend">
+          <i class="icon-times"></i>
+        </button>
+      </div>
+      <div class="legend-content">
+        <div class="legend-item">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <circle class="entity-circle" cx="10" cy="10" fill="#00ff00" r="6" stroke="#000" stroke-width="1"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">3</text>
+            </svg>
+          </div>
+          <div class="legend-label">Players (Top-Left)</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <rect class="entity-square" fill="#ffff00" height="12" rx="2" ry="2" stroke="#000" stroke-width="1" width="12" x="4"
+                    y="4"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">2</text>
+            </svg>
+          </div>
+          <div class="legend-label">NPCs (Top-Right)</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <circle class="entity-circle" cx="10" cy="10" fill="#ff0000" r="6" stroke="#000" stroke-width="1"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
+            </svg>
+          </div>
+          <div class="legend-label">Anomalies (Top-Middle)</div>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <rect class="entity-square" fill="#0088ff" height="12" rx="2" ry="2" stroke="#000" stroke-width="1" width="12" x="4"
+                    y="4"/>
+              <text fill="#000" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">5</text>
+            </svg>
+          </div>
+          <div class="legend-label">Items (Left-Middle)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend Toggle Button -->
+    <button v-if="!showLegend" class="legend-btn" title="Show Legend" @click="toggleLegend">
+      <i class="icon-info"></i>
+    </button>
   </div>
 </template>
 
@@ -180,6 +222,15 @@ export default {
       default: 1
     }
   },
+  emits: [
+    'room-selected',
+    'room-created',
+    'room-moved',
+    'connection-created',
+    'connection-deleted',
+    'map-clicked',
+    'show-entity-details'
+  ],
   data() {
     return {
       // Pan & Zoom
@@ -199,6 +250,7 @@ export default {
       showGrid: true,
       showMinimap: true,
       showLayerIndicators: true,
+      showLegend: false,
 
       // Configuration
       cellSize: WorldEditorConfig.cellSize,
@@ -613,6 +665,23 @@ export default {
         this.panX = rect.width / 2 - position.x * this.zoom;
         this.panY = rect.height / 2 - position.y * this.zoom;
       }
+    },
+
+    toggleLegend() {
+      this.showLegend = !this.showLegend;
+    },
+
+    onShowEntityDetails(details) {
+      // Emit the event up to the parent component to handle
+      this.$emit('show-entity-details', details);
+
+      // Optionally, select the room that contains these entities
+      if (details.roomId) {
+        const room = this.visibleRooms.find(r => r.id === details.roomId);
+        if (room) {
+          this.onRoomClick(room);
+        }
+      }
     }
   }
 };
@@ -743,6 +812,91 @@ export default {
   z-index: 10;
 }
 
+/* Entity Legend */
+.entity-legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 220px;
+  background: rgba(45, 45, 45, 0.9);
+  border: 1px solid #555;
+  border-radius: 4px;
+  z-index: 10;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #555;
+}
+
+.legend-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #1E90FF;
+}
+
+.legend-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.legend-toggle-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.legend-content {
+  padding: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend-icon {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legend-label {
+  font-size: 0.85rem;
+}
+
+.legend-btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  background: rgba(45, 45, 45, 0.9);
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #1E90FF;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.legend-btn:hover {
+  background: rgba(65, 65, 65, 0.9);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .map-controls {
@@ -758,6 +912,19 @@ export default {
   .minimap {
     width: 150px;
     height: 100px;
+  }
+
+  .entity-legend {
+    width: 180px;
+    font-size: 0.8rem;
+  }
+
+  .legend-header h4 {
+    font-size: 0.9rem;
+  }
+
+  .legend-label {
+    font-size: 0.75rem;
   }
 }
 

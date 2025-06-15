@@ -26,17 +26,23 @@
 
     <!-- Entity indicators based on active layers -->
     <g v-if="hasEntities" class="entity-indicators">
-      <!-- Players indicator -->
-      <g v-if="showPlayers && room.players.length > 0" class="player-indicator">
+      <!-- Players indicator (top-left corner) - GREEN CIRCLE -->
+      <g v-if="showPlayers && room.players.length > 0" class="player-indicator entity-group"
+         @click="showEntityDetails('players')">
+        <title>{{ getPlayerTooltip() }}</title>
         <circle
-            :cx="roomLeft + roomWidth - 15"
-            :cy="roomTop + 15"
+            :cx="roomLeft"
+            :cy="roomTop"
             :fill="layerColors.players"
-            r="5"
-        />
+            class="entity-circle"
+            r="8"
+            stroke="#000"
+            stroke-width="1"
+        >
+        </circle>
         <text
-            :x="roomLeft + roomWidth - 15"
-            :y="roomTop + 18"
+            :x="roomLeft"
+            :y="roomTop + 2"
             fill="#000"
             font-size="8"
             font-weight="bold"
@@ -45,17 +51,24 @@
         </text>
       </g>
 
-      <!-- NPCs indicator -->
-      <g v-if="showNpcs && room.npcs.length > 0" class="npc-indicator">
-        <circle
-            :cx="roomLeft + roomWidth - 30"
-            :cy="roomTop + 15"
+      <!-- NPCs indicator (top-right corner) - YELLOW SQUARE -->
+      <g v-if="showNpcs && room.npcs.length > 0" class="npc-indicator entity-group" @click="showEntityDetails('npcs')">
+        <title>{{ getNpcTooltip() }}</title>
+        <rect
+            :x="roomLeft + roomWidth - 8"
+            :y="roomTop - 8"
+            class="entity-square"
+            height="16"
             :fill="layerColors.npcs"
-            r="5"
+            rx="2"
+            ry="2"
+            stroke="#000"
+            stroke-width="1"
+            width="16"
         />
         <text
-            :x="roomLeft + roomWidth - 30"
-            :y="roomTop + 18"
+            :x="roomLeft + roomWidth"
+            :y="roomTop + 3"
             fill="#000"
             font-size="8"
             font-weight="bold"
@@ -64,41 +77,54 @@
         </text>
       </g>
 
-      <!-- Objects indicator -->
-      <g v-if="showObjects && room.objects.length > 0" class="object-indicator">
+      <!-- Anomalies indicator (top middle) - RED CIRCLE -->
+      <g v-if="showAnomalies && room.anomalies.length > 0" class="anomaly-indicator entity-group"
+         @click="showEntityDetails('anomalies')">
+        <title>{{ getAnomalyTooltip() }}</title>
         <circle
-            :cx="roomLeft + roomWidth - 15"
-            :cy="roomTop + 30"
-            :fill="layerColors.objects"
-            r="5"
-        />
-        <text
-            :x="roomLeft + roomWidth - 15"
-            :y="roomTop + 33"
-            fill="#000"
-            font-size="8"
-            font-weight="bold"
-            text-anchor="middle"
-        >{{ room.objects.length }}
-        </text>
-      </g>
-
-      <!-- Anomalies indicator -->
-      <g v-if="showAnomalies && room.anomalies.length > 0" class="anomaly-indicator">
-        <circle
-            :cx="roomLeft + roomWidth - 30"
-            :cy="roomTop + 30"
+            :cx="roomLeft + roomWidth/2"
+            :cy="roomTop"
             :fill="layerColors.anomalies"
-            r="5"
+            class="entity-circle"
+            r="8"
+            stroke="#000"
+            stroke-width="1"
         />
         <text
-            :x="roomLeft + roomWidth - 30"
-            :y="roomTop + 33"
+            :x="roomLeft + roomWidth/2"
+            :y="roomTop + 3"
             fill="#000"
             font-size="8"
             font-weight="bold"
             text-anchor="middle"
         >{{ room.anomalies.length }}
+        </text>
+      </g>
+
+      <!-- Objects indicator (top-left middle) - BLUE SQUARE -->
+      <g v-if="showObjects && room.objects.length > 0" class="object-indicator entity-group"
+         @click="showEntityDetails('objects')">
+        <title>{{ getObjectTooltip() }}</title>
+        <rect
+            :fill="layerColors.objects"
+            :x="roomLeft + roomWidth/4 - 8"
+            :y="roomTop - 16"
+            class="entity-square"
+            height="16"
+            rx="2"
+            ry="2"
+            stroke="#000"
+            stroke-width="1"
+            width="16"
+        />
+        <text
+            :x="roomLeft + roomWidth/4"
+            :y="roomTop - 8"
+            fill="#000"
+            font-size="8"
+            font-weight="bold"
+            text-anchor="middle"
+        >{{ room.objects.length }}
         </text>
       </g>
     </g>
@@ -134,6 +160,80 @@ export default {
     activeLayers: {
       type: Set,
       default: () => new Set()
+    }
+  },
+  methods: {
+    showEntityDetails(entityType) {
+      // Emit an event to show detailed information about the entities
+      this.$emit('show-entity-details', {
+        roomId: this.room.id,
+        entityType: entityType,
+        entities: this.room[entityType]
+      });
+    },
+    getPlayerTooltip() {
+      if (!this.room.players.length) return 'No players';
+
+      let tooltip = `Players (${this.room.players.length}):\n`;
+      const playerNames = this.room.players
+          .map(player => player.name || 'Unnamed Player')
+          .slice(0, 5);
+
+      tooltip += playerNames.join('\n');
+
+      if (this.room.players.length > 5) {
+        tooltip += `\n...and ${this.room.players.length - 5} more`;
+      }
+
+      return tooltip;
+    },
+    getNpcTooltip() {
+      if (!this.room.npcs.length) return 'No NPCs';
+
+      let tooltip = `NPCs (${this.room.npcs.length}):\n`;
+      const npcNames = this.room.npcs
+          .map(npc => npc.name || 'Unnamed NPC')
+          .slice(0, 5);
+
+      tooltip += npcNames.join('\n');
+
+      if (this.room.npcs.length > 5) {
+        tooltip += `\n...and ${this.room.npcs.length - 5} more`;
+      }
+
+      return tooltip;
+    },
+    getObjectTooltip() {
+      if (!this.room.objects.length) return 'No objects';
+
+      let tooltip = `Objects (${this.room.objects.length}):\n`;
+      const objectNames = this.room.objects
+          .map(obj => obj.name || 'Unnamed Object')
+          .slice(0, 5);
+
+      tooltip += objectNames.join('\n');
+
+      if (this.room.objects.length > 5) {
+        tooltip += `\n...and ${this.room.objects.length - 5} more`;
+      }
+
+      return tooltip;
+    },
+    getAnomalyTooltip() {
+      if (!this.room.anomalies.length) return 'No anomalies';
+
+      let tooltip = `Anomalies (${this.room.anomalies.length}):\n`;
+      const anomalyNames = this.room.anomalies
+          .map(anomaly => anomaly.name || 'Unnamed Anomaly')
+          .slice(0, 5);
+
+      tooltip += anomalyNames.join('\n');
+
+      if (this.room.anomalies.length > 5) {
+        tooltip += `\n...and ${this.room.anomalies.length - 5} more`;
+      }
+
+      return tooltip;
     }
   },
   computed: {
@@ -217,8 +317,8 @@ export default {
       return {
         players: '#00ff00',   // Green
         npcs: '#ffff00',      // Yellow
-        objects: '#ff8800',   // Orange
-        anomalies: '#ff0088'  // Pink
+        objects: '#0088ff',   // Blue
+        anomalies: '#ff0000'  // Red
       };
     }
   }
@@ -242,9 +342,33 @@ export default {
   pointer-events: none;
 }
 
+.entity-circle {
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.entity-square {
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.entity-group {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.entity-group:hover {
+  transform: scale(1.2);
+}
+
+.entity-group:hover .entity-circle,
+.entity-group:hover .entity-square {
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 1.5;
+}
+
 /* Ensure text is readable */
 text {
   font-family: 'Roboto', sans-serif;
   user-select: none;
+  filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.5));
 }
 </style>
