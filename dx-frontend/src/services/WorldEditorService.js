@@ -147,6 +147,14 @@ export class WorldEditorService {
         try {
             // Create new state collections
             const newRooms = new Map();
+            // if flour is not null add newRooms with grid_z != floor to make vertical connections work properly
+            if (floor !== null) {
+                stateBackup.rooms.forEach((room) => {
+                    if (room.position.grid_z !== floor) {
+                        newRooms.set(room.id, room);
+                    }
+                })
+            }
             const newConnections = new Map();
 
             // Add rooms from map data
@@ -220,6 +228,8 @@ export class WorldEditorService {
                             isVertical: connectionData.is_vertical || false,
                             type: connectionData.type || 'normal'
                         });
+                        const direction = connection.isVertical ? 'vertical' : 'horizontal';
+                        console.debug(`Creating ${direction} connection: ${connection.id} from ${connection.fromRoomId} to ${connection.toRoomId}`);
                         newConnections.set(connection.id, connection);
 
                         // Add connection to rooms

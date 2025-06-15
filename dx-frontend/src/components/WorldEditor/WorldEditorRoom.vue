@@ -147,6 +147,47 @@
         </text>
       </g>
     </g>
+
+    <!-- Stairs indicators (bottom of room) -->
+    <g v-if="hasVerticalConnections" class="stairs-indicators">
+      <!-- UP indicator -->
+      <g v-if="verticalConnectionDirections.up" class="stairs-up-indicator">
+        <title>Stairs going up</title>
+        <circle
+            :cx="roomLeft + roomWidth/2"
+            :cy="roomTop + roomHeight"
+            :fill="layerColors.stairs"
+            class="stairs-circle"
+            r="8"
+            stroke="#000"
+            stroke-width="1"
+        />
+        <polygon
+            :points="`${roomLeft + roomWidth/2 - 5},${roomTop + roomHeight + 3} ${roomLeft + roomWidth/2 + 5},${roomTop + roomHeight + 3} ${roomLeft + roomWidth/2},${roomTop + roomHeight - 3}`"
+            fill="#000"
+            stroke="none"
+        />
+      </g>
+
+      <!-- DOWN indicator -->
+      <g v-if="verticalConnectionDirections.down" class="stairs-down-indicator">
+        <title>Stairs going down</title>
+        <circle
+            :cx="roomLeft + roomWidth/2"
+            :cy="roomTop + roomHeight"
+            :fill="layerColors.stairs"
+            class="stairs-circle"
+            r="8"
+            stroke="#000"
+            stroke-width="1"
+        />
+        <polygon
+            :points="`${roomLeft + roomWidth/2 - 5},${roomTop + roomHeight - 3} ${roomLeft + roomWidth/2 + 5},${roomTop + roomHeight - 3} ${roomLeft + roomWidth/2},${roomTop + roomHeight + 3}`"
+            fill="#000"
+            stroke="none"
+        />
+      </g>
+    </g>
   </g>
 </template>
 
@@ -370,8 +411,52 @@ export default {
         players: '#00ff00',   // Green
         npcs: '#ffff00',      // Yellow
         objects: '#0088ff',   // Blue
-        anomalies: '#ff0000'  // Red
+        anomalies: '#ff0000', // Red
+        stairs: '#ffffff'     // White
       };
+    },
+
+    // Vertical connections (stairs)
+    hasVerticalConnections() {
+      if (!this.editorState || !this.editorState.connections) {
+        return false;
+      }
+
+      return Array.from(this.editorState.connections.values()).some(connection => {
+        return connection.isVertical &&
+            (connection.fromRoomId === this.room.id || connection.toRoomId === this.room.id);
+      });
+    },
+
+    verticalConnectionDirections() {
+      if (!this.hasVerticalConnections || !this.editorState || !this.editorState.rooms) {
+        return {up: false, down: false};
+      }
+
+      const directions = {up: false, down: false};
+      const currentRoomZ = this.room.position.grid_z;
+
+      Array.from(this.editorState.connections.values()).forEach(connection => {
+        if (!connection.isVertical) return;
+
+        if (connection.fromRoomId === this.room.id) {
+          const toRoom = this.editorState.rooms.get(connection.toRoomId);
+          if (toRoom && toRoom.position.grid_z > currentRoomZ) {
+            directions.up = true;
+          } else if (toRoom && toRoom.position.grid_z < currentRoomZ) {
+            directions.down = true;
+          }
+        } else if (connection.toRoomId === this.room.id) {
+          const fromRoom = this.editorState.rooms.get(connection.fromRoomId);
+          if (fromRoom && fromRoom.position.grid_z > currentRoomZ) {
+            directions.up = true;
+          } else if (fromRoom && fromRoom.position.grid_z < currentRoomZ) {
+            directions.down = true;
+          }
+        }
+      });
+
+      return directions;
     }
   },
   watch: {
@@ -409,6 +494,19 @@ export default {
 
 .entity-square {
   filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.stairs-circle {
+  filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.stairs-indicators {
+  cursor: pointer;
+}
+
+.stairs-up-indicator:hover .stairs-circle,
+.stairs-down-indicator:hover .stairs-circle {
+  filter: brightness(1.2) drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.7));
 }
 
 .entity-group {
