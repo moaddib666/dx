@@ -179,7 +179,14 @@
 
       <!-- Room Connections -->
       <div class="info-section">
-        <h4>Connections</h4>
+        <div class="section-header">
+          <h4>Connections</h4>
+          <EditInDjangoAdmin
+              :id="room.id"
+              app="world"
+              model="position"
+          />
+        </div>
         <div class="connections-container">
           <div v-if="roomConnections.length > 0" class="connection-list">
             <div
@@ -495,6 +502,12 @@ export default {
 </script>
 
 <style scoped>
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
 .world-editor-room-info {
   background: #2d2d2d;
   border: 1px solid #555;

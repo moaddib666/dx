@@ -12,7 +12,14 @@
         <div class="modal-body">
           <!-- Basic Connection Info -->
           <div class="info-section">
-            <h4>Basic Information</h4>
+            <div class="section-header">
+              <h4>Basic Information</h4>
+              <EditInDjangoAdmin
+                  :id="connection.id"
+                  app="world"
+                  model="positionconnection"
+              />
+            </div>
             <div class="info-grid">
               <div class="info-item">
                 <label>Connection ID:</label>
@@ -168,8 +175,13 @@
 </template>
 
 <script>
+import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
+
 export default {
   name: 'WorldEditorConnectionInfo',
+  components: {
+    EditInDjangoAdmin
+  },
   props: {
     connection: {
       type: Object,
@@ -335,6 +347,12 @@ export default {
 </script>
 
 <style scoped>
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
 .connection-info-modal {
   position: relative;
   z-index: 1000;
