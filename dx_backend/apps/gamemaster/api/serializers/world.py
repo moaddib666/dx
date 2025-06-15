@@ -1,21 +1,22 @@
 from rest_framework import serializers
 
-from apps.world.models import Planet, Continent, Country
+from apps.world.models import Position, PositionConnection
 
 
-class PlanetSerializer(serializers.ModelSerializer):
+class PositionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Position model.
+    """
     class Meta:
-        model = Planet
-        fields = '__all__'
+        model = Position
+        fields = ['id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', 'labels', 'is_safe', 'image', 'coordinates']
+        read_only_fields = ['coordinates']
 
 
-class ContinentSerializer(serializers.ModelSerializer):
+class PositionConnectionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for PositionConnection model.
+    """
     class Meta:
-        model = Continent
-        fields = '__all__'
-
-
-class CountrySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Country
-        fields = '__all__'
+        model = PositionConnection
+        fields = ['id', 'position_from', 'position_to', 'is_locked', 'is_active', 'is_public']
