@@ -200,6 +200,11 @@
     <button v-if="!showLegend" class="legend-btn" title="Show Legend" @click="toggleLegend">
       <i class="icon-info"></i>
     </button>
+
+    <!-- Current Turn Component -->
+    <div class="current-turn-container">
+      <CurrentTurnComponent :currentTurn="currentCycleNumber"/>
+    </div>
   </div>
 </template>
 
@@ -207,12 +212,14 @@
 import {WorldEditorConfig, WorldEditorLayer, WorldEditorTool} from '@/models/WorldEditorModels.js';
 import WorldEditorRoom from './WorldEditorRoom.vue';
 import WorldEditorMinimap from './WorldEditorMinimap.vue';
+import CurrentTurnComponent from '@/components/Game/CurrentTurnComponent.vue';
 
 export default {
   name: 'WorldEditorMap',
   components: {
     WorldEditorRoom,
-    WorldEditorMinimap
+    WorldEditorMinimap,
+    CurrentTurnComponent
   },
   props: {
     mapData: {
@@ -226,6 +233,10 @@ export default {
     currentFloor: {
       type: Number,
       default: 1
+    },
+    currentCycleNumber: {
+      type: Number,
+      default: null
     }
   },
   emits: [
@@ -236,7 +247,8 @@ export default {
     'connection-deleted',
     'map-clicked',
     'show-entity-details',
-    'layer-toggled'
+    'layer-toggled',
+    'refresh-map',
   ],
   data() {
     return {
@@ -433,6 +445,7 @@ export default {
     window.removeEventListener('resize', this.handleResize);
   },
   methods: {
+
     // Initialize view bounds safely
     initializeViewBounds() {
       try {
@@ -1151,6 +1164,14 @@ export default {
   .legend-label {
     font-size: 0.75rem;
   }
+}
+
+/* Current Turn Component */
+.current-turn-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 }
 
 /* Dark theme consistency */

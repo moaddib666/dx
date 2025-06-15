@@ -108,7 +108,7 @@ export class WorldEditorService {
             // Otherwise, use gamemasterWorldMapMapRetrieve to get all floors
             let response;
             if (floor !== null) {
-                response = await GameMasterApi.gamemasterWorldMapList(floor);
+                response = await GameMasterApi.gamemasterWorldMapMapRetrieve(floor);
                 console.log(`World map data for floor ${floor}:`, response.data);
             } else {
                 response = await GameMasterApi.gamemasterWorldMapMapRetrieve();

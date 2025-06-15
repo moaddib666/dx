@@ -63,6 +63,7 @@
             :currentFloor="currentFloor"
             :editorState="editorState"
             :mapData="mapData"
+            :currentCycleNumber="currentCycleNumber"
             class="world-map"
             @room-selected="onRoomSelected"
             @room-created="onRoomCreated"
@@ -72,6 +73,7 @@
             @map-clicked="onMapClicked"
             @show-entity-details="onShowEntityDetails"
             @layer-toggled="onLayerToggled"
+            @refresh-map="refreshWorld"
         />
       </div>
 
@@ -128,6 +130,8 @@
 <script>
 import {worldEditorService} from '@/services/WorldEditorService.js';
 import {WorldEditorLayer, WorldEditorMode, WorldEditorTool} from '@/models/WorldEditorModels.js';
+import {ensureConnection} from "@/api/dx-websocket/index.ts";
+import {ActionGameApi} from "@/api/backendService.js";
 
 // Import WorldEditor components (to be created)
 import WorldEditorToolbar from '@/components/WorldEditor/WorldEditorToolbar.vue';
@@ -165,7 +169,11 @@ export default {
       showLayersPanel: false, // Layers panel visibility state
 
       // Timer for current time update
-      timeUpdateInterval: null
+      timeUpdateInterval: null,
+
+      // Current cycle/turn tracking
+      currentCycleNumber: null,
+      bus: null
     };
   },
   computed: {
@@ -242,6 +250,13 @@ export default {
         this.currentTime = new Date().toLocaleTimeString();
       }, 1000);
 
+      // Subscribe to new cycle events
+      this.bus = ensureConnection();
+      this.bus.on("world::new_cycle", this.handleCycleChange);
+
+      // Get initial cycle number
+      await this.fetchCurrentCycle();
+
       this.setLastAction('WorldEditor initialized');
     } catch (error) {
       console.error('Failed to initialize WorldEditor:', error);
@@ -256,8 +271,35 @@ export default {
     if (this.timeUpdateInterval) {
       clearInterval(this.timeUpdateInterval);
     }
+
+    // Clean up cycle subscription
+    if (this.bus) {
+      this.bus.off("world::new_cycle", this.handleCycleChange);
+    }
   },
   methods: {
+    // Cycle/turn handling methods
+    async fetchCurrentCycle() {
+      try {
+        const response = await ActionGameApi.actionCurrentCycleRetrieve();
+        this.currentCycleNumber = response.data.id;
+      } catch (error) {
+        console.error("Failed to fetch current cycle:", error);
+      }
+    },
+
+    async handleCycleChange(data) {
+      console.log("Cycle change event received", data);
+      if (data.id === this.currentCycleNumber) {
+        console.debug("Cycle number is the same, skipping update");
+        return;
+      }
+      this.currentCycleNumber = data.id;
+
+      // Refresh world data when cycle changes
+      await this.refreshWorld();
+    },
+
     setupEventListeners() {
       this.service.on('stateUpdated', this.onStateUpdated);
       this.service.on('roomCreated', this.onRoomCreatedEvent);
