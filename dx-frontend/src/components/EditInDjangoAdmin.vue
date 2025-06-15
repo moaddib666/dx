@@ -68,9 +68,9 @@ export default {
   max-width: 48px;
 
   /* Button styling */
-  border: 2px solid #79aec8;
+  border: 2px solid #0c6442;
   border-radius: 8px;
-  background: linear-gradient(135deg, #417690 0%, #79aec8 100%);
+  background: linear-gradient(135deg, #0c6442 0%, #0e8555 100%);
   color: white;
   cursor: pointer;
 
@@ -89,19 +89,19 @@ export default {
 }
 
 .django-admin-button:hover {
-  background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
-  border-color: #4299e1;
+  background: linear-gradient(135deg, #095335 0%, #0e8555 100%);
+  border-color: #0e8555;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+  box-shadow: 0 4px 12px rgba(12, 100, 66, 0.3);
 }
 
 .django-admin-button:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(66, 153, 225, 0.2);
+  box-shadow: 0 2px 4px rgba(12, 100, 66, 0.2);
 }
 
 .django-admin-button:focus-visible {
-  outline: 2px solid #4299e1;
+  outline: 2px solid #0c6442;
   outline-offset: 2px;
 }
 
@@ -134,11 +134,11 @@ export default {
 @media (prefers-contrast: high) {
   .django-admin-button {
     border-width: 3px;
-    background: #0066cc;
+    background: #0c6442;
   }
 
   .django-admin-button:hover {
-    background: #004499;
+    background: #095335;
   }
 }
 
