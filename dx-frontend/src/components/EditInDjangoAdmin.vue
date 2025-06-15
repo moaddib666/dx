@@ -41,26 +41,18 @@ export default {
       @click="openDjangoAdmin"
   >
     <!-- Django-style admin icon -->
-    <svg
-        class="django-icon"
-        fill="none"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-      <!-- Gear/Settings icon representing admin -->
-      <path
-          d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L19 6L17 7V9L19 10L21 9ZM3 9V7L5 6L7 7V9L5 10L3 9ZM12 18C10.9 18 10 18.9 10 20C10 21.1 10.9 22 12 22C13.1 22 14 21.1 14 20C14 18.9 13.1 18 12 18Z"
-          fill="currentColor"
-      />
-      <path
-          d="M12 9C13.66 9 15 10.34 15 12C15 13.66 13.66 15 12 15C10.34 15 9 13.66 9 12C9 10.34 10.34 9 12 9Z"
-          fill="currentColor"
-      />
-      <!-- Django-inspired rectangles -->
-      <rect fill="currentColor" height="2" rx="1" width="3" x="2" y="11"/>
-      <rect fill="currentColor" height="2" rx="1" width="3" x="19" y="11"/>
-      <rect fill="currentColor" height="3" rx="1" width="2" x="11" y="2"/>
-      <rect fill="currentColor" height="3" rx="1" width="2" x="11" y="19"/>
+    <svg class="django-icon" fill="#000000" preserveAspectRatio="xMidYMid" version="1.1"
+         viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+      <g id="SVGRepo_iconCarrier">
+        <g>
+          <rect fill="#092E20" height="256" rx="28" width="256" x="0" y="0"></rect>
+          <path
+              d="M186.377012,94.197636 L186.377012,160.424478 C186.377012,183.243286 184.707519,194.187745 179.699037,203.649406 C175.060358,212.741266 168.937684,218.490548 156.323731,224.798721 L129.794937,212.183571 C142.410087,206.247593 148.531564,201.05481 152.427049,193.074749 C156.509231,184.91278 157.808923,175.451119 157.808923,150.593015 L157.808923,94.197636 L186.377012,94.197636 Z M140.928486,50.0787207 L140.928486,182.316986 C126.272844,185.099476 115.512688,186.212472 103.826231,186.212472 C68.9487718,186.212472 50.7686431,170.445031 50.7686431,140.205054 C50.7686431,111.079269 70.0629644,92.1583404 99.9295492,92.1583404 C104.567032,92.1583404 108.091519,92.5281423 112.359199,93.6411381 L112.359199,50.0787207 L140.928486,50.0787207 Z M102.713236,115.160254 C88.243093,115.160254 79.8944275,124.065418 79.8944275,139.647359 C79.8944275,154.860696 87.8720944,163.208164 102.527736,163.208164 C105.680028,163.208164 108.278215,163.022665 112.359199,162.467364 L112.359199,116.643052 C109.020212,115.531253 106.237722,115.160254 102.713236,115.160254 Z M186.377012,50.2307105 L186.377012,79.5419941 L157.808923,79.5419941 L157.808923,50.2307105 L186.377012,50.2307105 Z"
+              fill="#FFFFFD"></path>
+        </g>
+      </g>
     </svg>
   </button>
 </template>
@@ -68,10 +60,10 @@ export default {
 <style scoped>
 .django-admin-button {
   /* Size and positioning */
-  height: 5vh;
-  width: 5vh;
-  min-height: 24px;
-  min-width: 24px;
+  height: 3vh;
+  width: 3vh;
+  min-height: 10px;
+  min-width: 10px;
   max-height: 48px;
   max-width: 48px;
 
@@ -114,8 +106,8 @@ export default {
 }
 
 .django-icon {
-  height: 60%;
-  width: 60%;
+  height: 98%;
+  width: 98%;
   flex-shrink: 0;
 }
 

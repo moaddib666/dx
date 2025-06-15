@@ -86,6 +86,11 @@
               >
                 <span class="entity-name">{{ player.name || 'Unknown Player' }}</span>
                 <span class="entity-status">{{ player.status || 'Active' }}</span>
+                <EditInDjangoAdmin
+                    :id="player.id"
+                    :app="player.object_type?.app_label || 'world'"
+                    :model="player.object_type?.model || 'player'"
+                />
               </div>
             </div>
           </div>
@@ -102,8 +107,15 @@
                   :key="npc.id"
                   class="entity-item"
               >
-                <span class="entity-name">{{ npc.name || 'Unknown NPC' }}</span>
-                <span class="entity-type">{{ npc.type || 'Neutral' }}</span>
+                <div class="entity-info">
+                  <span class="entity-name">{{ npc.name || 'Unknown NPC' }}</span>
+                  <span class="entity-type">{{ npc.type || 'Neutral' }}</span>
+                </div>
+                <EditInDjangoAdmin
+                    :id="npc.id"
+                    :app="npc.object_type?.app_label || 'world'"
+                    :model="npc.object_type?.model || 'npc'"
+                />
               </div>
             </div>
           </div>
@@ -120,8 +132,15 @@
                   :key="object.id"
                   class="entity-item"
               >
-                <span class="entity-name">{{ object.name || 'Unknown Object' }}</span>
-                <span class="entity-rarity">{{ object.rarity || 'Common' }}</span>
+                <div class="entity-info">
+                  <span class="entity-name">{{ object.name || 'Unknown Object' }}</span>
+                  <span class="entity-rarity">{{ object.rarity || 'Common' }}</span>
+                </div>
+                <EditInDjangoAdmin
+                    :id="object.id"
+                    :app="object.object_type?.app_label || 'world'"
+                    :model="object.object_type?.model || 'gameobject'"
+                />
               </div>
             </div>
           </div>
@@ -138,8 +157,15 @@
                   :key="anomaly.id"
                   class="entity-item"
               >
-                <span class="entity-name">{{ anomaly.name || 'Unknown Anomaly' }}</span>
-                <span class="entity-danger">{{ anomaly.danger || 'Low' }}</span>
+                <div class="entity-info">
+                  <span class="entity-name">{{ anomaly.name || 'Unknown Anomaly' }}</span>
+                  <span class="entity-danger">{{ anomaly.danger || 'Low' }}</span>
+                </div>
+                <EditInDjangoAdmin
+                    :id="anomaly.id"
+                    :app="anomaly.object_type?.app_label || 'world'"
+                    :model="anomaly.object_type?.model || 'anomaly'"
+                />
               </div>
             </div>
           </div>
@@ -243,11 +269,13 @@
 
 <script>
 import WorldEditorConnectionInfo from '@/components/WorldEditor/WorldEditorConnectionInfo.vue';
+import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 
 export default {
   name: 'WorldEditorRoomInfo',
   components: {
-    WorldEditorConnectionInfo
+    WorldEditorConnectionInfo,
+    EditInDjangoAdmin
   },
   props: {
     room: {
@@ -683,6 +711,14 @@ export default {
   padding: 0.25rem 0.5rem;
   background: #555;
   border-radius: 4px;
+}
+
+.entity-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 0.5rem;
 }
 
 .entity-name {
