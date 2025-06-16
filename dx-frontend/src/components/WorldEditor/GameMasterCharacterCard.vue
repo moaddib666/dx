@@ -110,18 +110,11 @@
         <div class="external-sections">
           <!-- Inventory items -->
           <div class="inventory-section">
-            <h3>Equipped Items</h3>
-            <div class="items-grid">
-              <div v-for="item in character.equipped_items" :key="item.id" class="item-card"
-                   @click="emitItemSelected(item)">
-                <div class="item-icon">{{ getItemIcon(item) }}</div>
-                <div class="item-info">
-                  <div class="item-name">{{ item.name }}</div>
-                  <div class="item-type">{{ formatItemType(item.type) }}</div>
-                </div>
-              </div>
-              <div v-if="character.equipped_items.length === 0" class="no-items">No equipped items</div>
-            </div>
+            <h3>Inventory</h3>
+            <GameMasterInventoryGrid
+                :items="character.equipped_items"
+                @world-item-selected="handleWorldItemSelected"
+            />
           </div>
 
           <!-- Currency information -->
@@ -157,11 +150,13 @@
 <script>
 import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
 import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
+import GameMasterInventoryGrid from '@/components/GameMaster/Character/GameMasterInventoryGrid.vue';
 
 export default {
   name: 'GameMasterCharacterCard',
   components: {
-    AttributeBar
+    AttributeBar,
+    GameMasterInventoryGrid
   },
   props: {
     characterId: {
@@ -288,6 +283,20 @@ export default {
     // Emit item selected event
     emitItemSelected(item) {
       this.$emit('item-selected', item);
+    },
+
+    // Handle world item selected from inventory grid
+    handleWorldItemSelected(worldItemId) {
+      if (!worldItemId) return;
+
+      // Find the item with the matching world item ID
+      const selectedItem = this.character.equipped_items.find(
+          item => item.world_item && item.world_item.id === worldItemId
+      );
+
+      if (selectedItem) {
+        this.$emit('item-selected', selectedItem);
+      }
     },
 
     // Helper methods
@@ -569,7 +578,7 @@ export default {
   position: relative;
   width: 100%;
   /* 4:7 aspect ratio - vertical orientation */
-  padding-top: 175%; /* 7/4 = 1.75 or 175% */
+  padding-top: 145%; /* 7/4 = 1.75 or 175% */
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -604,7 +613,7 @@ export default {
 
 .header-attribute-bar {
   margin: 0;
-  height: 0.4rem;
+  height: 0.7rem;
 }
 
 .character-name {
@@ -820,11 +829,10 @@ export default {
 .external-sections {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 /* Common section styling */
-.inventory-section,
 .currency-section {
   background: rgba(20, 20, 20, 0.5);
   border-radius: 8px;
@@ -833,78 +841,25 @@ export default {
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
+/* Minimalistic inventory section */
+.inventory-section {
+  background: rgba(20, 20, 20, 0.5);
+  border-radius: 4px;
+  padding: 0.25rem;
+  border: 1px solid rgba(30, 144, 255, 0.2);
+  margin-bottom: 0.5rem;
+}
+
 .inventory-section h3,
 .currency-section h3 {
-  font-size: 0.9rem;
-  margin: 0 0 0.75rem 0;
+  font-size: 0.8rem;
+  margin: 0 0 0.25rem 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #1E90FF;
   text-align: center;
   border-bottom: 1px solid rgba(30, 144, 255, 0.2);
-  padding-bottom: 0.5rem;
-}
-
-/* Items grid */
-.items-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
-}
-
-.item-card {
-  background: rgba(30, 30, 30, 0.7);
-  border-radius: 6px;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.item-card:hover {
-  background: rgba(40, 40, 40, 0.8);
-  border-color: rgba(30, 144, 255, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.item-icon {
-  font-size: 1.3rem;
-  color: #1E90FF;
-}
-
-.item-info {
-  flex: 1;
-  overflow: hidden;
-}
-
-.item-name {
-  font-weight: bold;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.item-type {
-  font-size: 0.7rem;
-  color: #aaa;
-}
-
-.no-items {
-  grid-column: span 2;
-  text-align: center;
-  padding: 0.75rem;
-  color: #888;
-  font-style: italic;
-  background: rgba(30, 30, 30, 0.3);
-  border-radius: 6px;
-  border: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.25rem;
 }
 
 /* Currency list */
