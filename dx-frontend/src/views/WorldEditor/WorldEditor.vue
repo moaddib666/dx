@@ -12,11 +12,7 @@
         <span class="mode-indicator">{{ currentMode.toUpperCase() }} MODE</span>
       </div>
 
-      <div class="toolbar-section floor-controls">
-        <button @click="floorDown">Floor -</button>
-        <span class="floor-display">Floor: {{ currentFloor }}</span>
-        <button @click="floorUp">Floor +</button>
-      </div>
+      <!-- Floor controls moved to floating component -->
 
       <div class="toolbar-section action-controls">
         <button class="refresh-btn" @click="refreshWorld">
@@ -76,6 +72,8 @@
             @show-entity-details="onShowEntityDetails"
             @layer-toggled="onLayerToggled"
             @refresh-map="refreshWorld"
+            @floor-up="floorUp"
+            @floor-down="floorDown"
         />
       </div>
 

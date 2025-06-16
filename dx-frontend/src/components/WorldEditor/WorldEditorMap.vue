@@ -205,6 +205,13 @@
     <div class="current-turn-container">
       <CurrentTurnComponent :currentTurn="currentCycleNumber"/>
     </div>
+
+    <!-- Floor Switcher -->
+    <WorldEditorFloorSwitcher
+        :currentFloor="currentFloor"
+        @floor-up="onFloorUp"
+        @floor-down="onFloorDown"
+    />
   </div>
 </template>
 
@@ -213,13 +220,15 @@ import {WorldEditorConfig, WorldEditorLayer, WorldEditorTool} from '@/models/Wor
 import WorldEditorRoom from './WorldEditorRoom.vue';
 import WorldEditorMinimap from './WorldEditorMinimap.vue';
 import CurrentTurnComponent from '@/components/Game/CurrentTurnComponent.vue';
+import WorldEditorFloorSwitcher from './WorldEditorFloorSwitcher.vue';
 
 export default {
   name: 'WorldEditorMap',
   components: {
     WorldEditorRoom,
     WorldEditorMinimap,
-    CurrentTurnComponent
+    CurrentTurnComponent,
+    WorldEditorFloorSwitcher
   },
   props: {
     mapData: {
@@ -250,6 +259,8 @@ export default {
     'show-entity-details',
     'layer-toggled',
     'refresh-map',
+    'floor-up',
+    'floor-down',
   ],
   data() {
     return {
@@ -871,6 +882,15 @@ export default {
           this.onRoomClick(room);
         }
       }
+    },
+
+    // Floor switcher methods
+    onFloorUp() {
+      this.$emit('floor-up');
+    },
+
+    onFloorDown() {
+      this.$emit('floor-down');
     }
   }
 };
