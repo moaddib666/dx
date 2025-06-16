@@ -56,6 +56,14 @@
 
       <!-- Center Panel - Map -->
       <div class="center-panel">
+        <!-- Map Loading Overlay -->
+        <div v-if="isMapLoading" class="map-loading-overlay">
+          <div class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading map data...</div>
+          </div>
+        </div>
+
         <WorldEditorMap
             :currentFloor="currentFloor"
             :editorState="editorState"
@@ -187,7 +195,10 @@ export default {
 
       // Current cycle/turn tracking
       currentCycleNumber: null,
-      bus: null
+      bus: null,
+
+      // Map loading state
+      isMapLoading: false
     };
   },
   computed: {
@@ -422,12 +433,15 @@ export default {
 
     async refreshWorld() {
       try {
+        this.isMapLoading = true;
         await this.service.refresh();
         this.setLastAction('World data refreshed');
         this.hasUnsavedChanges = false;
       } catch (error) {
         console.error('Failed to refresh world:', error);
         this.setLastAction('Failed to refresh world data');
+      } finally {
+        this.isMapLoading = false;
       }
     },
 
@@ -743,6 +757,53 @@ export default {
   flex: 1;
   position: relative;
   overflow: hidden;
+}
+
+/* Map Loading Overlay */
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(45, 45, 45, 0.9);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #1E90FF;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .right-panel {
