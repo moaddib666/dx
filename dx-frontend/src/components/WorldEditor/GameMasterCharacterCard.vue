@@ -37,15 +37,15 @@
           <!-- Right side: Effect icons -->
           <div class="effects-container">
             <div v-for="effect in character.effects" :key="effect.id" class="effect-icon-container">
-              <div class="effect-icon">{{ getEffectIcon(effect) }}</div>
+              <img v-if="getEffectIconUrl(effect)"
+                   :alt="`${effect.effect?.id || 'Effect'} - ${effect.is_permanent ? 'Permanent' : `${effect.cycle_left || effect.ends_in || 0} cycles`}${effect.description ? ` - ${effect.description}` : ''}`"
+                   :src="getEffectIconUrl(effect)"
+                   class="effect-icon">
+              <div v-else class="effect-icon-placeholder">{{ getEffectIcon(effect) }}</div>
 
-              <!-- Effect details on hover -->
-              <div class="effect-details">
-                <div class="effect-name">{{ effect.name }}</div>
-                <div class="effect-duration">
-                  {{ effect.is_permanent ? 'Permanent' : `${effect.remaining_cycles} cycles` }}
-                </div>
-                <div v-if="effect.description" class="effect-description">{{ effect.description }}</div>
+              <!-- Cycles count overlay -->
+              <div v-if="!effect.is_permanent && (effect.cycle_left || effect.ends_in)" class="effect-cycles-overlay">
+                {{ effect.cycle_left || effect.ends_in }}
               </div>
             </div>
             <div v-if="character.effects.length === 0" class="no-effects">No effects</div>
@@ -424,6 +424,16 @@ export default {
       return null;
     },
 
+    getEffectIconUrl(effect) {
+      if (!effect) return null;
+
+      // Check for icon in different possible locations
+      if (effect.effect && effect.effect.icon) return effect.effect.icon;
+      if (effect.icon) return effect.icon;
+
+      return null;
+    },
+
     formatEfficiency(efficiency) {
       if (efficiency === undefined || efficiency === null) return '0%';
 
@@ -629,8 +639,8 @@ export default {
 
 .effect-icon-container {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 30px; /* Reduced to 0.75 of original size (40px * 0.75 = 30px) */
+  height: 30px; /* Reduced to 0.75 of original size (40px * 0.75 = 30px) */
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -642,47 +652,31 @@ export default {
 }
 
 .effect-icon {
-  font-size: 1.2rem;
-  color: #fff;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-/* Effect details on hover */
-.effect-details {
+.effect-icon-placeholder {
+  font-size: 0.9rem; /* Reduced from 1.2rem to match smaller container */
+}
+
+/* Cycles count overlay */
+.effect-cycles-overlay {
   position: absolute;
-  right: 45px;
-  top: 0;
-  width: 150px;
+  top: -5px;
+  right: -5px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 0.3rem;
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.effect-icon-container:hover .effect-details {
-  opacity: 1;
-  visibility: visible;
-}
-
-.effect-name {
-  font-weight: bold;
-  font-size: 0.7rem;
-  margin-bottom: 0.2rem;
-  color: #fff;
-}
-
-.effect-duration {
+  color: white;
+  border-radius: 50%;
+  min-width: 16px;
+  height: 16px;
   font-size: 0.6rem;
-  color: #ccc;
-  margin-bottom: 0.1rem;
-}
-
-.effect-description {
-  font-size: 0.6rem;
-  color: #aaa;
-  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  z-index: 5;
 }
 
 .no-effects {
