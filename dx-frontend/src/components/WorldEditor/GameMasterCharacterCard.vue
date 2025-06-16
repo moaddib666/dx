@@ -1,5 +1,32 @@
 <template>
-  <div :class="{ 'is-loading': isLoading }" class="game-master-character-card">
+  <div
+      :class="{ 'is-loading': isLoading, 'is-dragging': isDragging, 'is-selected': isSelected }"
+      :style="{ top: positionY + 'px', right: 'auto', left: positionX + 'px' }"
+      class="game-master-character-card"
+  >
+    <!-- Top Tab for Drag and Drop -->
+    <div
+        class="top-drag-tab"
+        title="Drag items here"
+        @dragover.prevent
+        @drop.prevent="handleItemDrop"
+    >
+      <span class="tab-text">Drop Items Here</span>
+    </div>
+
+    <!-- Card Header with Tab and Close Button - Always visible -->
+    <div class="card-header">
+      <div
+          class="drag-tab"
+          title="Drag to move"
+          @mousedown="startDrag"
+      >
+        <span class="drag-handle">≡</span>
+      </div>
+      <h3 class="card-title">Character Info</h3>
+      <button class="close-button" @click="closeCard">×</button>
+    </div>
+
     <!-- Loading overlay -->
     <div v-if="isLoading" class="loading-overlay">
       <div class="loading-spinner"></div>
@@ -134,11 +161,9 @@
         </div>
       </div>
 
-      <!-- Close button -->
-      <button class="close-button" @click="closeCard">×</button>
     </div>
 
-    <!-- Error state -->
+    <!-- Error state - Close button is still accessible -->
     <div v-else-if="error" class="error-state">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{{ error }}</div>
@@ -162,6 +187,10 @@ export default {
     characterId: {
       type: String,
       required: true
+    },
+    isSelected: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -171,7 +200,13 @@ export default {
       error: null,
       showTags: false,
       showBio: false,
-      isUnmounted: false
+      isUnmounted: false,
+      // Position tracking for draggable functionality
+      isDragging: false,
+      dragStartX: 0,
+      dragStartY: 0,
+      positionX: 0, // Will be set to center in created hook
+      positionY: 0  // Will be set to center in created hook
     };
   },
   computed: {
@@ -190,6 +225,9 @@ export default {
     gameMasterCharacterService.on('loadingStarted', this.onLoadingStarted);
     gameMasterCharacterService.on('characterLoaded', this.onCharacterLoaded);
     gameMasterCharacterService.on('loadingFailed', this.onLoadingFailed);
+
+    // Center the card on the screen
+    this.centerCard();
 
     // Load character data
     await this.loadCharacter();
@@ -502,6 +540,103 @@ export default {
       // Replace the broken image with the avatar placeholder
       event.target.style.display = 'none';
       event.target.parentNode.querySelector('.avatar-placeholder').style.display = 'flex';
+    },
+
+    // Handle item drop from drag and drop operation
+    handleItemDrop(event) {
+      try {
+        // Get the dropped data
+        const itemData = event.dataTransfer.getData('text/plain');
+
+        if (!itemData) {
+          console.warn('No data received from drop event');
+          return;
+        }
+
+        // Try to parse the item data
+        const item = JSON.parse(itemData);
+
+        if (!item || !item.id) {
+          console.warn('Invalid item data received:', itemData);
+          return;
+        }
+
+        console.log('Item dropped:', item);
+
+        // Emit an event to notify parent components
+        this.$emit('item-dropped', item, this.characterId);
+
+        // Show a visual feedback
+        const tab = event.currentTarget;
+        tab.classList.add('drop-success');
+
+        // Remove the visual feedback after a short delay
+        setTimeout(() => {
+          tab.classList.remove('drop-success');
+        }, 500);
+      } catch (error) {
+        console.error('Error handling dropped item:', error);
+      }
+    },
+
+    // Dragging functionality
+    startDrag(event) {
+      // Only handle left mouse button
+      if (event.button !== 0) return;
+
+      // Set dragging flag
+      this.isDragging = true;
+
+      // Store the initial mouse position
+      this.dragStartX = event.clientX;
+      this.dragStartY = event.clientY;
+
+      // Add event listeners for drag and drop
+      document.addEventListener('mousemove', this.drag);
+      document.addEventListener('mouseup', this.stopDrag);
+
+      // Prevent text selection during drag
+      event.preventDefault();
+    },
+
+    drag(event) {
+      if (!this.isDragging) return;
+
+      // Calculate the new position
+      const deltaX = event.clientX - this.dragStartX;
+      const deltaY = event.clientY - this.dragStartY;
+
+      // Update the position
+      this.positionX += deltaX;
+      this.positionY += deltaY;
+
+      // Keep the card within the viewport
+      this.positionX = Math.max(0, Math.min(window.innerWidth - 300, this.positionX));
+      this.positionY = Math.max(0, Math.min(window.innerHeight - 100, this.positionY));
+
+      // Update the starting position for the next move
+      this.dragStartX = event.clientX;
+      this.dragStartY = event.clientY;
+    },
+
+    stopDrag() {
+      // Reset dragging flag
+      this.isDragging = false;
+
+      // Remove event listeners
+      document.removeEventListener('mousemove', this.drag);
+      document.removeEventListener('mouseup', this.stopDrag);
+    },
+
+    // Center the card on the screen
+    centerCard() {
+      // Card width is 300px as defined in CSS
+      const cardWidth = 300;
+      const cardHeight = 400; // Approximate height, adjust as needed
+
+      // Calculate center position
+      this.positionX = Math.max(0, (window.innerWidth - cardWidth) / 2);
+      this.positionY = Math.max(0, (window.innerHeight - cardHeight) / 2);
     }
   }
 };
@@ -510,19 +645,105 @@ export default {
 <style scoped>
 .game-master-character-card {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  /* Position is now controlled by inline style */
   width: 300px;
   max-height: calc(100vh - 40px);
   background: rgba(30, 30, 30, 0.95);
-  border: 2px solid #1E90FF;
+  border: 2px solid #555;
   border-radius: 12px;
   color: #ffffff;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
-  overflow-y: auto;
-  z-index: 1000;
+  z-index: 900; /* Lower z-index to prevent interference with underlying menus */
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  /* Add transition for smoother movement */
+  transition: box-shadow 0.2s ease;
+}
+
+/* Add a subtle shadow effect when dragging */
+.game-master-character-card.is-dragging {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.8);
+}
+
+/* Apply blue border only to selected character */
+.game-master-character-card.is-selected {
+  border: 2px solid #1E90FF;
+}
+
+/* Top Tab for Drag and Drop */
+.top-drag-tab {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1E90FF;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.top-drag-tab:hover {
+  background: #4FC3F7;
+  padding-top: 8px;
+}
+
+.tab-text {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Visual feedback for successful drop */
+.top-drag-tab.drop-success {
+  background: #4CAF50;
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 -2px 8px rgba(76, 175, 80, 0.5);
+}
+
+/* Card Header */
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: #333;
+  border-bottom: 1px solid #555;
+  z-index: 10;
+}
+
+.drag-tab {
+  cursor: grab;
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  background: #444;
+  transition: background 0.2s ease;
+}
+
+/* Change cursor when actively dragging */
+.is-dragging .drag-tab {
+  cursor: grabbing;
+}
+
+.drag-tab:hover {
+  background: #555;
+}
+
+.drag-handle {
+  color: #aaa;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.card-title {
+  flex: 1;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1E90FF;
 }
 
 /* Loading state */
@@ -533,6 +754,7 @@ export default {
   justify-content: center;
   padding: 2rem;
   height: 300px;
+  overflow-y: auto;
 }
 
 .loading-spinner {
@@ -563,6 +785,8 @@ export default {
   padding: 0.75rem;
   position: relative;
   background: rgba(30, 30, 30, 0.9);
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
 }
 
 /* Top Section */
@@ -920,9 +1144,6 @@ export default {
 
 /* Close button */
 .close-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
   width: 26px;
   height: 26px;
   border-radius: 50%;
@@ -936,7 +1157,6 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  z-index: 10;
 }
 
 .close-button:hover {
@@ -954,6 +1174,9 @@ export default {
   justify-content: center;
   padding: 2rem;
   height: 300px;
+  overflow-y: auto;
+  /* Ensure content doesn't overlap with header where close button is */
+  margin-top: 10px;
 }
 
 .error-icon {
@@ -979,6 +1202,44 @@ export default {
 
 .retry-button:hover {
   background: #1a7fd1;
+}
+
+/* Scrollbar Styling - Aligned with other scrolls on the page */
+.card-content::-webkit-scrollbar,
+.loading-overlay::-webkit-scrollbar,
+.error-state::-webkit-scrollbar,
+.bio-background-text::-webkit-scrollbar,
+.shields-container::-webkit-scrollbar,
+.effects-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-content::-webkit-scrollbar-track,
+.loading-overlay::-webkit-scrollbar-track,
+.error-state::-webkit-scrollbar-track,
+.bio-background-text::-webkit-scrollbar-track,
+.shields-container::-webkit-scrollbar-track,
+.effects-container::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.card-content::-webkit-scrollbar-thumb,
+.loading-overlay::-webkit-scrollbar-thumb,
+.error-state::-webkit-scrollbar-thumb,
+.bio-background-text::-webkit-scrollbar-thumb,
+.shields-container::-webkit-scrollbar-thumb,
+.effects-container::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.card-content::-webkit-scrollbar-thumb:hover,
+.loading-overlay::-webkit-scrollbar-thumb:hover,
+.error-state::-webkit-scrollbar-thumb:hover,
+.bio-background-text::-webkit-scrollbar-thumb:hover,
+.shields-container::-webkit-scrollbar-thumb:hover,
+.effects-container::-webkit-scrollbar-thumb:hover {
+  background: #666;
 }
 
 /* Responsive adjustments */
