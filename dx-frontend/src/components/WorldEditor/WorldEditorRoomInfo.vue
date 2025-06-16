@@ -83,6 +83,7 @@
                   v-for="player in room.players"
                   :key="player.id"
                   class="entity-item"
+                  @click="onPlayerClick(player)"
               >
                 <div class="entity-avatar">
                   <img
@@ -116,6 +117,7 @@
                   v-for="npc in room.npcs"
                   :key="npc.id"
                   class="entity-item"
+                  @click="onNpcClick(npc)"
               >
                 <div class="entity-avatar">
                   <img
@@ -405,6 +407,20 @@ export default {
     handleAvatarError(event) {
       // Replace the broken image with the default avatar
       event.target.src = this.defaultAvatar;
+    },
+
+    onPlayerClick(player) {
+      // Emit an event to open the character card for this player
+      if (player && player.id && player.object_type?.model === 'character') {
+        this.$emit('character-selected', player.id);
+      }
+    },
+
+    onNpcClick(npc) {
+      // Emit an event to open the character card for this NPC
+      if (npc && npc.id && npc.object_type?.model === 'character') {
+        this.$emit('character-selected', npc.id);
+      }
     },
 
     onRoomUpdated() {
@@ -795,6 +811,16 @@ export default {
   padding: 0.25rem 0.5rem;
   background: #555;
   border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.entity-item:hover {
+  background-color: #666;
+}
+
+.entity-item:hover .entity-name {
+  color: #1E90FF;
 }
 
 .entity-avatar {

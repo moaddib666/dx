@@ -492,7 +492,6 @@ export interface BargainCreateRequest {
      */
     'target_character_id': string;
 }
-
 /**
  * Serializer for BaseSkill DTO.
  * @export
@@ -1750,13 +1749,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      *
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  *
@@ -1889,6 +1888,56 @@ export interface DetailedOfferedItem {
      */
     'bargain': Nested;
 }
+/**
+ * Serializer for detailed Rank information.  Includes all relevant fields from the Rank model to provide comprehensive information about a character\'s rank.
+ * @export
+ * @interface DetailedRank
+ */
+export interface DetailedRank {
+    /**
+     *
+     * @type {string}
+     * @memberof DetailedRank
+     */
+    'id': string;
+    /**
+     *
+     * @type {string}
+     * @memberof DetailedRank
+     */
+    'name': string;
+    /**
+     *
+     * @type {number}
+     * @memberof DetailedRank
+     */
+    'grade': number;
+    /**
+     *
+     * @type {number}
+     * @memberof DetailedRank
+     */
+    'grade_rank': number;
+    /**
+     *
+     * @type {string}
+     * @memberof DetailedRank
+     */
+    'description': string;
+    /**
+     *
+     * @type {number}
+     * @memberof DetailedRank
+     */
+    'experience_needed': number;
+    /**
+     *
+     * @type {number}
+     * @memberof DetailedRank
+     */
+    'additional_stat_points': number;
+}
+
 /**
  *
  * @export
@@ -2450,6 +2499,183 @@ export interface GameMasterCharacterActionRequest {
 
 
 /**
+ * Serializer for Game Master character information.  This serializer provides all the necessary data for rendering a GameMasterCharacterCard component.  Included data: 1. Shields: Using ActiveShieldSerializer to include shields related to the character. 2. Attributes: Using AttributeSerializer to include character attributes. 3. Active Effects: Using ActiveEffectSerializer to include active effects on the character. 4. Items: Using CharacterItemSerializer to include character\'s equipped items. 5. Currency: Using CharacterCurrencySerializer to include character\'s currency information. 6. Biography: Using OpenaiCharacterBioSerializer to include character\'s biographical information    (age, gender, background, appearance, avatar). 7. Path: Using ThePathSerializer to include character\'s path information (name, description, icon). 8. Rank: Using DetailedRankSerializer to include detailed rank information    (grade, grade_rank, description, experience_needed, etc.).  Character Card Layout Description for Frontend Developers: --------------------------------------------------------  The GameMasterCharacterCard is a vertically oriented card with the following layout:  1. Top Section:    - Character avatar (large, centered, from biography.avatar)    - Character name (prominent, below avatar)    - Character biographical details (age, gender from biography)    - Character rank and path information (below name)      * Rank displayed with grade, grade_rank, and name      * Path displayed with name and icon    - Other basic character info like organization, tags, etc.    - Left side overlay: Active shields displayed as vertical bars or icons      * Each shield shows its type, level, and efficiency      * Visual indicator of shield health/status    - Right side overlay: Active effects displayed as icons with tooltips      * Each effect shows its type and remaining cycles      * Visual indicator for permanent vs temporary effects  2. Middle Section:    - Character background and appearance information (from biography)      * Background displayed as a collapsible text section      * Appearance displayed as a collapsible text section  3. Bottom Section:    - Character attributes displayed as horizontal bars      * Each attribute shows name, current value, and max value      * Color-coded bars for different attribute types  4. External Sections:    - Bottom panel main: Inventory items displayed as a grid      * Each item shows its icon, name, type, and quantity      * Items grouped by type if possible    - Bottom panel bottom: Currency information      * Each currency type with icon and amount      * Totals and conversions if applicable  Responsive Design Considerations: - On smaller screens, the layout should adjust to maintain readability - Consider collapsible sections for detailed information - Ensure tooltips are accessible on touch devices  Interaction Guidelines: - Hover on shields, effects, or items should show detailed information in alt like tooltips - Consider item selection for further actions (e.g., emmit event to upper components) - Provide visual feedback for interactive elements
+ * @export
+ * @interface GameMasterCharacterInfo
+ */
+export interface GameMasterCharacterInfo {
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'id': string;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'attributes': string;
+    /**
+     *
+     * @type {Array<ActiveShield>}
+     * @memberof GameMasterCharacterInfo
+     */
+    'shields': Array<ActiveShield>;
+    /**
+     *
+     * @type {Array<ActiveEffect>}
+     * @memberof GameMasterCharacterInfo
+     */
+    'effects': Array<ActiveEffect>;
+    /**
+     *
+     * @type {Array<CharacterItem>}
+     * @memberof GameMasterCharacterInfo
+     */
+    'equipped_items': Array<CharacterItem>;
+    /**
+     *
+     * @type {Array<CharacterCurrency>}
+     * @memberof GameMasterCharacterInfo
+     */
+    'tokens': Array<CharacterCurrency>;
+    /**
+     *
+     * @type {OpenaiCharacterBio}
+     * @memberof GameMasterCharacterInfo
+     */
+    'biography': OpenaiCharacterBio;
+    /**
+     *
+     * @type {ThePath}
+     * @memberof GameMasterCharacterInfo
+     */
+    'path': ThePath;
+    /**
+     *
+     * @type {DetailedRank}
+     * @memberof GameMasterCharacterInfo
+     */
+    'rank': DetailedRank;
+    /**
+     *
+     * @type {boolean}
+     * @memberof GameMasterCharacterInfo
+     */
+    'is_active'?: boolean;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'name': string;
+    /**
+     *
+     * @type {any}
+     * @memberof GameMasterCharacterInfo
+     */
+    'tags'?: any;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'experience'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'current_health_points'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'current_energy_points'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'current_active_points'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'school_slots'?: number;
+    /**
+     *
+     * @type {boolean}
+     * @memberof GameMasterCharacterInfo
+     */
+    'npc'?: boolean;
+    /**
+     *
+     * @type {BehaviorEnum}
+     * @memberof GameMasterCharacterInfo
+     */
+    'behavior'?: BehaviorEnum;
+    /**
+     *
+     * @type {boolean}
+     * @memberof GameMasterCharacterInfo
+     */
+    'resetting_base_stats'?: boolean;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'polymorphic_ctype': number | null;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'position'?: string | null;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterInfo
+     */
+    'dimension'?: number | null;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'campaign'?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'owner': string;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'organization'?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'place_of_birth'?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'last_safe_position'?: string | null;
+}
+
+
+/**
  *
  * @export
  * @interface GameMasterCharacterLogActionImpact
@@ -2754,7 +2980,6 @@ export interface GenericPositionIdRequest {
      */
     'id': string;
 }
-
 /**
  * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
  * @export
@@ -3370,7 +3595,6 @@ export interface ModificatorRequest {
      */
     'stat_modificators': Array<StatModificatorRequest>;
 }
-
 /**
  * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
  * @export
@@ -11317,6 +11541,222 @@ export class GalleryApi extends BaseAPI {
 export const GamemasterApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Get character information for the GameMasterCharacterCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterCardRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersCharacterCardRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/characters/{id}/character_card/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get detailed information about a character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterInfoRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersCharacterInfoRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/characters/{id}/character_info/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get character stats.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterStatsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersCharacterStatsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/characters/{id}/character_stats/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {boolean} [npc]
+         * @param {string} [position]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersList: async (npc?: boolean, position?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/characters/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (npc !== undefined) {
+                localVarQueryParameter['npc'] = npc;
+            }
+
+            if (position !== undefined) {
+                localVarQueryParameter['position'] = position;
+            }
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/characters/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
          * @param {GameObjectRequest} [gameObjectRequest]
@@ -12375,6 +12815,67 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = GamemasterApiAxiosParamCreator(configuration)
     return {
         /**
+         * Get character information for the GameMasterCharacterCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersCharacterCardRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterCharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersCharacterCardRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersCharacterCardRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get detailed information about a character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersCharacterInfoRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersCharacterInfoRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersCharacterInfoRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get character stats.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersCharacterStatsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterStats>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersCharacterStatsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersCharacterStatsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {boolean} [npc]
+         * @param {string} [position]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersList(npc?: boolean, position?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CharacterInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersList(npc, position, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
          * @param {GameObjectRequest} [gameObjectRequest]
@@ -12676,6 +13177,52 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
     const localVarFp = GamemasterApiFp(configuration)
     return {
         /**
+         * Get character information for the GameMasterCharacterCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterCardRetrieve(id: string, options?: any): AxiosPromise<GameMasterCharacterInfo> {
+            return localVarFp.gamemasterCharactersCharacterCardRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get detailed information about a character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterInfoRetrieve(id: string, options?: any): AxiosPromise<CharacterInfo> {
+            return localVarFp.gamemasterCharactersCharacterInfoRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get character stats.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterStatsRetrieve(id: string, options?: any): AxiosPromise<CharacterStats> {
+            return localVarFp.gamemasterCharactersCharacterStatsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {boolean} [npc]
+         * @param {string} [position]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersList(npc?: boolean, position?: string, options?: any): AxiosPromise<Array<CharacterInfo>> {
+            return localVarFp.gamemasterCharactersList(npc, position, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersRetrieve(id: string, options?: any): AxiosPromise<CharacterInfo> {
+            return localVarFp.gamemasterCharactersRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
          * @param {GameObjectRequest} [gameObjectRequest]
@@ -12907,6 +13454,62 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
  * @extends {BaseAPI}
  */
 export class GamemasterApi extends BaseAPI {
+    /**
+     * Get character information for the GameMasterCharacterCard component
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersCharacterCardRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterCardRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get detailed information about a character.
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersCharacterInfoRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterInfoRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get character stats.
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersCharacterStatsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterStatsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+     * @param {boolean} [npc]
+     * @param {string} [position]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersList(npc?: boolean, position?: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersList(npc, position, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Clone a game object.
      * @param {string} id A UUID string identifying this game object.

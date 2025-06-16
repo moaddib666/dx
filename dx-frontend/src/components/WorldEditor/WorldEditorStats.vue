@@ -269,7 +269,8 @@ export default {
       if (hours > 0) return `${hours}h ago`;
       if (minutes > 0) return `${minutes}m ago`;
       return 'Just now';
-    }
+    },
+
   }
 };
 </script>
@@ -559,6 +560,7 @@ export default {
   color: #aaa;
   font-size: 0.8rem;
 }
+
 
 /* Scrollbar Styling */
 .world-editor-stats::-webkit-scrollbar,

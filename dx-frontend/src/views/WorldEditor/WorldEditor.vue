@@ -51,6 +51,7 @@
             @connection-removed="onConnectionDeleted"
             @connection-updated="onConnectionUpdated"
             @room-selected="onRoomSelected"
+            @character-selected="openCharacterCard"
         />
       </div>
 
@@ -102,6 +103,7 @@
             v-if="showStatsPanel"
             :stats="worldStats"
             class="world-stats"
+            @refresh-stats="refreshWorld"
         />
 
         <!-- Layer Controls -->
@@ -120,6 +122,16 @@
             @item-selected="onItemSelected"
         />
       </div>
+
+      <!-- Character Cards Overlay -->
+      <GameMasterCharacterCard
+          v-for="characterId in openedCharacterIds"
+          :key="characterId"
+          :characterId="characterId"
+          :style="getCharacterCardStyle(characterId)"
+          @close="closeCharacterCard(characterId)"
+          @item-selected="onCharacterItemSelected"
+      />
     </div>
 
     <!-- Status Bar -->
@@ -160,6 +172,7 @@ import WorldEditorMap from '@/components/WorldEditor/WorldEditorMap.vue';
 import WorldEditorEntitySpawner from '@/components/WorldEditor/WorldEditorEntitySpawner.vue';
 import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
+import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
 
 export default {
   name: 'WorldEditor',
@@ -170,7 +183,8 @@ export default {
     WorldEditorMap,
     WorldEditorEntitySpawner,
     WorldEditorStats,
-    WorldEditorItemsList
+    WorldEditorItemsList,
+    GameMasterCharacterCard
   },
   data() {
     return {
@@ -198,7 +212,10 @@ export default {
       bus: null,
 
       // Map loading state
-      isMapLoading: false
+      isMapLoading: false,
+
+      // Character cards
+      openedCharacterIds: []
     };
   },
   computed: {
@@ -653,7 +670,110 @@ export default {
     toggleItemsPanel() {
       this.showItemsPanel = !this.showItemsPanel;
       this.setLastAction(this.showItemsPanel ? 'Items panel opened' : 'Items panel closed');
-    }
+    },
+
+    /**
+     * Open a character card for the given character ID
+     * @param {string} characterId - The ID of the character to open
+     */
+    openCharacterCard(characterId) {
+      if (!characterId) return;
+
+      // Check if character is already opened
+      if (this.openedCharacterIds.includes(characterId)) {
+        // Move to front if already opened
+        this.openedCharacterIds = this.openedCharacterIds.filter(id => id !== characterId);
+        this.openedCharacterIds.unshift(characterId);
+      } else {
+        // Add to opened characters, maintaining max of 2
+        this.openedCharacterIds.unshift(characterId);
+        if (this.openedCharacterIds.length > 2) {
+          this.openedCharacterIds.pop();
+        }
+      }
+
+      this.setLastAction(`Character card opened: ${characterId}`);
+    },
+
+    /**
+     * Close a character card
+     * @param {string} characterId - The ID of the character to close
+     */
+    closeCharacterCard(characterId) {
+      this.openedCharacterIds = this.openedCharacterIds.filter(id => id !== characterId);
+      this.setLastAction(`Character card closed: ${characterId}`);
+    },
+
+    /**
+     * Get the style for a character card based on its position in the openedCharacterIds array
+     * @param {string} characterId - The ID of the character
+     * @returns {Object} - The style object for the character card
+     */
+    getCharacterCardStyle(characterId) {
+      const index = this.openedCharacterIds.indexOf(characterId);
+      if (index === -1) return {};
+
+      // Position cards with some offset to show stacking
+      return {
+        top: `${20 + (index * 20)}px`,
+        right: `${20 + (index * 20)}px`,
+        zIndex: 1000 - index
+      };
+    },
+
+    /**
+     * Handle item selection from a character card
+     * @param {Object} item - The selected item
+     */
+    onCharacterItemSelected(item) {
+      console.log('Character item selected:', item);
+      this.setLastAction(`Selected character item: ${item.name}`);
+
+      // If we're in edit mode and have a selected room, spawn the item
+      if (this.isEditMode && this.selectedRoom) {
+        this.onEntitySpawned('item', item);
+      }
+    },
+
+    /**
+     * Handle showing entity details, including opening character cards for characters
+     */
+    onShowEntityDetails(details) {
+      // Handle showing entity details
+      // This could open a modal, update a sidebar, etc.
+      const entityTypeName = {
+        'players': 'Players',
+        'npcs': 'NPCs',
+        'objects': 'Objects',
+        'anomalies': 'Anomalies'
+      }[details.entityType] || 'Entities';
+
+      const count = details.entities.length;
+      this.setLastAction(`${entityTypeName} in room: ${count}`);
+
+      // Select the room
+      if (details.roomId) {
+        const room = this.editorState.rooms.get(details.roomId);
+        if (room) {
+          this.selectedRoom = room;
+          // Clear selection before selecting the new room (no shift key for entity details)
+          this.service.clearSelection();
+          this.service.toggleRoomSelection(room.id);
+
+          // If the entity type is players or npcs, open character cards for them
+          if ((details.entityType === 'players' || details.entityType === 'npcs') && details.entities.length > 0) {
+            // Open character cards for up to 2 characters
+            const charactersToOpen = details.entities.slice(0, 2);
+            charactersToOpen.forEach(character => {
+              if (character.id) {
+                this.openCharacterCard(character.id);
+              }
+            });
+          }
+        }
+      }
+    },
+
   }
 };
 </script>
