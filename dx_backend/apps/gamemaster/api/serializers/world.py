@@ -19,4 +19,4 @@ class PositionConnectionSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = PositionConnection
-        fields = ['id', 'position_from', 'position_to', 'is_locked', 'is_active', 'is_public']
+        fields = ['id', 'position_from', 'position_to', 'is_locked', 'is_active', 'is_public', 'is_vertical', 'is_horizontal']

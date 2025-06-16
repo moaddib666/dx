@@ -16,7 +16,7 @@ GameMasterRouter = DefaultRouter()
 # GameMasterRouter.register('characters', GameMasterCharacterViewSet, basename='gamemaster-characters')
 
 # # Items viewsets
-# GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-items')
+GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-items')
 # GameMasterRouter.register('world-items', GameMasterWorldItemViewSet, basename='gamemaster-world-items')
 # GameMasterRouter.register('character-items', GameMasterCharacterItemViewSet, basename='gamemaster-character-items')
 
