@@ -80,7 +80,8 @@
       </div>
 
       <!-- Right Panel - Entity Management (only visible when it has content) -->
-      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel" class="right-panel">
+      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel || showItemsPanel"
+           class="right-panel">
         <!-- Entity Spawner (only visible in edit mode) -->
         <WorldEditorEntitySpawner
             v-if="isEditMode && selectedRoom"
@@ -105,6 +106,13 @@
             class="layer-controls"
             @layer-toggled="onLayerToggled"
         />
+
+        <!-- Items List -->
+        <WorldEditorItemsList
+            v-if="showItemsPanel"
+            class="items-list"
+            @item-selected="onItemSelected"
+        />
       </div>
     </div>
 
@@ -119,6 +127,9 @@
         </button>
         <button class="layers-toggle-btn" title="Toggle Layers Panel" @click="toggleLayersPanel">
           <i class="icon-layers"></i>
+        </button>
+        <button class="items-toggle-btn" title="Toggle Items Panel" @click="toggleItemsPanel">
+          <i class="icon-items"></i>
         </button>
       </div>
       <div class="status-right">
@@ -142,6 +153,7 @@ import WorldEditorRoomInfo from '@/components/WorldEditor/WorldEditorRoomInfo.vu
 import WorldEditorMap from '@/components/WorldEditor/WorldEditorMap.vue';
 import WorldEditorEntitySpawner from '@/components/WorldEditor/WorldEditorEntitySpawner.vue';
 import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
+import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
 
 export default {
   name: 'WorldEditor',
@@ -151,7 +163,8 @@ export default {
     WorldEditorRoomInfo,
     WorldEditorMap,
     WorldEditorEntitySpawner,
-    WorldEditorStats
+    WorldEditorStats,
+    WorldEditorItemsList
   },
   data() {
     return {
@@ -169,6 +182,7 @@ export default {
       currentTime: new Date().toLocaleTimeString(),
       showStatsPanel: false, // Stats panel visibility state
       showLayersPanel: false, // Layers panel visibility state
+      showItemsPanel: true, // Items panel visibility state
 
       // Timer for current time update
       timeUpdateInterval: null,
@@ -593,6 +607,27 @@ export default {
           this.service.toggleRoomSelection(room.id);
         }
       }
+    },
+
+    /**
+     * Handle item selection from the items list
+     */
+    onItemSelected(item) {
+      console.log('Item selected:', item);
+      this.setLastAction(`Selected item: ${item.name}`);
+
+      // If we're in edit mode and have a selected room, spawn the item
+      if (this.isEditMode && this.selectedRoom) {
+        this.onEntitySpawned('item', item);
+      }
+    },
+
+    /**
+     * Toggle items panel visibility
+     */
+    toggleItemsPanel() {
+      this.showItemsPanel = !this.showItemsPanel;
+      this.setLastAction(this.showItemsPanel ? 'Items panel opened' : 'Items panel closed');
     }
   }
 };
@@ -734,6 +769,11 @@ export default {
   flex: 1;
 }
 
+.items-list {
+  flex: 1;
+  border-top: 1px solid #444;
+}
+
 /* Status Bar Styles */
 .world-editor-status {
   display: flex;
@@ -801,6 +841,30 @@ export default {
 
 .icon-layers::before {
   content: '🔍';
+}
+
+/* Items Toggle Button */
+.items-toggle-btn {
+  padding: 0.25rem 0.5rem;
+  background: #444;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.items-toggle-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.icon-items::before {
+  content: '📦';
 }
 
 /* Button Styles */

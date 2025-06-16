@@ -357,10 +357,10 @@ export interface Art {
 export interface Attribute {
     /**
      *
-     * @type {AttributeNameEnum}
+     * @type {NameDeeEnum}
      * @memberof Attribute
      */
-    'name': AttributeNameEnum;
+    'name': NameDeeEnum;
     /**
      *
      * @type {number}
@@ -401,21 +401,6 @@ export interface AttributeHolder {
      */
     'max': number | null;
 }
-
-
-/**
- * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
- * @export
- * @enum {string}
- */
-
-export const AttributeNameEnum = {
-    Health: 'Health',
-    Energy: 'Energy',
-    ActionPoints: 'Action Points'
-} as const;
-
-export type AttributeNameEnum = typeof AttributeNameEnum[keyof typeof AttributeNameEnum];
 
 
 /**
@@ -507,6 +492,70 @@ export interface BargainCreateRequest {
      */
     'target_character_id': string;
 }
+
+/**
+ * Serializer for BaseSkill DTO.
+ * @export
+ * @interface BaseSkill
+ */
+export interface BaseSkill {
+    /**
+     *
+     * @type {string}
+     * @memberof BaseSkill
+     */
+    'name': string;
+    /**
+     *
+     * @type {string}
+     * @memberof BaseSkill
+     */
+    'description': string;
+    /**
+     *
+     * @type {string}
+     * @memberof BaseSkill
+     */
+    'school': string;
+    /**
+     *
+     * @type {boolean}
+     * @memberof BaseSkill
+     */
+    'multi_target': boolean;
+    /**
+     *
+     * @type {TypeC27Enum}
+     * @memberof BaseSkill
+     */
+    'type': TypeC27Enum;
+    /**
+     *
+     * @type {number}
+     * @memberof BaseSkill
+     */
+    'grade': number;
+    /**
+     *
+     * @type {Array<SkillCost>}
+     * @memberof BaseSkill
+     */
+    'cost': Array<SkillCost>;
+    /**
+     *
+     * @type {Array<Effect>}
+     * @memberof BaseSkill
+     */
+    'effect': Array<Effect>;
+    /**
+     *
+     * @type {Array<Impact>}
+     * @memberof BaseSkill
+     */
+    'impact': Array<Impact>;
+}
+
+
 /**
  * * `Passive` - Passive * `Aggressive` - Aggressive * `Friendly` - Friendly
  * @export
@@ -1172,16 +1221,16 @@ export interface CharacterLogActionImpact {
     'dice_roll_result': DiceRollResult;
     /**
      *
-     * @type {TypeBf3Enum}
+     * @type {ImpactTypeEnum}
      * @memberof CharacterLogActionImpact
      */
-    'type': TypeBf3Enum;
+    'type': ImpactTypeEnum;
     /**
      *
-     * @type {ImpactViolationEnum}
+     * @type {ViolationEnum}
      * @memberof CharacterLogActionImpact
      */
-    'violation': ImpactViolationEnum;
+    'violation': ViolationEnum;
     /**
      *
      * @type {number}
@@ -1701,13 +1750,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      *
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  *
@@ -2035,6 +2084,43 @@ export interface FightTurnActionResultGameEvent {
 }
 
 
+/**
+ * Serializer for Formula DTO.
+ * @export
+ * @interface Formula
+ */
+export interface Formula {
+    /**
+     *
+     * @type {number}
+     * @memberof Formula
+     */
+    'base': number;
+    /**
+     *
+     * @type {Array<StatRequirement>}
+     * @memberof Formula
+     */
+    'requires': Array<StatRequirement>;
+    /**
+     *
+     * @type {Array<Scaling>}
+     * @memberof Formula
+     */
+    'scaling': Array<Scaling>;
+    /**
+     *
+     * @type {number}
+     * @memberof Formula
+     */
+    'max_efficiency'?: number | null;
+    /**
+     *
+     * @type {number}
+     * @memberof Formula
+     */
+    'min_efficiency'?: number | null;
+}
 /**
  *
  * @export
@@ -2377,16 +2463,16 @@ export interface GameMasterCharacterLogActionImpact {
     'id': string;
     /**
      *
-     * @type {TypeBf3Enum}
+     * @type {ImpactTypeEnum}
      * @memberof GameMasterCharacterLogActionImpact
      */
-    'type': TypeBf3Enum;
+    'type': ImpactTypeEnum;
     /**
      *
-     * @type {ImpactViolationEnum}
+     * @type {ViolationEnum}
      * @memberof GameMasterCharacterLogActionImpact
      */
-    'violation': ImpactViolationEnum;
+    'violation': ViolationEnum;
     /**
      *
      * @type {number}
@@ -2416,22 +2502,97 @@ export interface GameMasterCharacterLogActionImpact {
 export interface GameMasterCharacterLogActionImpactRequest {
     /**
      *
-     * @type {TypeBf3Enum}
+     * @type {ImpactTypeEnum}
      * @memberof GameMasterCharacterLogActionImpactRequest
      */
-    'type': TypeBf3Enum;
+    'type': ImpactTypeEnum;
     /**
      *
-     * @type {ImpactViolationEnum}
+     * @type {ViolationEnum}
      * @memberof GameMasterCharacterLogActionImpactRequest
      */
-    'violation': ImpactViolationEnum;
+    'violation': ViolationEnum;
     /**
      *
      * @type {number}
      * @memberof GameMasterCharacterLogActionImpactRequest
      */
     'size': number;
+}
+
+
+/**
+ *
+ * @export
+ * @interface GameMasterItem
+ */
+export interface GameMasterItem {
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterItem
+     */
+    'id': string;
+    /**
+     *
+     * @type {BaseSkill}
+     * @memberof GameMasterItem
+     */
+    'skill': BaseSkill;
+    /**
+     *
+     * @type {Effect}
+     * @memberof GameMasterItem
+     */
+    'effect': Effect;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterItem
+     */
+    'name': string;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterItem
+     */
+    'description'?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterItem
+     */
+    'icon'?: string | null;
+    /**
+     *
+     * @type {Type496Enum}
+     * @memberof GameMasterItem
+     */
+    'type'?: Type496Enum;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterItem
+     */
+    'charges'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterItem
+     */
+    'weight'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterItem
+     */
+    'visibility'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterItem
+     */
+    'base_price'?: number;
 }
 
 
@@ -2593,6 +2754,54 @@ export interface GenericPositionIdRequest {
      */
     'id': string;
 }
+
+/**
+ * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
+ * @export
+ * @enum {string}
+ */
+
+export const Id82bEnum = {
+    Physical: 'Physical',
+    Mental: 'Mental',
+    Energy: 'Energy',
+    Heat: 'Heat',
+    Cold: 'Cold',
+    Light: 'Light',
+    Darkness: 'Darkness',
+    None: 'None'
+} as const;
+
+export type Id82bEnum = typeof Id82bEnum[keyof typeof Id82bEnum];
+
+
+/**
+ * Serializer for Impact DTO.
+ * @export
+ * @interface Impact
+ */
+export interface Impact {
+    /**
+     *
+     * @type {ImpactTypeEnum}
+     * @memberof Impact
+     */
+    'kind': ImpactTypeEnum;
+    /**
+     *
+     * @type {Type82bEnum}
+     * @memberof Impact
+     */
+    'type': Type82bEnum;
+    /**
+     *
+     * @type {Formula}
+     * @memberof Impact
+     */
+    'formula': Formula;
+}
+
+
 /**
  *
  * @export
@@ -2768,10 +2977,10 @@ export interface ItemRequest {
     'icon'?: File | null;
     /**
      *
-     * @type {ItemTypeEnum}
+     * @type {Type496Enum}
      * @memberof ItemRequest
      */
-    'type'?: ItemTypeEnum;
+    'type'?: Type496Enum;
     /**
      *
      * @type {number}
@@ -2800,24 +3009,18 @@ export interface ItemRequest {
 
 
 /**
- * * `weapon` - weapon * `armor` - armor * `artifact` - artifact * `amulet` - amulet * `material` - material * `quest` - quest * `misc` - misc * `food` - food * `rune` - rune
+ * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
  * @export
  * @enum {string}
  */
 
-export const ItemTypeEnum = {
-    Weapon: 'weapon',
-    Armor: 'armor',
-    Artifact: 'artifact',
-    Amulet: 'amulet',
-    Material: 'material',
-    Quest: 'quest',
-    Misc: 'misc',
-    Food: 'food',
-    Rune: 'rune'
+export const KindDeeEnum = {
+    Health: 'Health',
+    Energy: 'Energy',
+    ActionPoints: 'Action Points'
 } as const;
 
-export type ItemTypeEnum = typeof ItemTypeEnum[keyof typeof ItemTypeEnum];
+export type KindDeeEnum = typeof KindDeeEnum[keyof typeof KindDeeEnum];
 
 
 /**
@@ -3167,6 +3370,22 @@ export interface ModificatorRequest {
      */
     'stat_modificators': Array<StatModificatorRequest>;
 }
+
+/**
+ * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
+ * @export
+ * @enum {string}
+ */
+
+export const NameDeeEnum = {
+    Health: 'Health',
+    Energy: 'Energy',
+    ActionPoints: 'Action Points'
+} as const;
+
+export type NameDeeEnum = typeof NameDeeEnum[keyof typeof NameDeeEnum];
+
+
 /**
  *
  * @export
@@ -4017,10 +4236,10 @@ export interface OpenaiSkill {
     'multi_target': boolean;
     /**
      *
-     * @type {OpenaiSkillTypeEnum}
+     * @type {TypeC27Enum}
      * @memberof OpenaiSkill
      */
-    'type'?: OpenaiSkillTypeEnum;
+    'type'?: TypeC27Enum;
     /**
      * A list of dictionaries representing the impact of the skill.
      * @type {any}
@@ -4104,10 +4323,10 @@ export interface OpenaiSkillRequest {
     'multi_target': boolean;
     /**
      *
-     * @type {OpenaiSkillTypeEnum}
+     * @type {TypeC27Enum}
      * @memberof OpenaiSkillRequest
      */
-    'type'?: OpenaiSkillTypeEnum;
+    'type'?: TypeC27Enum;
     /**
      * A list of dictionaries representing the impact of the skill.
      * @type {any}
@@ -4145,25 +4364,6 @@ export interface OpenaiSkillRequest {
      */
     'immediate'?: boolean;
 }
-
-
-/**
- * * `attack` - attack * `defense` - defense * `heal` - heal * `buff` - buff * `debuff` - debuff * `utility` - utility * `special` - special
- * @export
- * @enum {string}
- */
-
-export const OpenaiSkillTypeEnum = {
-    Attack: 'attack',
-    Defense: 'defense',
-    Heal: 'heal',
-    Buff: 'buff',
-    Debuff: 'debuff',
-    Utility: 'utility',
-    Special: 'special'
-} as const;
-
-export type OpenaiSkillTypeEnum = typeof OpenaiSkillTypeEnum[keyof typeof OpenaiSkillTypeEnum];
 
 
 /**
@@ -4863,6 +5063,25 @@ export type RollOutcome = typeof RollOutcome[keyof typeof RollOutcome];
 
 
 /**
+ * Serializer for Scaling DTO.
+ * @export
+ * @interface Scaling
+ */
+export interface Scaling {
+    /**
+     *
+     * @type {string}
+     * @memberof Scaling
+     */
+    'stat': string;
+    /**
+     *
+     * @type {number}
+     * @memberof Scaling
+     */
+    'value': number;
+}
+/**
  *
  * @export
  * @interface School
@@ -4895,10 +5114,10 @@ export interface School {
 export interface Shield {
     /**
      *
-     * @type {ImpactViolationEnum}
+     * @type {Id82bEnum}
      * @memberof Shield
      */
-    'id'?: ImpactViolationEnum;
+    'id'?: Id82bEnum;
     /**
      *
      * @type {string}
@@ -4917,6 +5136,27 @@ export interface Shield {
      * @memberof Shield
      */
     'base_efficiency'?: number;
+}
+
+
+/**
+ * Serializer for Cost DTO.
+ * @export
+ * @interface SkillCost
+ */
+export interface SkillCost {
+    /**
+     *
+     * @type {KindDeeEnum}
+     * @memberof SkillCost
+     */
+    'kind': KindDeeEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof SkillCost
+     */
+    'value': number;
 }
 
 
@@ -5144,6 +5384,27 @@ export interface StatObject {
      * @memberof StatObject
      */
     'description'?: string | null;
+}
+
+
+/**
+ * Serializer for StatRequirement DTO.
+ * @export
+ * @interface StatRequirement
+ */
+export interface StatRequirement {
+    /**
+     *
+     * @type {StatEnum}
+     * @memberof StatRequirement
+     */
+    'stat': StatEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof StatRequirement
+     */
+    'value': number;
 }
 
 
@@ -5456,45 +5717,83 @@ export interface TurnActionResultGameEventData {
     'impact': ActionImpactModel;
 }
 /**
- * * `None` - None * `Knock out` - Knock out * `Damage` - Damage * `Heal` - Heal * `Shield` - Shield * `Buff` - Buff * `Debuff` - Debuff * `Stun` - Stun * `Sleep` - Sleep * `Confusion` - Confusion * `Paralysis` - Paralysis * `Fear` - Fear * `Freeze` - Freeze * `Burn` - Burn * `Poison` - Poison * `Slow` - Slow * `Haste` - Haste * `Blind` - Blind * `Silence` - Silence * `Bleed` - Bleed * `Disarm` - Disarm * `Root` - Root * `Energy Decrease` - Energy Decrease * `Reflect` - Reflect * `Absorb` - Absorb * `Dodge` - Dodge * `Resist` - Resist * `Immunity` - Immunity * `Regeneration` - Regeneration * `Lifesteal` - Lifesteal
+ * * `weapon` - weapon * `armor` - armor * `artifact` - artifact * `amulet` - amulet * `material` - material * `quest` - quest * `misc` - misc * `food` - food * `rune` - rune
  * @export
  * @enum {string}
  */
 
-export const TypeBf3Enum = {
-    None: 'None',
-    KnockOut: 'Knock out',
-    Damage: 'Damage',
-    Heal: 'Heal',
-    Shield: 'Shield',
-    Buff: 'Buff',
-    Debuff: 'Debuff',
-    Stun: 'Stun',
-    Sleep: 'Sleep',
-    Confusion: 'Confusion',
-    Paralysis: 'Paralysis',
-    Fear: 'Fear',
-    Freeze: 'Freeze',
-    Burn: 'Burn',
-    Poison: 'Poison',
-    Slow: 'Slow',
-    Haste: 'Haste',
-    Blind: 'Blind',
-    Silence: 'Silence',
-    Bleed: 'Bleed',
-    Disarm: 'Disarm',
-    Root: 'Root',
-    EnergyDecrease: 'Energy Decrease',
-    Reflect: 'Reflect',
-    Absorb: 'Absorb',
-    Dodge: 'Dodge',
-    Resist: 'Resist',
-    Immunity: 'Immunity',
-    Regeneration: 'Regeneration',
-    Lifesteal: 'Lifesteal'
+export const Type496Enum = {
+    Weapon: 'weapon',
+    Armor: 'armor',
+    Artifact: 'artifact',
+    Amulet: 'amulet',
+    Material: 'material',
+    Quest: 'quest',
+    Misc: 'misc',
+    Food: 'food',
+    Rune: 'rune'
 } as const;
 
-export type TypeBf3Enum = typeof TypeBf3Enum[keyof typeof TypeBf3Enum];
+export type Type496Enum = typeof Type496Enum[keyof typeof Type496Enum];
+
+
+/**
+ * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
+ * @export
+ * @enum {string}
+ */
+
+export const Type82bEnum = {
+    Physical: 'Physical',
+    Mental: 'Mental',
+    Energy: 'Energy',
+    Heat: 'Heat',
+    Cold: 'Cold',
+    Light: 'Light',
+    Darkness: 'Darkness',
+    None: 'None'
+} as const;
+
+export type Type82bEnum = typeof Type82bEnum[keyof typeof Type82bEnum];
+
+
+/**
+ * * `attack` - attack * `defense` - defense * `heal` - heal * `buff` - buff * `debuff` - debuff * `utility` - utility * `special` - special
+ * @export
+ * @enum {string}
+ */
+
+export const TypeC27Enum = {
+    Attack: 'attack',
+    Defense: 'defense',
+    Heal: 'heal',
+    Buff: 'buff',
+    Debuff: 'debuff',
+    Utility: 'utility',
+    Special: 'special'
+} as const;
+
+export type TypeC27Enum = typeof TypeC27Enum[keyof typeof TypeC27Enum];
+
+
+/**
+ * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
+ * @export
+ * @enum {string}
+ */
+
+export const ViolationEnum = {
+    Physical: 'Physical',
+    Mental: 'Mental',
+    Energy: 'Energy',
+    Heat: 'Heat',
+    Cold: 'Cold',
+    Light: 'Light',
+    Darkness: 'Darkness',
+    None: 'None'
+} as const;
+
+export type ViolationEnum = typeof ViolationEnum[keyof typeof ViolationEnum];
 
 
 /**
@@ -5505,10 +5804,10 @@ export type TypeBf3Enum = typeof TypeBf3Enum[keyof typeof TypeBf3Enum];
 export interface ViolationObject {
     /**
      *
-     * @type {ImpactViolationEnum}
+     * @type {Id82bEnum}
      * @memberof ViolationObject
      */
-    'id': ImpactViolationEnum;
+    'id': Id82bEnum;
     /**
      *
      * @type {string}
@@ -11442,6 +11741,86 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterItemsList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/items/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {string} id A UUID string identifying this item.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterItemsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterItemsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/items/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -12114,6 +12493,29 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterItemsList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GameMasterItem>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterItemsList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterItemsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {string} id A UUID string identifying this item.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterItemsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterItemsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterItemsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -12365,6 +12767,23 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
             return localVarFp.gamemasterGameObjectsUpdate(id, gameObjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterItemsList(options?: any): AxiosPromise<Array<GameMasterItem>> {
+            return localVarFp.gamemasterItemsList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+         * @param {string} id A UUID string identifying this item.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterItemsRetrieve(id: string, options?: any): AxiosPromise<GameMasterItem> {
+            return localVarFp.gamemasterItemsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -12595,6 +13014,27 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterGameObjectsUpdate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsUpdate(id, gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterItemsList(options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterItemsList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
+     * @param {string} id A UUID string identifying this item.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterItemsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterItemsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
