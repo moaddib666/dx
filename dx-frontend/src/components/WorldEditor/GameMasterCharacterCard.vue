@@ -172,7 +172,8 @@ export default {
       isLoading: false,
       error: null,
       showTags: false,
-      showBio: false
+      showBio: false,
+      isUnmounted: false
     };
   },
   async created() {
@@ -185,6 +186,9 @@ export default {
     await this.loadCharacter();
   },
   beforeUnmount() {
+    // Set the unmounted flag to prevent further updates
+    this.isUnmounted = true;
+
     // Clean up event listeners
     gameMasterCharacterService.off('loadingStarted', this.onLoadingStarted);
     gameMasterCharacterService.off('characterLoaded', this.onCharacterLoaded);
@@ -193,6 +197,8 @@ export default {
   methods: {
     // Event handlers
     onLoadingStarted(characterId) {
+      if (this.isUnmounted) return;
+
       if (characterId === this.characterId) {
         this.isLoading = true;
         this.error = null;
@@ -200,6 +206,8 @@ export default {
     },
 
     onCharacterLoaded(character) {
+      if (this.isUnmounted) return;
+
       if (character && character.id === this.characterId) {
         this.character = character;
         this.isLoading = false;
@@ -207,6 +215,8 @@ export default {
     },
 
     onLoadingFailed({characterId, error}) {
+      if (this.isUnmounted) return;
+
       if (characterId === this.characterId) {
         this.error = error.message || 'Failed to load character data';
         this.isLoading = false;
@@ -232,13 +242,25 @@ export default {
     // Load character data
     async loadCharacter() {
       try {
+        if (this.isUnmounted) return;
+
         this.isLoading = true;
         this.error = null;
-        this.character = await gameMasterCharacterService.getCharacter(this.characterId);
+
+        const character = await gameMasterCharacterService.getCharacter(this.characterId);
+
+        // Check again if component was unmounted during the async operation
+        if (this.isUnmounted) return;
+
+        this.character = character;
       } catch (error) {
+        if (this.isUnmounted) return;
+
         console.error('Error loading character:', error);
         this.error = error.message || 'Failed to load character data';
       } finally {
+        if (this.isUnmounted) return;
+
         this.isLoading = false;
       }
     },
