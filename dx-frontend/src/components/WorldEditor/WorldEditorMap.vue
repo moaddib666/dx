@@ -438,8 +438,24 @@ export default {
       // Mark SVG as ready
       this.svgReady = true;
 
-      // Center the map
-      this.centerMap();
+      // Load saved map state from localStorage if available
+      const savedMapState = localStorage.getItem('worldEditor_mapState');
+      if (savedMapState) {
+        try {
+          const mapState = JSON.parse(savedMapState);
+          this.panX = mapState.panX;
+          this.panY = mapState.panY;
+          this.zoom = mapState.zoom;
+          console.log('Loaded map state from localStorage:', mapState);
+        } catch (error) {
+          console.error('Failed to parse saved map state:', error);
+          // Center the map if loading saved state fails
+          this.centerMap();
+        }
+      } else {
+        // Center the map if no saved state
+        this.centerMap();
+      }
     });
 
     // If the legend is shown by default, add click-outside listener
@@ -457,6 +473,15 @@ export default {
     window.removeEventListener('resize', this.handleResize);
   },
   methods: {
+    // Save map state to localStorage
+    saveMapState() {
+      const mapState = {
+        panX: this.panX,
+        panY: this.panY,
+        zoom: this.zoom
+      };
+      localStorage.setItem('worldEditor_mapState', JSON.stringify(mapState));
+    },
 
     // Initialize view bounds safely
     initializeViewBounds() {
@@ -590,6 +615,9 @@ export default {
         if (this.svgReady) {
           this.initializeViewBounds();
         }
+
+        // Save map state to localStorage
+        this.saveMapState();
       }
 
       // Update tool previews
@@ -621,6 +649,9 @@ export default {
       if (this.svgReady) {
         this.initializeViewBounds();
       }
+
+      // Save map state to localStorage
+      this.saveMapState();
     },
 
     // Click events
@@ -775,6 +806,8 @@ export default {
       if (this.visibleRooms.length === 0) {
         this.panX = 0;
         this.panY = 0;
+        // Save map state to localStorage
+        this.saveMapState();
         return;
       }
 
@@ -791,6 +824,9 @@ export default {
         if (this.svgReady) {
           this.initializeViewBounds();
         }
+
+        // Save map state to localStorage
+        this.saveMapState();
       }
     },
 
@@ -806,6 +842,9 @@ export default {
         const scaleX = rect.width / contentWidth;
         const scaleY = rect.height / contentHeight;
         this.zoom = Math.min(scaleX, scaleY, 2); // Max zoom of 2x
+
+        // Save map state to localStorage before centerMap
+        this.saveMapState();
 
         this.centerMap();
 

@@ -256,6 +256,15 @@ export default {
       await this.service.initialize();
       this.editorState = this.service.getState();
 
+      // Load saved floor from localStorage if available
+      const savedFloor = localStorage.getItem('worldEditor_currentFloor');
+      if (savedFloor !== null) {
+        const floor = parseInt(savedFloor, 10);
+        if (!isNaN(floor)) {
+          await this.service.setFloor(floor);
+        }
+      }
+
       // Set up event listeners
       this.setupEventListeners();
 
@@ -398,12 +407,16 @@ export default {
     async floorUp() {
       const newFloor = this.currentFloor + 1;
       await this.service.setFloor(newFloor);
+      // Save current floor to localStorage
+      localStorage.setItem('worldEditor_currentFloor', newFloor.toString());
       this.setLastAction(`Moved to floor ${newFloor}`);
     },
 
     async floorDown() {
       const newFloor = this.currentFloor - 1;
       await this.service.setFloor(newFloor);
+      // Save current floor to localStorage
+      localStorage.setItem('worldEditor_currentFloor', newFloor.toString());
       this.setLastAction(`Moved to floor ${newFloor}`);
     },
 
