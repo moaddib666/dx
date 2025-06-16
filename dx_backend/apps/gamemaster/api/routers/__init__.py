@@ -13,7 +13,7 @@ from apps.gamemaster.api.views.world import WorldMapViewSet
 GameMasterRouter = DefaultRouter()
 
 # Character viewsets
-# GameMasterRouter.register('characters', GameMasterCharacterViewSet, basename='gamemaster-characters')
+GameMasterRouter.register('characters', GameMasterCharacterViewSet, basename='gamemaster-characters')
 
 # # Items viewsets
 GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-items')
