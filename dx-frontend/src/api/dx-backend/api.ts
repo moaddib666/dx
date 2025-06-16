@@ -1749,13 +1749,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      *
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  *
@@ -1937,7 +1937,6 @@ export interface DetailedRank {
      */
     'additional_stat_points': number;
 }
-
 /**
  *
  * @export
@@ -2512,10 +2511,10 @@ export interface GameMasterCharacterInfo {
     'id': string;
     /**
      *
-     * @type {string}
+     * @type {Array<Attribute>}
      * @memberof GameMasterCharacterInfo
      */
-    'attributes': string;
+    'attributes': Array<Attribute>;
     /**
      *
      * @type {Array<ActiveShield>}

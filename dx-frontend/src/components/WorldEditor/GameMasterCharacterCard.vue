@@ -50,24 +50,23 @@
             </div>
             <div v-if="character.effects.length === 0" class="no-effects">No effects</div>
           </div>
+
+          <!-- Attribute bars at the bottom of the avatar -->
+          <div class="card-bars">
+            <AttributeBar
+                v-for="(attr, index) in mainAttributes"
+                :key="index"
+                :current="attr.current"
+                :max="attr.max"
+                :type="attr.name"
+                class="header-attribute-bar"
+            />
+          </div>
         </div>
       </div>
 
       <!-- Bottom Section -->
       <div class="bottom-section">
-        <!-- Character attributes -->
-        <div class="attributes-section">
-          <h3>Attributes</h3>
-          <div class="attributes-list">
-            <div v-for="attr in character.attributes" :key="attr.id" class="attribute-item">
-              <div class="attribute-name">{{ attr.name }}</div>
-              <div class="attribute-bar-container">
-                <div :style="{ width: `${calculateAttributePercentage(attr)}%` }" class="attribute-bar"></div>
-              </div>
-              <div class="attribute-value">{{ attr.current_value }} / {{ attr.max_value }}</div>
-            </div>
-          </div>
-        </div>
 
         <!-- Biography toggle button -->
         <button v-if="character.biography"
@@ -157,9 +156,13 @@
 
 <script>
 import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
+import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
 
 export default {
   name: 'GameMasterCharacterCard',
+  components: {
+    AttributeBar
+  },
   props: {
     characterId: {
       type: String,
@@ -175,6 +178,17 @@ export default {
       showBio: false,
       isUnmounted: false
     };
+  },
+  computed: {
+    // Filter attributes to only show main ones (Health, Energy, Action Points)
+    mainAttributes() {
+      if (!this.character || !this.character.attributes) return [];
+
+      const mainAttributeNames = ['Health', 'Energy', 'Action Points'];
+      return this.character.attributes.filter(attr =>
+          mainAttributeNames.includes(attr.name)
+      );
+    }
   },
   async created() {
     // Set up event listeners
@@ -299,8 +313,19 @@ export default {
     },
 
     calculateAttributePercentage(attribute) {
-      if (!attribute || !attribute.max_value) return 0;
-      return (attribute.current_value / attribute.max_value) * 100;
+      if (!attribute) return 0;
+
+      // Check for current and max properties (new data structure)
+      if (attribute.current !== undefined && attribute.max) {
+        return (attribute.current / attribute.max) * 100;
+      }
+
+      // Fallback to current_value and max_value (old data structure)
+      if (attribute.current_value !== undefined && attribute.max_value) {
+        return (attribute.current_value / attribute.max_value) * 100;
+      }
+
+      return 0;
     },
 
     getEffectIcon(effect) {
@@ -564,6 +589,24 @@ export default {
   text-align: center;
 }
 
+/* Attribute bars at the bottom of the avatar */
+.card-bars {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.header-attribute-bar {
+  margin: 0;
+  height: 0.4rem;
+}
+
 .character-name {
   font-size: 1.2rem;
   margin: 0;
@@ -720,66 +763,6 @@ export default {
   padding-top: 0.5rem;
 }
 
-/* Attributes section */
-.attributes-section {
-  margin-bottom: 1rem;
-  background: rgba(20, 20, 20, 0.5);
-  border-radius: 8px;
-  padding: 0.75rem;
-  border: 1px solid rgba(30, 144, 255, 0.2);
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.attributes-section h3 {
-  font-size: 0.9rem;
-  margin: 0 0 0.75rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #1E90FF;
-  text-align: center;
-  border-bottom: 1px solid rgba(30, 144, 255, 0.2);
-  padding-bottom: 0.5rem;
-}
-
-.attributes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.attribute-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.attribute-name {
-  width: 70px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.attribute-bar-container {
-  flex: 1;
-  height: 10px;
-  background: transparent;
-  overflow: hidden;
-}
-
-.attribute-bar {
-  height: 100%;
-  background: #1E90FF;
-  transition: width 0.3s ease;
-}
-
-.attribute-value {
-  width: 60px;
-  font-size: 0.75rem;
-  text-align: right;
-  color: rgba(255, 255, 255, 0.8);
-  font-family: monospace;
-}
 
 /* Biography section */
 .biography-section {
