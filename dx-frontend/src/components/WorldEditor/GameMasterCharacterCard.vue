@@ -145,6 +145,7 @@
             <h3>Inventory</h3>
             <GameMasterInventoryGrid
                 :items="character.equipped_items"
+                :characterId="characterId"
                 @world-item-selected="handleWorldItemSelected"
             />
           </div>

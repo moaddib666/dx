@@ -9,6 +9,9 @@
             {{ formatItemType(type) }}
           </option>
         </select>
+        <button class="page-button refresh-button" title="Refresh inventory" @click="refreshInventory">
+          ↻
+        </button>
       </div>
       <div class="pagination-controls">
         <button
@@ -61,6 +64,8 @@
 </template>
 
 <script>
+import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
+
 export default {
   name: 'GameMasterInventoryGrid',
   props: {
@@ -68,6 +73,10 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    characterId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -134,6 +143,24 @@ export default {
     }
   },
   methods: {
+    // Refresh inventory
+    async refreshInventory() {
+      try {
+        // Emit event for backward compatibility
+        this.$emit('refresh-inventory');
+
+        // If characterId is provided, use the service to refresh the character data
+        if (this.characterId) {
+          console.log(`Refreshing character inventory for ${this.characterId}`);
+          await gameMasterCharacterService.refreshCharacter(this.characterId);
+        } else {
+          console.warn('Cannot refresh inventory: No characterId provided');
+        }
+      } catch (error) {
+        console.error('Error refreshing inventory:', error);
+      }
+    },
+
     // Pagination methods
     nextPage() {
       if (this.currentPage < this.totalPages) {
@@ -213,6 +240,14 @@ export default {
 
 .filter-controls {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.refresh-button {
+  font-size: 0.8rem;
+  padding: 0;
 }
 
 .type-filter {
