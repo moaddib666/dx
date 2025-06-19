@@ -2747,6 +2747,59 @@ export interface GameMasterCharacterLogActionImpactRequest {
 
 
 /**
+ * Serialize character stats for Game Master.
+ * @export
+ * @interface GameMasterCharacterStat
+ */
+export interface GameMasterCharacterStat {
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterStat
+     */
+    'id': string;
+    /**
+     *
+     * @type {StatEnum}
+     * @memberof GameMasterCharacterStat
+     */
+    'name'?: StatEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterStat
+     */
+    'additional_value'?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof GameMasterCharacterStat
+     */
+    'base_value'?: number;
+}
+
+
+/**
+ * Serializer for character stats card. Used in GameMasterCharacterCard component.  This serializer provides a compact view of character stats, suitable for displaying in a character stats card component.
+ * @export
+ * @interface GameMasterCharacterStatsCard
+ */
+export interface GameMasterCharacterStatsCard {
+    /**
+     *
+     * @type {string}
+     * @memberof GameMasterCharacterStatsCard
+     */
+    'id': string;
+    /**
+     *
+     * @type {Array<GameMasterCharacterStat>}
+     * @memberof GameMasterCharacterStatsCard
+     */
+    'stats': Array<GameMasterCharacterStat>;
+}
+
+/**
  *
  * @export
  * @interface GameMasterItem
@@ -6187,6 +6240,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6228,6 +6282,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6265,6 +6320,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6310,6 +6366,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6365,6 +6422,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6406,6 +6464,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6452,6 +6511,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6494,6 +6554,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6541,6 +6602,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6582,6 +6644,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6638,6 +6701,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             if (search !== undefined) {
                 localVarQueryParameter['search'] = search;
             }
+
 
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -11624,6 +11688,49 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * Get character stats for the GameMasterCharacterStatsCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterStatsCardRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersCharacterStatsCardRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/characters/{id}/character_stats_card/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get character stats.
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
@@ -12838,6 +12945,18 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Get character stats for the GameMasterCharacterStatsCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersCharacterStatsCardRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterCharacterStatsCard>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersCharacterStatsCardRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersCharacterStatsCardRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get character stats.
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
@@ -13194,6 +13313,15 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
             return localVarFp.gamemasterCharactersCharacterInfoRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
+         * Get character stats for the GameMasterCharacterStatsCard component
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersCharacterStatsCardRetrieve(id: string, options?: any): AxiosPromise<GameMasterCharacterStatsCard> {
+            return localVarFp.gamemasterCharactersCharacterStatsCardRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get character stats.
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
@@ -13473,6 +13601,17 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterCharactersCharacterInfoRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterInfoRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get character stats for the GameMasterCharacterStatsCard component
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersCharacterStatsCardRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterStatsCardRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

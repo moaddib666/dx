@@ -46,6 +46,11 @@
             <span class="character-type">{{ character.npc ? 'NPC' : 'Player' }}</span>
           </div>
 
+          <!-- Character Stats Radar Chart -->
+          <div class="character-stats-chart">
+            <CharacterStatsRadarChart :character-id="character.id"/>
+          </div>
+
           <!-- Left side: Shield icons -->
           <div class="shields-container">
             <div v-for="shield in character.shields" :key="shield.id" class="shield-icon-container">
@@ -176,12 +181,14 @@
 import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
 import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
 import GameMasterInventoryGrid from '@/components/GameMaster/Character/GameMasterInventoryGrid.vue';
+import CharacterStatsRadarChart from '@/components/CharacterStatsRadarChart.vue';
 
 export default {
   name: 'GameMasterCharacterCard',
   components: {
     AttributeBar,
-    GameMasterInventoryGrid
+    GameMasterInventoryGrid,
+    CharacterStatsRadarChart
   },
   props: {
     characterId: {
@@ -820,6 +827,21 @@ export default {
   right: 0;
   padding: 0.5rem;
   text-align: center;
+}
+
+/* Character Stats Chart */
+.character-stats-chart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 60%;
+  z-index: 5;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Attribute bars at the bottom of the avatar */
