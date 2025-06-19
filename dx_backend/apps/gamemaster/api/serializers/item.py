@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from apps.core.serializers.dto import BaseSkillSerializer, EffectSerializer
 from apps.items.models import Item
+from apps.character.models import Character
+from apps.world.models import Position
 
 
 class GameMasterItemSerializer(serializers.ModelSerializer):
@@ -52,3 +54,60 @@ class GameMasterItemSerializer(serializers.ModelSerializer):
             representation['effect'] = None
 
         return representation
+
+
+class SpawnItemSerializer(serializers.Serializer):
+    """
+    Serializer for spawning an item in the game world.
+    Accepts either a character ID or a position ID, or both.
+    """
+    to_character_id = serializers.UUIDField(
+        required=False, 
+        allow_null=True,
+        help_text="UUID of the character to assign the item to. If provided, the item will be added to the character's inventory."
+    )
+    to_position_id = serializers.UUIDField(
+        required=False, 
+        allow_null=True,
+        help_text="UUID of the position to place the item at. If provided without to_character_id, the item will be placed at this position."
+    )
+
+    def validate(self, data):
+        """
+        Validate the request data for spawning an item.
+
+        Validation rules:
+        1. At least one of to_character_id or to_position_id must be provided.
+        2. If to_character_id is provided, the character must exist.
+        3. If to_position_id is provided, the position must exist.
+
+        Returns:
+            dict: The validated data if all validation rules pass.
+
+        Raises:
+            ValidationError: If any validation rule fails.
+        """
+        if not data.get('to_character_id') and not data.get('to_position_id'):
+            raise serializers.ValidationError(
+                "Either to_character_id or to_position_id must be provided."
+            )
+
+        # Validate that the character exists if to_character_id is provided
+        if data.get('to_character_id'):
+            try:
+                Character.objects.get(gameobject_ptr_id=data['to_character_id'])
+            except Character.DoesNotExist:
+                raise serializers.ValidationError(
+                    f"Character with ID {data['to_character_id']} does not exist."
+                )
+
+        # Validate that the position exists if to_position_id is provided
+        if data.get('to_position_id'):
+            try:
+                Position.objects.get(id=data['to_position_id'])
+            except Position.DoesNotExist:
+                raise serializers.ValidationError(
+                    f"Position with ID {data['to_position_id']} does not exist."
+                )
+
+        return data
