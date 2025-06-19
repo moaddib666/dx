@@ -1,16 +1,14 @@
-import uuid
-
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.character.api.serializers.openapi import AttributeSerializer, OpenaiCharacterBioSerializer, ThePathSerializer
-from apps.character.models import Character, Rank
-from apps.shields.api.serializers.openapi import ActiveShieldSerializer
-from apps.effects.api.serializers.openapi import ActiveEffectSerializer
-from apps.items.api.serializers.openapi import CharacterItemSerializer
-from apps.currency.api.serializers.openapi import CharacterCurrencySerializer
-from apps.game.services.character.core import CharacterService
+from apps.character.models import Character, Rank, Stat
 from apps.core.models import AttributeType
-from drf_spectacular.utils import extend_schema_field
+from apps.currency.api.serializers.openapi import CharacterCurrencySerializer
+from apps.effects.api.serializers.openapi import ActiveEffectSerializer
+from apps.game.services.character.core import CharacterService
+from apps.items.api.serializers.openapi import CharacterItemSerializer
+from apps.shields.api.serializers.openapi import ActiveShieldSerializer
 
 
 class DetailedRankSerializer(serializers.ModelSerializer):
@@ -20,11 +18,41 @@ class DetailedRankSerializer(serializers.ModelSerializer):
     Includes all relevant fields from the Rank model to provide comprehensive
     information about a character's rank.
     """
+
     class Meta:
         model = Rank
         fields = [
-            'id', 'name', 'grade', 'grade_rank', 'description', 
+            'id', 'name', 'grade', 'grade_rank', 'description',
             'experience_needed', 'additional_stat_points'
+        ]
+        read_only_fields = fields
+
+
+class GameMasterCharacterStatSerializer(serializers.ModelSerializer):
+    """
+    Serialize character stats for Game Master.
+    """
+
+    class Meta:
+        model = Stat
+        fields = [
+            'id', "name", 'additional_value', 'base_value',
+        ]
+
+
+class GameMasterCharacterStatsCardSerializer(serializers.ModelSerializer):
+    """
+    Serializer for character stats card. Used in GameMasterCharacterCard component.
+
+    This serializer provides a compact view of character stats, suitable for displaying
+    in a character stats card component.
+    """
+    stats = GameMasterCharacterStatSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Character
+        fields = [
+            'id', "stats"
         ]
         read_only_fields = fields
 
@@ -120,7 +148,7 @@ class GameMasterCharacterInfoSerializer(serializers.ModelSerializer):
         """
         character_service = CharacterService(obj)
         attributes = [
-            character_service.get_attribute(attr_name) 
+            character_service.get_attribute(attr_name)
             for attr_name in AttributeType
         ]
         return AttributeSerializer(attributes, many=True).data

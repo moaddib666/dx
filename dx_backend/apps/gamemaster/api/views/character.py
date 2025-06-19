@@ -9,7 +9,7 @@ from apps.character.api.filters.character import CharacterFilter
 from apps.character.api.serializers.openapi import CharacterInfoSerializer, CharacterStatsSerializer
 from apps.character.models import Character
 from apps.game.services.character.core import CharacterService
-from apps.gamemaster.api.serializers.character import GameMasterCharacterInfoSerializer
+from apps.gamemaster.api.serializers.character import GameMasterCharacterInfoSerializer, GameMasterCharacterStatsCardSerializer
 
 
 class GameMasterCharacterViewSet(viewsets.ReadOnlyModelViewSet):
@@ -59,6 +59,25 @@ class GameMasterCharacterViewSet(viewsets.ReadOnlyModelViewSet):
 
         This endpoint provides all the necessary data for rendering a GameMasterCharacterCard,
         including character attributes, shields, active effects, equipped items, and currency.
+        """
+        try:
+            character = self.get_object()
+            serializer = self.get_serializer(character)
+            return Response(data=serializer.data)
+        except Character.DoesNotExist:
+            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    @extend_schema(
+        description="Get character stats for the GameMasterCharacterStatsCard component",
+        responses={200: GameMasterCharacterStatsCardSerializer}
+    )
+    @action(detail=True, methods=['get'], serializer_class=GameMasterCharacterStatsCardSerializer)
+    def character_stats_card(self, request, pk=None):
+        """
+        Get character stats for the GameMasterCharacterStatsCard component.
+
+        This endpoint provides the necessary stats data for rendering a GameMasterCharacterStatsCard,
+        including all character stats.
         """
         try:
             character = self.get_object()
