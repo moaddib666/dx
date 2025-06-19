@@ -23,7 +23,7 @@
       >
         <span class="drag-handle">≡</span>
       </div>
-      <h3 class="card-title">Character Info</h3>
+      <h3 class="card-title" title="Click to copy character ID" @click="copyCharacterId">Character Info</h3>
       <button class="close-button" @click="closeCard">×</button>
     </div>
 
@@ -644,6 +644,35 @@ export default {
       // Calculate center position
       this.positionX = Math.max(0, (window.innerWidth - cardWidth) / 2);
       this.positionY = Math.max(0, (window.innerHeight - cardHeight) / 2);
+    },
+
+    // Copy character ID to clipboard
+    copyCharacterId() {
+      if (!this.characterId) return;
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(this.characterId)
+          .then(() => {
+            // Show feedback
+            const cardTitle = document.querySelector('.card-title');
+            if (cardTitle) {
+              // Store original text
+              const originalText = cardTitle.textContent;
+
+              // Change text to show feedback
+              cardTitle.textContent = 'ID Copied!';
+              cardTitle.classList.add('copied');
+
+              // Restore original text after a delay
+              setTimeout(() => {
+                cardTitle.textContent = originalText;
+                cardTitle.classList.remove('copied');
+              }, 1500);
+            }
+          })
+          .catch(err => {
+            console.error('Failed to copy character ID:', err);
+          });
     }
   }
 };
@@ -751,6 +780,18 @@ export default {
   font-size: 0.9rem;
   font-weight: 600;
   color: #1E90FF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-title:hover {
+  color: #4FC3F7;
+}
+
+.card-title.copied {
+  color: #4CAF50;
+  font-weight: bold;
+  transform: scale(1.05);
 }
 
 /* Loading state */
