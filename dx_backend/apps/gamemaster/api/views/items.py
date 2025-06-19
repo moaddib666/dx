@@ -29,45 +29,7 @@ class GameMasterItemViewSet(viewsets.ReadOnlyModelViewSet):
         description="Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.",
         request=SpawnItemSerializer,
         responses={
-            201: {
-                "description": "Item successfully spawned",
-                "content": {
-                    "application/json": {
-                        "schema": WorldItemSerializer
-                    }
-                }
-            },
-            400: {
-                "description": "Bad request",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "error": {
-                                    "type": "string",
-                                    "description": "Error message"
-                                }
-                            },
-                            "required": ["error"]
-                        },
-                        "examples": {
-                            "validation_error": {
-                                "value": {"error": "Either to_character_id or to_position_id must be provided."}
-                            },
-                            "character_not_found": {
-                                "value": {"error": "Character with ID 00000000-0000-0000-0000-000000000000 does not exist."}
-                            },
-                            "position_not_found": {
-                                "value": {"error": "Position with ID 00000000-0000-0000-0000-000000000000 does not exist."}
-                            },
-                            "spawn_error": {
-                                "value": {"error": "Failed to spawn item: Some error message"}
-                            }
-                        }
-                    }
-                }
-            }
+            201: WorldItemSerializer,
         },
         operation_id="spawn_item",
         tags=["gamemaster", "items"]
