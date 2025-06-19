@@ -10,9 +10,9 @@
     <div v-else class="radar-chart-container">
       <svg
           ref="radarChart"
+          :width="size"
           :height="size"
           :viewBox="`0 0 ${size} ${size}`"
-          :width="size"
           class="radar-svg"
       >
         <!-- Grid circles -->
@@ -24,9 +24,9 @@
               :cy="center"
               :r="(radius * i) / 5"
               fill="none"
-              opacity="0.6"
               stroke="#e2e8f0"
               stroke-width="1"
+              opacity="0.6"
           />
         </g>
 
@@ -36,12 +36,12 @@
               v-for="(stat, index) in statOrder"
               :key="`axis-${index}`"
               :x1="center"
-              :x2="getAxisEndX(index)"
               :y1="center"
+              :x2="getAxisEndX(index)"
               :y2="getAxisEndY(index)"
-              opacity="0.4"
               stroke="#94a3b8"
               stroke-width="1"
+              opacity="0.4"
           />
         </g>
 
@@ -49,10 +49,10 @@
         <g class="data-area">
           <polygon
               :points="getDataPolygonPoints()"
-              class="data-polygon"
               fill="url(#radarGradient)"
               stroke="#3b82f6"
               stroke-width="2"
+              class="data-polygon"
           />
 
           <!-- Data points -->
@@ -63,11 +63,11 @@
               :cy="getDataPointY(index)"
               class="data-point"
               fill="#1d4ed8"
-              r="4"
               stroke="#ffffff"
               stroke-width="2"
-              @mouseleave="hideTooltip"
+              r="4"
               @mouseover="showTooltip(stat, index, $event)"
+              @mouseleave="hideTooltip"
           />
         </g>
 
@@ -76,12 +76,12 @@
           <text
               v-for="(stat, index) in statOrder"
               :key="`label-${index}`"
-              :dominant-baseline="getLabelBaseline(index)"
-              :text-anchor="getLabelAnchor(index)"
               :x="getLabelX(index)"
               :y="getLabelY(index)"
+              :dominant-baseline="getLabelBaseline(index)"
+              :text-anchor="getLabelAnchor(index)"
               class="stat-label"
-              fill="#374151"
+              fill="#fff"
               font-size="12"
               font-weight="500"
           >
@@ -102,15 +102,15 @@
       <div
           v-if="tooltip.visible"
           ref="tooltip"
+          class="tooltip"
           :style="{
           left: tooltip.x + 'px',
           top: tooltip.y + 'px'
         }"
-          class="tooltip"
       >
         <div class="tooltip-content">
           <strong>{{ tooltip.stat }}</strong>
-          <div class="tooltip-value">{{ tooltip.value }} / {{ maxValue }}</div>
+          <div class="tooltip-value">{{ tooltip.value }}</div>
         </div>
       </div>
     </div>
@@ -164,11 +164,13 @@ export default {
     },
 
     radius() {
-      return this.size * 0.35;
+      return this.size * 0.38;
     },
 
     maxValue() {
-      return this.statsData?.maxValue || 20;
+      if (!this.statsData?.stats) return 20;
+      const maxStatValue = Math.max(...this.statsData.stats.map(stat => stat.value));
+      return maxStatValue + 10; // Add padding for better visualization
     }
   },
 
@@ -239,13 +241,13 @@ export default {
 
     getLabelX(index) {
       const angle = this.getAngle(index);
-      const labelDistance = this.radius + 25;
+      const labelDistance = this.radius + 15;
       return this.center + labelDistance * Math.cos(angle);
     },
 
     getLabelY(index) {
       const angle = this.getAngle(index);
-      const labelDistance = this.radius + 25;
+      const labelDistance = this.radius + 15;
       return this.center + labelDistance * Math.sin(angle);
     },
 
@@ -290,7 +292,7 @@ export default {
   position: relative;
   width: 100%;
   height: 300px;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .radar-chart-container {
@@ -317,7 +319,7 @@ export default {
 
 .data-point:hover {
   r: 6;
-  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.8));
 }
 
 .stat-label {
@@ -357,15 +359,15 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(0, 0, 0, 0.75);
   z-index: 1;
   backdrop-filter: blur(2px);
 }
 
 .loading-spinner {
-  border: 3px solid rgba(59, 130, 246, 0.2);
+  border: 3px solid rgba(96, 165, 250, 0.3);
   border-radius: 50%;
-  border-top: 3px solid #3b82f6;
+  border-top: 3px solid #60a5fa;
   width: 32px;
   height: 32px;
   animation: spin 1s linear infinite;
@@ -381,21 +383,21 @@ export default {
 }
 
 .loading-text {
-  margin-top: 12px;
+  margin-top: 8px;
   font-size: 14px;
-  color: #6b7280;
+  color: #94a3b8;
   font-weight: 500;
 }
 
 .error-message {
-  color: #ef4444;
+  color: #fca5a5;
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   font-weight: 500;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
-  margin: 20px;
+  margin: 10px;
 }
 
 /* Responsive adjustments */
