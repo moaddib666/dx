@@ -4,16 +4,22 @@
       :style="{ top: positionY + 'px', right: 'auto', left: positionX + 'px' }"
       class="game-master-character-card"
   >
-    <!-- Top Tab for Drag and Drop -->
+    <!-- Full Card Drop Zone -->
     <div
-        class="top-drag-tab"
-        title="Drag items here"
+        ref="dropZone"
+        class="card-drop-zone"
+        title="Drop items here"
         @dragover.prevent
+        @dragenter.prevent="handleDragEnter"
+        @dragleave.prevent="handleDragLeave"
         @drop.prevent="handleItemDrop"
     >
-      <span class="tab-text">Drop Items Here</span>
+      <div class="drop-zone-overlay">
+        <div class="drop-zone-message">
+          <span class="drop-zone-text">Drop Item Here</span>
+        </div>
+      </div>
     </div>
-
     <!-- Card Header with Tab and Close Button - Always visible -->
     <div class="card-header">
       <div
@@ -180,6 +186,8 @@
 
 <script>
 import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
+import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
+import {dragDropService} from '@/services/DragDropService.js';
 import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
 import GameMasterInventoryGrid from '@/components/GameMaster/Character/GameMasterInventoryGrid.vue';
 import CharacterStatsRadarChart from '@/components/CharacterStatsRadarChart.vue';
@@ -240,6 +248,12 @@ export default {
     // Load character data
     await this.loadCharacter();
   },
+  mounted() {
+    // Register the drop zone with the drag drop service
+    if (this.$refs.dropZone) {
+      dragDropService.registerDropTarget(this.$refs.dropZone);
+    }
+  },
   beforeUnmount() {
     // Set the unmounted flag to prevent further updates
     this.isUnmounted = true;
@@ -248,6 +262,11 @@ export default {
     gameMasterCharacterService.off('loadingStarted', this.onLoadingStarted);
     gameMasterCharacterService.off('characterLoaded', this.onCharacterLoaded);
     gameMasterCharacterService.off('loadingFailed', this.onLoadingFailed);
+
+    // Unregister the drop zone
+    if (this.$refs.dropZone) {
+      dragDropService.unregisterDropTarget(this.$refs.dropZone);
+    }
   },
   methods: {
     // Event handlers
@@ -550,8 +569,18 @@ export default {
       event.target.parentNode.querySelector('.avatar-placeholder').style.display = 'flex';
     },
 
+    // Handle drag enter event
+    handleDragEnter(event) {
+      event.currentTarget.classList.add('drag-active');
+    },
+
+    // Handle drag leave event
+    handleDragLeave(event) {
+      event.currentTarget.classList.remove('drag-active');
+    },
+
     // Handle item drop from drag and drop operation
-    handleItemDrop(event) {
+    async handleItemDrop(event) {
       try {
         // Get the dropped data
         const itemData = event.dataTransfer.getData('text/plain');
@@ -569,10 +598,7 @@ export default {
           return;
         }
 
-        console.log('Item dropped:', item);
-
-        // Emit an event to notify parent components
-        this.$emit('item-dropped', item, this.characterId);
+        console.log('Item dropped on character:', item, this.characterId);
 
         // Show a visual feedback
         const tab = event.currentTarget;
@@ -582,6 +608,21 @@ export default {
         setTimeout(() => {
           tab.classList.remove('drop-success');
         }, 500);
+
+        // Use the GameMasterItemSpawnerService to spawn the item to the character
+        if (this.characterId) {
+          const result = await gameMasterItemSpawnerService.spawnItemToCharacter(item.id, this.characterId);
+
+          if (result) {
+            console.log('Item spawned successfully to character:', result);
+
+            // Refresh the character's inventory
+            await gameMasterCharacterService.refreshCharacter(this.characterId);
+
+            // Emit an event to notify parent components
+            this.$emit('item-dropped', item, this.characterId);
+          }
+        }
       } catch (error) {
         console.error('Error handling dropped item:', error);
       }
@@ -708,7 +749,91 @@ export default {
   border: 2px solid #1E90FF;
 }
 
-/* Top Tab for Drag and Drop */
+/* Full Card Drop Zone */
+.card-drop-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  border-radius: 12px;
+  pointer-events: none; /* Allow clicks to pass through by default */
+}
+
+/* Only enable pointer events when dragging */
+.drag-over-highlight .card-drop-zone {
+  pointer-events: all;
+}
+
+/* Drop Zone Overlay - Hidden by default */
+.drop-zone-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(30, 144, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+/* Show overlay when dragging over */
+.card-drop-zone.drag-active .drop-zone-overlay {
+  opacity: 1;
+  background-color: rgba(30, 144, 255, 0.25);
+  border: 3px solid rgba(30, 144, 255, 0.7);
+  box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+}
+
+/* Show overlay when any dragging is happening */
+.card-drop-zone.drag-over-highlight .drop-zone-overlay {
+  opacity: 0.7;
+  border: 2px solid rgba(30, 144, 255, 0.5);
+}
+
+/* Drop Zone Message */
+.drop-zone-message {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.card-drop-zone.drag-active .drop-zone-message {
+  transform: scale(1.1);
+}
+
+.drop-zone-icon {
+  font-size: 2rem;
+  color: #1E90FF;
+}
+
+.drop-zone-text {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Visual feedback for successful drop */
+.card-drop-zone.drop-success .drop-zone-overlay {
+  background-color: rgba(76, 175, 80, 0.25);
+  border: 3px solid rgba(76, 175, 80, 0.7);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Top Tab for Drag and Drop (visual indicator only) */
 .top-drag-tab {
   position: absolute;
   top: -30px;
@@ -718,15 +843,9 @@ export default {
   color: white;
   padding: 5px 15px;
   border-radius: 8px 8px 0 0;
-  cursor: pointer;
   z-index: 999;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
-}
-
-.top-drag-tab:hover {
-  background: #4FC3F7;
-  padding-top: 8px;
 }
 
 .tab-text {
@@ -734,11 +853,20 @@ export default {
   font-weight: bold;
 }
 
-/* Visual feedback for successful drop */
-.top-drag-tab.drop-success {
-  background: #4CAF50;
-  transform: translateX(-50%) scale(1.05);
-  box-shadow: 0 -2px 8px rgba(76, 175, 80, 0.5);
+/* Pulse animation for the border */
+@keyframes pulse-border {
+  0% {
+    border-color: rgba(30, 144, 255, 0.5);
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+  }
+  50% {
+    border-color: rgba(30, 144, 255, 0.8);
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+  }
+  100% {
+    border-color: rgba(30, 144, 255, 0.5);
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+  }
 }
 
 /* Card Header */

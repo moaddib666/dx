@@ -38,7 +38,9 @@
           v-else
           :key="item.id"
           class="item-cell"
+          draggable="true"
           @click="selectItem(item)"
+          @dragstart="onDragStart($event, item)"
       >
         <div class="item-icon">
           <img
@@ -62,6 +64,7 @@
 
 <script>
 import {itemsService} from '@/services/ItemsService.js';
+import {dragDropService} from '@/services/DragDropService.js';
 import {Type496Enum} from '@/api/dx-backend/api.ts';
 
 export default {
@@ -170,6 +173,143 @@ export default {
           .replace(/^./, str => str.toUpperCase())
           // Trim any extra spaces
           .trim();
+    },
+
+    // Handle drag start event
+    onDragStart(event, item) {
+      // Set the drag data to the item's JSON string
+      event.dataTransfer.setData('text/plain', JSON.stringify(item));
+
+      // Set the drag effect to 'copy' to indicate that we're copying the item
+      event.dataTransfer.effectAllowed = 'copy';
+
+      // Add a class to the dragged element for visual feedback
+      event.target.classList.add('dragging');
+
+      // Create a custom drag image
+      const dragImage = this.createDragImage(item);
+      if (dragImage) {
+        // Use the custom drag image
+        event.dataTransfer.setDragImage(dragImage, dragImage.width / 2, dragImage.height / 2);
+
+        // Clean up the drag image after a short delay
+        setTimeout(() => {
+          if (dragImage.parentNode) {
+            document.body.removeChild(dragImage);
+          }
+        }, 100);
+      }
+
+      // Notify the drag drop service that we've started dragging
+      dragDropService.startDrag(item);
+
+      // Remove the class when the drag ends
+      const onDragEnd = () => {
+        event.target.classList.remove('dragging');
+        event.target.removeEventListener('dragend', onDragEnd);
+
+        // Notify the drag drop service that we've ended dragging
+        dragDropService.endDrag();
+      };
+
+      event.target.addEventListener('dragend', onDragEnd);
+    },
+
+    // Create a custom drag image
+    createDragImage(item) {
+      // Create a new element for the drag image
+      const dragImage = document.createElement('div');
+      dragImage.className = 'custom-drag-image';
+
+      // Add item icon
+      const iconContainer = document.createElement('div');
+      iconContainer.className = 'drag-image-icon';
+
+      if (item.icon) {
+        const img = document.createElement('img');
+        img.src = item.icon;
+        img.alt = item.name;
+        iconContainer.appendChild(img);
+      } else {
+        iconContainer.textContent = this.getItemInitials(item.name);
+      }
+
+      // Add item name
+      const nameContainer = document.createElement('div');
+      nameContainer.className = 'drag-image-name';
+      nameContainer.textContent = item.name;
+
+      // Add item type if available
+      if (item.type) {
+        const typeContainer = document.createElement('div');
+        typeContainer.className = 'drag-image-type';
+        typeContainer.textContent = item.type;
+        dragImage.appendChild(typeContainer);
+      }
+
+      // Assemble the drag image
+      dragImage.appendChild(iconContainer);
+      dragImage.appendChild(nameContainer);
+
+      // Add styles
+      Object.assign(dragImage.style, {
+        position: 'absolute',
+        top: '-1000px', // Position off-screen
+        padding: '10px',
+        background: '#444',
+        border: '2px solid #1E90FF',
+        borderRadius: '6px',
+        boxShadow: '0 0 15px rgba(30, 144, 255, 0.8)',
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '5px',
+        zIndex: '9999',
+        pointerEvents: 'none'
+      });
+
+      Object.assign(iconContainer.style, {
+        width: '40px',
+        height: '40px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#555',
+        borderRadius: '4px',
+        marginBottom: '5px'
+      });
+
+      if (iconContainer.querySelector('img')) {
+        Object.assign(iconContainer.querySelector('img').style, {
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain'
+        });
+      }
+
+      Object.assign(nameContainer.style, {
+        fontWeight: 'bold',
+        fontSize: '12px',
+        textAlign: 'center',
+        maxWidth: '100px',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      });
+
+      if (dragImage.querySelector('.drag-image-type')) {
+        Object.assign(dragImage.querySelector('.drag-image-type').style, {
+          fontSize: '10px',
+          color: '#aaa',
+          textTransform: 'capitalize'
+        });
+      }
+
+      // Add to the document
+      document.body.appendChild(dragImage);
+
+      return dragImage;
     }
   }
 };
@@ -286,6 +426,18 @@ export default {
   background: #444;
   border-color: #666;
   transform: translateY(-2px);
+}
+
+.item-cell.dragging {
+  opacity: 0.9;
+  background: #444;
+  border: 2px solid #1E90FF;
+  box-shadow: 0 0 12px rgba(30, 144, 255, 0.7);
+  transform: scale(1.1);
+  z-index: 1000;
+  position: relative;
+  /* Add a custom cursor to make it clear this is being dragged */
+  cursor: grabbing;
 }
 
 .item-icon {

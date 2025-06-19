@@ -1,5 +1,21 @@
 <template>
   <div class="world-editor-room-info">
+    <!-- Full Container Drop Zone -->
+    <div
+        ref="dropZone"
+        class="room-drop-zone"
+        @dragover.prevent
+        @dragenter.prevent="handleDragEnter"
+        @dragleave.prevent="handleDragLeave"
+        @drop.prevent="handleItemDrop"
+    >
+      <div class="drop-zone-overlay">
+        <div class="drop-zone-message">
+          <span class="drop-zone-text">Drop Item Here</span>
+        </div>
+      </div>
+    </div>
+
     <div class="room-info-header">
       <h3>Room Information</h3>
       <button class="close-btn" title="Close" @click="closePanel">
@@ -298,6 +314,8 @@
 import WorldEditorConnectionInfo from '@/components/WorldEditor/WorldEditorConnectionInfo.vue';
 import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import {CharacterInfoGameService} from '@/services/characterInfoService.js';
+import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
+import {dragDropService} from '@/services/DragDropService.js';
 
 export default {
   name: 'WorldEditorRoomInfo',
@@ -360,6 +378,18 @@ export default {
 
   created() {
     this.fetchAvatars();
+  },
+  mounted() {
+    // Register the drop zone with the drag drop service
+    if (this.$refs.dropZone) {
+      dragDropService.registerDropTarget(this.$refs.dropZone);
+    }
+  },
+  beforeUnmount() {
+    // Unregister the drop zone
+    if (this.$refs.dropZone) {
+      dragDropService.unregisterDropTarget(this.$refs.dropZone);
+    }
   },
   methods: {
     closePanel() {
@@ -583,6 +613,76 @@ export default {
     deleteRoom() {
       this.showDeleteConfirm = false;
       this.$emit('room-deleted', this.room);
+    },
+
+    // Handle drag enter event
+    handleDragEnter(event) {
+      event.currentTarget.classList.add('drag-active');
+    },
+
+    // Handle drag leave event
+    handleDragLeave(event) {
+      event.currentTarget.classList.remove('drag-active');
+    },
+
+    // Handle item drop event
+    async handleItemDrop(event) {
+      try {
+        // Get the dropped data
+        const itemData = event.dataTransfer.getData('text/plain');
+
+        if (!itemData) {
+          console.warn('No data received from drop event');
+          return;
+        }
+
+        // Try to parse the item data
+        const item = JSON.parse(itemData);
+
+        if (!item || !item.id) {
+          console.warn('Invalid item data received:', itemData);
+          return;
+        }
+
+        console.log('Item dropped on room:', item, this.room);
+
+        // Show visual feedback
+        const dropZone = event.currentTarget;
+        dropZone.classList.add('drop-success');
+
+        // Remove the visual feedback after a short delay
+        setTimeout(() => {
+          dropZone.classList.remove('drop-success');
+        }, 500);
+
+        // Use the GameMasterItemSpawnerService to spawn the item at the room's position
+        if (this.room && this.room.id) {
+          const result = await gameMasterItemSpawnerService.spawnItemToPosition(item.id, this.room.id);
+
+          if (result) {
+            console.log('Item spawned successfully:', result);
+
+            // Update the room's object count without triggering a full map reload
+            if (this.room.objects) {
+              // Add the new object to the room's objects array
+              this.room.objects.push({
+                id: result.id || result.world_item?.id,
+                name: item.name,
+                type: item.type,
+                object_type: {
+                  app_label: 'world',
+                  model: 'gameobject'
+                }
+              });
+
+              // Emit an event to notify parent components that the room has been updated
+              this.$emit('room-objects-updated', this.room);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error handling dropped item:', error);
+      }
     }
   }
 };
@@ -603,6 +703,143 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+}
+
+/* Full Container Drop Zone */
+.room-drop-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  border-radius: 4px;
+  pointer-events: none; /* Allow clicks to pass through by default */
+}
+
+/* Only enable pointer events when dragging */
+.drag-over-highlight .room-drop-zone {
+  pointer-events: all;
+}
+
+/* Drop Zone Overlay - Hidden by default */
+.drop-zone-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(30, 144, 255, 0.15);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+/* Show overlay when dragging over */
+.room-drop-zone.drag-active .drop-zone-overlay {
+  opacity: 1;
+  background-color: rgba(30, 144, 255, 0.25);
+  border: 3px solid rgba(30, 144, 255, 0.7);
+  box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+}
+
+/* Show overlay when any dragging is happening */
+.room-drop-zone.drag-over-highlight .drop-zone-overlay {
+  opacity: 0.7;
+  border: 2px solid rgba(30, 144, 255, 0.5);
+}
+
+/* Drop Zone Message */
+.drop-zone-message {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.room-drop-zone.drag-active .drop-zone-message {
+  transform: scale(1.1);
+}
+
+.drop-zone-icon {
+  font-size: 2rem;
+  color: #1E90FF;
+}
+
+.drop-zone-text {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Visual feedback for successful drop */
+.room-drop-zone.drop-success .drop-zone-overlay {
+  background-color: rgba(76, 175, 80, 0.25);
+  border: 3px solid rgba(76, 175, 80, 0.7);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Top Indicator (visual only) */
+.item-drop-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(30, 144, 255, 0.1);
+  border-bottom: 1px dashed rgba(30, 144, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.world-editor-room-info:hover .item-drop-zone {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.drop-zone-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1E90FF;
+  font-size: 0.9rem;
+}
+
+.drop-zone-content i {
+  font-size: 1.2rem;
+}
+
+/* Pulse animation for the border */
+@keyframes pulse-border {
+  0% {
+    border-color: rgba(30, 144, 255, 0.5);
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+  }
+  50% {
+    border-color: rgba(30, 144, 255, 0.8);
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+  }
+  100% {
+    border-color: rgba(30, 144, 255, 0.5);
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+  }
 }
 
 .room-info-header {
