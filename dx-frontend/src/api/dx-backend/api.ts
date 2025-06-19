@@ -1749,13 +1749,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      *
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  *
@@ -2798,7 +2798,6 @@ export interface GameMasterCharacterStatsCard {
      */
     'stats': Array<GameMasterCharacterStat>;
 }
-
 /**
  *
  * @export
@@ -5437,6 +5436,26 @@ export interface SkillCost {
 
 
 /**
+ * Serializer for spawning an item in the game world. Accepts either a character ID or a position ID, or both.
+ * @export
+ * @interface SpawnItemRequest
+ */
+export interface SpawnItemRequest {
+    /**
+     * UUID of the character to assign the item to. If provided, the item will be added to the character\'s inventory.
+     * @type {string}
+     * @memberof SpawnItemRequest
+     */
+    'to_character_id'?: string | null;
+    /**
+     * UUID of the position to place the item at. If provided without to_character_id, the item will be placed at this position.
+     * @type {string}
+     * @memberof SpawnItemRequest
+     */
+    'to_position_id'?: string | null;
+}
+
+/**
  *
  * @export
  * @interface SpecialAction
@@ -6240,7 +6259,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6282,7 +6300,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6320,7 +6337,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6366,7 +6382,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
 
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6422,7 +6437,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             }
 
 
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6464,7 +6478,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6511,7 +6524,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-
             localVarHeaderParameter['Content-Type'] = 'application/json';
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -6554,7 +6566,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6602,7 +6613,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -6644,7 +6654,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             // authentication jwtAuth required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
 
 
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -6701,7 +6710,6 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             if (search !== undefined) {
                 localVarQueryParameter['search'] = search;
             }
-
 
 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -11720,7 +11728,6 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
@@ -12910,6 +12917,52 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        spawnItem: async (id: string, spawnItemRequest?: SpawnItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('spawnItem', 'id', id)
+            const localVarPath = `/api/gamemaster/items/{id}/spawn_item/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(spawnItemRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -13284,6 +13337,19 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterWorldMapUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.spawnItem(id, spawnItemRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.spawnItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -13570,6 +13636,16 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          */
         gamemasterWorldMapUpdate(id: string, positionRequest: PositionRequest, options?: any): AxiosPromise<Position> {
             return localVarFp.gamemasterWorldMapUpdate(id, positionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: any): AxiosPromise<WorldItem> {
+            return localVarFp.spawnItem(id, spawnItemRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -13914,6 +13990,18 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterWorldMapUpdate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterWorldMapUpdate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+     * @param {string} id A UUID string identifying this item.
+     * @param {SpawnItemRequest} [spawnItemRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).spawnItem(id, spawnItemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -14265,6 +14353,52 @@ export const ItemsApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        spawnItem: async (id: string, spawnItemRequest?: SpawnItemRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('spawnItem', 'id', id)
+            const localVarPath = `/api/gamemaster/items/{id}/spawn_item/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(spawnItemRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -14371,6 +14505,19 @@ export const ItemsApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['ItemsApi.itemsWorldUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldItem>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.spawnItem(id, spawnItemRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemsApi.spawnItem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -14452,6 +14599,16 @@ export const ItemsApiFactory = function (configuration?: Configuration, basePath
          */
         itemsWorldUpdate(id: string, worldItemRequest: WorldItemRequest, options?: any): AxiosPromise<WorldItem> {
             return localVarFp.itemsWorldUpdate(id, worldItemRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+         * @param {string} id A UUID string identifying this item.
+         * @param {SpawnItemRequest} [spawnItemRequest]
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: any): AxiosPromise<WorldItem> {
+            return localVarFp.spawnItem(id, spawnItemRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -14549,6 +14706,18 @@ export class ItemsApi extends BaseAPI {
      */
     public itemsWorldUpdate(id: string, worldItemRequest: WorldItemRequest, options?: RawAxiosRequestConfig) {
         return ItemsApiFp(this.configuration).itemsWorldUpdate(id, worldItemRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Spawn an item in the game world. Creates a WorldItem instance from the Item and optionally assigns it to a character.
+     * @param {string} id A UUID string identifying this item.
+     * @param {SpawnItemRequest} [spawnItemRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemsApi
+     */
+    public spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: RawAxiosRequestConfig) {
+        return ItemsApiFp(this.configuration).spawnItem(id, spawnItemRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

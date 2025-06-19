@@ -9,12 +9,11 @@
         ref="dropZone"
         class="card-drop-zone"
         title="Drop items here"
-        @dragover.prevent
-        @dragenter.prevent="handleDragEnter"
-        @dragleave.prevent="handleDragLeave"
-        @drop.prevent="handleItemDrop"
     >
-      <div class="drop-zone-overlay">
+      <div class="drop-zone-overlay" @dragover.prevent
+           @dragenter.prevent="handleDragEnter"
+           @dragleave.prevent="handleDragLeave"
+           @drop.prevent="handleItemDrop">
         <div class="drop-zone-message">
           <span class="drop-zone-text">Drop Item Here</span>
         </div>
@@ -581,9 +580,21 @@ export default {
 
     // Handle item drop from drag and drop operation
     async handleItemDrop(event) {
+      console.log('Drop event triggered on character card');
       try {
+        // Prevent default to stop browser from opening the dragged item
+        event.preventDefault();
+
         // Get the dropped data
-        const itemData = event.dataTransfer.getData('text/plain');
+        console.log('Event dataTransfer types:', event.dataTransfer.types);
+
+        // Try to get the data from different MIME types
+        let itemData = event.dataTransfer.getData('application/json');
+        if (!itemData) {
+          itemData = event.dataTransfer.getData('text/plain');
+        }
+
+        console.log('Got item data from drop event:', itemData);
 
         if (!itemData) {
           console.warn('No data received from drop event');
@@ -592,6 +603,7 @@ export default {
 
         // Try to parse the item data
         const item = JSON.parse(itemData);
+        console.log('Parsed item data:', item);
 
         if (!item || !item.id) {
           console.warn('Invalid item data received:', itemData);
@@ -623,6 +635,9 @@ export default {
             this.$emit('item-dropped', item, this.characterId);
           }
         }
+
+        // Notify the drag drop service that we've ended dragging
+        dragDropService.endDrag();
       } catch (error) {
         console.error('Error handling dropped item:', error);
       }
@@ -761,11 +776,6 @@ export default {
   pointer-events: none; /* Allow clicks to pass through by default */
 }
 
-/* Only enable pointer events when dragging */
-.drag-over-highlight .card-drop-zone {
-  pointer-events: all;
-}
-
 /* Drop Zone Overlay - Hidden by default */
 .drop-zone-overlay {
   position: absolute;
@@ -780,7 +790,6 @@ export default {
   justify-content: center;
   opacity: 0;
   transition: all 0.3s ease;
-  pointer-events: none;
 }
 
 /* Show overlay when dragging over */
@@ -795,6 +804,7 @@ export default {
 .card-drop-zone.drag-over-highlight .drop-zone-overlay {
   opacity: 0.7;
   border: 2px solid rgba(30, 144, 255, 0.5);
+  pointer-events: all;
 }
 
 /* Drop Zone Message */

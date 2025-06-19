@@ -177,8 +177,14 @@ export default {
 
     // Handle drag start event
     onDragStart(event, item) {
+      console.log('Drag start:', item);
+
       // Set the drag data to the item's JSON string
-      event.dataTransfer.setData('text/plain', JSON.stringify(item));
+      const itemJson = JSON.stringify(item);
+      event.dataTransfer.setData('text/plain', itemJson);
+      // Also set it as application/json for better compatibility
+      event.dataTransfer.setData('application/json', itemJson);
+      console.log('Set drag data:', itemJson);
 
       // Set the drag effect to 'copy' to indicate that we're copying the item
       event.dataTransfer.effectAllowed = 'copy';
@@ -208,8 +214,8 @@ export default {
         event.target.classList.remove('dragging');
         event.target.removeEventListener('dragend', onDragEnd);
 
-        // Notify the drag drop service that we've ended dragging
-        dragDropService.endDrag();
+        // We don't need to call endDrag here, as it will be handled by the DragDropService
+        // dragDropService.endDrag();
       };
 
       event.target.addEventListener('dragend', onDragEnd);

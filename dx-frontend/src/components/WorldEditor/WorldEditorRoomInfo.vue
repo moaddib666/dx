@@ -4,13 +4,14 @@
     <div
         ref="dropZone"
         class="room-drop-zone"
-        @dragover.prevent
-        @dragenter.prevent="handleDragEnter"
-        @dragleave.prevent="handleDragLeave"
-        @drop.prevent="handleItemDrop"
     >
-      <div class="drop-zone-overlay">
+      <div class="drop-zone-overlay"
+           @dragover.prevent
+           @dragenter.prevent="handleDragEnter"
+           @dragleave.prevent="handleDragLeave"
+           @drop.prevent="handleItemDrop">
         <div class="drop-zone-message">
+          <i class="drop-zone-icon">📦</i>
           <span class="drop-zone-text">Drop Item Here</span>
         </div>
       </div>
@@ -345,7 +346,8 @@ export default {
       playerAvatars: new Map(), // Map to store player avatar URLs
       npcAvatars: new Map(), // Map to store NPC avatar URLs
       // Data URL for a simple colored circle as fallback avatar
-      defaultAvatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="%23555"/></svg>'
+      defaultAvatar: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="%23555"/></svg>',
+      isDraggingItem: false // Flag to track if an item is being dragged
     };
   },
   computed: {
@@ -617,19 +619,50 @@ export default {
 
     // Handle drag enter event
     handleDragEnter(event) {
-      event.currentTarget.classList.add('drag-active');
+      console.log('Drag enter on room info');
+      const dropZone = event.currentTarget.closest('.room-drop-zone');
+      if (dropZone) {
+        dropZone.classList.add('drag-active');
+      }
     },
 
     // Handle drag leave event
     handleDragLeave(event) {
-      event.currentTarget.classList.remove('drag-active');
+      console.log('Drag leave on room info');
+      const dropZone = event.currentTarget.closest('.room-drop-zone');
+      if (dropZone) {
+        // Only remove if we're actually leaving the drop zone area
+        // Check if the related target is outside the drop zone
+        if (!dropZone.contains(event.relatedTarget)) {
+          dropZone.classList.remove('drag-active');
+        }
+      }
     },
 
     // Handle item drop event
     async handleItemDrop(event) {
+      console.log('Drop event triggered on room info');
+      const dropZone = event.currentTarget.closest('.room-drop-zone');
+
       try {
+        // Prevent default to stop browser from opening the dragged item
+        event.preventDefault();
+
+        // Remove active state immediately
+        if (dropZone) {
+          dropZone.classList.remove('drag-active');
+        }
+
         // Get the dropped data
-        const itemData = event.dataTransfer.getData('text/plain');
+        console.log('Event dataTransfer types:', event.dataTransfer.types);
+
+        // Try to get the data from different MIME types
+        let itemData = event.dataTransfer.getData('application/json');
+        if (!itemData) {
+          itemData = event.dataTransfer.getData('text/plain');
+        }
+
+        console.log('Got item data from drop event:', itemData);
 
         if (!itemData) {
           console.warn('No data received from drop event');
@@ -638,6 +671,7 @@ export default {
 
         // Try to parse the item data
         const item = JSON.parse(itemData);
+        console.log('Parsed item data:', item);
 
         if (!item || !item.id) {
           console.warn('Invalid item data received:', itemData);
@@ -646,14 +680,15 @@ export default {
 
         console.log('Item dropped on room:', item, this.room);
 
-        // Show visual feedback
-        const dropZone = event.currentTarget;
-        dropZone.classList.add('drop-success');
+        // Show success feedback
+        if (dropZone) {
+          dropZone.classList.add('drop-success');
 
-        // Remove the visual feedback after a short delay
-        setTimeout(() => {
-          dropZone.classList.remove('drop-success');
-        }, 500);
+          // Remove the success feedback after a short delay
+          setTimeout(() => {
+            dropZone.classList.remove('drop-success');
+          }, 1000);
+        }
 
         // Use the GameMasterItemSpawnerService to spawn the item at the room's position
         if (this.room && this.room.id) {
@@ -680,8 +715,34 @@ export default {
             }
           }
         }
+
+        // Notify the drag drop service that we've ended dragging
+        dragDropService.endDrag();
       } catch (error) {
         console.error('Error handling dropped item:', error);
+
+        // Remove any active states on error
+        if (dropZone) {
+          dropZone.classList.remove('drag-active', 'drop-success');
+        }
+      }
+    },
+
+    // Optional: Method to handle global drag state changes
+    // Call this when drag starts globally to show light highlight
+    onGlobalDragStart() {
+      const dropZone = this.$refs.dropZone;
+      if (dropZone) {
+        dropZone.classList.add('drag-over-highlight');
+      }
+    },
+
+    // Optional: Method to handle global drag end
+    // Call this when drag ends globally to remove highlights
+    onGlobalDragEnd() {
+      const dropZone = this.$refs.dropZone;
+      if (dropZone) {
+        dropZone.classList.remove('drag-over-highlight', 'drag-active', 'drop-success');
       }
     }
   }
@@ -695,6 +756,7 @@ export default {
   align-items: center;
   margin-bottom: 1rem;
 }
+
 .world-editor-room-info {
   background: #2d2d2d;
   border: 1px solid #555;
@@ -715,12 +777,7 @@ export default {
   bottom: 0;
   z-index: 1000;
   border-radius: 4px;
-  pointer-events: none; /* Allow clicks to pass through by default */
-}
-
-/* Only enable pointer events when dragging */
-.drag-over-highlight .room-drop-zone {
-  pointer-events: all;
+  pointer-events: none;
 }
 
 /* Drop Zone Overlay - Hidden by default */
@@ -730,116 +787,78 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(30, 144, 255, 0.15);
+  background-color: rgba(30, 144, 255, 0.25);
+  border: 3px solid rgba(30, 144, 255, 0.7);
+  box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
   border-radius: 4px;
-  display: flex;
+  display: none; /* Hidden by default */
   align-items: center;
   justify-content: center;
-  opacity: 0;
   transition: all 0.3s ease;
-  pointer-events: none;
 }
 
 /* Show overlay when dragging over */
 .room-drop-zone.drag-active .drop-zone-overlay {
-  opacity: 1;
-  background-color: rgba(30, 144, 255, 0.25);
-  border: 3px solid rgba(30, 144, 255, 0.7);
-  box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+  display: flex; /* Show when active */
 }
 
-/* Show overlay when any dragging is happening */
+/* Optional: Show overlay when any dragging is happening (lighter version) */
 .room-drop-zone.drag-over-highlight .drop-zone-overlay {
-  opacity: 0.7;
+  display: flex;
+  background-color: rgba(30, 144, 255, 0.15);
   border: 2px solid rgba(30, 144, 255, 0.5);
+  box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+  pointer-events: all;
 }
 
 /* Drop Zone Message */
 .drop-zone-message {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: 15px 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  transform: scale(0.9);
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
   transition: transform 0.3s ease;
 }
 
 .room-drop-zone.drag-active .drop-zone-message {
-  transform: scale(1.1);
+  transform: scale(1);
 }
 
 .drop-zone-icon {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #1E90FF;
 }
 
 .drop-zone-text {
   color: white;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 /* Visual feedback for successful drop */
 .room-drop-zone.drop-success .drop-zone-overlay {
+  display: flex;
   background-color: rgba(76, 175, 80, 0.25);
   border: 3px solid rgba(76, 175, 80, 0.7);
   box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
 }
 
-/* Top Indicator (visual only) */
-.item-drop-zone {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: rgba(30, 144, 255, 0.1);
-  border-bottom: 1px dashed rgba(30, 144, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  transition: all 0.2s ease;
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
+.room-drop-zone.drop-success .drop-zone-message {
+  background-color: rgba(76, 175, 80, 0.9);
 }
 
-.world-editor-room-info:hover .item-drop-zone {
-  opacity: 1;
-  transform: translateY(0);
+.room-drop-zone.drop-success .drop-zone-text {
+  color: white;
 }
 
-.drop-zone-content {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #1E90FF;
-  font-size: 0.9rem;
-}
-
-.drop-zone-content i {
-  font-size: 1.2rem;
-}
-
-/* Pulse animation for the border */
-@keyframes pulse-border {
-  0% {
-    border-color: rgba(30, 144, 255, 0.5);
-    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
-  }
-  50% {
-    border-color: rgba(30, 144, 255, 0.8);
-    box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
-  }
-  100% {
-    border-color: rgba(30, 144, 255, 0.5);
-    box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
-  }
+.room-drop-zone.drop-success .drop-zone-icon {
+  color: white;
 }
 
 .room-info-header {
