@@ -101,12 +101,14 @@ class NPCFactory(NPCFactoryProtocol):
             gender = bio.gender
             background = bio.background
             appearance = bio.appearance
+            avatar = bio.avatar
         except:
             # If the NPC doesn't have a biography, use default values
             age = 30
             gender = 'OTHER'
             background = ''
             appearance = ''
+            avatar = None
 
         # Generate a unique name for the biography template
         import uuid
@@ -120,6 +122,7 @@ class NPCFactory(NPCFactoryProtocol):
             randomize_gender=False,
             background=background,
             appearance=appearance,
+            avatar=avatar
         )
 
         return bio_template

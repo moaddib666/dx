@@ -13,6 +13,19 @@ class OpenaiCharacterBioSerializer(serializers.ModelSerializer):
         model = CharacterBiography
         fields = "__all__"
 
+    def to_representation(self, instance):
+        """
+        Custom representation to handle avatar URLs.
+        Uses request from context to build absolute URLs for avatar.
+        """
+        representation = super().to_representation(instance)
+
+        # Handle avatar URL to make it absolute if request is available
+        if representation.get('avatar') and self.context.get('request'):
+            representation['avatar'] = self.context.get('request').build_absolute_uri(representation['avatar'])
+
+        return representation
+
 
 class ThePathSerializer(serializers.ModelSerializer):
     class Meta:

@@ -33,6 +33,14 @@ class CharacterTemplateViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = CharacterTemplateFilter
     pagination_class = StandardResultsSetPagination
 
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+        Ensures request is included for generating absolute URLs.
+        """
+        context = super().get_serializer_context()
+        return context
+
     @action(detail=False, methods=['post'], serializer_class=CreateNPCFromTemplateSerializer)
     @transaction.atomic
     def create_npc(self, request):
@@ -63,5 +71,5 @@ class CharacterTemplateViewSet(viewsets.ReadOnlyModelViewSet):
         npc = factory.create_npc(config)
 
         # Serialize the created NPC with all details including avatar
-        serializer = GameMasterCharacterInfoSerializer(npc)
+        serializer = GameMasterCharacterInfoSerializer(npc, context=self.get_serializer_context())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
