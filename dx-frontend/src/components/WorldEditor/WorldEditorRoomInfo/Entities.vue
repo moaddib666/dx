@@ -82,16 +82,26 @@
               :key="object.id"
               class="entity-item"
           >
-            <div class="entity-info">
-              <!-- Display the resolved item details -->
-              <span class="entity-name">{{ object.resolvedItem.name || 'Unknown Object' }}</span>
-              <span class="entity-rarity">{{ object.resolvedItem.rarity || 'Common' }}</span>
-              <!-- Show charges if available -->
-              <span v-if="object.resolvedItem.charges_left" class="entity-charges">
-                Charges: {{ object.resolvedItem.charges_left }}
-              </span>
+            <!-- Item Avatar -->
+            <div class="entity-avatar">
+              <img
+                  :src="getItemAvatar(object.resolvedItem)"
+                  :alt="object.resolvedItem.name || 'Item'"
+                  class="avatar-image"
+                  @error="handleAvatarError"
+              />
             </div>
-            <!-- Still use the original world item ID for editing -->
+            <!-- Simplified Item Info -->
+            <div class="entity-info">
+              <span class="entity-name">{{ object.resolvedItem.name || 'Unknown Object' }}</span>
+              <div class="entity-details">
+                <span class="entity-rarity">{{ object.resolvedItem.rarity || 'Common' }}</span>
+                <span v-if="object.resolvedItem.charges_left" class="entity-charges">
+                  {{ object.resolvedItem.charges_left }}
+                </span>
+              </div>
+            </div>
+            <!-- Admin Edit Button -->
             <EditInDjangoAdmin
                 :id="object.id"
                 :app="object.object_type?.app_label || 'world'"
@@ -235,6 +245,40 @@ export default {
       return this.npcAvatars.get(npcId) || this.defaultAvatar;
     },
 
+    /**
+     * Get avatar URL for an item
+     * @param {Object} item - The item object
+     * @returns {string} - URL of the item avatar or default placeholder
+     */
+    getItemAvatar(item) {
+      if (!item) return this.defaultAvatar;
+
+      // Check for common image properties in item objects
+      // Try different possible property names for item images
+      if (item.image_url) return item.image_url;
+      if (item.image) return item.image;
+      if (item.avatar) return item.avatar;
+      if (item.icon) return item.icon;
+      if (item.icon_url) return item.icon_url;
+
+      // Generate a colored placeholder based on item rarity
+      const rarityColors = {
+        'Common': '#aaaaaa',
+        'Uncommon': '#55aa55',
+        'Rare': '#5555ff',
+        'Epic': '#aa55aa',
+        'Legendary': '#ffaa00',
+        'Artifact': '#ff5555'
+      };
+
+      const color = rarityColors[item.rarity] || '#aaaaaa';
+
+      // Create a simple SVG icon with the first letter of the item name
+      const firstLetter = (item.name && item.name.length > 0) ? item.name.charAt(0).toUpperCase() : '?';
+
+      return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" fill="${color}" rx="4" /><text x="50%" y="50%" font-family="Arial" font-size="16" fill="white" text-anchor="middle" dominant-baseline="middle">${firstLetter}</text></svg>`;
+    },
+
     handleAvatarError(event) {
       event.target.src = this.defaultAvatar;
     },
@@ -350,21 +394,31 @@ export default {
 .entity-info {
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   margin-right: 0.5rem;
+  overflow: hidden;
 }
 
 .entity-name {
   color: #fff;
   font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.1rem;
+}
+
+.entity-details {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .entity-status,
 .entity-type,
 .entity-rarity,
-.entity-danger,
-.entity-charges {
+.entity-danger {
   color: #ccc;
   font-size: 0.8rem;
   font-style: italic;
@@ -372,6 +426,12 @@ export default {
 
 .entity-charges {
   color: #88ccff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: rgba(0, 100, 200, 0.2);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  display: inline-block;
 }
 
 .empty-entities {
