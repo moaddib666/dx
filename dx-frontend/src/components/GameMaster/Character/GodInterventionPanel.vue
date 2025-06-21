@@ -1,6 +1,9 @@
 <template>
   <div class="god-intervention-panel">
-    <div class="intervention-buttons">
+    <!-- Horizontal panel with buttons and loading indicator inline -->
+    <div class="intervention-controls">
+      <div class="panel-label">God Powers:</div>
+
       <!-- Instant Kill Button -->
       <button
           :disabled="isLoading"
@@ -30,11 +33,11 @@
       >
         <span class="intervention-icon">⚡</span>
       </button>
-    </div>
 
-    <!-- Loading indicator -->
-    <div v-if="isLoading" class="loading-indicator">
-      <span class="loading-spinner"></span>
+      <!-- Inline loading indicator -->
+      <div v-if="isLoading" class="loading-indicator">
+        <span class="loading-spinner"></span>
+      </div>
     </div>
 
     <!-- Success/Error message -->
@@ -267,81 +270,96 @@ export default {
 .god-intervention-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-top: 1px solid rgba(30, 144, 255, 0.2);
+  margin-top: 0.25rem;
 }
 
-.intervention-buttons {
+.intervention-controls {
   display: flex;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: flex-start;
   gap: 0.5rem;
+}
+
+.panel-label {
+  font-size: 0.7rem;
+  color: #aaa;
+  margin-right: 0.25rem;
 }
 
 .intervention-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(30, 30, 30, 0.8);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 30, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .intervention-button:hover {
-  transform: scale(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .intervention-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .kill-button {
-  background: rgba(180, 0, 0, 0.8);
+  background: rgba(60, 20, 20, 0.8);
+  border-color: rgba(180, 0, 0, 0.3);
 }
 
 .kill-button:hover {
-  background: rgba(220, 0, 0, 0.9);
+  background: rgba(80, 20, 20, 0.9);
+  border-color: rgba(220, 0, 0, 0.4);
 }
 
 .heal-button {
-  background: rgba(0, 150, 0, 0.8);
+  background: rgba(20, 60, 20, 0.8);
+  border-color: rgba(0, 150, 0, 0.3);
 }
 
 .heal-button:hover {
-  background: rgba(0, 180, 0, 0.9);
+  background: rgba(20, 80, 20, 0.9);
+  border-color: rgba(0, 180, 0, 0.4);
 }
 
 .custom-button {
-  background: rgba(100, 100, 200, 0.8);
+  background: rgba(20, 40, 80, 0.8);
+  border-color: rgba(30, 144, 255, 0.3);
 }
 
 .custom-button:hover {
-  background: rgba(120, 120, 220, 0.9);
+  background: rgba(30, 50, 100, 0.9);
+  border-color: rgba(30, 144, 255, 0.4);
 }
 
 .intervention-icon {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
 }
 
 .loading-indicator {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-top: 0.5rem;
 }
 
 .loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   border-top-color: #1E90FF;
   animation: spin 1s ease-in-out infinite;
@@ -355,20 +373,20 @@ export default {
 
 .message {
   text-align: center;
-  padding: 0.3rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
+  padding: 0.2rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .message.success {
-  background: rgba(0, 150, 0, 0.2);
-  color: #4CAF50;
+  background: rgba(0, 150, 0, 0.1);
+  border-left: 2px solid #4CAF50;
 }
 
 .message.error {
-  background: rgba(180, 0, 0, 0.2);
-  color: #f44336;
+  background: rgba(180, 0, 0, 0.1);
+  border-left: 2px solid #f44336;
 }
 
 /* Custom Dialog */
@@ -378,100 +396,125 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(2px);
 }
 
 .custom-dialog {
-  background: #2d2d2d;
+  background: rgba(30, 30, 30, 0.95);
+  border: 1px solid #555;
   border-radius: 8px;
-  padding: 1rem;
-  width: 300px;
+  padding: 0.75rem;
+  width: 280px;
   max-width: 90vw;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
 }
 
 .custom-dialog h3 {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #1E90FF;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(30, 144, 255, 0.2);
+  padding-bottom: 0.5rem;
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.3rem;
-  color: #ccc;
+  margin-bottom: 0.25rem;
+  color: #aaa;
   font-weight: 500;
+  font-size: 0.8rem;
 }
 
 .radio-group, .checkbox-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  background: rgba(20, 20, 20, 0.5);
+  border-radius: 4px;
+  padding: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .radio-group label, .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   font-weight: normal;
   cursor: pointer;
+  font-size: 0.8rem;
+  color: #ddd;
 }
 
 select {
   width: 100%;
-  padding: 0.5rem;
-  background: #3d3d3d;
-  color: white;
-  border: 1px solid #555;
+  padding: 0.4rem;
+  background: rgba(20, 20, 20, 0.5);
+  color: #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   appearance: none;
   cursor: pointer;
+  font-size: 0.8rem;
+}
+
+select:focus {
+  border-color: rgba(30, 144, 255, 0.5);
+  outline: none;
 }
 
 .dialog-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
 }
 
 .apply-button, .cancel-button {
-  padding: 0.5rem 1rem;
-  border: none;
+  flex: 1;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
 }
 
 .apply-button {
-  background: #1E90FF;
-  color: white;
+  background: rgba(30, 144, 255, 0.2);
+  color: #1E90FF;
+  border-color: rgba(30, 144, 255, 0.3);
 }
 
 .apply-button:hover {
-  background: #1a7fd1;
+  background: rgba(30, 144, 255, 0.3);
+  border-color: rgba(30, 144, 255, 0.5);
 }
 
 .apply-button:disabled {
-  background: #555;
+  background: rgba(50, 50, 50, 0.3);
+  color: #888;
+  border-color: rgba(255, 255, 255, 0.1);
   cursor: not-allowed;
 }
 
 .cancel-button {
-  background: #555;
-  color: white;
+  background: rgba(50, 50, 50, 0.3);
+  color: #ccc;
 }
 
 .cancel-button:hover {
-  background: #666;
+  background: rgba(80, 80, 80, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 </style>

@@ -3,6 +3,7 @@ import typing as t
 from abc import ABC
 
 from apps.action.models import CharacterAction
+from apps.action.models import DiceRollResult
 from apps.game.exceptions import GameException
 from apps.game.services.character.core import CharacterService
 from apps.game.services.world.movemant import MovementService
