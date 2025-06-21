@@ -158,21 +158,27 @@
           </div>
 
           <!-- Objects -->
-          <div v-if="room.objects.length > 0" class="entity-group">
+          <div v-if="resolvedRoomObjects.length > 0" class="entity-group">
             <div class="entity-header">
               <i class="icon-cube" style="color: #ff8800;"></i>
-              <span>Objects ({{ room.objects.length }})</span>
+              <span>Objects ({{ resolvedRoomObjects.length }})</span>
             </div>
             <div class="entity-list">
               <div
-                  v-for="object in room.objects"
+                  v-for="object in resolvedRoomObjects"
                   :key="object.id"
                   class="entity-item"
               >
                 <div class="entity-info">
-                  <span class="entity-name">{{ object.name || 'Unknown Object' }}</span>
-                  <span class="entity-rarity">{{ object.rarity || 'Common' }}</span>
+                  <!-- Display the resolved item details -->
+                  <span class="entity-name">{{ object.resolvedItem.name || 'Unknown Object' }}</span>
+                  <span class="entity-rarity">{{ object.resolvedItem.rarity || 'Common' }}</span>
+                  <!-- Show charges if available -->
+                  <span v-if="object.resolvedItem.charges_left" class="entity-charges">
+                    Charges: {{ object.resolvedItem.charges_left }}
+                  </span>
                 </div>
+                <!-- Still use the original world item ID for editing -->
                 <EditInDjangoAdmin
                     :id="object.id"
                     :app="object.object_type?.app_label || 'world'"
@@ -318,6 +324,7 @@ import {CharacterInfoGameService} from '@/services/characterInfoService.js';
 import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
 import {dragDropService} from '@/services/DragDropService.js';
 import {characterTemplatesService} from '@/services/CharacterTemplatesService.js';
+import {itemsService} from '@/services/ItemsService.js';
 
 export default {
   name: 'WorldEditorRoomInfo',
@@ -366,6 +373,20 @@ export default {
 
       // Use the connections array from the localRoom
       return this.localRoom.connections || [];
+    },
+
+    // Compute resolved items for all objects in the room
+    resolvedRoomObjects() {
+      if (!this.room || !this.room.objects) return [];
+
+      // Map each object to its resolved item
+      return this.room.objects.map(object => {
+        const resolvedItem = this.resolveItemFromWorldItem(object);
+        return {
+          ...object, // Keep all original object properties
+          resolvedItem // Add the resolved item
+        };
+      });
     }
   },
   watch: {
@@ -381,6 +402,10 @@ export default {
 
   created() {
     this.fetchAvatars();
+    // Initialize the items service
+    itemsService.initialize().catch(error => {
+      console.error('Failed to initialize ItemsService:', error);
+    });
   },
   mounted() {
     // Register the drop zone with the drag drop service
@@ -787,6 +812,42 @@ export default {
       if (dropZone) {
         dropZone.classList.remove('drag-over-highlight', 'drag-active', 'drop-success');
       }
+    },
+
+    /**
+     * Resolve the actual item from a world item
+     * @param {Object} worldItem - The world item object
+     * @returns {Object} - The resolved item with additional world item properties
+     */
+    resolveItemFromWorldItem(worldItem) {
+      if (!worldItem) return { name: 'Unknown Object', rarity: 'Common' };
+
+      // Extract the item ID from the world item
+      const itemId = worldItem.item;
+
+      if (!itemId) return {
+        name: worldItem.name || 'Unknown Object',
+        rarity: worldItem.rarity || 'Common',
+        id: worldItem.id
+      };
+
+      // Get the item details from the items service
+      const item = itemsService.getItemById(itemId);
+
+      if (!item) return {
+        name: worldItem.name || 'Unknown Object',
+        rarity: worldItem.rarity || 'Common',
+        id: worldItem.id
+      };
+
+      // Return a merged object with item details and world item properties
+      return {
+        ...item,
+        worldItemId: worldItem.id, // Keep the original world item ID
+        charges_left: worldItem.charges_left,
+        visibility: worldItem.visibility,
+        is_active: worldItem.is_active
+      };
     }
   }
 };
@@ -1150,10 +1211,15 @@ export default {
 .entity-status,
 .entity-type,
 .entity-rarity,
-.entity-danger {
+.entity-danger,
+.entity-charges {
   color: #ccc;
   font-size: 0.8rem;
   font-style: italic;
+}
+
+.entity-charges {
+  color: #88ccff;
 }
 
 .empty-entities {
