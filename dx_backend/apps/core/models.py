@@ -40,6 +40,9 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     GIFT = "GIFT"
     ANOMALY = "ANOMALY"
 
+    # GM ACTIONS
+    GOD_INTERVENTION = "GOD_INTERVENTION"
+
     # SPECIAL ACTIONS
     LONG_REST = "LONG_REST"
     BACK_TO_SAFE_ZONE = "BACK_TO_SAFE_ZONE"
@@ -587,3 +590,87 @@ class DimensionAnomaly(GameObject):
     level = django_models.PositiveIntegerField(default=1)
     effect = django_models.CharField(choices=DimensionAnomalyEffect.choices(), max_length=50,
                                      default=DimensionAnomalyEffect.Positive)
+
+
+class GodInterventionSize(DjangoChoicesMixin, StrEnum):
+    """
+    Size indicates the magnitude of the god_intervention_service's impact on characters.
+    Example sizes:
+    - SMALL: Minor god_intervention_service 10-20% boost to attributes
+    - MEDIUM: Moderate god_intervention_service 20-50% boost to attributes
+    - LARGE: Major god_intervention_service 50-100% boost to attributes
+    - GOD: Divine god_intervention_service 100%+ boost to attributes, potentially game-changing
+    """
+    SMALL = "Small"  # Minor god_intervention_service, small impact
+    MEDIUM = "Medium"  # Moderate god_intervention_service, noticeable impact
+    LARGE = "Large"  # Major god_intervention_service, significant impact
+    GOD = "God"  # Divine god_intervention_service, maximum impact
+
+    @classmethod
+    def to_float(cls, size: 'GodInterventionSize') -> float:
+        """
+        Convert the GodInterventionSize to a float percentage.
+
+        Args:
+            size (GodInterventionSize): The size of the god_intervention_service.
+
+        Returns:
+            float: The percentage impact of the god_intervention_service.
+        """
+        if size == cls.SMALL:
+            return 0.1
+        elif size == cls.MEDIUM:
+            return 0.25
+        elif size == cls.LARGE:
+            return 0.5
+        elif size == cls.GOD:
+            return 1.0
+        else:
+            raise ValueError(f"Unknown GodInterventionSize: {size}")
+
+    def float_value(self) -> float:
+        """
+        Get the float value of the GodInterventionSize instance.
+
+        Returns:
+            float: The percentage impact of the god_intervention_service.
+        """
+        return self.to_float(self)
+
+
+class GodInterventionType(DjangoChoicesMixin, StrEnum):
+    """
+    Type of god_intervention_service that can be applied to characters.
+    Example types:
+    - BLESSING: Positive god_intervention_service that boosts attributes
+    - CURSE: Negative god_intervention_service that hinders attributes
+    """
+    BLESSING = "Blessing"  # Positive god_intervention_service, boosts attributes
+    CURSE = "Curse"  # Negative god_intervention_service, hinders attributes
+
+    def is_curse(self) -> bool:
+        """
+        Check if the god_intervention_service is a curse.
+
+        Returns:
+            bool: True if the god_intervention_service is a curse, False otherwise.
+        """
+        return self == GodInterventionType.CURSE
+
+    def is_blessing(self) -> bool:
+        """
+        Check if the god_intervention_service is a blessing.
+
+        Returns:
+            bool: True if the god_intervention_service is a blessing, False otherwise.
+        """
+        return self == GodInterventionType.BLESSING
+
+
+class GodIntervention(BaseModel):
+    """
+    Represents a god_intervention_service that can be applied to characters and boost their attributes.
+    """
+    type: GodInterventionType  # Type of the god_intervention_service (BLESSING or CURSE)
+    size: GodInterventionSize
+    attributes: List[AttributeType]

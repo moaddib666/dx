@@ -43,6 +43,16 @@ class CharacterService:
             update_fields=['current_health_points', 'current_active_points', 'current_energy_points', 'updated_at']
         )
 
+    def increase_attribute(self, name: AttributeType | str, amount: int):
+        if name == AttributeType.HEALTH:
+            self.add_hp(amount)
+        elif name == AttributeType.ENERGY:
+            self.add_energy(amount)
+        elif name == AttributeType.ACTION_POINTS:
+            self.add_ap(amount)
+        else:
+            raise GameLogicException(f"Unknown attribute {name}")
+
     def spend_attribute(self, name: AttributeType | str, amount: int):
         if name == AttributeType.HEALTH:
             self.spend_hp(amount)
@@ -50,6 +60,26 @@ class CharacterService:
             self.spend_energy(amount)
         elif name == AttributeType.ACTION_POINTS:
             self.spend_ap(amount)
+        else:
+            raise GameLogicException(f"Unknown attribute {name}")
+
+    def get_max_attribute(self, name: AttributeType | str) -> int:
+        if name == AttributeType.HEALTH:
+            return self.get_max_hp()
+        elif name == AttributeType.ENERGY:
+            return self.get_max_energy()
+        elif name == AttributeType.ACTION_POINTS:
+            return self.get_max_ap()
+        else:
+            raise GameLogicException(f"Unknown attribute {name}")
+
+    def get_current_attribute(self, name: AttributeType | str) -> int:
+        if name == AttributeType.HEALTH:
+            return self.get_current_hp()
+        elif name == AttributeType.ENERGY:
+            return self.get_current_energy()
+        elif name == AttributeType.ACTION_POINTS:
+            return self.get_current_ap()
         else:
             raise GameLogicException(f"Unknown attribute {name}")
 

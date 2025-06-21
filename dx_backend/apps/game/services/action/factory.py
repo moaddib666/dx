@@ -11,6 +11,8 @@ from apps.game.services.action.anomaly import CharacterAnomalyInteractionService
 from apps.game.services.action.back_to_safety import BackToSafeService
 from apps.game.services.action.bargain import CharacterGiftService
 from apps.game.services.action.base_service import CharacterActionServicePrototype
+from apps.game.services.action.god_intervention import CharacterGodInterventionActionService
+from apps.game.services.action.curse import CharacterCurseService
 from apps.game.services.action.dice import DiceRollActionService
 from apps.game.services.action.impact import ImpactAction
 from apps.game.services.action.inspect import CharacterInspectorService
@@ -47,7 +49,8 @@ class CharacterActionFactory:
         CharacterActionType.INSPECT: CharacterInspectorService(),
         CharacterActionType.SNATCH: CharacterSnatchActionService(),
         CharacterActionType.GIFT: CharacterGiftService(),
-        CharacterActionType.ANOMALY: CharacterAnomalyInteractionService()
+        CharacterActionType.ANOMALY: CharacterAnomalyInteractionService(),
+        CharacterActionType.GOD_INTERVENTION: CharacterGodInterventionActionService(),
     }
 
     def from_action(self, action: CharacterAction) -> CharacterActionServicePrototype:
