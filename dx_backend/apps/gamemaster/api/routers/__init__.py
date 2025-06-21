@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.gamemaster.api.views.character import GameMasterCharacterViewSet
 from apps.gamemaster.api.views.character_template import CharacterTemplateViewSet
+from apps.gamemaster.api.views.impersonation import GameMasterImpersonationViewSet
 from apps.gamemaster.api.views.npc import NPCViewSet
 from apps.gamemaster.api.views.currency import GameMasterCurrencyTokenViewSet, GameMasterCharacterCurrencyViewSet
 from apps.gamemaster.api.views.effects import GameMasterEffectViewSet, GameMasterActiveEffectViewSet
@@ -47,3 +48,6 @@ GameMasterRouter.register('game-objects', GameObjectViewSet, basename='gamemaste
 
 # World Map viewset
 GameMasterRouter.register('world-map', WorldMapViewSet, basename='gamemaster-world-map')
+
+# Impersonation viewset
+GameMasterRouter.register('impersonation', GameMasterImpersonationViewSet, basename='gamemaster-impersonation')

@@ -1,4 +1,7 @@
+import logging
 import typing as t
+
+from apps.game.exceptions import GameException
 
 if t.TYPE_CHECKING:
     from apps.game.services.action.accept import AccpetorFactory
@@ -43,9 +46,28 @@ class ActionPipeline:
         Execute all actions in the pipeline sequentially.
         """
         for action in self.actions:
-            acceptor = self.action_acceptor.create(action, self.action_factory, self.notifier)
-            acceptor.accept()
-            if action.immediate:
-                svc = self.cycle_player_factory(cycle=action.cycle, factory=self.action_factory)
-                svc.apply_single_action(action=action)
+            try:
+                self.execute_action(action)
+            except GameException as e:
+                logging.warning(f"GameException while executing action {action}: {e}")
+                if self.notifier:
+                    self.notifier.action_not_accepted(action, e)
+                continue
+            except Exception as e:
+                logging.warning(f"Error executing action {action}: {e}")
+                continue
+
         self.actions.clear()
+
+    def execute_action(self, action: "CharacterAction"):
+        """
+        Execute a single action immediately.
+
+        Args:
+            action: The action to be executed.
+        """
+        acceptor = self.action_acceptor.create(action, self.action_factory, self.notifier)
+        acceptor.accept()
+        if action.immediate:
+            svc = self.cycle_player_factory(cycle=action.cycle, factory=self.action_factory)
+            svc.apply_single_action(action=action)
