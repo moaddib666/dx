@@ -1,6 +1,7 @@
 from rest_framework.routers import DefaultRouter
 
 from apps.gamemaster.api.views.character import GameMasterCharacterViewSet
+from apps.gamemaster.api.views.character_template import CharacterTemplateViewSet
 from apps.gamemaster.api.views.currency import GameMasterCurrencyTokenViewSet, GameMasterCharacterCurrencyViewSet
 from apps.gamemaster.api.views.effects import GameMasterEffectViewSet, GameMasterActiveEffectViewSet
 from apps.gamemaster.api.views.game_objects import GameObjectViewSet
@@ -14,6 +15,7 @@ GameMasterRouter = DefaultRouter()
 
 # Character viewsets
 GameMasterRouter.register('characters', GameMasterCharacterViewSet, basename='gamemaster-characters')
+GameMasterRouter.register('character-templates', CharacterTemplateViewSet, basename='gamemaster-character-templates')
 
 # # Items viewsets
 GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-items')
