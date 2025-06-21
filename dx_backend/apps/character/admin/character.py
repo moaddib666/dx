@@ -8,6 +8,7 @@ from .inlines import (
     CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline,
     LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ActiveShieldsInline
 )
+from apps.game.services.npc.factory import NPCFactory
 
 
 @admin.register(Character)
@@ -28,7 +29,7 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
     )
     inlines = [CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
                ActiveEffectsInline, ActiveShieldsInline]
-    actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
+    actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character', 'create_template_from_npc']
 
     def pictogram(self, obj):
         """
@@ -99,3 +100,23 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
                     avatar=character.biography.avatar
                 )
         self.message_user(request, f"{queryset.count()} character(s) duplicated successfully.")
+
+    @admin.action(description='Create template from selected NPC(s)')
+    def create_template_from_npc(self, request, queryset):
+        factory = NPCFactory()
+        templates_created = 0
+        skipped = 0
+
+        for character in queryset:
+            if not character.npc:
+                skipped += 1
+                continue
+
+            template_name = f"{character.name} Template"
+            factory.create_template_from_npc(character, template_name)
+            templates_created += 1
+
+        if templates_created > 0:
+            self.message_user(request, f"Created {templates_created} template(s) from selected NPC(s).")
+        if skipped > 0:
+            self.message_user(request, f"Skipped {skipped} character(s) that were not NPCs.")
