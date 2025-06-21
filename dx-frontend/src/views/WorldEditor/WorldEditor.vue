@@ -87,7 +87,7 @@
       </div>
 
       <!-- Right Panel - Entity Management (only visible when it has content) -->
-      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel || showItemsPanel"
+      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel || showItemsPanel || showNPCTemplatesPanel"
            class="right-panel">
         <!-- Entity Spawner (only visible in edit mode) -->
         <WorldEditorEntitySpawner
@@ -121,6 +121,13 @@
             class="items-list"
             @item-selected="onItemSelected"
         />
+
+        <!-- NPC Templates List -->
+        <WorldEditorNPCTemplatesList
+            v-if="showNPCTemplatesPanel"
+            class="npc-templates-list"
+            @template-selected="onTemplateSelected"
+        />
       </div>
 
       <!-- Character Cards Overlay -->
@@ -149,6 +156,9 @@
         <button class="items-toggle-btn" title="Toggle Items Panel" @click="toggleItemsPanel">
           <i class="icon-items"></i>
         </button>
+        <button class="npc-templates-toggle-btn" title="Toggle NPC Templates Panel" @click="toggleNPCTemplatesPanel">
+          <i class="icon-npc-templates"></i>
+        </button>
       </div>
       <div class="status-right">
         <span v-if="lastAction" class="status-item">{{ lastAction }}</span>
@@ -172,6 +182,7 @@ import WorldEditorMap from '@/components/WorldEditor/WorldEditorMap.vue';
 import WorldEditorEntitySpawner from '@/components/WorldEditor/WorldEditorEntitySpawner.vue';
 import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
+import WorldEditorNPCTemplatesList from '@/components/WorldEditor/WorldEditorNPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
 
 export default {
@@ -184,6 +195,7 @@ export default {
     WorldEditorEntitySpawner,
     WorldEditorStats,
     WorldEditorItemsList,
+    WorldEditorNPCTemplatesList,
     GameMasterCharacterCard
   },
   data() {
@@ -203,6 +215,7 @@ export default {
       showStatsPanel: false, // Stats panel visibility state
       showLayersPanel: false, // Layers panel visibility state
       showItemsPanel: true, // Items panel visibility state
+      showNPCTemplatesPanel: false, // NPC Templates panel visibility state
 
       // Timer for current time update
       timeUpdateInterval: null,
@@ -673,6 +686,14 @@ export default {
     },
 
     /**
+     * Toggle NPC templates panel visibility
+     */
+    toggleNPCTemplatesPanel() {
+      this.showNPCTemplatesPanel = !this.showNPCTemplatesPanel;
+      this.setLastAction(this.showNPCTemplatesPanel ? 'NPC Templates panel opened' : 'NPC Templates panel closed');
+    },
+
+    /**
      * Open a character card for the given character ID
      * @param {string} characterId - The ID of the character to open
      */
@@ -732,6 +753,54 @@ export default {
       // If we're in edit mode and have a selected room, spawn the item
       if (this.isEditMode && this.selectedRoom) {
         this.onEntitySpawned('item', item);
+      }
+    },
+
+    /**
+     * Handle template selection from the NPC templates list
+     * @param {Object} template - The selected NPC template
+     */
+    onTemplateSelected(template) {
+      console.log('NPC template selected:', template);
+      this.setLastAction(`Selected NPC template: ${template.name}`);
+
+      // If we're in edit mode and have a selected room, spawn the NPC from the template
+      if (this.isEditMode && this.selectedRoom) {
+        this.spawnNPCFromTemplate(template, this.selectedRoom);
+      }
+    },
+
+    /**
+     * Spawn an NPC from a template in the specified room
+     * @param {Object} template - The NPC template
+     * @param {Object} room - The room to spawn the NPC in
+     */
+    async spawnNPCFromTemplate(template, room) {
+      try {
+        console.log(`Spawning NPC from template ${template.id} in room ${room.id}`);
+
+        // Create position object for the NPC
+        const position = {
+          id: room.id,
+          grid_x: room.position.grid_x,
+          grid_y: room.position.grid_y,
+          grid_z: room.position.grid_z
+        };
+
+        // Use the character templates service to create the NPC
+        const { characterTemplatesService } = await import('@/services/CharacterTemplatesService.js');
+        const npc = await characterTemplatesService.createNpcFromTemplate(template.id, position);
+
+        this.setLastAction(`Created NPC from template: ${template.name}`);
+
+        // Refresh the world to show the new NPC
+        await this.refreshWorld();
+
+        return npc;
+      } catch (error) {
+        console.error('Failed to spawn NPC from template:', error);
+        this.setLastAction(`Failed to create NPC from template: ${error.message || 'Unknown error'}`);
+        throw error;
       }
     },
 
@@ -966,6 +1035,11 @@ export default {
   border-top: 1px solid #444;
 }
 
+.npc-templates-list {
+  flex: 1;
+  border-top: 1px solid #444;
+}
+
 /* Status Bar Styles */
 .world-editor-status {
   display: flex;
@@ -1057,6 +1131,30 @@ export default {
 
 .icon-items::before {
   content: '📦';
+}
+
+/* NPC Templates Toggle Button */
+.npc-templates-toggle-btn {
+  padding: 0.25rem 0.5rem;
+  background: #444;
+  color: #ccc;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.npc-templates-toggle-btn:hover {
+  background: #555;
+  color: #fff;
+}
+
+.icon-npc-templates::before {
+  content: '👤';
 }
 
 /* Button Styles */
