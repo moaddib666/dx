@@ -18,3 +18,4 @@ from .npc import (
     CharacterStatTemplateInline, CharacterSkillTemplateInline, CharacterSchoolTemplateInline,
     CharacterModifierTemplateInline, CharacterEquipmentTemplateInline, CharacterNameTemplateInline
 )
+from .follow_rule import FollowRuleAdmin

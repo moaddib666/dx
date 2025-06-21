@@ -13,6 +13,7 @@ from .base_service import CharacterActionPlayerServicePrototype
 from .npc_action_scheduler import NpcActionScheduler
 from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
+from ..follow.mover import WorldFollowService
 from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
 
@@ -48,11 +49,13 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.auto_map_svc = auto_map_svc
         self.bargain_cleanup_svc = bargain_cleanup_svc
         self.notify = notify
+        self.follow_and_chase = WorldFollowService()
 
     def prepare(self):
         self.base_stats_applier.apply()
         self.npc_actions_scheduler.schedule_actions()
         self.auto_map_svc.map_characters()
+        self.perform_follow_chase()
 
     def post(self):
         self.update_characters()
@@ -149,3 +152,10 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
     def get_active_shields(self) -> QuerySet:
         return ActiveShield.objects.all()
+
+    def perform_follow_chase(self):
+        """
+        Perform follow or chase actions for characters.
+        This method should be called periodically to update the follower's position.
+        """
+        self.follow_and_chase.process_rules()

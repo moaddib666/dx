@@ -674,3 +674,14 @@ class GodIntervention(BaseModel):
     type: GodInterventionType  # Type of the god_intervention_service (BLESSING or CURSE)
     size: GodInterventionSize
     attributes: List[AttributeType]
+
+
+class MoveTypes(DjangoChoicesMixin, StrEnum):
+    """
+    Move types for NPC and character movement.
+    Example move types:
+    Teleport: Instantly moves to the target character's location
+    Walk: Follows the target character by walking to their location
+    """
+    TELEPORT = "Teleport"
+    WALK = "Walk"

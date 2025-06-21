@@ -15,6 +15,22 @@ class MovementService:
     class MovementError(GameException):
         pass
 
+    def teleport(self, character: Character, position: Position):
+        """
+        Teleport the player to the given position.
+        """
+        if not position:
+            raise self.MovementError("Position cannot be None.")
+        if not character.position:
+            raise self.MovementError("Character has no position set.")
+        if character.position == position:
+            return
+
+        character.position = position
+        character.save(
+            update_fields=["position", "updated_at"]
+        )
+
     def move(self, character: Character, position: Position):
         """
         Move the player to the given position.

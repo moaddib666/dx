@@ -44,6 +44,12 @@ class AggressiveBehaviorService(BaseBehaviorService):
         """
         Check if the target is visible to the NPC.
         """
+        if target.followers.filter(
+            follower=self.character,
+        ).exists():
+            self.logger.debug(f"Target {target} is a follower of NPC {self.character}.")
+            return True
+
         current_cycle = Cycle.objects.current()
         actions_made_by_targets_aimed_at_npc = CharacterAction.objects.filter(
             initiator__in=self.get_potential_enemies(),

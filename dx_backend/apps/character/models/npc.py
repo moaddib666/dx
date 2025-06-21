@@ -3,9 +3,23 @@ import random
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from apps.core.models import CharacterStats, GenderEnum, BehaviorModel
+from apps.core.models import CharacterStats, GenderEnum, BehaviorModel, MoveTypes
 from apps.core.utils.models import BaseModel
 
+
+class FollowRule(models.Model):
+    """
+    Rule for following a character.
+    """
+    priority = models.IntegerField(default=0, help_text="Lower values mean higher priority")
+    type = models.CharField(max_length=20, choices=MoveTypes.choices(), default=MoveTypes.TELEPORT)
+    leader = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='followers')
+    follower = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='following')
+    cycles_left = models.IntegerField(default=0, help_text="Number of cycles to follow before stopping")
+    permanent = models.BooleanField(default=False, help_text="If True, the follower will always follow the leader")
+
+    def __str__(self):
+        return f"{self.follower.name} follows {self.leader.name} ({self.get_type_display()})"
 
 class CharacterTemplate(BaseModel):
     """
