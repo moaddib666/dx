@@ -2681,7 +2681,7 @@ export interface GameMasterCharacterInfo {
      * @type {string}
      * @memberof GameMasterCharacterInfo
      */
-    'owner': string;
+    'owner'?: string | null;
     /**
      * 
      * @type {string}
@@ -3862,7 +3862,7 @@ export interface Nested {
      * @type {string}
      * @memberof Nested
      */
-    'owner': string;
+    'owner'?: string | null;
     /**
      * 
      * @type {string}
@@ -3997,7 +3997,7 @@ export interface NestedRequest {
      * @type {string}
      * @memberof NestedRequest
      */
-    'owner': string;
+    'owner'?: string | null;
     /**
      * 
      * @type {string}
@@ -4996,6 +4996,21 @@ export interface PatchedModificatorRequest {
      */
     'stat_modificators'?: Array<StatModificatorRequest>;
 }
+/**
+ * Serializer for changing NPC behavior.
+ * @export
+ * @interface PatchedNPCBehaviorRequest
+ */
+export interface PatchedNPCBehaviorRequest {
+    /**
+     * 
+     * @type {BehaviorEnum}
+     * @memberof PatchedNPCBehaviorRequest
+     */
+    'behavior'?: BehaviorEnum;
+}
+
+
 /**
  * 
  * @export
@@ -12809,6 +12824,53 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * Change the behavior of an NPC.  This action changes the behavior of the specified NPC. It requires the behavior parameter.
+         * @param {string} id A UUID string identifying this character.
+         * @param {PatchedNPCBehaviorRequest} [patchedNPCBehaviorRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterNpcsChangeBehaviorPartialUpdate: async (id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterNpcsChangeBehaviorPartialUpdate', 'id', id)
+            const localVarPath = `/api/gamemaster/npcs/{id}/change_behavior/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedNPCBehaviorRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -13693,6 +13755,19 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Change the behavior of an NPC.  This action changes the behavior of the specified NPC. It requires the behavior parameter.
+         * @param {string} id A UUID string identifying this character.
+         * @param {PatchedNPCBehaviorRequest} [patchedNPCBehaviorRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterNpcsChangeBehaviorPartialUpdate(id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterCharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterNpcsChangeBehaviorPartialUpdate(id, patchedNPCBehaviorRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterNpcsChangeBehaviorPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -14072,6 +14147,16 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          */
         gamemasterItemsRetrieve(id: string, options?: any): AxiosPromise<GameMasterItem> {
             return localVarFp.gamemasterItemsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Change the behavior of an NPC.  This action changes the behavior of the specified NPC. It requires the behavior parameter.
+         * @param {string} id A UUID string identifying this character.
+         * @param {PatchedNPCBehaviorRequest} [patchedNPCBehaviorRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterNpcsChangeBehaviorPartialUpdate(id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options?: any): AxiosPromise<GameMasterCharacterInfo> {
+            return localVarFp.gamemasterNpcsChangeBehaviorPartialUpdate(id, patchedNPCBehaviorRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Get all position connections, optionally filtered by grid_z.
@@ -14455,6 +14540,18 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterItemsRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterItemsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Change the behavior of an NPC.  This action changes the behavior of the specified NPC. It requires the behavior parameter.
+     * @param {string} id A UUID string identifying this character.
+     * @param {PatchedNPCBehaviorRequest} [patchedNPCBehaviorRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterNpcsChangeBehaviorPartialUpdate(id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterNpcsChangeBehaviorPartialUpdate(id, patchedNPCBehaviorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
