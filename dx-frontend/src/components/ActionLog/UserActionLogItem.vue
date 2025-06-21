@@ -33,6 +33,10 @@
         <DiceComponent/>
         <span> Dice Roll </span>
       </div>
+      <div v-else-if="actionType === 'GOD_INTERVENTION'" class="action-icon">
+        <img alt="God Intervention" src="@/assets/images/action/godintervention.png"/>
+        <span> God Intervention </span>
+      </div>
       <div v-else>
         <span class="action-type">Type: {{ actionType }}</span>
       </div>
