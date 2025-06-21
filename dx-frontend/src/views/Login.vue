@@ -16,6 +16,7 @@
       <div class="form-actions">
         <button type="submit">Login</button>
       </div>
+
     </form>
   </div>
 </template>
@@ -124,5 +125,22 @@ export default {
 
 .form-actions button:hover {
   background: #555;
+}
+
+.alternative-login {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.alternative-login a {
+  color: #66aaff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.alternative-login a:hover {
+  color: #99ccff;
+  text-decoration: underline;
 }
 </style>

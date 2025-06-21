@@ -16,6 +16,7 @@ import DiceTest from "@/views/DiceTest.vue";
 import LocationView from "@/views/Game/Location.vue";
 import Register from "@/views/Register.vue";
 import GameMasterMain from "@/views/GameMaster/GameMasterMain.vue";
+import GameMasterLogin from "@/views/GameMaster/GameMasterLogin.vue"; // Component handles impersonation now
 import CharacterSkills from "@/views/CharacterSkills.vue";
 import CharacterInfo from "@/views/CharacterInfo.vue";
 import MiniMap from "@/views/Cartograph/MiniMap.vue";
@@ -42,6 +43,7 @@ const routes = [
     // TODO: Add route group here /game/* for game routes that require authentication
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
     {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true}},
+    {path: '/gamemaster/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
     {path: '/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true}},
     // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},
