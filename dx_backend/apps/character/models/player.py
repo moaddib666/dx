@@ -17,7 +17,7 @@ class CharacterBiography(BaseModel):
 
 
 class Character(GameObject):
-    owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters')
+    owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters', null=True, blank=True)
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.JSONField(default=list)

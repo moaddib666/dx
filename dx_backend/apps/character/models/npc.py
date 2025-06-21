@@ -73,9 +73,8 @@ class CharacterStatsTemplate(BaseModel):
     def get_all_stats(self) -> dict:
         """Return all stats as a dictionary"""
         stats = {}
-        for stat_choice in CharacterStats.choices:
-            stat_name = stat_choice[0]
-            stats[stat_name] = self.get_stat_value(stat_name)
+        for stat in CharacterStats:
+            stats[stat] = self.get_stat_value(stat)
         return stats
 
 

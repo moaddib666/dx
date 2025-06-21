@@ -57,5 +57,5 @@ class CreateNPCFromTemplateSerializer(serializers.Serializer):
     This serializer validates the data needed to create an NPC from a template,
     including the template ID and position ID.
     """
-    template_id = serializers.IntegerField(required=True)
-    position_id = serializers.IntegerField(required=True)
+    template_id = serializers.UUIDField(required=True)
+    position_id = serializers.UUIDField(required=True)
