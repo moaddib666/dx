@@ -9,10 +9,10 @@
            @dragover.prevent
            @dragenter.prevent="handleDragEnter"
            @dragleave.prevent="handleDragLeave"
-           @drop.prevent="handleItemDrop">
+           @drop.prevent="handleEntityDrop">
         <div class="drop-zone-message">
           <i class="drop-zone-icon">📦</i>
-          <span class="drop-zone-text">Drop Item Here</span>
+          <span class="drop-zone-text">Drop Item or NPC Here</span>
         </div>
       </div>
     </div>
@@ -317,6 +317,7 @@ import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import {CharacterInfoGameService} from '@/services/characterInfoService.js';
 import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
 import {dragDropService} from '@/services/DragDropService.js';
+import {characterTemplatesService} from '@/services/CharacterTemplatesService.js';
 
 export default {
   name: 'WorldEditorRoomInfo',
@@ -639,8 +640,8 @@ export default {
       }
     },
 
-    // Handle item drop event
-    async handleItemDrop(event) {
+    // Handle entity (item or NPC) drop event
+    async handleEntityDrop(event) {
       console.log('Drop event triggered on room info');
       const dropZone = event.currentTarget.closest('.room-drop-zone');
 
@@ -656,29 +657,37 @@ export default {
         // Get the dropped data
         console.log('Event dataTransfer types:', event.dataTransfer.types);
 
+        // Check if this is an NPC template
+        const isNpcTemplate = event.dataTransfer.types.includes('application/npc-template');
+
         // Try to get the data from different MIME types
-        let itemData = event.dataTransfer.getData('application/json');
-        if (!itemData) {
-          itemData = event.dataTransfer.getData('text/plain');
+        let itemData;
+        if (isNpcTemplate) {
+          itemData = event.dataTransfer.getData('application/npc-template');
+        } else {
+          itemData = event.dataTransfer.getData('application/json');
+          if (!itemData) {
+            itemData = event.dataTransfer.getData('text/plain');
+          }
         }
 
-        console.log('Got item data from drop event:', itemData);
+        console.log('Got data from drop event:', itemData);
 
         if (!itemData) {
           console.warn('No data received from drop event');
           return;
         }
 
-        // Try to parse the item data
-        const item = JSON.parse(itemData);
-        console.log('Parsed item data:', item);
+        // Try to parse the data
+        const droppedEntity = JSON.parse(itemData);
+        console.log('Parsed data:', droppedEntity);
 
-        if (!item || !item.id) {
-          console.warn('Invalid item data received:', itemData);
+        if (!droppedEntity || !droppedEntity.id) {
+          console.warn('Invalid data received:', itemData);
           return;
         }
 
-        console.log('Item dropped on room:', item, this.room);
+        console.log('Entity dropped on room:', droppedEntity, this.room);
 
         // Show success feedback
         if (dropZone) {
@@ -690,28 +699,62 @@ export default {
           }, 1000);
         }
 
-        // Use the GameMasterItemSpawnerService to spawn the item at the room's position
+        // Handle based on entity type
         if (this.room && this.room.id) {
-          const result = await gameMasterItemSpawnerService.spawnItemToPosition(item.id, this.room.id);
+          let result;
 
-          if (result) {
-            console.log('Item spawned successfully:', result);
+          if (isNpcTemplate) {
+            // Create position object for the NPC
+            const position = {
+              id: this.room.id,
+              grid_x: this.room.position.grid_x,
+              grid_y: this.room.position.grid_y,
+              grid_z: this.room.position.grid_z
+            };
 
-            // Update the room's object count without triggering a full map reload
-            if (this.room.objects) {
-              // Add the new object to the room's objects array
-              this.room.objects.push({
-                id: result.id || result.world_item?.id,
-                name: item.name,
-                type: item.type,
+            // Use CharacterTemplatesService to create an NPC from the template
+            result = await characterTemplatesService.createNpcFromTemplate(droppedEntity.id, position);
+            console.log('NPC created successfully:', result);
+
+            // Update the room's NPC count without triggering a full map reload
+            if (this.room.npcs && result) {
+              // Add the new NPC to the room's npcs array
+              this.room.npcs.push({
+                id: result.id,
+                name: droppedEntity.name,
+                behavior: droppedEntity.behavior,
                 object_type: {
                   app_label: 'world',
-                  model: 'gameobject'
+                  model: 'character'
                 }
               });
 
               // Emit an event to notify parent components that the room has been updated
-              this.$emit('room-objects-updated', this.room);
+              this.$emit('room-npcs-updated', this.room);
+            }
+          } else {
+            // Use the GameMasterItemSpawnerService to spawn the item at the room's position
+            result = await gameMasterItemSpawnerService.spawnItemToPosition(droppedEntity.id, this.room.id);
+
+            if (result) {
+              console.log('Item spawned successfully:', result);
+
+              // Update the room's object count without triggering a full map reload
+              if (this.room.objects) {
+                // Add the new object to the room's objects array
+                this.room.objects.push({
+                  id: result.id || result.world_item?.id,
+                  name: droppedEntity.name,
+                  type: droppedEntity.type,
+                  object_type: {
+                    app_label: 'world',
+                    model: 'gameobject'
+                  }
+                });
+
+                // Emit an event to notify parent components that the room has been updated
+                this.$emit('room-objects-updated', this.room);
+              }
             }
           }
         }
