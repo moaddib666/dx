@@ -13,3 +13,8 @@ from .inlines import (
 )
 from .stat import StatAdmin
 from .biography import CharacterBiographyAdmin
+from .npc import (
+    CharacterTemplateAdmin, CharacterStatsTemplateAdmin, CharacterBiographyTemplateAdmin,
+    CharacterStatTemplateInline, CharacterSkillTemplateInline, CharacterSchoolTemplateInline,
+    CharacterModifierTemplateInline, CharacterEquipmentTemplateInline, CharacterNameTemplateInline
+)
