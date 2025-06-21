@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from apps.core.models import BehaviorModel
 from apps.core.utils.models import BaseModel
 
 
@@ -8,9 +9,30 @@ class Organization(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
+    behavior = models.CharField(choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE, max_length=20)
+
     def __str__(self):
         return self.name
 
+
+class OrganizationRelation(models.Model):
+    """
+    Represents a relationship between two organizations.
+    """
+    type = models.CharField(max_length=20, choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE)
+    organization_from = models.ForeignKey(Organization, related_name='relations_from', on_delete=models.CASCADE)
+    organization_to = models.ForeignKey(Organization, related_name='relations_to', on_delete=models.CASCADE)
+    immutable = models.BooleanField(default=False, help_text="If True, the relation cannot be changed or deleted.")
+
+
+class CharacterRelation(models.Model):
+    """
+    Represents a relation between two characters.
+    """
+    type = models.CharField(max_length=20, choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE)
+    character_from = models.ForeignKey("character.Character", related_name='relations_from', on_delete=models.CASCADE)
+    character_to = models.ForeignKey("character.Character", related_name='relations_to', on_delete=models.CASCADE)
+    immutable = models.BooleanField(default=False, help_text="If True, the relation cannot be changed or deleted.")
 
 class RankManager(models.Manager):
 
