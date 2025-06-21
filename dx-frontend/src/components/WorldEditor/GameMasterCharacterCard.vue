@@ -30,7 +30,7 @@
       </div>
       <h3 class="card-title" title="Click to copy character ID" @click="copyCharacterId">Character Info</h3>
       <!-- Behavior Switcher - Only for NPCs -->
-      <div v-if="character.npc" class="behavior-switcher">
+      <div v-if="character && character.npc" class="behavior-switcher">
         <select
             v-model="currentBehavior"
             @change="changeBehavior"
@@ -64,12 +64,12 @@
           <!-- Character name overlay -->
           <div class="character-name-overlay">
             <h2 class="character-name">{{ character.name }}</h2>
-            <span class="character-type">{{ character.npc ? 'NPC' : 'Player' }}</span>
+            <span class="character-type">{{ character && character.npc ? 'NPC' : 'Player' }}</span>
           </div>
 
           <!-- Character Stats Radar Chart -->
           <div class="character-stats-chart">
-            <CharacterStatsRadarChart :character-id="character.id"/>
+            <CharacterStatsRadarChart v-if="character && character.id" :character-id="character.id"/>
           </div>
 
           <!-- Left side: Shield icons -->
