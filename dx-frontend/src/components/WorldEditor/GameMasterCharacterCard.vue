@@ -29,6 +29,22 @@
         <span class="drag-handle">≡</span>
       </div>
       <h3 class="card-title" title="Click to copy character ID" @click="copyCharacterId">Character Info</h3>
+      <!-- Behavior Switcher - Only for NPCs -->
+      <div v-if="character.npc" class="behavior-switcher">
+        <select
+            v-model="currentBehavior"
+            @change="changeBehavior"
+            class="behavior-select"
+            :disabled="isChangingBehavior"
+        >
+          <option value="Passive">Passive</option>
+          <option value="Aggressive">Aggressive</option>
+          <option value="Friendly">Friendly</option>
+        </select>
+        <div v-if="isChangingBehavior" class="behavior-loading">
+          <div class="behavior-spinner"></div>
+        </div>
+      </div>
       <button class="close-button" @click="closeCard">×</button>
     </div>
 
@@ -49,23 +65,6 @@
           <div class="character-name-overlay">
             <h2 class="character-name">{{ character.name }}</h2>
             <span class="character-type">{{ character.npc ? 'NPC' : 'Player' }}</span>
-
-            <!-- Behavior Switcher - Only for NPCs -->
-            <div v-if="character.npc" class="behavior-switcher">
-              <select
-                v-model="currentBehavior"
-                @change="changeBehavior"
-                class="behavior-select"
-                :disabled="isChangingBehavior"
-              >
-                <option value="Passive">Passive</option>
-                <option value="Aggressive">Aggressive</option>
-                <option value="Friendly">Friendly</option>
-              </select>
-              <div v-if="isChangingBehavior" class="behavior-loading">
-                <div class="behavior-spinner"></div>
-              </div>
-            </div>
           </div>
 
           <!-- Character Stats Radar Chart -->
@@ -1122,11 +1121,11 @@ export default {
 
 /* Behavior Switcher */
 .behavior-switcher {
-  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  margin-right: 1rem;
 }
 
 .behavior-select {
