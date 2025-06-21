@@ -8,14 +8,11 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from apps.core.bus import event_bus
 from apps.core.models import GameMasterImpactAction
 from apps.game.services.action import special
-from apps.game.services.action.accept import ActionAcceptor
-from apps.game.services.action.factory import CharacterActionFactory, ManualCharacterActionPlayerServiceFactory, \
-    GameMasterActionFactory
+from apps.game.services.action.factory import GameMasterActionFactory
 from apps.game.services.character.core import CharacterService
-from apps.game.services.notifier.base import BaseNotifier
+from apps.gamemaster.tools import ACTION_PIPELINE_TOOL
 from ..serializers.openapi import CharacterActionSerializer, GameMasterCharacterActionLogSerializer, \
     RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer, \
     CharacterActionLogSerializer
@@ -92,11 +89,6 @@ class CharacterActionsViewSet(
     serializer_class = CharacterActionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    action_factory = CharacterActionFactory()
-    cycle_player_factory = ManualCharacterActionPlayerServiceFactory
-    notifier = BaseNotifier(
-        event_bus
-    )
     def get_queryset(self):
         user = self.request.user
         character = user.main_character
@@ -111,22 +103,17 @@ class CharacterActionsViewSet(
         serializer.validated_data['position'] = serializer.validated_data['initiator'].position
         super().perform_create(serializer)
         instance = serializer.instance
-        acceptor = ActionAcceptor(
-            action=instance,
-            factory=self.action_factory,
-            notify=self.notifier,
-        )
-        acceptor.accept()
-        if instance.immediate:
-            svc = self.cycle_player_factory(cycle=Cycle.objects.current(), factory=self.action_factory)
-            svc.apply_single_action(
-                action=instance
-            )
+
+        # Use the action pipeline to process the action
+        ACTION_PIPELINE_TOOL.chain(instance).execute()
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=serializers.Serializer)
     def next_cycle(self, request):
-        svc = self.cycle_player_factory(cycle=Cycle.objects.current(), factory=self.action_factory)
+        svc = ACTION_PIPELINE_TOOL.cycle_player_factory(
+            cycle=Cycle.objects.current(), 
+            factory=ACTION_PIPELINE_TOOL.action_factory
+        )
         cycle = svc.play()
         return Response(data={'id': cycle.id})
 
@@ -155,9 +142,6 @@ class GameMasterActionsViewSet(
         SearchFilter,
     ]
 
-    char_action_factory = CharacterActionFactory()
-    action_acceptor_cls = ActionAcceptor
-
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=RegisterImpactActionSerializer)
     @transaction.atomic
@@ -167,13 +151,10 @@ class GameMasterActionsViewSet(
 
         factory = GameMasterActionFactory()
         act = factory.construct_player_action(GameMasterImpactAction(**serializer.validated_data))
-        acceptor = self.action_acceptor_cls(
-            action=act,
-            factory=self.char_action_factory,
-        )
-        acceptor.accept()
-        # TMP: Apply the impact immediately
-        # svc.perform(act)
+
+        # Use the action pipeline to process the action
+        ACTION_PIPELINE_TOOL.chain(act).execute()
+
         return Response(data=serializer.data)
 
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
@@ -186,9 +167,8 @@ class GameMasterActionsViewSet(
         serializer.validated_data['cycle'] = Cycle.objects.current()
         super().perform_create(serializer)
         instance = serializer.instance
-        acceptor = self.action_acceptor_cls(
-            action=instance,
-            factory=self.char_action_factory,
-        )
-        acceptor.accept()
+
+        # Use the action pipeline to process the action
+        ACTION_PIPELINE_TOOL.chain(instance).execute()
+
         return Response(data=serializer.data)

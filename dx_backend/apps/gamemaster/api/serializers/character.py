@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from apps.character.api.serializers.openapi import AttributeSerializer, OpenaiCharacterBioSerializer, ThePathSerializer
 from apps.character.models import Character, Rank, Stat
-from apps.core.models import AttributeType
+from apps.core.models import AttributeType, GodInterventionType, GodInterventionSize
 from apps.currency.api.serializers.openapi import CharacterCurrencySerializer
 from apps.effects.api.serializers.openapi import ActiveEffectSerializer
 from apps.game.services.character.core import CharacterService
@@ -159,3 +159,15 @@ class GameMasterCharacterInfoSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         ]
+
+
+class GodInterventionSerializer(serializers.Serializer):
+    """
+    Serializer for God Intervention actions.
+
+    This serializer is used for the god_intervention endpoint in GameMasterCharacterViewSet.
+    It validates the data needed to create a GodIntervention object.
+    """
+    type = serializers.ChoiceField(choices=GodInterventionType.choices())
+    size = serializers.ChoiceField(choices=GodInterventionSize.choices())
+    attributes = serializers.MultipleChoiceField(choices=AttributeType.choices())

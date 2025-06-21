@@ -58,3 +58,13 @@ class ActionAcceptor:
         # Combine the factors to determine the overall order index
         order_index = turn_progress_factor + action_duration_factor
         return order_index
+
+
+class AccpetorFactory:
+    """
+    Factory for creating ActionAcceptor instances.
+    """
+
+    @staticmethod
+    def create(action: "CharacterAction", factory: "CharacterActionFactory", notify: "BaseNotifier" = None) -> ActionAcceptor:
+        return ActionAcceptor(action, factory, notify)
