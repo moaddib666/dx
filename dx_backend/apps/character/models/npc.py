@@ -43,7 +43,7 @@ class CharacterTemplate(BaseModel):
                                     help_text="Pattern for name generation, e.g., '{base_name} {number}'")
 
     # Campaign association
-    campaign = models.ForeignKey('campaign.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -152,7 +152,7 @@ class CharacterSkillTemplate(BaseModel):
     Skills that should be learned by characters created from a template.
     """
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='skill_templates')
-    skill = models.ForeignKey("skills.Skill", on_delete=models.CASCADE)
+    skill = models.ForeignKey("school.Skill", on_delete=models.CASCADE)
     is_base = models.BooleanField(default=False)
 
     class Meta:
