@@ -1,8 +1,9 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
 import random
 
-from apps.core.models import CharacterStats, GenderEnum, GameObject, BehaviorModel
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models
+
+from apps.core.models import CharacterStats, GenderEnum, BehaviorModel
 from apps.core.utils.models import BaseModel
 
 
@@ -117,6 +118,8 @@ class CharacterBiographyTemplate(BaseModel):
                                              help_text="List of background variations to choose from randomly")
     appearance_variations = models.JSONField(default=list, blank=True,
                                              help_text="List of appearance variations to choose from randomly")
+
+    avatar = models.ImageField(upload_to='avatars/', blank=True, help_text="Avatar image for the character")
 
     def __str__(self):
         return self.name
