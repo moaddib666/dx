@@ -1,4 +1,4 @@
-from apps.character.models import Organization
+from apps.character.models import Organization, OrganizationRelation, CharacterRelation
 from apps.core.models import BehaviorModel
 from apps.game.services.character.core import CharacterService
 
@@ -23,18 +23,107 @@ class OrganizationRelationService:
         0. If the organization relation is immutable, then return the relation type without any checks.
         1. Check if the organization has relation with other_organization if none or not aggressive, then:
         2. Check if other_organization default behavior is aggressive, if so, then:
-        3. Check the action log for aggressive actions against other_organization, if found, then: Aggressive
         """
-        # Logic to acquire organization relation
-        pass
+        # Check if there's an existing relation between the organizations
+        try:
+            relation = OrganizationRelation.objects.get(
+                organization_from=self.character,
+                organization_to=other_organization
+            )
+
+            # If the relation is immutable, return its type without any checks
+            if relation.immutable:
+                return relation.type
+
+            return relation.type
+        except OrganizationRelation.DoesNotExist:
+            # If no relation exists, check the other organization's default behavior
+            if other_organization.behavior == BehaviorModel.AGGRESSIVE:
+                # Create an aggressive relation
+                OrganizationRelation.objects.create(
+                    organization_from=self.character,
+                    organization_to=other_organization,
+                    type=BehaviorModel.AGGRESSIVE
+                )
+                return BehaviorModel.AGGRESSIVE
+
+            OrganizationRelation.objects.create(
+                organization_from=self.character,
+                organization_to=other_organization,
+                type=BehaviorModel.PASSIVE
+            )
+            return BehaviorModel.PASSIVE
 
     def recalculate_organization_relations(self, organization: "Organization") -> BehaviorModel:
         """
         Recalculate organization relations based on all existing org relations + treat all members that deos not haver relation as passive.
         This method should be called when a character relation changes.
         """
-        # Logic to recalculate organization relations based on character relations
-        pass
+        # Get all characters from both organizations
+        from apps.character.models import Character
+
+        our_characters = Character.objects.filter(organization=self.character)
+        their_characters = Character.objects.filter(organization=organization)
+
+        # Count the relations between characters
+        aggressive_count = 0
+        friendly_count = 0
+        passive_count = 0
+
+        for our_char in our_characters:
+            for their_char in their_characters:
+                try:
+                    relation = CharacterRelation.objects.get(
+                        character_from=our_char,
+                        character_to=their_char
+                    )
+                    if relation.type == BehaviorModel.AGGRESSIVE:
+                        aggressive_count += 1
+                    elif relation.type == BehaviorModel.FRIENDLY:
+                        friendly_count += 1
+                    else:
+                        passive_count += 1
+                except CharacterRelation.DoesNotExist:
+                    # If no relation exists, treat it as passive
+                    passive_count += 1
+
+        # Get or create the organization relation
+        try:
+            relation = OrganizationRelation.objects.get(
+                organization_from=self.character,
+                organization_to=organization
+            )
+
+            # If the relation is immutable, return its type without any changes
+            if relation.immutable:
+                return relation.type
+
+            # Determine the new relation type based on character relations
+            if aggressive_count > friendly_count and aggressive_count > passive_count:
+                relation.type = BehaviorModel.AGGRESSIVE
+            elif friendly_count > aggressive_count and friendly_count > passive_count:
+                relation.type = BehaviorModel.FRIENDLY
+            else:
+                relation.type = BehaviorModel.PASSIVE
+
+            relation.save()
+            return relation.type
+
+        except OrganizationRelation.DoesNotExist:
+            # If no relation exists, create one based on character relations
+            if aggressive_count > friendly_count and aggressive_count > passive_count:
+                relation_type = BehaviorModel.AGGRESSIVE
+            elif friendly_count > aggressive_count and friendly_count > passive_count:
+                relation_type = BehaviorModel.FRIENDLY
+            else:
+                relation_type = BehaviorModel.PASSIVE
+
+            OrganizationRelation.objects.create(
+                organization_from=self.character,
+                organization_to=organization,
+                type=relation_type
+            )
+            return relation_type
 
 
 class CharacterRelationService:
@@ -61,26 +150,142 @@ class CharacterRelationService:
         1. Check if a character has a relation with other_character if none or not aggressive, then:
         2. Check if the organization of character has relation with the organization of other_character if none or not aggressive, then:
         3. Check if other_character default behavior is aggressive, if so, then:
-        4. Check the action log for aggressive actions against other_character, if found, then: Aggressive
         """
+        # Check if there's an existing relation between the characters
+        try:
+            relation = CharacterRelation.objects.get(
+                character_from=self.character.model,
+                character_to=other_character.model
+            )
+
+            # If the relation is immutable, return its type without any checks
+            if relation.immutable:
+                return relation.type
+
+            return relation.type
+        except CharacterRelation.DoesNotExist:
+            # If no relation exists, check the organization relations
+            if self.character.model.organization and other_character.model.organization:
+                # Get the organization relation service for the character's organization
+                org_relation_service = self.organization_relation_service
+
+                # Get the relation between the organizations
+                org_relation_type = org_relation_service.acquire_organization_relation(other_character.model.organization)
+
+                # If the organization relation is aggressive, create an aggressive character relation
+                if org_relation_type == BehaviorModel.AGGRESSIVE:
+                    CharacterRelation.objects.create(
+                        character_from=self.character.model,
+                        character_to=other_character.model,
+                        type=BehaviorModel.AGGRESSIVE
+                    )
+                    return BehaviorModel.AGGRESSIVE
+
+            # Check if the other character's default behavior is aggressive
+            if other_character.model.behavior == BehaviorModel.AGGRESSIVE:
+                CharacterRelation.objects.create(
+                    character_from=self.character.model,
+                    character_to=other_character.model,
+                    type=BehaviorModel.AGGRESSIVE
+                )
+                return BehaviorModel.AGGRESSIVE
+
+            CharacterRelation.objects.create(
+                character_from=self.character.model,
+                character_to=other_character.model,
+                type=BehaviorModel.PASSIVE
+            )
+            return BehaviorModel.PASSIVE
 
     def become_aggressive(self, other_character: "CharacterService") -> None:
         """
         1. Check if a character has a relation with other_character, if not, then: create an aggressive relation.
         2. Recalculate organization relations based on all character relations.
         """
-        pass
+        # Check if there's an existing relation between the characters
+        try:
+            relation = CharacterRelation.objects.get(
+                character_from=self.character.model,
+                character_to=other_character.model
+            )
+
+            # If the relation is immutable, we can't change it
+            if relation.immutable:
+                return
+
+            # Update the relation to be aggressive
+            relation.type = BehaviorModel.AGGRESSIVE
+            relation.save()
+        except CharacterRelation.DoesNotExist:
+            # If no relation exists, create an aggressive relation
+            CharacterRelation.objects.create(
+                character_from=self.character.model,
+                character_to=other_character.model,
+                type=BehaviorModel.AGGRESSIVE
+            )
+
+        # Recalculate organization relations if both characters belong to organizations
+        if self.character.model.organization and other_character.model.organization:
+            self.organization_relation_service.recalculate_organization_relations(other_character.model.organization)
 
     def become_friendly(self, other_character: "CharacterService") -> None:
         """
         1. Check if a character has a relation with other_character, if not, then: create a friendly relation.
         2. Recalculate organization relations based on all character relations.
         """
-        pass
+        # Check if there's an existing relation between the characters
+        try:
+            relation = CharacterRelation.objects.get(
+                character_from=self.character.model,
+                character_to=other_character.model
+            )
+
+            # If the relation is immutable, we can't change it
+            if relation.immutable:
+                return
+
+            # Update the relation to be friendly
+            relation.type = BehaviorModel.FRIENDLY
+            relation.save()
+        except CharacterRelation.DoesNotExist:
+            # If no relation exists, create a friendly relation
+            CharacterRelation.objects.create(
+                character_from=self.character.model,
+                character_to=other_character.model,
+                type=BehaviorModel.FRIENDLY
+            )
+
+        # Recalculate organization relations if both characters belong to organizations
+        if self.character.model.organization and other_character.model.organization:
+            self.organization_relation_service.recalculate_organization_relations(other_character.model.organization)
 
     def become_passive(self, other_character: "CharacterService") -> None:
         """
         1. Check if a character has a relation with other_character, if not, then: create passive relation.
         2. Recalculate organization relations based on all character relations.
         """
-        pass
+        # Check if there's an existing relation between the characters
+        try:
+            relation = CharacterRelation.objects.get(
+                character_from=self.character.model,
+                character_to=other_character.model
+            )
+
+            # If the relation is immutable, we can't change it
+            if relation.immutable:
+                return
+
+            # Update the relation to be passive
+            relation.type = BehaviorModel.PASSIVE
+            relation.save()
+        except CharacterRelation.DoesNotExist:
+            # If no relation exists, create a passive relation
+            CharacterRelation.objects.create(
+                character_from=self.character.model,
+                character_to=other_character.model,
+                type=BehaviorModel.PASSIVE
+            )
+
+        # Recalculate organization relations if both characters belong to organizations
+        if self.character.model.organization and other_character.model.organization:
+            self.organization_relation_service.recalculate_organization_relations(other_character.model.organization)
