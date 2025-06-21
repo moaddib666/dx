@@ -49,6 +49,23 @@
           <div class="character-name-overlay">
             <h2 class="character-name">{{ character.name }}</h2>
             <span class="character-type">{{ character.npc ? 'NPC' : 'Player' }}</span>
+
+            <!-- Behavior Switcher - Only for NPCs -->
+            <div v-if="character.npc" class="behavior-switcher">
+              <select
+                v-model="currentBehavior"
+                @change="changeBehavior"
+                class="behavior-select"
+                :disabled="isChangingBehavior"
+              >
+                <option value="Passive">Passive</option>
+                <option value="Aggressive">Aggressive</option>
+                <option value="Friendly">Friendly</option>
+              </select>
+              <div v-if="isChangingBehavior" class="behavior-loading">
+                <div class="behavior-spinner"></div>
+              </div>
+            </div>
           </div>
 
           <!-- Character Stats Radar Chart -->
@@ -190,6 +207,7 @@
 import {gameMasterCharacterService} from '@/services/GameMasterCharacterService.js';
 import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
 import {dragDropService} from '@/services/DragDropService.js';
+import {GameMasterApi} from '@/api/backendService.js';
 import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
 import GameMasterInventoryGrid from '@/components/GameMaster/Character/GameMasterInventoryGrid.vue';
 import CharacterStatsRadarChart from '@/components/CharacterStatsRadarChart.vue';
@@ -226,7 +244,10 @@ export default {
       dragStartX: 0,
       dragStartY: 0,
       positionX: 0, // Will be set to center in created hook
-      positionY: 0  // Will be set to center in created hook
+      positionY: 0,  // Will be set to center in created hook
+      // Behavior switcher
+      currentBehavior: null,
+      isChangingBehavior: false
     };
   },
   computed: {
@@ -289,6 +310,11 @@ export default {
       if (character && character.id === this.characterId) {
         this.character = character;
         this.isLoading = false;
+
+        // Set initial behavior value if character is an NPC
+        if (character.npc && character.behavior) {
+          this.currentBehavior = character.behavior;
+        }
       }
     },
 
@@ -735,6 +761,40 @@ export default {
           .catch(err => {
             console.error('Failed to copy character ID:', err);
           });
+    },
+
+    /**
+     * Change the behavior of an NPC character
+     */
+    async changeBehavior() {
+      if (!this.character || !this.character.npc || !this.currentBehavior) {
+        return;
+      }
+
+      try {
+        this.isChangingBehavior = true;
+
+        // Call the API to change the behavior
+        await GameMasterApi.gamemasterNpcsChangeBehaviorPartialUpdate(
+          this.characterId,
+          { behavior: this.currentBehavior }
+        );
+
+        // Update the character's behavior in the local state
+        this.character.behavior = this.currentBehavior;
+
+        // Show a success message
+        console.log(`Character behavior changed to ${this.currentBehavior}`);
+
+        // Refresh the character data
+        await gameMasterCharacterService.refreshCharacter(this.characterId);
+      } catch (error) {
+        console.error('Failed to change character behavior:', error);
+        // Reset to the previous behavior
+        this.currentBehavior = this.character.behavior || 'Passive';
+      } finally {
+        this.isChangingBehavior = false;
+      }
     }
   }
 };
@@ -1058,6 +1118,75 @@ export default {
   font-size: 0.8rem;
   color: #ccc;
   margin-top: 0.1rem;
+}
+
+/* Behavior Switcher */
+.behavior-switcher {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.behavior-select {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(30, 144, 255, 0.4);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  width: 100%;
+  max-width: 120px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231E90FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  transition: all 0.2s ease;
+}
+
+.behavior-select:hover {
+  border-color: rgba(30, 144, 255, 0.8);
+  background-color: rgba(40, 40, 40, 0.9);
+}
+
+.behavior-select:focus {
+  outline: none;
+  border-color: #1E90FF;
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+}
+
+.behavior-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.behavior-select option {
+  background-color: #333;
+  color: #fff;
+}
+
+.behavior-loading {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.behavior-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #1E90FF;
+  animation: spin 1s ease-in-out infinite;
 }
 
 /* Left side: Shield icons */
