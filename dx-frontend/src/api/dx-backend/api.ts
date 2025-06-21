@@ -107,12 +107,12 @@ export interface ActionModel {
 
 
 /**
- * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `DICE_ROLL` - DICE_ROLL * `GIFT` - GIFT * `ANOMALY` - ANOMALY * `LONG_REST` - LONG_REST * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `INSPECT` - INSPECT * `SNATCH_ITEM` - SNATCH_ITEM
+ * * `USE_SKILL` - USE_SKILL * `USE_ITEM` - USE_ITEM * `DIMENSION_SHIFT` - DIMENSION_SHIFT * `CHANGE_POSITION` - CHANGE_POSITION * `START_DIALOGUE` - START_DIALOGUE * `MAKE_DUEL_INVITATION` - MAKE_DUEL_INVITATION * `ACCEPT_DUEL_INVITATION` - ACCEPT_DUEL_INVITATION * `REJECT_DUEL_INVITATION` - REJECT_DUEL_INVITATION * `START_FIGHT` - START_FIGHT * `MOVE` - MOVE * `DICE_ROLL` - DICE_ROLL * `GIFT` - GIFT * `ANOMALY` - ANOMALY * `GOD_INTERVENTION` - GOD_INTERVENTION * `LONG_REST` - LONG_REST * `BACK_TO_SAFE_ZONE` - BACK_TO_SAFE_ZONE * `INSPECT` - INSPECT * `SNATCH_ITEM` - SNATCH_ITEM
  * @export
  * @enum {string}
  */
 
-export const ActionType46dEnum = {
+export const ActionType5f8Enum = {
     UseSkill: 'USE_SKILL',
     UseItem: 'USE_ITEM',
     DimensionShift: 'DIMENSION_SHIFT',
@@ -126,13 +126,14 @@ export const ActionType46dEnum = {
     DiceRoll: 'DICE_ROLL',
     Gift: 'GIFT',
     Anomaly: 'ANOMALY',
+    GodIntervention: 'GOD_INTERVENTION',
     LongRest: 'LONG_REST',
     BackToSafeZone: 'BACK_TO_SAFE_ZONE',
     Inspect: 'INSPECT',
     SnatchItem: 'SNATCH_ITEM'
 } as const;
 
-export type ActionType46dEnum = typeof ActionType46dEnum[keyof typeof ActionType46dEnum];
+export type ActionType5f8Enum = typeof ActionType5f8Enum[keyof typeof ActionType5f8Enum];
 
 
 /**
@@ -357,10 +358,10 @@ export interface Art {
 export interface Attribute {
     /**
      *
-     * @type {NameDeeEnum}
+     * @type {KindDeeEnum}
      * @memberof Attribute
      */
-    'name': NameDeeEnum;
+    'name': KindDeeEnum;
     /**
      *
      * @type {number}
@@ -629,10 +630,10 @@ export interface CharacterAction {
     'targets'?: Array<string>;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof CharacterAction
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {number}
@@ -680,10 +681,10 @@ export interface CharacterActionLog {
     'initiator': string;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof CharacterActionLog
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {number}
@@ -725,10 +726,10 @@ export interface CharacterActionRequest {
     'targets'?: Array<string>;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof CharacterActionRequest
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {number}
@@ -776,6 +777,7 @@ export const CharacterActionType = {
     DiceRoll: 'DICE_ROLL',
     Gift: 'GIFT',
     Anomaly: 'ANOMALY',
+    GodIntervention: 'GOD_INTERVENTION',
     LongRest: 'LONG_REST',
     BackToSafeZone: 'BACK_TO_SAFE_ZONE',
     Inspect: 'INSPECT',
@@ -2283,10 +2285,10 @@ export interface GameMasterCharacterAction {
     'targets'?: Array<string>;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof GameMasterCharacterAction
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {number}
@@ -2340,10 +2342,10 @@ export interface GameMasterCharacterActionLog {
     'targets': Array<Nested>;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof GameMasterCharacterActionLog
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {Nested}
@@ -2409,10 +2411,10 @@ export interface GameMasterCharacterActionLog {
 export interface GameMasterCharacterActionLogRequest {
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof GameMasterCharacterActionLogRequest
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {any}
@@ -2466,10 +2468,10 @@ export interface GameMasterCharacterActionRequest {
     'targets'?: Array<string>;
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof GameMasterCharacterActionRequest
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {number}
@@ -3031,6 +3033,75 @@ export interface GenericPositionIdRequest {
      */
     'id': string;
 }
+
+/**
+ * Serializer for God Intervention actions.  This serializer is used for the god_intervention endpoint in GameMasterCharacterViewSet. It validates the data needed to create a GodIntervention object.
+ * @export
+ * @interface GodIntervention
+ */
+export interface GodIntervention {
+    /**
+     *
+     * @type {GodInterventionTypeEnum}
+     * @memberof GodIntervention
+     */
+    'type': GodInterventionTypeEnum;
+    /**
+     *
+     * @type {SizeEnum}
+     * @memberof GodIntervention
+     */
+    'size': SizeEnum;
+    /**
+     *
+     * @type {Array<KindDeeEnum>}
+     * @memberof GodIntervention
+     */
+    'attributes': Array<KindDeeEnum>;
+}
+
+
+/**
+ * Serializer for God Intervention actions.  This serializer is used for the god_intervention endpoint in GameMasterCharacterViewSet. It validates the data needed to create a GodIntervention object.
+ * @export
+ * @interface GodInterventionRequest
+ */
+export interface GodInterventionRequest {
+    /**
+     *
+     * @type {GodInterventionTypeEnum}
+     * @memberof GodInterventionRequest
+     */
+    'type': GodInterventionTypeEnum;
+    /**
+     *
+     * @type {SizeEnum}
+     * @memberof GodInterventionRequest
+     */
+    'size': SizeEnum;
+    /**
+     *
+     * @type {Array<KindDeeEnum>}
+     * @memberof GodInterventionRequest
+     */
+    'attributes': Array<KindDeeEnum>;
+}
+
+
+/**
+ * * `Blessing` - Blessing * `Curse` - Curse
+ * @export
+ * @enum {string}
+ */
+
+export const GodInterventionTypeEnum = {
+    Blessing: 'Blessing',
+    Curse: 'Curse'
+} as const;
+
+export type GodInterventionTypeEnum = typeof GodInterventionTypeEnum[keyof typeof GodInterventionTypeEnum];
+
+
 /**
  * * `Physical` - Physical * `Mental` - Mental * `Energy` - Energy * `Heat` - Heat * `Cold` - Cold * `Light` - Light * `Darkness` - Darkness * `None` - None
  * @export
@@ -3646,21 +3717,6 @@ export interface ModificatorRequest {
      */
     'stat_modificators': Array<StatModificatorRequest>;
 }
-/**
- * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
- * @export
- * @enum {string}
- */
-
-export const NameDeeEnum = {
-    Health: 'Health',
-    Energy: 'Energy',
-    ActionPoints: 'Action Points'
-} as const;
-
-export type NameDeeEnum = typeof NameDeeEnum[keyof typeof NameDeeEnum];
-
-
 /**
  *
  * @export
@@ -4784,10 +4840,10 @@ export interface PatchedCurrencyTokenRequest {
 export interface PatchedGameMasterCharacterActionLogRequest {
     /**
      *
-     * @type {ActionType46dEnum}
+     * @type {ActionType5f8Enum}
      * @memberof PatchedGameMasterCharacterActionLogRequest
      */
-    'action_type'?: ActionType46dEnum;
+    'action_type'?: ActionType5f8Enum;
     /**
      *
      * @type {any}
@@ -5415,6 +5471,22 @@ export interface Shield {
 
 
 /**
+ * * `Small` - Small * `Medium` - Medium * `Large` - Large * `God` - God
+ * @export
+ * @enum {string}
+ */
+
+export const SizeEnum = {
+    Small: 'Small',
+    Medium: 'Medium',
+    Large: 'Large',
+    God: 'God'
+} as const;
+
+export type SizeEnum = typeof SizeEnum[keyof typeof SizeEnum];
+
+
+/**
  * Serializer for Cost DTO.
  * @export
  * @interface SkillCost
@@ -5454,7 +5526,6 @@ export interface SpawnItemRequest {
      */
     'to_position_id'?: string | null;
 }
-
 /**
  *
  * @export
@@ -11780,6 +11851,54 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * Perform a god intervention on a character.  This action allows game masters to apply a god intervention effect to a character, which can include stat modifications, effects, or other game mechanics.  The request should contain the necessary parameters for the intervention.
+         * @param {string} id A UUID string identifying this character.
+         * @param {GodInterventionRequest} godInterventionRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersGodInterventionCreate: async (id: string, godInterventionRequest: GodInterventionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharactersGodInterventionCreate', 'id', id)
+            // verify required parameter 'godInterventionRequest' is not null or undefined
+            assertParamExists('gamemasterCharactersGodInterventionCreate', 'godInterventionRequest', godInterventionRequest)
+            const localVarPath = `/api/gamemaster/characters/{id}/god_intervention/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = {method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(godInterventionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
          * @param {boolean} [npc]
          * @param {string} [position]
@@ -13022,6 +13141,19 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Perform a god intervention on a character.  This action allows game masters to apply a god intervention effect to a character, which can include stat modifications, effects, or other game mechanics.  The request should contain the necessary parameters for the intervention.
+         * @param {string} id A UUID string identifying this character.
+         * @param {GodInterventionRequest} godInterventionRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharactersGodInterventionCreate(id: string, godInterventionRequest: GodInterventionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GodIntervention>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharactersGodInterventionCreate(id, godInterventionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharactersGodInterventionCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
          * @param {boolean} [npc]
          * @param {string} [position]
@@ -13397,6 +13529,16 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
             return localVarFp.gamemasterCharactersCharacterStatsRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
+         * Perform a god intervention on a character.  This action allows game masters to apply a god intervention effect to a character, which can include stat modifications, effects, or other game mechanics.  The request should contain the necessary parameters for the intervention.
+         * @param {string} id A UUID string identifying this character.
+         * @param {GodInterventionRequest} godInterventionRequest
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharactersGodInterventionCreate(id: string, godInterventionRequest: GodInterventionRequest, options?: any): AxiosPromise<GodIntervention> {
+            return localVarFp.gamemasterCharactersGodInterventionCreate(id, godInterventionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * ViewSet for game masters to manage characters. This viewset provides full CRUD operations for characters.
          * @param {boolean} [npc]
          * @param {string} [position]
@@ -13699,6 +13841,18 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterCharactersCharacterStatsRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterCharactersCharacterStatsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Perform a god intervention on a character.  This action allows game masters to apply a god intervention effect to a character, which can include stat modifications, effects, or other game mechanics.  The request should contain the necessary parameters for the intervention.
+     * @param {string} id A UUID string identifying this character.
+     * @param {GodInterventionRequest} godInterventionRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharactersGodInterventionCreate(id: string, godInterventionRequest: GodInterventionRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharactersGodInterventionCreate(id, godInterventionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -100,6 +100,9 @@
             />
           </div>
         </div>
+        <!-- Character God Intervention Section -->
+        <GodInterventionPanel :characterId="characterId"/>
+
       </div>
 
       <!-- Bottom Section -->
@@ -190,13 +193,15 @@ import {dragDropService} from '@/services/DragDropService.js';
 import AttributeBar from '@/components/GameMaster/Character/AttributeBar.vue';
 import GameMasterInventoryGrid from '@/components/GameMaster/Character/GameMasterInventoryGrid.vue';
 import CharacterStatsRadarChart from '@/components/CharacterStatsRadarChart.vue';
+import GodInterventionPanel from '@/components/GameMaster/Character/GodInterventionPanel.vue';
 
 export default {
   name: 'GameMasterCharacterCard',
   components: {
     AttributeBar,
     GameMasterInventoryGrid,
-    CharacterStatsRadarChart
+    CharacterStatsRadarChart,
+    GodInterventionPanel
   },
   props: {
     characterId: {
