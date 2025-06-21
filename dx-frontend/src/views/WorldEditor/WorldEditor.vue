@@ -734,10 +734,8 @@ export default {
       const index = this.openedCharacterIds.indexOf(characterId);
       if (index === -1) return {};
 
-      // Position cards with some offset to show stacking
+      // Only set z-index to allow free movement in any direction
       return {
-        top: `${20 + (index * 20)}px`,
-        right: `${20 + (index * 20)}px`,
         zIndex: 1000 - index
       };
     },
