@@ -1656,16 +1656,16 @@ export interface Coordinate {
 export interface CreateNPCFromTemplate {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CreateNPCFromTemplate
      */
-    'template_id': number;
+    'template_id': string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CreateNPCFromTemplate
      */
-    'position_id': number;
+    'position_id': string;
 }
 /**
  * Serializer for creating an NPC from a template.  This serializer validates the data needed to create an NPC from a template, including the template ID and position ID.
@@ -1675,16 +1675,16 @@ export interface CreateNPCFromTemplate {
 export interface CreateNPCFromTemplateRequest {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CreateNPCFromTemplateRequest
      */
-    'template_id': number;
+    'template_id': string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CreateNPCFromTemplateRequest
      */
-    'position_id': number;
+    'position_id': string;
 }
 /**
  * 
@@ -1778,13 +1778,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
