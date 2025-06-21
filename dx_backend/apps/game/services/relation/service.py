@@ -223,7 +223,10 @@ class CharacterRelationService:
             The relationship type (BehaviorModel)
         """
         if self.character.model.id == target_character.model.id:
-            return BehaviorModel.PASSIVE  # Character can't have relation with itself
+            return BehaviorModel.FRIENDLY
+
+        if self.character.model.organization == target_character.model.organization:
+            return BehaviorModel.FRIENDLY
 
         relation = self._get_existing_relation(target_character)
 
@@ -284,6 +287,8 @@ class CharacterRelationService:
         if relation:
             if relation.immutable:
                 return False
+            if relation.type == relation_type:
+                return True # No change needed
             relation.type = relation_type
             relation.save(update_fields=['type'])
         else:
