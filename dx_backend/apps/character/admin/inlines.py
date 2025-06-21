@@ -1,74 +1,13 @@
-from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from polymorphic.admin import PolymorphicChildModelAdmin
 
-from .models import Organization, Rank, Character, CharacterBiography, Stat, StatModifier
-from ..effects.models import ActiveEffect
-from ..items.models import CharacterItem
-from ..shields.models import ActiveShield
-from ..skills.models import LearnedSchool, LearnedSkill
-
-
-class BulkChangeAvatarForm(forms.Form):
-    """
-    Form to upload a new avatar for bulk action.
-    """
-    avatar = forms.ImageField(label="New Avatar")
-
-
-class BulkChangeOrganizationForm(forms.Form):
-    """
-    Form to select an organization for bulk action.
-    """
-    organization = forms.ModelChoiceField(
-        queryset=Organization.objects.all(),
-        label="Select Organization",
-        required=True
-    )
-
-
-@admin.register(Organization)
-class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name', 'description')
-
-
-@admin.register(Rank)
-class RankAdmin(admin.ModelAdmin):
-    """
-    Admin configuration for the Rank model.
-    """
-    list_display = (
-        "name",
-        "grade",
-        "grade_rank",
-        "experience_needed",
-        "additional_stat_points",
-        "next_rank_display"
-    )
-    list_filter = ("grade", "grade_rank")
-    search_fields = ("name", "description")
-    ordering = ("-grade", "grade_rank")
-    readonly_fields = ("experience_needed",)
-    fieldsets = (
-        (None, {
-            "fields": ("name", "description")
-        }),
-        ("Rank Details", {
-            "fields": ("grade", "grade_rank", "additional_stat_points", "experience_needed", "next_rank")
-        }),
-    )
-
-    def next_rank_display(self, obj):
-        """
-        Display the name of the next rank, if it exists.
-        """
-        return obj.next_rank.name if obj.next_rank else "None"
-
-    next_rank_display.short_description = "Next Rank"
+from ..models import Stat, StatModifier, CharacterBiography
+from ...effects.models import ActiveEffect
+from ...items.models import CharacterItem
+from ...shields.models import ActiveShield
+from ...skills.models import LearnedSchool, LearnedSkill
 
 
 class CharacterBiographyInline(admin.StackedInline):
@@ -89,45 +28,6 @@ class CharacterBiographyInline(admin.StackedInline):
         return "No Image"
 
     avatar_preview.short_description = "Avatar Preview"
-
-
-class SubLocationFilter(admin.SimpleListFilter):
-    """
-    Custom filter for filtering by sublocation.
-    """
-    title = 'SubLocation'
-    parameter_name = 'position__sublocation'
-
-    def lookups(self, request, model_admin):
-        sublocations = set(
-            obj.position.sub_location for obj in Character.objects.select_related('position__sub_location') if
-            obj.position
-        )
-        return [(s.id, s.name) for s in sublocations]
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(position__sub_location_id=self.value())
-        return queryset
-
-
-class GridZFilter(admin.SimpleListFilter):
-    """
-    Custom filter for filtering by grid_z.
-    """
-    title = 'Grid Z'
-    parameter_name = 'position__grid_z'
-
-    def lookups(self, request, model_admin):
-        grid_z_values = set(
-            obj.position.grid_z for obj in Character.objects.select_related('position') if obj.position
-        )
-        return [(z, f'Grid Z: {z}') for z in grid_z_values]
-
-    def queryset(self, request, queryset):
-        if self.value():
-            return queryset.filter(position__grid_z=self.value())
-        return queryset
 
 
 class StatInline(admin.TabularInline):
@@ -321,121 +221,3 @@ class ActiveEffectsInline(admin.TabularInline):
         return "No Effect Data"
 
     effect_details.short_description = "Effect Details"
-
-
-@admin.register(Character)
-class CharacterAdmin(PolymorphicChildModelAdmin):
-    """
-    Admin interface for Character with integrated CharacterBiography.
-    """
-    show_in_index = True
-    base_model = Character
-    list_display = (
-        'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
-        'current_health_points', 'current_energy_points', "current_active_points",
-        'organization', 'is_active', 'npc',
-    )
-    search_fields = ('name', 'biography__background', 'biography__appearance', "id")
-    list_filter = (
-        'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
-    )
-    inlines = [CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
-               ActiveEffectsInline, ActiveShieldsInline]
-    actions = ['bulk_set_active', 'bulk_set_inactive', 'bulk_set_npc', 'reset_stats', 'duplicate_character']
-
-    def pictogram(self, obj):
-        """
-        Displays the avatar image in the list view.
-        """
-        if obj.biography and obj.biography.avatar:
-            return format_html('<img src="{}" style="height: 50px; width: 50px; border-radius: 50%;" />',
-                               obj.biography.avatar.url)
-        return "No Image"
-
-    pictogram.short_description = "Avatar"
-
-    def get_age(self, obj):
-        """
-        Retrieve age from the associated CharacterBiography.
-        """
-        return obj.biography.age if obj.biography else "N/A"
-
-    get_age.short_description = "Age"
-
-    def get_gender(self, obj):
-        """
-        Retrieve gender from the associated CharacterBiography.
-        """
-        return obj.biography.gender if obj.biography else "N/A"
-
-    get_gender.short_description = "Gender"
-
-    @admin.action(description='Set selected characters as Active')
-    def bulk_set_active(self, request, queryset):
-        updated = queryset.update(is_active=True)
-        self.message_user(request, f"{updated} character(s) set as active.")
-
-    @admin.action(description='Set selected characters as NPC')
-    def bulk_set_npc(self, request, queryset):
-        updated = queryset.update(npc=True)
-        self.message_user(request, f"{updated} character(s) set as NPC.")
-
-    @admin.action(description='Set selected characters as Inactive')
-    def bulk_set_inactive(self, request, queryset):
-        updated = queryset.update(is_active=False)
-        self.message_user(request, f"{updated} character(s) set as inactive.")
-
-    @admin.action(description='Reset stats for selected characters')
-    def reset_stats(self, request, queryset):
-        for character in queryset:
-            for stat in character.stats.all():
-                stat.base_value = 0
-                stat.additional_value = 0
-                stat.save()
-        self.message_user(request, f"Stats reset for {queryset.count()} character(s).")
-
-    @admin.action(description='Duplicate selected character(s)')
-    def duplicate_character(self, request, queryset):
-        for character in queryset:
-            new_character = Character.objects.get(pk=character.pk)
-            new_character.pk = None  # Reset primary key to create a new instance
-            new_character.name = f"Copy: {character.name}"  # Rename duplicated character
-            new_character.save()
-
-            if character.biography:
-                CharacterBiography.objects.create(
-                    character=new_character,
-                    age=character.biography.age,
-                    gender=character.biography.gender,
-                    background=character.biography.background,
-                    appearance=character.biography.appearance,
-                    avatar=character.biography.avatar
-                )
-        self.message_user(request, f"{queryset.count()} character(s) duplicated successfully.")
-
-
-@admin.register(Stat)
-class StatAdmin(admin.ModelAdmin):
-    """
-    Admin interface for Stats management.
-    """
-    list_display = ('name', 'value', 'character')
-    list_filter = ('name',)
-    search_fields = ('character__name',)
-
-
-@admin.register(CharacterBiography)
-class CharacterBiographyAdmin(admin.ModelAdmin):
-    """
-    Admin interface for CharacterBiography.
-    """
-    list_display = ('character', 'age', 'gender', 'background', 'avatar_preview')
-    search_fields = ('character__name', 'background', 'appearance')
-    readonly_fields = ('avatar_preview',)
-
-    def avatar_preview(self, obj):
-        if obj.avatar:
-            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.avatar.url)
-        return "No Image"
-
-    avatar_preview.short_description = "Avatar Preview"
