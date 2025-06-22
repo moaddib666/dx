@@ -144,6 +144,55 @@ class DefensiveStrategy(TargetSelectionStrategy):
         )
 
 
+class ChaosMonkeyStrategy(TargetSelectionStrategy):
+    """
+    Chaos Monkey strategy that randomly selects targets.
+    This is a fun and unpredictable strategy.
+    """
+
+    def calculate_target_count(self) -> int:
+        """Randomly decide how many targets to select."""
+        return random.randint(1, len(self.get_available_enemies()))
+
+    def select_attack_targets(self) -> t.List[CharacterService]:
+        """Randomly select enemies to attack."""
+        available_enemies = self.get_available_enemies()
+        target_count = self.calculate_target_count()
+
+        return random.sample(available_enemies, min(target_count, len(available_enemies)))
+
+    def select_defense_targets(self) -> t.List[CharacterService]:
+        """Randomly select friends to defend."""
+        available_friends = self.get_available_friends()
+        target_count = self.calculate_target_count()
+
+        return random.sample(available_friends, min(target_count, len(available_friends)))
+
+
+class RandomSelectCompositeStrategy(TargetSelectionStrategy):
+    """
+    Randomly selects one of the available strategies.
+    This allows for dynamic behavior in target selection.
+    """
+
+    def __init__(self, context: CharacterPositionActionContext, strategies: t.List[TargetSelectionStrategy]):
+        super().__init__(context)
+        self.strategies = strategies
+
+    def calculate_target_count(self) -> int:
+        return random.choice(self.strategies).calculate_target_count()
+
+    def select_attack_targets(self) -> t.List[CharacterService]:
+        """Select attack targets using a random strategy."""
+        strategy = get_random_target_selection_strategy(self.context)
+        return strategy.select_attack_targets()
+
+    def select_defense_targets(self) -> t.List[CharacterService]:
+        """Select defense targets using a random strategy."""
+        random_strategy = get_random_target_selection_strategy(self.context)
+        return random_strategy.select_defense_targets()
+
+
 def get_random_target_selection_strategy(
         context: CharacterPositionActionContext
 ) -> TargetSelectionStrategy:
