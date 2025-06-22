@@ -343,7 +343,7 @@ class CharacterService:
         return f"CharacterService({self.model})"
 
     def get_path(self) -> TheChosenPath:
-        return self.character.path if self.character.path else TheChosenPath.NOT_CHOSEN
+        return self.character.path.name if self.character.path else TheChosenPath.NOT_CHOSEN
 
     @functools.lru_cache(1)
     def get_power_stats(self) -> NormalizedCharacterPower:
