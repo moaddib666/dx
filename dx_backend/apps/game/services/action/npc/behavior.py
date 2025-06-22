@@ -180,7 +180,10 @@ class StandardHealBehavior(StandardBehavior):
     """
 
     def can_behave(self) -> bool:
-        health_percentage = self.target.get_current_hp() / self.target.get_max_hp()
+        max_hp = self.target.get_max_hp()
+        if max_hp <= 0:
+            return False
+        health_percentage = self.target.get_current_hp() / max_hp
         if health_percentage > 0.75:
             return False
         return super().can_behave()
