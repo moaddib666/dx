@@ -24,10 +24,32 @@ class CharacterBiographyInline(admin.StackedInline):
         Displays the avatar image as a preview in the admin interface.
         """
         if obj.avatar:
-            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.avatar.url)
-        return "No Image"
+            return format_html(
+                '<img src="{}" style="max-height: 100px; max-width: 100px; border-radius: 8px; object-fit: cover;" />',
+                obj.avatar.url)
+        else:
+            # Default avatar with first letter of character name
+            name_initial = obj.character.name[0].upper() if obj.character and obj.character.name else "?"
+            bg_color = self._get_color_from_name(obj.character.name if obj.character else "")
+
+            return format_html(
+                '<div style="height: 100px; width: 100px; border-radius: 8px; background-color: {}; '
+                'color: white; display: flex; align-items: center; justify-content: center; '
+                'font-weight: bold; font-size: 40px;">{}</div>',
+                bg_color, name_initial
+            )
 
     avatar_preview.short_description = "Avatar Preview"
+
+    def _get_color_from_name(self, name):
+        """Generate a consistent color based on the character name"""
+        if not name:
+            return "#6c757d"  # Default gray
+
+        # Simple hash function to generate a color
+        hash_value = sum(ord(c) for c in name)
+        hue = hash_value % 360
+        return f"hsl({hue}, 70%, 40%)"
 
 
 class StatInline(admin.TabularInline):

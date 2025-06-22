@@ -24,6 +24,13 @@ class OrganizationRelation(models.Model):
     organization_to = models.ForeignKey(Organization, related_name='relations_to', on_delete=models.CASCADE)
     immutable = models.BooleanField(default=False, help_text="If True, the relation cannot be changed or deleted.")
 
+    def __str__(self):
+        return f"{self.organization_from} {self.type} {self.organization_to}"
+
+    class Meta:
+        verbose_name = "Organization Relation"
+        verbose_name_plural = "Organization Relations"
+
 
 class CharacterRelation(models.Model):
     """
@@ -33,6 +40,14 @@ class CharacterRelation(models.Model):
     character_from = models.ForeignKey("character.Character", related_name='relations_from', on_delete=models.CASCADE)
     character_to = models.ForeignKey("character.Character", related_name='relations_to', on_delete=models.CASCADE)
     immutable = models.BooleanField(default=False, help_text="If True, the relation cannot be changed or deleted.")
+
+    def __str__(self):
+        return f"{self.character_from} {self.type} {self.character_to}"
+
+    class Meta:
+        verbose_name = "Character Relation"
+        verbose_name_plural = "Character Relations"
+
 
 class RankManager(models.Manager):
 

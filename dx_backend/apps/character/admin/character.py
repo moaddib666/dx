@@ -2,13 +2,13 @@ from django.contrib import admin
 from django.utils.html import format_html
 from polymorphic.admin import PolymorphicChildModelAdmin
 
-from ..models import Character, CharacterBiography
+from apps.game.services.npc.factory import NPCFactory
 from .filters import SubLocationFilter, GridZFilter
 from .inlines import (
     CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline,
     LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ActiveShieldsInline
 )
-from apps.game.services.npc.factory import NPCFactory
+from ..models import Character, CharacterBiography
 
 
 @admin.register(Character)
@@ -36,11 +36,32 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
         Displays the avatar image in the list view.
         """
         if obj.biography and obj.biography.avatar:
-            return format_html('<img src="{}" style="height: 50px; width: 50px; border-radius: 50%;" />',
+            return format_html(
+                '<img src="{}" style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover;" />',
                                obj.biography.avatar.url)
-        return "No Image"
+        else:
+            # Default avatar with first letter of character name
+            name_initial = obj.name[0].upper() if obj.name else "?"
+            bg_color = self._get_color_from_name(obj.name)
+
+            return format_html(
+                '<div style="height: 50px; width: 50px; border-radius: 50%; background-color: {}; '
+                'color: white; display: flex; align-items: center; justify-content: center; '
+                'font-weight: bold; font-size: 20px;">{}</div>',
+                bg_color, name_initial
+            )
 
     pictogram.short_description = "Avatar"
+
+    def _get_color_from_name(self, name):
+        """Generate a consistent color based on the character name"""
+        if not name:
+            return "#6c757d"  # Default gray
+
+        # Simple hash function to generate a color
+        hash_value = sum(ord(c) for c in name)
+        hue = hash_value % 360
+        return f"hsl({hue}, 70%, 40%)"
 
     def get_age(self, obj):
         """
