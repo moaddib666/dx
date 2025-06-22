@@ -12,7 +12,7 @@
           v-for="character in visibleCharacters"
           :key="character.id"
           :class="{ selected: character.id === selectedCharacterId }"
-          :icon="character.biography.avatar"
+          :icon="character.biography?.avatar || ''"
           :name="character.name"
           :details="getCharDetails(character.id)"
           @click="selectCharacter(character.id)"
