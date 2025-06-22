@@ -1,24 +1,12 @@
 import abc
+import random
 import typing as t
 
 from apps.game.services.action.npc.context import CharacterPositionActionContext
 from apps.game.services.character.core import CharacterService
 
 
-class TargetSelectorService(abc.ABC):
-    """
-    Service for selecting targets based on the current context of the character.
-    """
-
-    def __init__(self, context: CharacterPositionActionContext):
-        self.context = context
-
-    @abc.abstractmethod
-    def select_target(self) -> t.Optional[CharacterService]:
-        pass
-
-
-class TargetSelectionStrategyService(abc.ABC):
+class TargetSelectionStrategy(abc.ABC):
     """
     Abstract service for selecting multiple targets using different strategies.
     Supports both attack and defense strategies with configurable target counts.
@@ -50,8 +38,15 @@ class TargetSelectionStrategyService(abc.ABC):
         """Get list of friends that are not knocked out."""
         return [friend for friend in self.context.friends if not friend.is_knocked_out()]
 
+    def get_power_percentage(self, character: CharacterService) -> float:
+        """Calculate power percentage: (current_power * 100) / max_power"""
+        power_stats = character.get_power_stats()
+        if power_stats.max_power == 0:
+            return 0.0
+        return (power_stats.current_power * 100) / power_stats.max_power
 
-class TwoToOneStrategyService(TargetSelectionStrategyService):
+
+class TwoToOneStrategy(TargetSelectionStrategy):
     """
     Implements 2:1 strategy where for every 2 friends, we target 1 enemy.
     Examples:
@@ -92,7 +87,7 @@ class TwoToOneStrategyService(TargetSelectionStrategyService):
         return sorted_friends[:target_count]
 
 
-class AggressiveStrategyService(TargetSelectionStrategyService):
+class AggressiveStrategy(TargetSelectionStrategy):
     """
     Aggressive strategy that targets as many enemies as possible.
     """
@@ -116,7 +111,7 @@ class AggressiveStrategyService(TargetSelectionStrategyService):
         return self.get_available_friends()
 
 
-class DefensiveStrategyService(TargetSelectionStrategyService):
+class DefensiveStrategy(TargetSelectionStrategy):
     """
     Defensive strategy that focuses on protecting friends.
     """
@@ -149,36 +144,13 @@ class DefensiveStrategyService(TargetSelectionStrategyService):
         )
 
 
-class EnemyTargetSelectorService(TargetSelectorService):
-    """
-    Service for selecting an enemy target based on the current context of the character.
-    Updated to work with the strategy service.
-    """
+def get_random_target_selection_strategy(
+        context: CharacterPositionActionContext
+) -> TargetSelectionStrategy:
+    strategies = [
+        TwoToOneStrategy(context),
+        AggressiveStrategy(context),
+        DefensiveStrategy(context)
+    ]
 
-    def __init__(self, context: CharacterPositionActionContext, strategy: TargetSelectionStrategyService = None):
-        super().__init__(context)
-        self.strategy = strategy or TwoToOneStrategyService(context)
-
-    def calculate_target_pool_size(self) -> int:
-        """
-        Count of enemies to choose from. Based on enemy and friends count.
-        Uses the configured strategy to determine target count.
-        """
-        return self.strategy.calculate_target_count()
-
-    def select_target(self) -> t.Optional[CharacterService]:
-        """Select single target using strategy."""
-        targets = self.strategy.select_attack_targets()
-        return targets[0] if targets else None
-
-    def select_multiple_targets(self) -> t.List[CharacterService]:
-        """Select multiple targets using strategy."""
-        return self.strategy.select_attack_targets()
-
-    def choose_target(self, target1: CharacterService, target2: CharacterService) -> CharacterService:
-        """Choose between two targets based on power."""
-        power1 = target1.get_power_stats()
-        power2 = target2.get_power_stats()
-        if power1.max_power < power2.max_power:
-            return target2
-        return target1
+    return random.choice(strategies)
