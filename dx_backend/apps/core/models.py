@@ -685,3 +685,36 @@ class MoveTypes(DjangoChoicesMixin, StrEnum):
     """
     TELEPORT = "Teleport"
     WALK = "Walk"
+
+
+class NormalizedCharacterPower(BaseModel):
+    """
+    Normalized character information for internal calculations and processing.
+
+    - Max Power is a float value of computed character power based on the char attributes, stats, skills and items.
+    - Current Power is a float value of computed character power computed based on current stats, skills and items.
+    """
+    id: uuid.UUID
+    max_power: float
+    current_power: float
+
+
+class TheChosenPath(DjangoChoicesMixin, StrEnum):
+    TECH_JOHN = "Path of John"
+    MAGIC_JSON = "Path of JSon"
+    NOT_CHOSEN = "Not Chosen"
+
+
+class CharacterAbility(BaseModel):
+    type: SkillTypes
+    skills: List[int]  # List of learned skill IDs that the character can use
+    items: List[uuid.UUID]  # List of item IDs that the character possesses
+
+    def has_ability(self) -> bool:
+        """
+        Check if the character has any skills or items for this ability type.
+
+        Returns:
+            bool: True if the character has skills or items for this ability type, False otherwise.
+        """
+        return bool(self.skills or self.items)
