@@ -93,7 +93,7 @@ export default {
   props: {
     availableGameObjects: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     isSafe: {
       type: Boolean,
@@ -101,15 +101,15 @@ export default {
     },
     availableSkills: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     availableItems: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     availableSpecials: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     preSelectedTarget: {
       type: String,

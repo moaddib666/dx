@@ -28,7 +28,7 @@ export default {
   props: {
     gameObjects: {
       type: Array,
-      required: true,
+      default: () => [],
     },
     selectedId: {
       type: String,
@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     selectedObject() {
-      return this.gameObjects.find((item) => item.id === this.selectedId) || null;
+      return this.gameObjects?.find((item) => item.id === this.selectedId) || null;
     },
   },
   methods: {

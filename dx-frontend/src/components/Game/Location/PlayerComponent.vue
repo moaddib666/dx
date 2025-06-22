@@ -5,10 +5,10 @@
 
     <!-- Player Info Section -->
     <div class="player-info">
-      <div class="player-name">{{ player.name }}</div>
+      <div class="player-name">{{ player?.name || 'Unknown' }}</div>
       <div class="player-meta">
-        <span>Rank: {{ player.rank_grade }}</span>
-        <span>Dimension: {{ player.dimension }}</span>
+        <span>Rank: {{ player?.rank_grade || 0 }}</span>
+        <span>Dimension: {{ player?.dimension || 0 }}</span>
       </div>
 
       <!-- Attributes Section -->
@@ -30,20 +30,20 @@
       <div v-if="extended" class="player-system-info">
         <div class="player-system-info-item">
           <span class="player-system-info-label">ID:</span>
-          <span class="player-system-info-value" @click="copyToClipboard(player.id)" title="Click to copy">
-            {{ player.id }}
+          <span class="player-system-info-value" @click="copyToClipboard(player?.id || '')" title="Click to copy">
+            {{ player?.id || '' }}
           </span>
         </div>
         <div class="player-system-info-item">
           <span class="player-system-info-label">Position:</span>
-          <span class="player-system-info-value" @click="copyToClipboard(player.position)" title="Click to copy">
-            {{ player.position }}
+          <span class="player-system-info-value" @click="copyToClipboard(player?.position || '')" title="Click to copy">
+            {{ player?.position || '' }}
           </span>
         </div>
         <!-- System Tags -->
         <div class="player-system-info-item">
           <span class="player-system-info-label">Tags:</span>
-          <span v-for="tag in player.tags" :key="tag" class="player-system-info-value">{{ tag }}</span>
+          <span v-for="tag in player?.tags || []" :key="tag" class="player-system-info-value">{{ tag }}</span>
         </div>
       </div>
     </div>
@@ -63,11 +63,21 @@ export default {
   props: {
     player: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({
+        name: 'Unknown',
+        rank_grade: 0,
+        dimension: 0,
+        attributes: [],
+        tags: [],
+        id: '',
+        position: ''
+      }),
     },
     playerImage: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     extended: {
       type: Boolean,
@@ -77,6 +87,9 @@ export default {
   computed: {
     sortedAttributes() {
       const order = ["Health", "Energy", "Action Points"];
+      if (!this.player || !this.player.attributes || !this.player.attributes.length) {
+        return [];
+      }
       return this.player.attributes.sort(
           (a, b) => order.indexOf(a.name) - order.indexOf(b.name)
       );

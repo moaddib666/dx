@@ -263,14 +263,14 @@ export default {
         return {
           id: char.id,
           name: char.name,
-          icon: char.biography.avatar,
+          icon: char.biography?.avatar || '',
         };
       });
       const npcGameObjects = this.npcCharacters.map((char) => {
         return {
           id: char.id,
           name: char.name,
-          icon: char.biography.avatar,
+          icon: char.biography?.avatar || '',
         };
       });
       const itemsGameObjects = [];
@@ -351,10 +351,17 @@ export default {
       });
     },
     async hideAll() {
-      this.diceVisible = false;
-      this.inventoryVisible = false;
-      this.actionConstructorVisible = false;
-      this.bargainVisible = false;
+      // Set all visibility flags to false
+      // Using Vue.nextTick to ensure DOM updates are complete before continuing
+      return new Promise(resolve => {
+        this.diceVisible = false;
+        this.inventoryVisible = false;
+        this.actionConstructorVisible = false;
+        this.bargainVisible = false;
+        this.$nextTick(() => {
+          resolve();
+        });
+      });
     },
     async toggleActionConstructor() {
       console.debug("Toggling action constructor");
@@ -365,9 +372,20 @@ export default {
       }
     },
     async openActionConstructor() {
-      await this.hideAll();
-      this.actionConstructorVisible = true;
-      console.debug("Opening action constructor", this.selectedGameObjectId);
+      try {
+        // Wait for hideAll to complete before setting actionConstructorVisible
+        await this.hideAll();
+
+        // Use nextTick to ensure DOM is updated before setting actionConstructorVisible
+        await this.$nextTick();
+        this.actionConstructorVisible = true;
+
+        console.debug("Opening action constructor", this.selectedGameObjectId);
+      } catch (error) {
+        console.error("Error opening action constructor:", error);
+        // Reset state in case of error
+        this.actionConstructorVisible = false;
+      }
     },
     async closeActionConstructor() {
       this.actionConstructorVisible = false;
@@ -482,8 +500,21 @@ export default {
       }
     },
     async updateSelectedGameObjectId(id) {
-      this.selectedGameObjectId = id;
-      await this.openActionConstructor();
+      try {
+        // Set the selected game object ID
+        this.selectedGameObjectId = id;
+
+        // Wait for the next tick to ensure the state is updated
+        await this.$nextTick();
+
+        // Open the action constructor
+        await this.openActionConstructor();
+      } catch (error) {
+        console.error("Error updating selected game object ID:", error);
+        // Reset state in case of error
+        this.selectedGameObjectId = null;
+        this.actionConstructorVisible = false;
+      }
     },
     async updateAll() {
       this.resetAdditionalPlayerData();
