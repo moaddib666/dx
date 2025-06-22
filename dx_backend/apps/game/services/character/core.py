@@ -11,9 +11,10 @@ from apps.character.models import Character
 from apps.core.bus.base import GameEvent
 from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder, CharacterStats, FullCharacterInfo, \
     FightSide, \
-    ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType
+    ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType, TheChosenPath, NormalizedCharacterPower
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
+from apps.game.services.character.character_normalizer import normalize_character_power
 from apps.game.services.rand_dice import DiceService
 from apps.school.models import Skill
 from apps.shields.models import ActiveShield
@@ -340,3 +341,13 @@ class CharacterService:
 
     def __str__(self):
         return f"CharacterService({self.model})"
+
+    def get_path(self) -> TheChosenPath:
+        return self.character.path if self.character.path else TheChosenPath.NOT_CHOSEN
+
+    @functools.lru_cache(1)
+    def get_power_stats(self) -> NormalizedCharacterPower:
+        """
+        Cached method to get normalized character power.
+        """
+        return normalize_character_power(self)
