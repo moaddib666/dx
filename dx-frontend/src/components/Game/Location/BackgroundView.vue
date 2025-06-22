@@ -13,7 +13,8 @@ export default {
   props: {
     background: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     movementActivated: {
       type: Boolean,
@@ -22,6 +23,10 @@ export default {
   },
   computed: {
     backgroundClass() {
+      // If background is empty, return a default class
+      if (!this.background) {
+        return 'background-default';
+      }
       // Generate a unique class name based on the background URL
       const className = `background-${btoa(this.background).replace(/=/g, "")}`;
       this.updateDynamicStyle(className, this.background);
@@ -30,6 +35,11 @@ export default {
   },
   methods: {
     updateDynamicStyle(className, imageUrl) {
+      // Skip creating style for default or empty backgrounds
+      if (className === 'background-default' || !imageUrl) {
+        return;
+      }
+
       const existingStyle = document.getElementById(className);
       if (!existingStyle) {
         const style = document.createElement("style");
@@ -59,6 +69,11 @@ export default {
 
   /* Smooth transition effect for background */
   transition: background-image 1s ease-in-out, opacity 1s ease-in-out;
+}
+
+/* Default background when no image is provided */
+.background-default {
+  background-color: #1a1a1a; /* Dark background color */
 }
 
 .overlay {

@@ -13,7 +13,8 @@ export default {
   props: {
     coordinates: {
       type: Object,
-      required: true, // Expects an object with x, y, z values
+      required: false,
+      default: () => ({ x: 0, y: 0, z: 0 }), // Default coordinates
     },
   },
 };
