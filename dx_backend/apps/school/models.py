@@ -5,12 +5,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from typing_extensions import TypedDict
 
-from apps.core.models import SkillTypes, SpecialSkillType
+from apps.core.models import SkillTypes, SpecialSkillType, TheChosenPath
 from apps.core.utils.models import BaseModel
 
 
 class ThePath(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True, choices=TheChosenPath.choices(),
+                            default=TheChosenPath.MAGIC_JSON, db_index=True)
     description = models.TextField()
     icon = models.ImageField(upload_to='icons/path/', null=True, blank=True)
 
