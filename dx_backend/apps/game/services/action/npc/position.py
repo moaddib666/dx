@@ -30,7 +30,7 @@ class PositionCharactersBehaviorStateService:
             neutral=set(),
         ))
 
-    def prepare(self):
+    def prepare(self) -> "PositionCharactersBehaviorStateService":
         """
         Prepare the service by setting up the necessary state or data.
         This can include initializing attributes, loading data, etc.
@@ -107,6 +107,7 @@ class PositionCharactersBehaviorStateService:
                             context.add_neutral(target_service)
 
         logger.debug("Completed prepare() method")
+        return self
 
     def _make_org_members_aggressive(self, org: "Organization", target_org: "Organization"):
         logger.debug(f"Making all members of {org} aggressive to all members of {target_org}")

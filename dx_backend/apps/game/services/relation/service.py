@@ -247,20 +247,21 @@ class CharacterRelationService:
 
     def _create_initial_relation(self, target_character: CharacterService) -> BehaviorModel:
         """Create initial relation based on organization relations and default behaviors."""
-        relation_type = BehaviorModel.PASSIVE  # Default
+        relation_type = self.character.model.behavior  # Default
 
-        # Check organization relationship first
-        if (self.organization_service and
-                target_character.model.organization and
-                self.character.model.organization != target_character.model.organization):
+        if relation_type != BehaviorModel.AGGRESSIVE:
+            # Check organization relationship first
+            if (self.organization_service and
+                    target_character.model.organization and
+                    self.character.model.organization != target_character.model.organization):
 
-            org_relation = self.organization_service.get_relation_to(target_character.model.organization)
-            if org_relation == BehaviorModel.AGGRESSIVE:
+                org_relation = self.organization_service.get_relation_to(target_character.model.organization)
+                if org_relation == BehaviorModel.AGGRESSIVE:
+                    relation_type = BehaviorModel.AGGRESSIVE
+
+            # Override with character's default behavior if aggressive
+            if target_character.model.behavior == BehaviorModel.AGGRESSIVE:
                 relation_type = BehaviorModel.AGGRESSIVE
-
-        # Override with character's default behavior if aggressive
-        if target_character.model.behavior == BehaviorModel.AGGRESSIVE:
-            relation_type = BehaviorModel.AGGRESSIVE
 
         CharacterRelation.objects.create(
             character_from=self.character.model,

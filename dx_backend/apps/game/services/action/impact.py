@@ -8,6 +8,7 @@ from apps.core.models import CharacterStats, SkillTypes
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
+from apps.game.services.action.relations import ActionRelationServiceFactory
 from apps.game.services.action.skills import SpecialActionFactory
 from apps.game.services.character.core import CharacterService
 from apps.game.services.rand_dice import DiceService
@@ -65,11 +66,16 @@ class ImpactAction(CharacterActionServicePrototype):
 
     logger = logging.getLogger(__name__)
 
-    def __init__(self, effect_assigner: "BaseEffectAssigner", gm_mode: bool = False,
-                 special_action_factory: "SpecialActionFactory" = None):
+    def __init__(self,
+                 effect_assigner: "BaseEffectAssigner",
+                 gm_mode: bool = False,
+                 special_action_factory: "SpecialActionFactory" = None,
+                 action_relations_factory: "ActionRelationServiceFactory" = None
+                 ):
         self.gm_mode = gm_mode
         self.effect_assigner = effect_assigner
         self.special_action_factory = special_action_factory or SpecialActionFactory()
+        self.action_relations_factory = action_relations_factory or ActionRelationServiceFactory()
 
     def perform(self, action: CharacterAction):
         initiator = CharacterService(action.initiator)
@@ -91,7 +97,7 @@ class ImpactAction(CharacterActionServicePrototype):
 
         if action.skill.type == SkillTypes.ATTACK:
             self._perform_damage(action, calculated_impacts, dice_result, multiplier)
-            return
+            return self.action_relations_factory.from_action(action).become_aggressive()
 
         if action.skill.type == SkillTypes.DEFENSE:
             self._perform_defense(action, calculated_impacts, dice_result, multiplier)

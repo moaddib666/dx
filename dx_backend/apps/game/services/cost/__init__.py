@@ -11,6 +11,7 @@ T_COST = t.TypedDict("T_COST", {
 if t.TYPE_CHECKING:
     from apps.game.services.character.core import CharacterService
 
+
 class CostService:
 
     def __init__(self, cost: list[T_COST]):
@@ -34,10 +35,13 @@ class AnyCostService:
     def __init__(self, cost_service_cls: type[CostService]):
         self._cost_service = cost_service_cls
 
-    def validate(self, cost: list[T_COST], character_svc: "CharacterService"):
+    def validate(self, cost: list[T_COST], character_svc: "CharacterService", raise_exception: bool = True) -> bool:
         for cost_item in cost:
             if character_svc.get_attribute_value(cost_item["kind"]) < cost_item["value"]:
-                raise GameException(f"Not enough {cost_item['kind']} to perform the action")
+                if raise_exception:
+                    raise GameException(f"Not enough {cost_item['kind']} to perform the action")
+                return False
+        return True
 
     def spend(self, cost: list[T_COST], character_svc: "CharacterService"):
         for cost_item in cost:

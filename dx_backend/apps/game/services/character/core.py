@@ -11,9 +11,11 @@ from apps.character.models import Character
 from apps.core.bus.base import GameEvent
 from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder, CharacterStats, FullCharacterInfo, \
     FightSide, \
-    ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType, TheChosenPath, NormalizedCharacterPower
+    ImpactType, ImpactViolationType, RollOutcome, Coordinate, EffectType, TheChosenPath, NormalizedCharacterPower, \
+    SkillTypes, CharacterAbility
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
+from apps.game.services.character.character_abilities import can
 from apps.game.services.character.character_normalizer import normalize_character_power
 from apps.game.services.rand_dice import DiceService
 from apps.school.models import Skill
@@ -252,15 +254,15 @@ class CharacterService:
 
     def refill_ap(self):
         self.character.current_active_points = self.get_max_ap()
-        self.character.save()
+        self.character.save(update_fields=['current_active_points', 'updated_at'])
 
     def refill_energy(self):
         self.character.current_energy_points = self.get_max_energy()
-        self.character.save()
+        self.character.save(update_fields=['current_energy_points', 'updated_at'])
 
     def refill_health(self):
         self.character.current_health_points = self.get_max_hp()
-        self.character.save()
+        self.character.save(update_fields=['current_health_points', 'updated_at'])
 
     # TODO: move this to the dimension service
     def dimension_shift(self, action: CharacterAction) -> ActionImpact:
@@ -351,3 +353,6 @@ class CharacterService:
         Cached method to get normalized character power.
         """
         return normalize_character_power(self)
+
+    def can(self, skill_type: SkillTypes) -> CharacterAbility:
+        return can(self, skill_type)

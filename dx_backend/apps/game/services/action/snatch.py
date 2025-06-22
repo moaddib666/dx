@@ -4,7 +4,7 @@ from apps.action.models import CharacterAction, SpecialAction
 from apps.core.models import MultipleSnatchResult
 from apps.game.exceptions import GameException
 from apps.game.services.action.base_service import CharacterActionServicePrototype
-from apps.game.services.character.character_behavior import CharacterBehaviorService
+from apps.game.services.action.relations import ActionRelationServiceFactory
 from apps.game.services.character.core import CharacterService
 from apps.game.services.character.snatch import default_snatcher
 from apps.game.services.cost import DefaultCostService
@@ -14,6 +14,7 @@ class CharacterSnatchActionService(CharacterActionServicePrototype):
     character_svc_cls = CharacterService
     snatcher = default_snatcher
     cost_svc = DefaultCostService
+    action_relation_svc_factory = ActionRelationServiceFactory
 
     def perform(self, action: CharacterAction):
         results = []
@@ -22,7 +23,7 @@ class CharacterSnatchActionService(CharacterActionServicePrototype):
                 action.initiator,
                 target,
             )
-            CharacterBehaviorService(target).make_aggressive()
+            self.action_relation_svc_factory.from_action(action).become_aggressive()
             results.append(result)
         action.data = json.loads(MultipleSnatchResult(targets=results).model_dump_json())
         action.save(update_fields=["data"])

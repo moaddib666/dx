@@ -6,11 +6,11 @@ from django.db.models import QuerySet, Q, F
 from apps.action.models import Cycle
 from apps.character.models import Character
 from apps.core.models import EffectType
+from apps.game.services.action.npc.scheduler import NpcActionScheduler
 from apps.shields.models import ActiveShield
 from apps.world.models import SubLocation
 from .accept import ActionAcceptor
 from .base_service import CharacterActionPlayerServicePrototype
-from .npc_action_scheduler import NpcActionScheduler
 from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
 from ..follow.mover import WorldFollowService
