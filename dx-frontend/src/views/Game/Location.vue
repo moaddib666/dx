@@ -2,8 +2,8 @@
   <div class="location-view">
     <!-- Background View -->
     <BackgroundView
-        :key="position.id"
-        :background="position.image"
+        :key="position?.id"
+        :background="position?.image"
         :movementActivated="isMoving"
         class="background-view"
     ></BackgroundView>
@@ -82,7 +82,7 @@
         <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
         <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
       </div>
-      <DimensionalGlitch v-for="an in position.anomalies" :key="an" :force-visible="false"
+      <DimensionalGlitch v-for="an in position?.anomalies || []" :key="an" :force-visible="false"
                          :glitch-id="an" @glitch-found="handleAnomalyClick"/>
     </div>
     <!-- Bottom Row -->
@@ -287,23 +287,60 @@ export default {
     },
   },
   async created() {
-    await this.updateAll();
+    try {
+      await this.updateAll();
+    } catch (error) {
+      console.error("Error during component creation:", error);
+      // Initialize with default values to prevent errors
+      this.position = { id: null, image: null, anomalies: [], connections: [], characters: [] };
+      this.connections = {};
+      this.characters = [];
+      this.npcCharacters = [];
+      this.playerInfo = { id: null, coordinates: null };
+      this.playerGeneralInfo = { biography: { avatar: null } };
+      this.playerSkills = [];
+      this.activeEffects = [];
+      this.shields = [];
+      this.playerSpecials = [];
+      this.mapData = null;
+      this.actionLog = [];
+      this.inventoryItems = [];
+      this.bargains = [];
+    }
   },
   methods: {
     async handleCycleChange(data) {
-      console.log("Cycle change event received", data);
-      if (data.id === this.currentCycleNumber) {
-        console.debug("Cycle number is the same, skipping update");
-        return;
+      try {
+        console.log("Cycle change event received", data);
+        if (!data || !data.id) {
+          console.error("Invalid cycle data received:", data);
+          return;
+        }
+        if (data.id === this.currentCycleNumber) {
+          console.debug("Cycle number is the same, skipping update");
+          return;
+        }
+        this.currentCycleNumber = data.id;
+        await this.updateAll();
+      } catch (error) {
+        console.error("Error handling cycle change:", error);
       }
-      this.currentCycleNumber = data.id;
-      await this.updateAll();
     },
     async refreshBargains() {
-      this.bargains = await bargainService.getOpenBargains();
+      try {
+        this.bargains = await bargainService.getOpenBargains();
+      } catch (error) {
+        console.error("Error refreshing bargains:", error);
+        this.bargains = [];
+      }
     },
     async refreshActionLog() {
-      this.actionLog = (await ActionGameApi.actionLogList()).data;
+      try {
+        this.actionLog = (await ActionGameApi.actionLogList()).data;
+      } catch (error) {
+        console.error("Error refreshing action log:", error);
+        this.actionLog = [];
+      }
     },
     async refreshMiniMap() {
       try {
@@ -441,13 +478,26 @@ export default {
       this.inventoryVisible = false;
     },
     async refreshInventory() {
-      this.inventoryItems = (await ItemsGameApi.itemsCharacterList()).data.map((item) => item.world_item);
+      try {
+        const response = await ItemsGameApi.itemsCharacterList();
+        this.inventoryItems = response.data.map((item) => item.world_item);
+      } catch (error) {
+        console.error("Error refreshing inventory:", error);
+        this.inventoryItems = [];
+      }
     },
     async selectSelf() {
-      this.selectedGameObjectId = this.playerInfo.id;
+      if (this.playerInfo && this.playerInfo.id) {
+        this.selectedGameObjectId = this.playerInfo.id;
+      }
     },
     async refreshShields() {
-      this.shields = (await ShieldsGameApi.shieldsActiveList()).data;
+      try {
+        this.shields = (await ShieldsGameApi.shieldsActiveList()).data;
+      } catch (error) {
+        console.error("Error refreshing shields:", error);
+        this.shields = [];
+      }
     },
     async cancelAction() {
       this.selectedGameObjectId = null;
@@ -537,54 +587,109 @@ export default {
       window.open(routePath, '_blank', 'width=1024,height=1280,scrollbars=yes,resizable=yes');
     },
     async diceRoll({dice, index}) {
-      // sleep for 1 second
-      await new Promise(r => setTimeout(r, 1000));
-      this.diceResult = await this.actionService.diceRoll(dice.value);
+      try {
+        // sleep for 1 second
+        await new Promise(r => setTimeout(r, 1000));
+        this.diceResult = await this.actionService.diceRoll(dice.value);
+      } catch (error) {
+        console.error(`Error rolling dice:`, error);
+        this.diceResult = null;
+      }
     },
     async handleMove(direction) {
-      const move_direction = this.connections[direction]
-      const new_postion_id = move_direction.to_position;
-      await this.actionService.move(new_postion_id);
-      // await this.getCurrentPositionInfo();
-      await this.getPlayerInfo();
-      await this.setMovement();
+      try {
+        const move_direction = this.connections[direction];
+        if (!move_direction) {
+          console.error(`No connection found for direction: ${direction}`);
+          return;
+        }
+        const new_postion_id = move_direction.to_position;
+        await this.actionService.move(new_postion_id);
+        // await this.getCurrentPositionInfo();
+        await this.getPlayerInfo();
+        await this.setMovement();
+      } catch (error) {
+        console.error(`Error handling move to direction ${direction}:`, error);
+      }
     },
     async resolveCharacter(characterId) {
-      const data = await CharacterInfoGameService.getCharacterInfo(characterId);
-      // const data = (await CharacterGameApi.characterPlayerRetrieve(characterId)).data;
-      if (data.npc) {
-        this.npcCharacters.push(data);
-      } else {
-        this.characters.push(data);
+      try {
+        const data = await CharacterInfoGameService.getCharacterInfo(characterId);
+        // const data = (await CharacterGameApi.characterPlayerRetrieve(characterId)).data;
+        if (data && data.npc) {
+          this.npcCharacters.push(data);
+        } else if (data) {
+          this.characters.push(data);
+        }
+      } catch (error) {
+        console.error(`Error resolving character ${characterId}:`, error);
       }
     },
     async getCurrentPositionInfo() {
-      this.position = (await WorldGameApi.worldPositionCurrentRetrieve()).data;
-      this.connections = {}
-      this.position.connections.forEach((conn) => {
-        this.connections[conn.direction] = conn;
-      });
-      this.characters = [];
-      this.npcCharacters = [];
-      this.position.characters.forEach((char) => {
-        this.resolveCharacter(char);
-      });
+      try {
+        this.position = (await WorldGameApi.worldPositionCurrentRetrieve()).data;
+        this.connections = {}
+        if (this.position && this.position.connections) {
+          this.position.connections.forEach((conn) => {
+            this.connections[conn.direction] = conn;
+          });
+        }
+        this.characters = [];
+        this.npcCharacters = [];
+        if (this.position && this.position.characters) {
+          this.position.characters.forEach((char) => {
+            this.resolveCharacter(char);
+          });
+        }
+      } catch (error) {
+        console.error("Error getting current position info:", error);
+        // Initialize with empty values to prevent errors
+        this.position = { id: null, image: null, anomalies: [], connections: [], characters: [] };
+        this.connections = {};
+        this.characters = [];
+        this.npcCharacters = [];
+      }
     },
     async getPlayerInfo() {
-      this.playerInfo = (await CharacterGameApi.characterPlayerCharacterInfoRetrieve()).data;
-      if (this.playerGeneralInfo === null) {
-        this.playerGeneralInfo = (await CharacterGameApi.characterPlayerRetrieve(this.playerInfo.id)).data;
+      try {
+        this.playerInfo = (await CharacterGameApi.characterPlayerCharacterInfoRetrieve()).data;
+        if (this.playerGeneralInfo === null && this.playerInfo && this.playerInfo.id) {
+          this.playerGeneralInfo = (await CharacterGameApi.characterPlayerRetrieve(this.playerInfo.id)).data;
+        }
+        this.playerService = new PlayerService(this.playerInfo);
+      } catch (error) {
+        console.error("Error getting player info:", error);
+        // Initialize with default values to prevent errors
+        this.playerInfo = { id: null, coordinates: null };
+        if (this.playerGeneralInfo === null) {
+          this.playerGeneralInfo = { biography: { avatar: null } };
+        }
+        this.playerService = new PlayerService(this.playerInfo);
       }
-      this.playerService = new PlayerService(this.playerInfo)
     },
     async getPlayerSkills() {
-      this.playerSkills = (await SkillsGameApi.skillsSkillsList()).data;
+      try {
+        this.playerSkills = (await SkillsGameApi.skillsSkillsList()).data;
+      } catch (error) {
+        console.error("Error getting player skills:", error);
+        this.playerSkills = [];
+      }
     },
     async getPlayerSpecials() {
-      this.playerSpecials = (await ActionGameApi.actionSpecialAvailableRetrieve()).data;
+      try {
+        this.playerSpecials = (await ActionGameApi.actionSpecialAvailableRetrieve()).data;
+      } catch (error) {
+        console.error("Error getting player specials:", error);
+        this.playerSpecials = [];
+      }
     },
     async getActiveEffects() {
-      this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
+      try {
+        this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
+      } catch (error) {
+        console.error("Error getting active effects:", error);
+        this.activeEffects = [];
+      }
     },
   },
   watch: {
