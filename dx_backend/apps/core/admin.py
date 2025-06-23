@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.urls import reverse
 from django.utils.html import format_html
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelFilter
+from apps.core.admin.mixins import CampaignAdminMixin
 
 from apps.core.models import GameObject, StatObject, ViolationObject, DimensionAnomaly, DimensionAnomalyEffect
 
@@ -117,10 +118,10 @@ class ViolationObjectAdmin(admin.ModelAdmin):
 
 
 @admin.register(DimensionAnomaly)
-class DimensionAnomalyAdmin(admin.ModelAdmin):
+class DimensionAnomalyAdmin(CampaignAdminMixin, admin.ModelAdmin):
     form = DimensionAnomalyForm
     list_display = ('id', 'colored_effect', 'level_display', 'known_status', 'is_active', 'dimension_link', 'position_link', 'campaign_link', 'created_at', 'updated_at')
-    list_filter = (AnomalyEffectFilter, PositionGridZFilter, 'is_active', 'dimension')
+    list_filter = (AnomalyEffectFilter, PositionGridZFilter, 'is_active', 'dimension', 'campaign')
     search_fields = ('id', 'effect')
     ordering = ('-created_at', 'level')
     list_per_page = 20

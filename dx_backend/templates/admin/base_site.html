@@ -1,0 +1,431 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }} | Campaign Admin{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            Campaign Game Admin
+        </a>
+    </h1>
+{% endblock %}
+
+{% block usertools %}
+    <!-- Campaign Switcher following Design Guide -->
+    <div id="campaign-context">
+        {% if request.current_campaign %}
+            <div class="campaign-switcher">
+                <form id="campaign-form" method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="switch_campaign" value="1">
+
+                    <label>Campaign:</label>
+
+                    <select id="campaign-select" name="campaign_id">
+                        {% for campaign in available_campaigns %}
+                            <option value="{{ campaign.id }}"
+                                    {% if campaign.id == request.current_campaign.id %}selected{% endif %}>
+                                {{ campaign.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" id="campaign-submit-btn">
+                        Switch
+                    </button>
+                </form>
+
+                <span class="campaign-status">
+                ✓ {{ request.current_campaign.name }}
+            </span>
+            </div>
+        {% else %}
+            <div class="no-campaign-warning">
+                ⚠️ No Campaign Selected
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="switch_campaign" value="1">
+                    <select name="campaign_id">
+                        <option value="">Choose Campaign...</option>
+                        {% for campaign in available_campaigns %}
+                            <option value="{{ campaign.id }}">{{ campaign.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Select</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    {{ block.super }}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        /* Campaign Switcher - Following Design Guide */
+        #campaign-context {
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+        }
+
+        .campaign-switcher form {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .campaign-switcher label {
+            color: #ccc;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .campaign-switcher select {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            min-width: 150px;
+            transition: all 0.3s ease;
+        }
+
+        .campaign-switcher select:focus {
+            outline: none;
+            border-color: #1E90FF;
+            box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
+        }
+
+        .campaign-switcher select option {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem;
+        }
+
+        .campaign-switcher select option:hover {
+            background: #444;
+        }
+
+        /* Button styling following design guide */
+        #campaign-submit-btn {
+            padding: 0.5rem 1rem;
+            background: #444;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        #campaign-submit-btn:hover:not(:disabled) {
+            background: #555;
+            transform: translateY(-1px);
+        }
+
+        #campaign-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        #campaign-submit-btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Campaign status indicator */
+        .campaign-status {
+            color: #1E90FF;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(30, 144, 255, 0.1);
+            border: 1px solid rgba(30, 144, 255, 0.3);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* No campaign selected state */
+        .no-campaign-warning {
+            color: #fff;
+            background: #444;
+            border: 1px solid #666;
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .no-campaign-warning form {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: 0.75rem;
+        }
+
+        .no-campaign-warning select {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .no-campaign-warning button {
+            padding: 0.25rem 0.75rem;
+            background: #1E90FF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .no-campaign-warning button:hover {
+            background: #4169E1;
+        }
+
+        /* Loading state animation */
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .campaign-loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Responsive design following design guide */
+        @media (max-width: 1200px) {
+            #campaign-context {
+                padding: 0.4rem 0.8rem;
+                margin-right: 0.75rem;
+            }
+
+            .campaign-switcher select {
+                min-width: 120px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            #campaign-context {
+                display: block !important;
+                margin: 0.5rem 0;
+                width: 100%;
+            }
+
+            .campaign-switcher form {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+                align-items: stretch;
+            }
+
+            .campaign-switcher select {
+                min-width: unset;
+                width: 100%;
+            }
+
+            .campaign-status {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                text-align: center;
+            }
+
+            .no-campaign-warning form {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Integration with Django Jet admin theme */
+        .module .campaign-switcher {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        /* Ensure proper contrast in different admin themes */
+        @media (prefers-color-scheme: light) {
+            #campaign-context {
+                background: #f8f8f8;
+                border-color: #ddd;
+            }
+
+            .campaign-switcher select {
+                background: #fff;
+                color: #333;
+                border-color: #ccc;
+            }
+
+            .campaign-status {
+                color: #1E90FF;
+                background: rgba(30, 144, 255, 0.05);
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Campaign Switcher: Design Guide Implementation');
+
+            const campaignForm = document.getElementById('campaign-form');
+            const campaignSelect = document.getElementById('campaign-select');
+            const submitBtn = document.getElementById('campaign-submit-btn');
+            const statusIndicator = document.querySelector('.campaign-status');
+
+            if (campaignForm && campaignSelect && submitBtn) {
+                console.log('Campaign switcher elements initialized');
+
+                // Enhanced form submission with design guide styling
+                campaignForm.addEventListener('submit', function (event) {
+                    console.log('Campaign switch initiated');
+
+                    // Add loading state following design guide
+                    submitBtn.textContent = 'Switching...';
+                    submitBtn.classList.add('campaign-loading');
+                    submitBtn.disabled = true;
+
+                    // Update status indicator
+                    if (statusIndicator) {
+                        statusIndicator.style.opacity = '0.6';
+                        statusIndicator.innerHTML = '⏳ Switching campaign...';
+                    }
+
+                    // Add visual feedback to the form container
+                    campaignForm.style.opacity = '0.8';
+                    campaignForm.style.transition = 'opacity 0.3s ease';
+                });
+
+                // Enhanced select interaction
+                campaignSelect.addEventListener('change', function () {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption && selectedOption.value) {
+                        // Highlight the submit button to indicate action needed
+                        submitBtn.style.background = '#1E90FF';
+                        submitBtn.style.transform = 'scale(1.05)';
+
+                        // Add subtle animation to draw attention
+                        setTimeout(() => {
+                            submitBtn.style.transform = 'scale(1)';
+                        }, 200);
+                    }
+                });
+
+                // Keyboard shortcuts following UX patterns
+                campaignSelect.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        submitBtn.click();
+                    }
+
+                    // Ctrl/Cmd + S for quick save
+                    if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                        event.preventDefault();
+                        submitBtn.click();
+                    }
+                });
+
+                // Focus management for better UX
+                campaignSelect.addEventListener('focus', function () {
+                    this.style.boxShadow = '0 0 0 3px rgba(30, 144, 255, 0.2)';
+                });
+
+                campaignSelect.addEventListener('blur', function () {
+                    this.style.boxShadow = '';
+                });
+
+                // Auto-submit option (commented out by default for explicit UX)
+                // Uncomment if you want automatic switching without button click
+                /*
+                campaignSelect.addEventListener('change', function() {
+                    const currentCampaignId = '
+
+                {{ request.current_campaign.id|default:"" }}';
+            if (this.value && this.value !== currentCampaignId) {
+                console.log('Auto-submitting campaign change');
+                // Add a brief delay for visual feedback
+                setTimeout(() => {
+                    campaignForm.submit();
+                }, 300);
+            }
+        });
+        */
+
+            } else {
+                console.error('Campaign switcher: Required elements not found');
+
+                // Fallback for missing elements
+                const allForms = document.querySelectorAll('form[method="post"]');
+                allForms.forEach(form => {
+                    if (form.querySelector('input[name="switch_campaign"]')) {
+                        form.addEventListener('submit', function () {
+                            console.log('Fallback: Campaign switch form submitted');
+                        });
+                    }
+                });
+            }
+
+            // Add global error handling for campaign switching
+            window.addEventListener('error', function (event) {
+                if (event.target && event.target.id === 'campaign-form') {
+                    console.error('Campaign switcher error:', event.error);
+
+                    // Reset form state on error
+                    const form = document.getElementById('campaign-form');
+                    if (form) {
+                        form.style.opacity = '1';
+                        const btn = form.querySelector('#campaign-submit-btn');
+                        if (btn) {
+                            btn.textContent = 'Switch';
+                            btn.disabled = false;
+                            btn.classList.remove('campaign-loading');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Utility function for theme adaptation (if needed)
+        function adaptToTheme() {
+            const isDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const context = document.getElementById('campaign-context');
+
+            if (context) {
+                if (isDarkTheme) {
+                    context.setAttribute('data-theme', 'dark');
+                } else {
+                    context.setAttribute('data-theme', 'light');
+                }
+            }
+        }
+
+        // Initialize theme adaptation
+        adaptToTheme();
+
+        // Listen for theme changes
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', adaptToTheme);
+        }
+    </script>
+{% endblock %}

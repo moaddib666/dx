@@ -8,7 +8,7 @@ from apps.core.utils.models import BaseModel
 class Organization(BaseModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
-
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='organizations')
     behavior = models.CharField(choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE, max_length=20)
 
     def __str__(self):

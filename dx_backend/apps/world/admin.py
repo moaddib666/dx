@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import admin
 from django.forms import ModelForm, ValidationError
+from apps.core.admin import CampaignModelAdmin
 
 from .models import (
     Dimension, Planet, Continent, Country, City, Area, Location, PositionConnection, MapPosition, Map
@@ -28,69 +29,69 @@ class BulkChangeSubLocationForm(forms.Form):
 
 # Dimension Admin
 @admin.register(Dimension)
-class DimensionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'speed', 'energy')
+class DimensionAdmin(CampaignModelAdmin):
+    list_display = ('id', 'speed', 'energy', 'campaign')
     search_fields = ('id',)
-    list_filter = ('speed', 'energy')
+    list_filter = ('speed', 'energy', 'campaign')
 
 
 # Planet Admin
 @admin.register(Planet)
-class PlanetAdmin(admin.ModelAdmin):
+class PlanetAdmin(CampaignModelAdmin):
     list_display = (
         'name', 'distance_from_star', 'diameter', 'mass', 'gravity', 'temperature',
-        'number_of_moons', 'is_active'
+        'number_of_moons', 'is_active', 'campaign'
     )
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'atmosphere')
+    list_filter = ('is_active', 'atmosphere', 'campaign')
 
 
 # Continent Admin
 @admin.register(Continent)
-class ContinentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'planet', 'area', 'population', 'number_of_countries', 'is_active')
+class ContinentAdmin(CampaignModelAdmin):
+    list_display = ('name', 'planet', 'area', 'population', 'number_of_countries', 'is_active', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'planet')
+    list_filter = ('is_active', 'planet', 'campaign')
 
 
 # Country Admin
 @admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'continent', 'area', 'is_active')
+class CountryAdmin(CampaignModelAdmin):
+    list_display = ('name', 'continent', 'area', 'is_active', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'continent')
+    list_filter = ('is_active', 'continent', 'campaign')
 
 
 # City Admin
 @admin.register(City)
-class CityAdmin(admin.ModelAdmin):
-    list_display = ('name', 'country', 'is_active')
+class CityAdmin(CampaignModelAdmin):
+    list_display = ('name', 'country', 'is_active', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'country')
+    list_filter = ('is_active', 'country', 'campaign')
 
 
 # Area Admin
 @admin.register(Area)
-class AreaAdmin(admin.ModelAdmin):
-    list_display = ('name', 'city', 'area', 'is_active')
+class AreaAdmin(CampaignModelAdmin):
+    list_display = ('name', 'city', 'area', 'is_active', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'city')
+    list_filter = ('is_active', 'city', 'campaign')
 
 
 # Location Admin
 @admin.register(Location)
-class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'area', 'is_active', 'is_public')
+class LocationAdmin(CampaignModelAdmin):
+    list_display = ('name', 'area', 'is_active', 'is_public', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'is_public', 'area')
+    list_filter = ('is_active', 'is_public', 'area', 'campaign')
 
 
 # SubLocation Admin
 @admin.register(SubLocation)
-class SubLocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'location', 'is_active')
+class SubLocationAdmin(CampaignModelAdmin):
+    list_display = ('name', 'location', 'is_active', 'campaign')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'location')
+    list_filter = ('is_active', 'location', 'campaign')
 
 
 # Position Form for Validation

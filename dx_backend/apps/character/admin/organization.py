@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from apps.core.admin import CampaignModelAdmin
 
 from ..models import Organization
 
 
 @admin.register(Organization)
-class OrganizationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'behavior_badge', 'description_short')
-    list_filter = ('behavior',)
+class OrganizationAdmin(CampaignModelAdmin):
+    list_display = ('name', 'behavior_badge', 'description_short', 'campaign')
+    list_filter = ('behavior', 'campaign')
     search_fields = ('name', 'description')
     list_per_page = 25
     ordering = ('name',)

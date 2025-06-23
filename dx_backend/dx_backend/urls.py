@@ -13,6 +13,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     # Admin and Jet
     path('jet/', include('jet.urls', 'jet')),
+    path('jet/dashboard/', include('jet.dashboard.urls', 'jet-dashboard')),
     path('admin/', admin.site.urls),
 
     # Authentication

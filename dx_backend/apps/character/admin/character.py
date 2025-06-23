@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from polymorphic.admin import PolymorphicChildModelAdmin
 
 from apps.game.services.npc.factory import NPCFactory
+from apps.core.admin.mixins import CampaignAdminMixin
 from .filters import SubLocationFilter, GridZFilter
 from .inlines import (
     CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline,
@@ -12,7 +13,7 @@ from ..models import Character, CharacterBiography
 
 
 @admin.register(Character)
-class CharacterAdmin(PolymorphicChildModelAdmin):
+class CharacterAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
     """
     Admin interface for Character with integrated CharacterBiography.
     """
@@ -21,11 +22,11 @@ class CharacterAdmin(PolymorphicChildModelAdmin):
     list_display = (
         'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
         'current_health_points', 'current_energy_points', "current_active_points",
-        'organization', 'is_active', 'npc',
+        'organization', 'is_active', 'npc', 'campaign',
     )
     search_fields = ('name', 'biography__background', 'biography__appearance', "id")
     list_filter = (
-        'biography__gender', 'rank', 'organization', 'is_active', 'npc', SubLocationFilter, GridZFilter
+        'biography__gender', 'rank', 'organization', 'is_active', 'npc', 'campaign', SubLocationFilter, GridZFilter
     )
     inlines = [CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline, LearnedSchoolsInline, LearnedSkillsInline,
                ActiveEffectsInline, ActiveShieldsInline]

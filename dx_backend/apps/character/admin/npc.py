@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import SimpleListFilter
 from django.db import transaction
 
+from apps.core.admin.mixins import CampaignAdminMixin
+
 from apps.character.models.npc import (
     CharacterTemplate, CharacterStatsTemplate, CharacterStatTemplate,
     CharacterBiographyTemplate, CharacterSkillTemplate, CharacterSchoolTemplate,
@@ -292,7 +294,7 @@ class CampaignFilter(SimpleListFilter):
 
 
 @admin.register(CharacterTemplate)
-class CharacterTemplateAdmin(admin.ModelAdmin):
+class CharacterTemplateAdmin(CampaignAdminMixin, admin.ModelAdmin):
     list_display = ('name', 'avatar_thumbnail', 'organization', 'rank', 'behavior', 'campaign', 'clone_template', 'create_npc')
     list_filter = ('behavior', CampaignFilter, 'organization')
     search_fields = ('name', 'description', 'tags')

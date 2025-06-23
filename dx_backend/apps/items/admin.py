@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from polymorphic.admin import PolymorphicChildModelAdmin
+from apps.core.admin.mixins import CampaignAdminMixin
 
 from .models import Item, CharacterItem, WorldItem
 
@@ -41,11 +42,11 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 @admin.register(WorldItem)
-class WorldItemAdmin(PolymorphicChildModelAdmin):
+class WorldItemAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
     base_model = WorldItem
     show_in_index = True
-    list_display = ('item', 'position', 'icon_preview')
-    list_filter = ('item__type',)
+    list_display = ('item', 'position', 'icon_preview', 'campaign')
+    list_filter = ('item__type', 'campaign')
     search_fields = ('id', 'item__name', 'position')
 
     def icon_preview(self, obj):

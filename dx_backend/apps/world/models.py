@@ -8,13 +8,13 @@ from apps.core.utils.models import BaseModel
 
 class Dimension(BaseModel):
     id = models.IntegerField(primary_key=True)
-
     speed = models.FloatField()
     energy = models.FloatField()
     shift_cost = models.IntegerField(default=0)
 
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     is_active = models.BooleanField(default=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='dimensions')
 
     def __str__(self):
         return f"Dimension {self.id}"
@@ -34,6 +34,7 @@ class Planet(BaseModel):
     is_active = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -50,6 +51,7 @@ class Continent(BaseModel):
     is_active = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -64,6 +66,7 @@ class Country(BaseModel):
     is_active = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -77,6 +80,7 @@ class City(BaseModel):
     is_active = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -91,6 +95,7 @@ class Area(BaseModel):
     is_active = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -105,6 +110,7 @@ class Location(BaseModel):
     is_public = models.BooleanField(default=True)
 
     border_with = models.ManyToManyField('self', blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -116,6 +122,7 @@ class SubLocation(BaseModel):
     image = models.ImageField(upload_to='sub_locations/', null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name

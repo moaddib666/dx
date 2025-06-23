@@ -25,11 +25,12 @@ class Cycle(BaseModel):
     """
     objects = CycleManager()
     id = models.AutoField(primary_key=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='cycles')
 
 
 class CharacterAction(BaseModel):
     ActionType = CharacterActionType
-
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='actions')
     cycle = models.ForeignKey('action.Cycle', on_delete=models.CASCADE, related_name='actions')
     accepted = models.BooleanField(default=False)
     performed = models.BooleanField(default=False)

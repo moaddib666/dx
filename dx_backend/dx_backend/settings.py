@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # "daphne",
     "jet",
+    'jet.dashboard',
     "django.contrib.admin",
     "django.contrib.auth",
     'polymorphic',
@@ -88,6 +89,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # "allauth.account.middleware.AccountMiddleware",
     "dx_backend.middleware.ThreadLocalMiddleware",
+    "apps.core.middleware.CampaignContextMiddleware",
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.UUIDField'
@@ -106,6 +108,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.core.context_processors.campaign_context",
             ],
         },
     },
@@ -255,6 +258,10 @@ JET_THEMES = [
 ]
 
 JET_SIDE_MENU_COMPACT = True  # menu is not expandable
+
+# Jet Dashboard settings
+JET_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultIndexDashboard'
+JET_APP_INDEX_DASHBOARD = 'jet.dashboard.dashboard.DefaultAppIndexDashboard'
 
 LOGGING = {
     "version": 1,

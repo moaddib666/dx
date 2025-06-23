@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.db import models
 
+from apps.core.admin import CampaignModelAdmin
 from .models import Cycle, DiceRollResult, SpecialAction
 
 
 @admin.register(Cycle)
-class CycleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created_at', 'updated_at')  # Display the cycle details
+class CycleAdmin(CampaignModelAdmin):
+    list_display = ('id', 'campaign', 'created_at', 'updated_at')  # Display the cycle details
+    list_filter = ('campaign',)
     actions = ['start_new_cycle']
 
     def start_new_cycle(self, request, queryset):
@@ -31,10 +33,11 @@ class ActionImpactInline(admin.TabularInline):
 
 
 @admin.register(CharacterAction)
-class CharacterActionAdmin(admin.ModelAdmin):
+class CharacterActionAdmin(CampaignModelAdmin):
     list_display = (
-    'id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 'created_at')
-    list_filter = ('accepted', 'action_type', 'cycle')  # Filter by cycle
+        'id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 'campaign',
+        'created_at')
+    list_filter = ('accepted', 'action_type', 'cycle', 'campaign')  # Filter by cycle and campaign
     search_fields = ('initiator__name', 'data')
     actions = ['approve_selected_actions']
     inlines = [ActionImpactInline]
