@@ -21,12 +21,13 @@ class FollowRule(models.Model):
     def __str__(self):
         return f"{self.follower.name} follows {self.leader.name} ({self.get_type_display()})"
 
+
 class CharacterTemplate(BaseModel):
     """
     Main template for creating NPCs. This is the central template that ties
     all other template components together.
     """
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
     # Basic character properties
@@ -65,6 +66,7 @@ class CharacterTemplate(BaseModel):
     class Meta:
         verbose_name = "Character Template"
         verbose_name_plural = "Character Templates"
+        unique_together = ('name', 'campaign')
 
 
 class CharacterStatsTemplate(BaseModel):
