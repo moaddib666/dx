@@ -16,7 +16,14 @@ class CampaignFilterMixin(GenericViewSet):
                 self.request.user.main_character and
                 self.request.user.main_character.campaign):
             campaign = self.request.user.main_character.campaign
-            filter_kwargs = {self.campaign_field: campaign}
-            return queryset.filter(**filter_kwargs)
+
+            # Check if the model has a campaign field before filtering
+            model = queryset.model
+            if hasattr(model, self.campaign_field) or self.campaign_field in [f.name for f in model._meta.get_fields()]:
+                filter_kwargs = {self.campaign_field: campaign}
+                return queryset.filter(**filter_kwargs)
+
+            # If the model doesn't have a campaign field, return the queryset as is
+            return queryset
 
         return queryset.none()  # No access if no campaign
