@@ -58,6 +58,17 @@ api-test-fast:
 	--generation-deterministic \
 	--no-shrink \
 	--include-method GET
+
+api-test-smoke:
+	curl http://localhost:8000/api/schema/?format=json -o openapi.json
+	uvx schemathesis run openapi.json -u http://localhost:8000/api/ \
+	--header="Authorization: Bearer $(API_TOKEN)" \
+	-n 1 \
+	--max-response-time 2 \
+	--checks=not_a_server_error \
+	-m positive \
+	--include-method GET \
+	-w 5
 #
 #api-test-smoke:
 #	curl http://localhost:8000/api/schema/?format=json -o openapi.json
