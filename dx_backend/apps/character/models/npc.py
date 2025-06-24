@@ -4,13 +4,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from apps.core.models import CharacterStats, GenderEnum, BehaviorModel, MoveTypes
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class FollowRule(models.Model):
     """
     Rule for following a character.
     """
+    __tags__ = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     priority = models.IntegerField(default=0, help_text="Lower values mean higher priority")
     type = models.CharField(max_length=20, choices=MoveTypes.choices(), default=MoveTypes.TELEPORT)
     leader = models.ForeignKey('character.Character', on_delete=models.CASCADE, related_name='followers')
@@ -27,6 +28,7 @@ class CharacterTemplate(BaseModel):
     Main template for creating NPCs. This is the central template that ties
     all other template components together.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
@@ -73,6 +75,7 @@ class CharacterStatsTemplate(BaseModel):
     """
     Template for character stats. Can be reused across multiple character templates.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
 
@@ -98,6 +101,7 @@ class CharacterStatTemplate(BaseModel):
     """
     Individual stat values for a stats template.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterStatsTemplate, on_delete=models.CASCADE, related_name='stats')
     stat = models.CharField(max_length=255, choices=CharacterStats.choices())
     value = models.IntegerField(default=10, validators=[MinValueValidator(1), MaxValueValidator(100)])
@@ -113,6 +117,7 @@ class CharacterBiographyTemplate(BaseModel):
     """
     Template for character biography with randomization options.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
 
@@ -166,6 +171,7 @@ class CharacterSkillTemplate(BaseModel):
     """
     Skills that should be learned by characters created from a template.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='skill_templates')
     skill = models.ForeignKey("school.Skill", on_delete=models.CASCADE)
     is_base = models.BooleanField(default=False)
@@ -181,6 +187,7 @@ class CharacterSchoolTemplate(BaseModel):
     """
     Schools that should be learned by characters created from a template.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='school_templates')
     school = models.ForeignKey("school.School", on_delete=models.CASCADE)
     is_base = models.BooleanField(default=False)
@@ -196,6 +203,7 @@ class CharacterModifierTemplate(BaseModel):
     """
     Stat modifiers that should be applied to characters created from a template.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='modifier_templates')
     stat = models.CharField(max_length=255, choices=CharacterStats.choices())
     value = models.IntegerField(help_text="Modifier value (can be positive or negative)")
@@ -209,6 +217,7 @@ class CharacterEquipmentTemplate(BaseModel):
     """
     Items/equipment that should be given to characters created from a template.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='equipment_templates')
     item = models.ForeignKey("items.Item", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
@@ -225,6 +234,7 @@ class CharacterNameTemplate(BaseModel):
     """
     Name templates for generating random names.
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     template = models.ForeignKey(CharacterTemplate, on_delete=models.CASCADE, related_name='name_templates')
     name_type = models.CharField(max_length=50, choices=[
         ('first_name', 'First Name'),

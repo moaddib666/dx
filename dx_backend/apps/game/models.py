@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Session(BaseModel):
@@ -9,10 +9,10 @@ class Session(BaseModel):
 
 
 class Campaign(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE, TagsDescriptor.BaseTags.CORE_MODEL)
     name = models.CharField(max_length=255)
     description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
-
     def __str__(self):
         return self.name

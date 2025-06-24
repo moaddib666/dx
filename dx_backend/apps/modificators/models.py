@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.core.models import CharacterStats
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Modificator(BaseModel):
@@ -15,6 +15,9 @@ class StatModificator(BaseModel):
     stat = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
     value = models.IntegerField(default=0)
 
+
 class CharacterModificator(BaseModel):
-    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='modificators')
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
+                                  related_name='modificators')
     modificator = models.ForeignKey(Modificator, on_delete=models.CASCADE)

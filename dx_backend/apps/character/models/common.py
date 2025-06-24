@@ -2,10 +2,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from apps.core.models import BehaviorModel
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Organization(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255)
     description = models.TextField()
     campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='organizations')
@@ -73,6 +74,7 @@ class Rank(BaseModel):
     description: string
     experience_needed: int
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     objects = RankManager()
     name = models.CharField(max_length=255, unique=True)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])

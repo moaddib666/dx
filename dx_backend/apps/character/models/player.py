@@ -3,10 +3,11 @@ from django.db import models
 
 from apps.character.models.common import Organization, Rank
 from apps.core.models import CharacterStats, GenderEnum, GameObject, BehaviorModel
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class CharacterBiography(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     age = models.PositiveIntegerField(validators=[MinValueValidator(18), MaxValueValidator(900)])
     gender = models.CharField(max_length=50, choices=GenderEnum.choices, default=GenderEnum.OTHER)
     background = models.TextField(blank=True)
@@ -17,6 +18,7 @@ class CharacterBiography(BaseModel):
 
 
 class Character(GameObject):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters', null=True, blank=True)
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True)
@@ -54,6 +56,7 @@ class Character(GameObject):
 
 
 class Stat(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
     additional_value = models.IntegerField(default=0)
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='stats')
@@ -80,6 +83,7 @@ class StatModifier(BaseModel):
     name: string
     value: int
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255, choices=CharacterStats.choices(), default=CharacterStats.PHYSICAL_STRENGTH)
     value = models.IntegerField()
     character = models.ForeignKey(Character, on_delete=models.CASCADE, related_name='stats_modifiers')

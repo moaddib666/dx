@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class CurrencyToken(BaseModel):
@@ -10,6 +10,9 @@ class CurrencyToken(BaseModel):
 
 
 class CharacterCurrency(BaseModel):
-    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE, related_name='tokens')
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
+
+    character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
+                                  related_name='tokens')
     currency = models.ForeignKey(CurrencyToken, on_delete=models.CASCADE)
     amount = models.PositiveIntegerField(default=0)

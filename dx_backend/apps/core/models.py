@@ -537,11 +537,12 @@ class GameMasterImpactAction(BaseModel):
     impact_violation: ImpactViolationType
 
 
-from apps.core.utils.models import BaseModel as DjangoBaseModel
+from apps.core.utils.models import BaseModel as DjangoBaseModel, TagsDescriptor
 from django.db import models as django_models
 
 
 class GameObject(DjangoBaseModel, PolymorphicModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     position = django_models.ForeignKey("world.Position", null=True, on_delete=django_models.SET_NULL, blank=True,
                                         default=None)
     dimension = django_models.ForeignKey("world.Dimension", on_delete=django_models.SET_NULL, null=True, blank=True,

@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.core.models import GameObject, ItemType
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class ItemsManager(models.Manager):
@@ -16,6 +16,7 @@ class ItemsManager(models.Manager):
 
 
 class Item(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255)
     description = models.TextField(default='')
     icon = models.ImageField(upload_to='icons/items/', null=True, blank=True)
@@ -47,6 +48,7 @@ class WorldItem(GameObject):
 
 
 class CharacterItem(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     character = models.ForeignKey('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
                                   related_name='equipped_items')
     world_item = models.ForeignKey(WorldItem, on_delete=models.CASCADE)

@@ -3,7 +3,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Model
 
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Dimension(BaseModel):
@@ -168,6 +168,8 @@ class PositionConnection(models.Model):
     position_to = models.ForeignKey(
         'Position', on_delete=models.CASCADE, related_name='position_to'
     )
+    # TODO: Plan to create the PositionConnectionOverrides model to be able on campaign, organization, character
+    #  level override the connection properties
     is_locked = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
@@ -209,6 +211,7 @@ class PositionConnection(models.Model):
 
 
 class Map(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255)
     description = models.TextField()
     organization = models.OneToOneField('character.Organization', on_delete=models.CASCADE)
@@ -219,6 +222,7 @@ class Map(BaseModel):
 
 
 class MapPosition(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name='map_positions')
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
