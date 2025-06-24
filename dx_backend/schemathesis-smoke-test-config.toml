@@ -1,0 +1,580 @@
+# Schemathesis Configuration for Smoke Testing (TOML format)
+# This config tests specific endpoints for basic availability (non-500 errors)
+
+# Base configuration
+base-url = "http://localhost:8000"  # Change this to your API base URL
+
+# Limit test cases for smoke testing (no extensive fuzzing)
+#max-failures = 1  # Stop after first failure (optional)
+#seed = 1  # Fixed seed for reproducible tests
+
+# Request timeout settings
+request-timeout = 30
+
+# Test configuration for smoke testing
+[checks]
+enabled = false
+# Only check for server errors and schema compliance
+#not_a_server_error.enabled = true
+response_schema_conformance.enabled = true
+
+# ActionApi endpoints
+[[operations]]
+include-path-regex = "^/api/action/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/current_cycle/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/gm/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/gm/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/gm/register_character_action/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/gm/register_impact/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/log/$"
+checks.not_a_server_error.enabled = true
+
+#[[operations]]
+#include-path-regex = "^/api/action/next_cycle/$"
+#checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/scheduled_actions/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/special/available/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/special/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/action/special/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# BargainApi endpoints
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/[^/]+/accept/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/gift/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/[^/]+/items/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/[^/]+/items/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/[^/]+/reject/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/bargain/open_bargains/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# CharacterApi endpoints
+[[operations]]
+include-path-regex = "^/api/character/gm/[^/]+/character_info/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/gm/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/gm/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/character_details/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/character_info/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/character_stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/character_template/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/chose_path/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/import_character/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/player/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/stats/reset_base_stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/stats/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/character/stats/swipe_base_stat/$"
+checks.not_a_server_error.enabled = true
+
+# ClientApi endpoints
+[[operations]]
+include-path-regex = "^/api/client/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/client/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/client/register_local_client/$"
+checks.not_a_server_error.enabled = true
+
+# CoreApi endpoints
+[[operations]]
+include-path-regex = "^/api/core/character_stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/core/stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/core/stats/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/core/violations/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/core/violations/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# EffectsApi endpoints
+[[operations]]
+include-path-regex = "^/api/effects/active/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/effects/active/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# GalleryApi endpoints
+[[operations]]
+include-path-regex = "^/api/gallery/world/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gallery/world/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# GamemasterApi endpoints
+[[operations]]
+include-path-regex = "^/api/gamemaster/character_templates/create_npc/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/character_templates/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/character_templates/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/character_card/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/character_info/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/character_stats_card/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/character_stats/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/god_intervention/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/characters/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/game_objects/[^/]+/clone/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/game_objects/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/game_objects/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/game_objects/[^/]+/move/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/game_objects/[^/]+/toggle_active/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/items/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/items/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/npcs/[^/]+/change_behavior/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/connections/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/create_connection/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/create_position_with_connections/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/[^/]+/delete_connection/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/map/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/world_map/[^/]+/toggle_connection_lock/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/gamemaster/[^/]+/spawn_item/$"
+checks.not_a_server_error.enabled = true
+
+# ItemsApi endpoints
+[[operations]]
+include-path-regex = "^/api/items/character/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/items/character/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/items/world/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/items/world/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/items/[^/]+/spawn_item/$"
+checks.not_a_server_error.enabled = true
+
+# ModificatorsApi endpoints
+[[operations]]
+include-path-regex = "^/api/modificators/character/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/modificators/character/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/modificators/world/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/modificators/world/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/modificators/world/get_all_modificators/$"
+checks.not_a_server_error.enabled = true
+
+# SchoolApi endpoints
+[[operations]]
+include-path-regex = "^/api/school/paths/get_all_paths/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/paths/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/paths/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/[^/]+/create_skill/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/get_all_schools/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/get_all_skills/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/[^/]+/skills/get_all_school_skills/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/[^/]+/skills/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/school/schools/[^/]+/skills/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# ShieldsApi endpoints
+[[operations]]
+include-path-regex = "^/api/shields/active/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/shields/active/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/shields/gm/active/$"
+checks.not_a_server_error.enabled = true
+
+# SkillsApi endpoints
+[[operations]]
+include-path-regex = "^/api/skills/gm/skills/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/skills/gm/skills/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/skills/shools/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/skills/shools/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/skills/skills/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/skills/skills/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+# WorldApi endpoints
+[[operations]]
+include-path-regex = "^/api/world/areas/current/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/areas/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/areas/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/cities/current/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/cities/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/cities/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/dimensions/current/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/dimensions/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/dimensions/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/locations/[^/]+/change/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/locations/current/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/locations/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/locations/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/mapped_position/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/mapped_position/map_position/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/mapped_position/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/maps/mini_map/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/maps/position_add/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/maps/position_remove/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/maps/position_update/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/maps/world_map/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/current/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/info/[^/]+/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/map/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/[^/]+/move_to_position/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/[^/]+/teleport_to_coordinates/$"
+checks.not_a_server_error.enabled = true
+
+[[operations]]
+include-path-regex = "^/api/world/position/[^/]+/teleport_to_position/$"
+checks.not_a_server_error.enabled = true
+
+# Authentication (uncomment and configure as needed)
+# [auth]
+# type = "bearer"
+# token = "your-auth-token-here"
+
+# OR for basic auth:
+# [auth]
+# type = "basic"
+# username = "your-username"
+# password = "your-password"
+
+# OR for API key using headers:
+# [headers]
+# Authorization = "Bearer your-token"
+# X-API-Key = "your-api-key"
+
+# Data generation settings for minimal fuzzing
+[generation]
+allow-x00 = false
+codec = "utf-8"
+
+# Parameters for minimal test cases (smoke testing)
+[parameters]
+# Reduce the number of examples per endpoint for smoke testing
+checks.not_a_server_error.enabled = true
+hypothesis_deadline = 10000
