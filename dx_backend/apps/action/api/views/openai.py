@@ -65,7 +65,9 @@ class CharacterActionsLogViewSet(
         """
         user = self.request.user
         main_character = user.main_character
-        current_cycle = Cycle.objects.current()
+        # Get the campaign from the main character
+        campaign = main_character.campaign if main_character else None
+        current_cycle = Cycle.objects.current(campaign=campaign)
         depth = 3  # 3 cycles back
         cycle__in = []
         for i in range(depth):
@@ -102,8 +104,11 @@ class CharacterActionsViewSet(
     @transaction.atomic
     def perform_create(self, serializer):
         # add initiator to the data
-        serializer.validated_data['initiator'] = self.request.user.main_character
-        serializer.validated_data['cycle'] = Cycle.objects.current()
+        initiator = self.request.user.main_character
+        serializer.validated_data['initiator'] = initiator
+        # Get the campaign from the initiator
+        campaign = initiator.campaign if initiator else None
+        serializer.validated_data['cycle'] = Cycle.objects.current(campaign=campaign)
         serializer.validated_data['position'] = serializer.validated_data['initiator'].position
         super().perform_create(serializer)
         instance = serializer.instance
@@ -114,8 +119,14 @@ class CharacterActionsViewSet(
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=serializers.Serializer)
     def next_cycle(self, request):
+        # Get the campaign from the user's main character
+        campaign = None
+        if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
+            campaign = request.user.main_character.campaign
+
+        current_cycle = Cycle.objects.current(campaign=campaign)
         svc = ACTION_PIPELINE_TOOL.cycle_player_factory(
-            cycle=Cycle.objects.current(), 
+            cycle=current_cycle, 
             factory=ACTION_PIPELINE_TOOL.action_factory
         )
         cycle = svc.play()
@@ -123,13 +134,23 @@ class CharacterActionsViewSet(
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def current_cycle(self, request):
-        cycle = Cycle.objects.current()
+        # Get the campaign from the user's main character
+        campaign = None
+        if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
+            campaign = request.user.main_character.campaign
+
+        cycle = Cycle.objects.current(campaign=campaign)
         return Response(data={'id': cycle.id})
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
     def scheduled_actions(self, request):
+        # Get the campaign from the user's main character
+        campaign = None
+        if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
+            campaign = request.user.main_character.campaign
+
         actions = CharacterAction.objects.filter(
-            cycle=Cycle.objects.current(),
+            cycle=Cycle.objects.current(campaign=campaign),
         )
         serializer = CharacterActionSerializer(actions, many=True)
         return Response(data=serializer.data)
@@ -169,7 +190,13 @@ class GameMasterActionsViewSet(
         # add initiator to the data
         serializer = self.get_serializer(data=request.data, context=self.get_serializer_context())
         serializer.is_valid(raise_exception=True)
-        serializer.validated_data['cycle'] = Cycle.objects.current()
+
+        # Get the campaign from the user's main character
+        campaign = None
+        if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
+            campaign = request.user.main_character.campaign
+
+        serializer.validated_data['cycle'] = Cycle.objects.current(campaign=campaign)
         super().perform_create(serializer)
         instance = serializer.instance
 

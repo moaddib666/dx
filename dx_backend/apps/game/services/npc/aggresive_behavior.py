@@ -50,7 +50,7 @@ class AggressiveBehaviorService(BaseBehaviorService):
             self.logger.debug(f"Target {target} is a follower of NPC {self.character}.")
             return True
 
-        current_cycle = Cycle.objects.current()
+        current_cycle = Cycle.objects.current(campaign=self.character.campaign)
         actions_made_by_targets_aimed_at_npc = CharacterAction.objects.filter(
             initiator__in=self.get_potential_enemies(),
             targets__in=(self.get_potential_friends() | Character.objects.filter(id=self.character.id)).all(),

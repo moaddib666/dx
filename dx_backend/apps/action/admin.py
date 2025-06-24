@@ -15,8 +15,17 @@ class CycleAdmin(CampaignModelAdmin):
         """
         Custom action to start a new cycle.
         """
-        Cycle.objects.next_cycle()
-        self.message_user(request, "New cycle has been started.")
+        # Get the campaign from the session
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            from apps.game.models import Campaign
+            campaign = Campaign.objects.get(id=campaign_id)
+            Cycle.objects.next_cycle(campaign=campaign)
+            self.message_user(request, "New cycle has been started.")
+        else:
+            # No campaign in session, show an error message
+            self.message_user(request, "Cannot start a new cycle without a campaign. Please select a campaign first.",
+                              level='error')
 
     start_new_cycle.short_description = "Start a new cycle"
 
@@ -46,7 +55,9 @@ class CharacterActionAdmin(CampaignModelAdmin):
         """
         Display the cycle ID and visually distinguish the current cycle.
         """
-        current_cycle = Cycle.objects.current()
+        # Get the campaign from the object's cycle
+        campaign = obj.cycle.campaign if obj.cycle else None
+        current_cycle = Cycle.objects.current(campaign=campaign)
         if obj.cycle == current_cycle:
             return format_html(
                 '<span style="font-weight: bold; color: green;">Current Cycle {}</span>',
@@ -81,7 +92,15 @@ class CharacterActionAdmin(CampaignModelAdmin):
         Override queryset to annotate whether actions are in the current cycle.
         """
         qs = super().get_queryset(request)
-        current_cycle = Cycle.objects.current()
+
+        # Get the campaign from the session
+        campaign_id = request.session.get('campaign_id')
+        campaign = None
+        if campaign_id:
+            from apps.game.models import Campaign
+            campaign = Campaign.objects.get(id=campaign_id)
+
+        current_cycle = Cycle.objects.current(campaign=campaign)
         return qs.annotate(is_current_cycle=models.Case(
             models.When(cycle=current_cycle, then=models.Value(True)),
             default=models.Value(False),

@@ -71,7 +71,7 @@ class GameMasterActionFactory:
             initiator=initiator,
             skill=skill,
             position=initiator.position,
-            cycle=Cycle.objects.current(),
+            cycle=Cycle.objects.current(campaign=initiator.campaign),
         )
         targets = [self.get_char(request.target), ]
         # targets is many to many field
@@ -96,7 +96,7 @@ class GameMasterActionFactory:
             initiator=initiator,
             skill=self.get_damage_skill(request.impact_violation),
             position=initiator.position,
-            cycle=Cycle.objects.current(),
+            cycle=Cycle.objects.current(campaign=initiator.campaign),
         )
         targets = [self.get_char(request.target), ]
         # targets is many to many field

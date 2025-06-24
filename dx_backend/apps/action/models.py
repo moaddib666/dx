@@ -1,3 +1,5 @@
+import typing as t
+
 from django.db import models
 
 from apps.core import fields
@@ -6,15 +8,25 @@ from apps.core.models import ImpactType, ImpactViolationType, CharacterActionTyp
 from apps.core.utils.models import BaseModel
 from apps.school.dto import Cost
 
+if t.TYPE_CHECKING:
+    from apps.game.models import Campaign
+
 
 class CycleManager(models.Manager):
-    def current(self):
-        if self.count() == 0:
-            return self.next()
-        return self.latest('id')
+    def current(self, campaign: "Campaign"):
+        qs = self.filter(campaign=campaign)
+        if qs.count() == 0:
+            return self.next(campaign=campaign)
+        return qs.latest('id')
 
-    def next(self):
-        return self.create()
+    def next(self, campaign: "Campaign"):
+        return self.create(campaign=campaign)
+
+    def next_cycle(self, campaign: "Campaign"):
+        """
+        Alias for next() for backward compatibility.
+        """
+        return self.next(campaign=campaign)
 
 
 class Cycle(BaseModel):

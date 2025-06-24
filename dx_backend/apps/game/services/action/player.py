@@ -65,7 +65,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
     def play(self) -> Cycle:
         self._play()
         self.post()
-        next_cycle = Cycle.objects.next()
+        # Get the campaign from the current cycle
+        next_cycle = Cycle.objects.next(campaign=self.cycle.campaign)
         self.prepare()
         self.notify.new_cycle(next_cycle)
         return next_cycle

@@ -147,7 +147,7 @@ class StandardBehavior(Behavior):
                 action_type=CharacterActionType.USE_SKILL,
                 skill_id=self.ability.skills[0],
                 position=self.ctx.character.character.position,
-                cycle=Cycle.objects.current(),
+                cycle=Cycle.objects.current(campaign=self.ctx.character.character.campaign),
             ))
         elif self.ability.items:
             actions.append(CharacterAction.objects.create(
@@ -155,7 +155,7 @@ class StandardBehavior(Behavior):
                 action_type=CharacterActionType.USE_ITEM,
                 item_id=self.ability.items[0],
                 position=self.ctx.character.character.position,
-                cycle=Cycle.objects.current(),
+                cycle=Cycle.objects.current(campaign=self.ctx.character.character.campaign),
             ))
 
         for action in actions:

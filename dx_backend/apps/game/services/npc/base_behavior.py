@@ -63,7 +63,7 @@ class BaseBehaviorService(BehaviorServiceProtocol):
             initiator=self.character,
             skill=skill,
             position=self.character.position,
-            cycle=Cycle.objects.current(),
+            cycle=Cycle.objects.current(campaign=self.character.campaign),
         )
         # FIXME: make skill multi-target support
         # we need to select target randomly

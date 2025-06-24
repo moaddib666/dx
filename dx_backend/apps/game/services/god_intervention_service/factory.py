@@ -23,7 +23,7 @@ class GodInterventionsFactory:
             action_type=CharacterAction.ActionType.GOD_INTERVENTION,
             initiator=initiator.character,
             data=intervention.model_dump(),
-            cycle=Cycle.objects.current(),
+            cycle=Cycle.objects.current(campaign=initiator.character.campaign),
             position=target.character.position,
         )
         action.targets.add(target.character)
