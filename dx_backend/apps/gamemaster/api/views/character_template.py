@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.character.models.npc import CharacterTemplate
+from apps.core.utils.api import CampaignFilterMixin
 from apps.game.services.npc.factory import NPCFactory
 from apps.game.services.npc.factory.interface import NPCFactoryConfig
 from apps.gamemaster.api.filters import CharacterTemplateFilter
@@ -14,7 +15,7 @@ from apps.gamemaster.api.serializers.character_template import CharacterTemplate
 from apps.world.models import Position
 
 
-class CharacterTemplateViewSet(viewsets.ReadOnlyModelViewSet):
+class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for game masters to view character templates and create NPCs from them.
 

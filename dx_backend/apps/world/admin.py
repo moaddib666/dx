@@ -2,8 +2,8 @@ import logging
 
 from django.contrib import admin
 from django.forms import ModelForm, ValidationError
-from apps.core.admin import CampaignModelAdmin
 
+from apps.core.admin import CampaignModelAdmin
 from .models import (
     Dimension, Planet, Continent, Country, City, Area, Location, PositionConnection, MapPosition, Map
 )

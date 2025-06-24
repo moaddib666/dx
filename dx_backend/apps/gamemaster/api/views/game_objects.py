@@ -20,11 +20,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.core.models import GameObject
+from apps.core.utils.api import CampaignFilterMixin
 from apps.gamemaster.api.filters import GameObjectFilter
 from apps.gamemaster.api.serializers import GameObjectSerializer
 
 
-class GameObjectViewSet(viewsets.ModelViewSet):
+class GameObjectViewSet(CampaignFilterMixin, viewsets.ModelViewSet):
     """
     ViewSet for game masters to manage game objects.
     This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects.

@@ -9,6 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from apps.core.models import GameMasterImpactAction
+from apps.core.utils.api import CampaignFilterMixin
 from apps.game.services.action import special
 from apps.game.services.action.factory import GameMasterActionFactory
 from apps.game.services.character.core import CharacterService
@@ -20,6 +21,7 @@ from ...models import CharacterAction, Cycle, SpecialAction
 
 
 class SpecialActionsViewSet(
+    CampaignFilterMixin,
     viewsets.ReadOnlyModelViewSet
 ):
     queryset = SpecialAction.objects.all()
@@ -41,6 +43,7 @@ class SpecialActionsViewSet(
 
 
 class CharacterActionsLogViewSet(
+    CampaignFilterMixin,
     viewsets.mixins.ListModelMixin,
     viewsets.GenericViewSet
 ):
@@ -80,6 +83,7 @@ class CharacterActionsLogViewSet(
 
 
 class CharacterActionsViewSet(
+    CampaignFilterMixin,
     viewsets.mixins.CreateModelMixin,
     viewsets.GenericViewSet
 ):
@@ -132,6 +136,7 @@ class CharacterActionsViewSet(
 
 
 class GameMasterActionsViewSet(
+    CampaignFilterMixin,
     viewsets.ModelViewSet
 ):
     queryset = CharacterAction.objects.all()

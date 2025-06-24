@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from apps.character.models import Character
 from apps.core.api.utils.character import GenericGameViewSet
 from apps.core.models import ItemType
+from apps.core.utils.api import CampaignFilterMixin
 from apps.game.services.location import LocationService
 from apps.game.services.world.position import JsonDumper
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
@@ -19,7 +20,7 @@ from apps.world.api.serializers.openapi import LocationSerializer, AreaSerialize
 from apps.world.models import Location, Area, City, Dimension, Position, MapPosition, Map
 
 
-class OpenAICityManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
+class OpenAICityManagementViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
     queryset = City.objects.filter(is_active=True)
     serializer_class = CitySerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -44,7 +45,7 @@ class OpenAICityManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameView
         return Response(data)
 
 
-class OpenAILocationManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
+class OpenAILocationManagementViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
     queryset = Location.objects.filter(is_active=True)
     serializer_class = LocationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -74,7 +75,7 @@ class OpenAILocationManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGame
         return Response(data=LocationSerializer(new_location).data)
 
 
-class OpenAIAreaManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
+class OpenAIAreaManagementViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
     queryset = Area.objects.filter(is_active=True)
     serializer_class = AreaSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -97,7 +98,7 @@ class OpenAIAreaManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameView
         return Response(data)
 
 
-class OpenAIDimensionManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
+class OpenAIDimensionManagementViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet, GenericGameViewSet):
     queryset = Dimension.objects.filter(is_active=True)
     serializer_class = DimensionSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -209,7 +210,7 @@ class PositionManagementViewSet(GenericGameViewSet):
         return Response(data=svc.as_dict())
 
 
-class MappedPositionViewSet(viewsets.ReadOnlyModelViewSet):
+class MappedPositionViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSet):
     queryset = MapPosition.objects.all()
     serializer_class = MapPositionSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -263,7 +264,7 @@ class HasCartographerItem(IsAuthenticated):
         ).distinct().filter(id=character.id).exists()
 
 
-class MapViewSet(viewsets.GenericViewSet):
+class MapViewSet(CampaignFilterMixin, viewsets.GenericViewSet):
     queryset = Map.objects.all()
     serializer_class = MapSerializer
     permission_classes = [HasCartographerItem, ]
