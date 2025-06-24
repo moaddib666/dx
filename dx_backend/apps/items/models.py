@@ -31,6 +31,8 @@ class Item(BaseModel):
     base_price = models.PositiveIntegerField(default=1)
     canonical = models.BooleanField(default=True)
 
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='items')
+
     def __str__(self):
         return f"{self.name} ({self.type})"
 
