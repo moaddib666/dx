@@ -43,7 +43,7 @@ const routes = [
     // TODO: Add route group here /game/* for game routes that require authentication
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
     {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true}},
-    {path: '/gamemaster/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
+    {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
     {path: '/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true}},
     // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},
