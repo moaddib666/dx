@@ -7,11 +7,9 @@ from django.utils.deprecation import MiddlewareMixin
 
 class LogRequestResponseMiddleware(MiddlewareMixin):
 
-    body: bytes
-
     def process_request(self, request):
-        if settings.DEBUG:
-            self.body = copy.deepcopy(request.body)
+        # Don't access request.body for POST requests to avoid consuming the stream
+        # The admin interface needs to access request.body later
         return None
 
     def process_response(self, request, response):
@@ -24,11 +22,22 @@ class LogRequestResponseMiddleware(MiddlewareMixin):
         print(f"Method: {request.method}")
         print(f"Path: {request.get_full_path()}")
         print(f"Headers: {self.format_headers(request.headers)}")
-        if self.body:
+
+        # For POST requests, log form data instead of body
+        if request.method == 'POST':
+            if request.POST:
+                print(f"POST data: {dict(request.POST)}")
+            if request.FILES:
+                print(f"FILES: {dict(request.FILES)}")
+        # Only try to access body for non-POST requests or if it's already been read
+        elif hasattr(request, '_body'):
             try:
-                print(f"Body: {json.dumps(json.loads(self.body), indent=4)}")
-            except json.JSONDecodeError:
-                print(f"Body: {request.body.decode('utf-8')}")
+                print(f"Body: {json.dumps(json.loads(request._body), indent=4)}")
+            except (json.JSONDecodeError, AttributeError):
+                try:
+                    print(f"Body: {request._body.decode('utf-8')}")
+                except (AttributeError, UnicodeDecodeError):
+                    pass
         print("-------------------")
 
     def log_response(self, request, response):
