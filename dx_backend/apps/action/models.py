@@ -30,7 +30,6 @@ class Cycle(BaseModel):
 
 class CharacterAction(BaseModel):
     ActionType = CharacterActionType
-    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='actions')
     cycle = models.ForeignKey('action.Cycle', on_delete=models.CASCADE, related_name='actions')
     accepted = models.BooleanField(default=False)
     performed = models.BooleanField(default=False)

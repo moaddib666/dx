@@ -19,11 +19,18 @@ class CampaignFilterMixin(GenericViewSet):
 
             # Check if the model has a campaign field before filtering
             model = queryset.model
-            if hasattr(model, self.campaign_field) or self.campaign_field in [f.name for f in model._meta.get_fields()]:
+            model_fields = [f.name for f in model._meta.get_fields()]
+
+            if hasattr(model, self.campaign_field) or self.campaign_field in model_fields:
                 filter_kwargs = {self.campaign_field: campaign}
                 return queryset.filter(**filter_kwargs)
 
-            # If the model doesn't have a campaign field, return the queryset as is
+            # Check if the model has a cycle field with a campaign
+            elif 'cycle' in model_fields:
+                filter_kwargs = {'cycle__campaign': campaign}
+                return queryset.filter(**filter_kwargs)
+
+            # If the model doesn't have a campaign field or cycle field, return the queryset as is
             return queryset
 
         return queryset.none()  # No access if no campaign

@@ -35,9 +35,9 @@ class ActionImpactInline(admin.TabularInline):
 @admin.register(CharacterAction)
 class CharacterActionAdmin(CampaignModelAdmin):
     list_display = (
-        'id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 'campaign',
+        'id', 'cycle_group', 'action_type', 'initiator', 'position_id', 'accepted', 'performed', 
         'created_at')
-    list_filter = ('accepted', 'action_type', 'cycle', 'campaign')  # Filter by cycle and campaign
+    list_filter = ('accepted', 'action_type', 'cycle', 'cycle__campaign')  # Filter by cycle and cycle's campaign
     search_fields = ('initiator__name', 'data')
     actions = ['approve_selected_actions']
     inlines = [ActionImpactInline]
