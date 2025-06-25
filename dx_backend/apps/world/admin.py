@@ -29,69 +29,69 @@ class BulkChangeSubLocationForm(forms.Form):
 
 # Dimension Admin
 @admin.register(Dimension)
-class DimensionAdmin(CampaignModelAdmin):
-    list_display = ('id', 'speed', 'energy', 'campaign')
+class DimensionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'speed', 'energy')
     search_fields = ('id',)
-    list_filter = ('speed', 'energy', 'campaign')
+    list_filter = ('speed', 'energy')
 
 
 # Planet Admin
 @admin.register(Planet)
-class PlanetAdmin(CampaignModelAdmin):
+class PlanetAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'distance_from_star', 'diameter', 'mass', 'gravity', 'temperature',
-        'number_of_moons', 'is_active', 'campaign'
+        'number_of_moons', 'is_active'
     )
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'atmosphere', 'campaign')
+    list_filter = ('is_active', 'atmosphere')
 
 
 # Continent Admin
 @admin.register(Continent)
-class ContinentAdmin(CampaignModelAdmin):
-    list_display = ('name', 'planet', 'area', 'population', 'number_of_countries', 'is_active', 'campaign')
+class ContinentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'planet', 'area', 'population', 'number_of_countries', 'is_active')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'planet', 'campaign')
+    list_filter = ('is_active', 'planet')
 
 
 # Country Admin
 @admin.register(Country)
-class CountryAdmin(CampaignModelAdmin):
-    list_display = ('name', 'continent', 'area', 'is_active', 'campaign')
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'continent', 'area', 'is_active')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'continent', 'campaign')
+    list_filter = ('is_active', 'continent')
 
 
 # City Admin
 @admin.register(City)
-class CityAdmin(CampaignModelAdmin):
-    list_display = ('name', 'country', 'is_active', 'campaign')
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('name', 'country', 'is_active')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'country', 'campaign')
+    list_filter = ('is_active', 'country')
 
 
 # Area Admin
 @admin.register(Area)
-class AreaAdmin(CampaignModelAdmin):
-    list_display = ('name', 'city', 'area', 'is_active', 'campaign')
+class AreaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'city', 'area', 'is_active')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'city', 'campaign')
+    list_filter = ('is_active', 'city')
 
 
 # Location Admin
 @admin.register(Location)
-class LocationAdmin(CampaignModelAdmin):
-    list_display = ('name', 'area', 'is_active', 'is_public', 'campaign')
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'area', 'is_active', 'is_public')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'is_public', 'area', 'campaign')
+    list_filter = ('is_active', 'is_public', 'area')
 
 
 # SubLocation Admin
 @admin.register(SubLocation)
-class SubLocationAdmin(CampaignModelAdmin):
-    list_display = ('name', 'location', 'is_active', 'campaign')
+class SubLocationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'is_active')
     search_fields = ('name', 'description')
-    list_filter = ('is_active', 'location', 'campaign')
+    list_filter = ('is_active', 'location')
 
 
 # Position Form for Validation
