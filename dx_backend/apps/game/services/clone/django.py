@@ -8,7 +8,8 @@ from django.db.models.fields.related import ForeignKey, OneToOneField, ManyToMan
 from django.db.models.fields.reverse_related import ManyToOneRel, OneToOneRel
 
 from .base import (
-    Dependency, DependencyDiscoveryService, CloneStrategy, CloneLogger, IdResolver, AlreadyClonedError, CannotCloneError
+    Dependency, DependencyDiscoveryService, CloneStrategy, CloneLogger, IdResolver, AlreadyClonedError,
+    CannotCloneError, FilterDependency, AcceptAllDependencies
 )
 
 
@@ -59,14 +60,15 @@ class DjangoFieldAssigner:
 class DjangoDependencyDiscoveryService:
     """Django model dependency discovery via field introspection."""
 
-    def __init__(self, clone_related: bool = True, clone_reverse: bool = True):
-        self.clone_related = clone_related
-        self.clone_reverse = clone_reverse
+    def __init__(self, clone_related: bool = True, reverse: bool = True, dependency_filter: "FilterDependency" = None):
+        self.related = clone_related
+        self.clone_reverse = reverse
+        self.dependency_filter = dependency_filter or AcceptAllDependencies()
 
     def discover_dependencies(self, model_instance: models.Model) -> t.Set[Dependency]:
         dependencies = set()
 
-        if self.clone_related:
+        if self.related:
             dependencies.update(self._discover_forward_relations(model_instance))
 
         if self.clone_reverse:
@@ -84,16 +86,25 @@ class DjangoDependencyDiscoveryService:
                     assigner = lambda parent, child, fn=field.name: (
                         DjangoFieldAssigner.set_foreign_key(parent, child, fn)
                     )
-                    dependencies.add(Dependency(related_instance, assigner))
-
+                    dep = Dependency(related_instance, assigner)
+                    if self.dependency_filter(dep):
+                        dependencies.add(Dependency(related_instance, assigner))
+                        continue
+                    logging.getLogger("game.service.clone").debug(
+                        f"Skipping dependency {related_instance} for {instance} due to filter."
+                    )
             elif isinstance(field, ManyToManyField):
                 m2m_manager = getattr(instance, field.name)
                 for related_instance in m2m_manager.all():
                     assigner = lambda parent, child, fn=field.name: (
                         DjangoFieldAssigner.add_many_to_many(parent, child, fn)
                     )
-                    dependencies.add(Dependency(related_instance, assigner))
-
+                    if self.dependency_filter(Dependency(related_instance, assigner)):
+                        dependencies.add(Dependency(related_instance, assigner))
+                        continue
+                    logging.getLogger("game.service.clone").debug(
+                        f"Skipping dependency {related_instance} for {instance} due to filter."
+                    )
         return dependencies
 
     def _discover_reverse_relations(self, instance: models.Model) -> t.Set[Dependency]:
@@ -113,7 +124,13 @@ class DjangoDependencyDiscoveryService:
                                 assigner = lambda parent, child, fn=field.field.name: (
                                     DjangoFieldAssigner.set_reverse_foreign_key(parent, child, fn)
                                 )
-                                dependencies.add(Dependency(related_instance, assigner))
+                                dependency = Dependency(related_instance, assigner)
+                                if self.dependency_filter(dependency):
+                                    dependencies.add(dependency)
+                                    continue
+                                logging.getLogger("game.service.clone").debug(
+                                    f"Skipping dependency {related_instance} for {instance} due to filter."
+                                )
 
                         elif isinstance(field, OneToOneRel):
                             related_instance = getattr(instance, field.get_accessor_name(), None)
@@ -121,8 +138,13 @@ class DjangoDependencyDiscoveryService:
                                 assigner = lambda parent, child, fn=field.field.name: (
                                     DjangoFieldAssigner.set_reverse_foreign_key(parent, child, fn)
                                 )
-                                dependencies.add(Dependency(related_instance, assigner))
-
+                                dependency = Dependency(related_instance, assigner)
+                                if self.dependency_filter(dependency):
+                                    dependencies.add(dependency)
+                                    continue
+                                logging.getLogger("game.service.clone").debug(
+                                    f"Skipping dependency {related_instance} for {instance} due to filter."
+                                )
                     except AttributeError:
                         pass  # Relation doesn't exist
                     except ObjectDoesNotExist:
@@ -200,10 +222,25 @@ class ExcludePolymorphicCloneStrategy:
         raise CannotCloneError("Polymorphic models are excluded from cloning.")
 
 
+class ExcludeNonTaggedCloneStrategyDjangoModelCloneStrategy:
+    """Strategy to exclude models without specific tags from cloning."""
+
+    def __init__(self, required_tag: str):
+        self.required_tag = required_tag
+
+    def is_suitable(self, model_instance: t.Any) -> bool:
+        return hasattr(model_instance, 'game_tags') and self.required_tag not in model_instance.game_tags
+
+    def clone(self, model_instance: models.Model) -> models.Model:
+        raise CannotCloneError(
+            f"Model {model_instance} does not have the required tag '{self.required_tag}' for cloning.")
+
+
 class DjangoCloneService:
     """Django implementation of CloneService protocol."""
 
-    def __init__(self, strategies: t.Set[CloneStrategy] = None,
+    def __init__(self,
+                 strategies: t.Set[CloneStrategy] = None,
                  dependencies_discovery: DependencyDiscoveryService = None,
                  history_log: CloneLogger = None,
                  id_resolver: IdResolver = None):
@@ -229,6 +266,8 @@ class DjangoCloneService:
         for strategy in self.strategies:
             if strategy.is_suitable(model_instance):
                 new_instance = strategy.clone(model_instance)
+                if not new_instance:
+                    continue
                 self.history_log.cloned(model_instance, identifier)
 
                 if deep:
@@ -269,7 +308,7 @@ class DjangoCloneService:
 # Factory functions
 def create_django_clone_service(clone_related: bool = True, clone_reverse: bool = True) -> DjangoCloneService:
     """Create configured Django clone service."""
-    discovery = DjangoDependencyDiscoveryService(clone_related=clone_related, clone_reverse=clone_reverse)
+    discovery = DjangoDependencyDiscoveryService(clone_related=clone_related, reverse=clone_reverse)
     return DjangoCloneService(dependencies_discovery=discovery)
 
 

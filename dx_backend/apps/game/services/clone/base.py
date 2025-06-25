@@ -78,6 +78,27 @@ class Dependency:
         return f"Dependency: {self.instance} with assigner {self.assigner.__name__ if self.assigner else 'None'}"
 
 
+class FilterDependency(t.Protocol):
+
+    def __call__(self, dependency: Dependency) -> bool:
+        """
+        Filter dependencies based on a condition.
+        :param dependency: The dependency to check.
+        :return: True if the dependency should be included, False otherwise.
+        """
+        raise NotImplementedError("FilterDependency method must be implemented by subclasses.")
+
+
+class AcceptAllDependencies(FilterDependency):
+    """
+    A filter that accepts all dependencies without any condition.
+    This is useful when you want to include all discovered dependencies.
+    """
+
+    def __call__(self, dependency: Dependency) -> bool:
+        return True  # Accept all dependencies
+
+
 class DependencyDiscoveryService(t.Protocol):
     """
     Protocol for a service that discovers dependencies of a model instance.
