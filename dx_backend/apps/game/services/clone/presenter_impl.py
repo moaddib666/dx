@@ -12,7 +12,7 @@ import typing as t
 from collections import defaultdict, deque
 
 from .discovery_core import ModelGraph, ModelDependency, ModelRelation
-from .presentor_core import (
+from .presenter_core import (
     GraphAnalysisResult, ModelDistribution, RelationDistribution,
     DepthAnalysis, CircularDependency, SerializedModel, GraphAnalyzer,
     PresentationFormat, PresentationOptions, JsonGraphRepresentation,

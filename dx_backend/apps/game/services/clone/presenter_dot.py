@@ -11,11 +11,11 @@ import typing as t
 from collections import defaultdict
 
 from .discovery_core import ModelGraph, ModelDependency, ModelRelation
-from .presentor_core import (
+from .presenter_core import (
     GraphAnalyzer, PresentationFormat, PresentationOptions, GraphAnalysisResult,
     GraphLayout
 )
-from .presentor_impl import BasicGraphAnalyzer
+from .presenter_impl import BasicGraphAnalyzer
 
 logger = logging.getLogger("apps.game.services.clone")
 

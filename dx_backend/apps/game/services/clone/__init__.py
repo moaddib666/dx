@@ -60,7 +60,7 @@ from .discovery_impl import (
     # Django-specific Metadata
     DjangoRelationshipMetadata,
 )
-from .presentor_core import (
+from .presenter_core import (
     # Presentation Types
     PresentationFormat,
     PresentationOptions,
@@ -77,13 +77,13 @@ from .presentor_core import (
     ModelGraphPresenter,
     GraphAnalyzer,
 )
-from .presentor_dot import (
+from .presenter_dot import (
     DotPresenter,
 )
-from .presentor_factory import (
+from .presenter_factory import (
     PresenterFactory,
 )
-from .presentor_impl import (
+from .presenter_impl import (
     # Presenters
     TextTreePresenter,
     JsonPresenter,

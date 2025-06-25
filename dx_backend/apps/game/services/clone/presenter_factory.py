@@ -8,9 +8,9 @@ Factory for creating model dependency graph presenters based on format requireme
 import logging
 import typing as t
 
-from .presentor_core import PresentationFormat, ModelGraphPresenter, GraphAnalyzer
-from .presentor_dot import DotPresenter
-from .presentor_impl import TextTreePresenter, JsonPresenter
+from .presenter_core import PresentationFormat, ModelGraphPresenter, GraphAnalyzer
+from .presenter_dot import DotPresenter
+from .presenter_impl import TextTreePresenter, JsonPresenter
 
 logger = logging.getLogger("apps.game.services.clone")
 
