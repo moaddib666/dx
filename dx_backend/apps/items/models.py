@@ -16,7 +16,6 @@ class ItemsManager(models.Manager):
 
 
 class Item(BaseModel):
-    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
     name = models.CharField(max_length=255)
     description = models.TextField(default='')
     icon = models.ImageField(upload_to='icons/items/', null=True, blank=True)
@@ -31,8 +30,6 @@ class Item(BaseModel):
 
     base_price = models.PositiveIntegerField(default=1)
     canonical = models.BooleanField(default=True)
-
-    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='items')
 
     def __str__(self):
         return f"{self.name} ({self.type})"
