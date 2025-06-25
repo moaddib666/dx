@@ -1,248 +1,236 @@
 """
-Model Graph Presenters - Core Abstractions
-==========================================
-
-This module provides abstract protocols for presenting model dependency graphs
-and concrete implementations for different output formats with proper typing.
+DOT Graph Presenter - Visualization Adapter
+Distance-based node sizing for hierarchical model graphs.
 """
 
 import dataclasses
-import logging
 import typing as t
 from abc import abstractmethod
 from enum import StrEnum
+from collections import deque
 
+# Import domain models (assumes discovery_module.py exists)
 from .discovery_core import ModelGraph, ModelDependency, ModelRelation, RelationType
 
-logger = logging.getLogger("apps.game.services.clone")
 
+# ============================================================================
+# Presentation Contracts
+# ============================================================================
 
 class PresentationFormat(StrEnum):
-    """Supported presentation formats."""
     TEXT = "text"
     JSON = "json"
-    HTML = "html"
     DOT = "dot"
-    CSV = "csv"
+    HTML = "html"
 
 
 class GraphLayout(StrEnum):
-    """Supported graph layout algorithms for DOT presenter."""
-    DOT = "dot"  # Hierarchical layout (default)
-    NEATO = "neato"  # Spring model layout
-    FDP = "fdp"  # Force-directed placement
-    CIRCO = "circo"  # Circular layout
-    TWOPI = "twopi"  # Radial layout
-    SFDP = "sfdp"  # Scalable force-directed placement
+    DOT = "dot"
+    NEATO = "neato"
+    FDP = "fdp"
+    CIRCO = "circo"
 
 
 @dataclasses.dataclass(frozen=True)
 class PresentationOptions:
-    """Configuration options for presentation."""
-    show_metadata: bool = True
-    show_relation_types: bool = True
-    max_depth: t.Optional[int] = None
-    include_reverse_relations: bool = True
-    sort_by_model_type: bool = False
-    indent_size: int = 2
-    include_statistics: bool = False
-    # DOT-specific options
     graph_layout: GraphLayout = GraphLayout.DOT
     show_node_details: bool = True
-    use_model_colors: bool = True
     show_edge_labels: bool = True
-    cluster_by_model: bool = False
-    highlight_cycles: bool = True
+    include_reverse_relations: bool = False
+    cluster_by_distance: bool = True
+    max_distance: int = 6
 
-
-@dataclasses.dataclass(frozen=True)
-class ModelDistribution:
-    """Distribution of models by app."""
-    app_counts: t.Dict[str, int]
-    model_counts: t.Dict[str, int]
-
-    @property
-    def total_apps(self) -> int:
-        result = len(self.app_counts)
-        logger.debug("ModelDistribution.total_apps: %d", result)
-        return result
-
-    @property
-    def total_models(self) -> int:
-        result = len(self.model_counts)
-        logger.debug("ModelDistribution.total_models: %d", result)
-        return result
-
-
-@dataclasses.dataclass(frozen=True)
-class RelationDistribution:
-    """Distribution of relationships by type."""
-    relation_counts: t.Dict[str, int]
-
-    @property
-    def total_relation_types(self) -> int:
-        result = len(self.relation_counts)
-        logger.debug("RelationDistribution.total_relation_types: %d", result)
-        return result
-
-    @property
-    def total_relations(self) -> int:
-        result = sum(self.relation_counts.values())
-        logger.debug("RelationDistribution.total_relations: %d", result)
-        return result
-
-
-@dataclasses.dataclass(frozen=True)
-class DepthAnalysis:
-    """Analysis of graph depth structure."""
-    max_depth: int
-    depth_distribution: t.Dict[int, int]
-
-    @property
-    def average_depth(self) -> float:
-        logger.debug("Calculating average depth")
-        if not self.depth_distribution:
-            logger.debug("Empty depth distribution, returning 0.0")
-            return 0.0
-        total_nodes = sum(self.depth_distribution.values())
-        weighted_sum = sum(depth * count for depth, count in self.depth_distribution.items())
-        result = weighted_sum / total_nodes
-        logger.debug("Average depth: %.2f (total nodes: %d, weighted sum: %d)",
-                     result, total_nodes, weighted_sum)
-        return result
-
-
-@dataclasses.dataclass(frozen=True)
-class CircularDependency:
-    """Represents a circular dependency cycle."""
-    cycle_models: t.List['SerializedModel']
-    cycle_length: int
-
-    def __post_init__(self):
-        cycle_length = len(self.cycle_models)
-        logger.debug("Initializing CircularDependency with %d models", cycle_length)
-        object.__setattr__(self, 'cycle_length', cycle_length)
-
-
-@dataclasses.dataclass(frozen=True)
-class GraphAnalysisResult:
-    """Complete analysis result of a model dependency graph."""
-    total_nodes: int
-    total_edges: int
-    has_root: bool
-    model_distribution: ModelDistribution
-    relation_distribution: RelationDistribution
-    depth_analysis: DepthAnalysis
-    circular_dependencies: t.List[CircularDependency]
-    orphaned_models: t.List['SerializedModel']
-
-    @property
-    def has_cycles(self) -> bool:
-        result = len(self.circular_dependencies) > 0
-        logger.debug("GraphAnalysisResult.has_cycles: %r (found %d cycles)",
-                     result, len(self.circular_dependencies))
-        return result
-
-    @property
-    def has_orphans(self) -> bool:
-        result = len(self.orphaned_models) > 0
-        logger.debug("GraphAnalysisResult.has_orphans: %r (found %d orphaned models)",
-                     result, len(self.orphaned_models))
-        return result
-
-
-@dataclasses.dataclass(frozen=True)
-class SerializedModel:
-    """Serialized representation of a model dependency."""
-    model_type: str
-    app_label: str
-    model_name: str
-    verbose_name: t.Optional[str] = None
-
-
-@dataclasses.dataclass(frozen=True)
-class SerializedRelationshipMetadata:
-    """Serialized relationship metadata."""
-    field_name: t.Optional[str]
-    related_name: t.Optional[str]
-    through_model: t.Optional[str]
-    null: bool
-    blank: bool
-    on_delete: t.Optional[str]
-    db_column: t.Optional[str]
-
-
-@dataclasses.dataclass(frozen=True)
-class SerializedModelRelation:
-    """Serialized representation of a model relation."""
-    source: SerializedModel
-    target: SerializedModel
-    relation_type: str
-    is_reverse: bool
-    is_many: bool
-    metadata: t.Optional[SerializedRelationshipMetadata] = None
-
-
-@dataclasses.dataclass(frozen=True)
-class GraphStructure:
-    """Core graph structure for JSON serialization."""
-    models: t.List[SerializedModel]
-    relations: t.List[SerializedModelRelation]
-    root_models: t.List[SerializedModel]
-
-
-@dataclasses.dataclass(frozen=True)
-class GraphMetadata:
-    """Metadata about the graph presentation."""
-    total_models: int
-    total_relations: int
-    has_root: bool
-    presentation_options: PresentationOptions
-
-
-@dataclasses.dataclass(frozen=True)
-class JsonGraphRepresentation:
-    """Complete JSON representation of a model dependency graph."""
-    graph: GraphStructure
-    metadata: GraphMetadata
-    statistics: t.Optional[GraphAnalysisResult] = None
-
-
-# =============================================================================
-# ABSTRACT PRESENTATION PROTOCOLS
-# =============================================================================
 
 class ModelGraphPresenter(t.Protocol):
-    """Protocol for presenting model dependency graphs in various formats."""
-
     @abstractmethod
-    def present(self,
-                graph: ModelGraph,
-                options: t.Optional[PresentationOptions] = None) -> str:
-        """
-        Present a model dependency graph in a specific format.
-
-        :param graph: The model dependency graph to present
-        :param options: Optional presentation configuration
-        :return: String representation of the graph
-        """
+    def present(self, graph: ModelGraph, options: t.Optional[PresentationOptions] = None) -> str:
         ...
 
     @abstractmethod
     def get_format(self) -> PresentationFormat:
-        """Return the format this presenter outputs."""
         ...
 
 
-class GraphAnalyzer(t.Protocol):
-    """Protocol for analyzing model dependency graphs before presentation."""
+# ============================================================================
+# DOT Presenter Implementation
+# ============================================================================
 
-    @abstractmethod
-    def analyze(self, graph: ModelGraph) -> GraphAnalysisResult:
-        """
-        Analyze a model dependency graph and return statistics.
+class DotGraphPresenter:
+    """DOT format presenter with distance-based sizing."""
 
-        :param graph: The model dependency graph to analyze
-        :return: Complete analysis results
-        """
-        ...
+    def present(self, graph: ModelGraph, options: t.Optional[PresentationOptions] = None) -> str:
+        opts = options or PresentationOptions()
+        distances = self._calculate_distances_from_roots(graph)
+
+        lines = [
+            f"digraph ModelGraph {{",
+            f"    layout={opts.graph_layout.value};",
+            f"    rankdir=TB;",
+            f"    ranksep=1.5;",
+            f"    nodesep=0.8;",
+            ""
+        ]
+
+        # Nodes with distance-based sizing
+        for node in graph.nodes:
+            lines.append(self._create_node(node, distances, graph.root_models, opts))
+
+        lines.append("")
+
+        # Edges with relation styling
+        for edge in graph.edges:
+            if opts.include_reverse_relations or not edge.is_reverse_relation:
+                lines.append(self._create_edge(edge, opts))
+
+        # Distance-based ranks
+        if opts.cluster_by_distance:
+            lines.extend(self._create_distance_ranks(distances, opts.max_distance))
+
+        lines.append("}")
+        return "\n".join(lines)
+
+    def get_format(self) -> PresentationFormat:
+        return PresentationFormat.DOT
+
+    def _calculate_distances_from_roots(self, graph: ModelGraph) -> t.Dict[ModelDependency, int]:
+        """BFS distance calculation from root models."""
+        distances = {}
+        queue = deque()
+
+        # Initialize roots at distance 0
+        for root in graph.root_models:
+            distances[root] = 0
+            queue.append((root, 0))
+
+        # BFS traversal
+        while queue:
+            current, dist = queue.popleft()
+
+            for relation in graph.get_relations_for_model(current):
+                target = relation.target
+                if target not in distances:
+                    distances[target] = dist + 1
+                    queue.append((target, dist + 1))
+
+        # Handle orphaned nodes
+        for node in graph.nodes:
+            if node not in distances:
+                distances[node] = 999
+
+        return distances
+
+    def _create_node(self, node: ModelDependency, distances: t.Dict[ModelDependency, int],
+                     root_models: t.Set[ModelDependency], opts: PresentationOptions) -> str:
+        """Create node with distance-based sizing."""
+        distance = distances.get(node, 999)
+
+        # Size scaling by distance
+        if distance == 0:
+            size_factor = 2.0  # Root models largest
+        elif distance <= 2:
+            size_factor = 1.5
+        elif distance <= 4:
+            size_factor = 1.0
+        else:
+            size_factor = 0.7  # Far models smallest
+
+        # App-based color
+        color = self._get_app_color(node.app_label)
+
+        # Node attributes
+        attrs = [
+            f'label="{self._get_node_label(node, opts)}"',
+            f'fontsize={int(12 * size_factor)}',
+            f'width={size_factor}',
+            f'height={size_factor * 0.6}',
+            f'style=filled',
+            f'fillcolor="{color}"',
+            f'shape=box'
+        ]
+
+        # Highlight root models
+        if node in root_models:
+            attrs.extend(['penwidth=3', 'color=red'])
+
+        node_id = self._get_node_id(node)
+        return f'    "{node_id}" [{", ".join(attrs)}];'
+
+    def _create_edge(self, edge: ModelRelation, opts: PresentationOptions) -> str:
+        """Create edge with relation type styling."""
+        source_id = self._get_node_id(edge.source)
+        target_id = self._get_node_id(edge.target)
+
+        # Edge styling by relation type
+        attrs = []
+
+        if edge.relation_type == RelationType.FOREIGN_KEY:
+            attrs.extend(['color=blue', 'penwidth=2'])
+        elif edge.relation_type == RelationType.MANY_TO_MANY:
+            attrs.extend(['color=green', 'penwidth=2', 'style=dashed'])
+        elif edge.relation_type == RelationType.ONE_TO_ONE:
+            attrs.extend(['color=purple', 'penwidth=2'])
+        elif edge.is_reverse_relation:
+            attrs.extend(['color=gray', 'penwidth=1', 'style=dotted'])
+
+        # Edge labels
+        if opts.show_edge_labels and edge.metadata.field_name:
+            attrs.append(f'label="{edge.metadata.field_name}"')
+
+        attrs_str = f' [{", ".join(attrs)}]' if attrs else ''
+        return f'    "{source_id}" -> "{target_id}"{attrs_str};'
+
+    def _create_distance_ranks(self, distances: t.Dict[ModelDependency, int], max_distance: int) -> t.List[str]:
+        """Group nodes by distance for hierarchical layout."""
+        ranks = {}
+        for node, distance in distances.items():
+            if distance <= max_distance:
+                if distance not in ranks:
+                    ranks[distance] = []
+                ranks[distance].append(node)
+
+        constraints = []
+        for distance in sorted(ranks.keys()):
+            node_ids = [f'"{self._get_node_id(node)}"' for node in ranks[distance]]
+            constraints.append(f"    {{ rank=same; {'; '.join(node_ids)}; }}")
+
+        return constraints
+
+    def _get_node_id(self, node: ModelDependency) -> str:
+        return f"{node.app_label}_{node.model_name}"
+
+    def _get_node_label(self, node: ModelDependency, opts: PresentationOptions) -> str:
+        if opts.show_node_details:
+            return f"{node.app_label}\\n{node.model_name}"
+        return node.model_name
+
+    def _get_app_color(self, app_label: str) -> str:
+        """Consistent app colors."""
+        colors = ['lightblue', 'lightgreen', 'lightyellow', 'lightpink',
+                  'lightcoral', 'lightgray', 'lightcyan', 'lavender']
+        return colors[hash(app_label) % len(colors)]
+
+
+# ============================================================================
+# Usage Example
+# ============================================================================
+
+def create_dot_visualization(graph: ModelGraph, layout: GraphLayout = GraphLayout.DOT) -> str:
+    """Simple factory for DOT visualization."""
+    presenter = DotGraphPresenter()
+    options = PresentationOptions(
+        graph_layout=layout,
+        show_node_details=True,
+        show_edge_labels=True,
+        include_reverse_relations=False,
+        cluster_by_distance=True
+    )
+    return presenter.present(graph, options)
+
+
+def save_dot_file(graph: ModelGraph, filename: str = "model_graph.dot") -> None:
+    """Save graph to DOT file for Graphviz rendering."""
+    dot_output = create_dot_visualization(graph)
+    with open(filename, "w") as f:
+        f.write(dot_output)
+    print(f"Saved: {filename}")
+    print(f"Render: dot -Tpng {filename} -o {filename.replace('.dot', '.png')}")
