@@ -7,6 +7,16 @@ if t.TYPE_CHECKING:
 logger = logging.getLogger("apps.game.services.clone")
 
 
+class HookError(Exception):
+    """
+    Exception raised when a hook fails to execute properly.
+    """
+
+    def __init__(self, message, instance: "Dependency"):
+        super().__init__(message)
+        self.instance = instance
+
+
 class CloneHook(t.Protocol):
     """
     Protocol for clone hooks that can be executed during the cloning process.
@@ -41,5 +51,18 @@ class SaveCloneHook(CloneHook):
         After cloning, save the cloned instance.
         """
         logger.debug("Saving cloned instance: %s", instance)
-        instance.source.save()
-        instance.target.save()
+        try:
+            # due to 1-1 relations, we need to save both source and target
+            # FIXME: proper set reversy for 1-1 relations to relay on it
+            if isinstance(instance.target, instance.field.model):
+                instance.source.save()
+                instance.target.save()
+            elif isinstance(instance.source, instance.field.model):
+                instance.target.save()
+                instance.source.save()
+        except Exception as err:
+            logger.exception("Failed to save cloned instance: %s", instance)
+            raise HookError(
+                f"Failed to save cloned: {instance}",
+                instance
+            ) from err

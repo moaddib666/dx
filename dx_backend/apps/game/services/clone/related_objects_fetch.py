@@ -104,7 +104,6 @@ class CompositeFetcher(FieldRelationFetcher):
                 return fetcher.fetch(instance, field)
         raise UnsupportedFieldTypeError(field)
 
-
 def get_default_relations_fetcher() -> FieldRelationFetcher:
     """
     Create a default fetcher that can handle ManyToOne, ManyToMany, and OneToOne relationships.

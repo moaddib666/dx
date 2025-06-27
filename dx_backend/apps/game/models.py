@@ -14,5 +14,6 @@ class Campaign(BaseModel):
     description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
+
     def __str__(self):
-        return self.name
+        return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"

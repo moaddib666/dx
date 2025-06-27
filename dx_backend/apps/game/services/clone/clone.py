@@ -2,7 +2,8 @@ import copy
 import logging
 import typing as t
 
-from django.db.models import Model
+from django.db.models import Model, OneToOneField
+from polymorphic.models import PolymorphicModel
 
 from apps.game.services.clone.base import Dependency
 
@@ -15,14 +16,29 @@ class CloneService(t.Protocol):
     """
     __repository__: dict[Model, Model]
 
+    def __init__(self, **kwargs: t.Any) -> None:
+        """
+        Initialize the clone service with an empty repository.
+        This method should be implemented by concrete clone services.
+        """
+        self.__repository__ = {}
+
     def clone_model(self, instance: Model, **kwargs: t.Any) -> Model:
         """
         Clone the given model instance.
         This method should be implemented by concrete clone services.
         """
-        new_instance = copy.deepcopy(instance)
-        new_instance.pk = None  # Reset primary key to create a new instance
+        new_instance = self._clone_model(instance, **kwargs)
         self.__repository__[instance] = new_instance  # Store the cloned instance in the repository
+        return new_instance
+
+    def _clone_model(self, instance: Model, **kwargs: t.Any) -> Model:
+        """
+        Clone the given model instance without storing it in the repository.
+        This method is used internally and should not be called directly.
+        """
+        new_instance = copy.deepcopy(instance)
+        new_instance.pk = None
         return new_instance
 
     def clone(self, dependency: Dependency, **kwargs: t.Any) -> Dependency:
@@ -67,5 +83,23 @@ class DefaultCloneService(CloneService):
     This service uses a simple in-memory repository to store cloned instances.
     """
 
-    def __init__(self):
-        self.__repository__ = {}
+
+class PolymorphicCloneService(DefaultCloneService):
+    """
+    Polymorphic implementation of the CloneService protocol.
+    This service can handle cloning of instances with polymorphic relations.
+    """
+
+    def _clone_model(self, instance: Model, **kwargs: t.Any) -> Model:
+        new_instance = super()._clone_model(instance, **kwargs)
+        if isinstance(new_instance, PolymorphicModel):
+            setattr(new_instance, getattr(new_instance, 'polymorphic_primary_key_name'), None)
+            # Clean up polymorph pointers
+            for field in new_instance._meta.get_fields(include_parents=True):
+                if not isinstance(field, OneToOneField):
+                    continue
+                if not isinstance(instance, field.related_model):
+                    continue
+                setattr(new_instance, field.attname, None)
+
+        return new_instance

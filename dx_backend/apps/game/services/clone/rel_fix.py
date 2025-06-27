@@ -51,7 +51,13 @@ class OneToOneUpdater(RelationUpdater):
         Update the target instance's relation based on the dependency.
         """
         logger.debug("Updating OneToOne relation for %s", dependency.target)
-        setattr(dependency.target, dependency.field.name, dependency.source)
+        target_model = dependency.field.model
+        if isinstance(dependency.target, target_model):
+            setattr(dependency.source, dependency.field.remote_field.name, dependency.target)
+        elif isinstance(dependency.source, target_model):
+            setattr(dependency.target, dependency.field.remote_field.name, dependency.source)
+        else:
+            raise UnexpectedDependencyError(dependency)
 
 
 class ManyToOneUpdater(RelationUpdater):
@@ -67,7 +73,7 @@ class ManyToOneUpdater(RelationUpdater):
         Update the target instance's relation based on the dependency.
         """
         logger.debug("Updating ManyToOne relation for %s", dependency.target)
-        setattr(dependency.target, dependency.field.name, dependency.source)
+        setattr(dependency.target, dependency.field.remote_field.name, dependency.source)
 
 
 class ManyToManyUpdater(RelationUpdater):

@@ -90,6 +90,10 @@ class InstanceDependencyGraph:
         Process auto-created fields and return related instances.
         The field can be a ManyToOne, ManyToMany, or OneToOne relation.
         """
+        # Dirty hack better to crete proper abstraction for this
+        if field.name == "gameobject_ptr":
+            # Skip the gameobject_ptr field as it is not a relation
+            return []
         return self.relation_fetcher.fetch(instance, field)
 
 

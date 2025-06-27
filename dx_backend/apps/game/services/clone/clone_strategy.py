@@ -1,3 +1,4 @@
+import datetime
 import typing as t
 
 from django.db.models import Model
@@ -39,3 +40,12 @@ class DefaultCloneStrategy(CloneStrategy):
         self.cloner = cloner
         self.fixer = fixer
         self.hook = hook
+
+
+class CampaignCloneStrategy(DefaultCloneStrategy):
+    def clone_root_instance(self, instance: "Model") -> "Model":
+        instance = super().clone_root_instance(instance)
+        instance.name = f"{instance.name} (clone) [{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}]"
+        instance.is_active = False
+        instance.is_completed = False
+        return instance
