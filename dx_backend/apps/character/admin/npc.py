@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.admin import SimpleListFilter
 from django.db import transaction
 
+from apps.core.admin import CampaignModelAdmin
 from apps.core.admin.mixins import CampaignAdminMixin
 
 from apps.character.models.npc import (
@@ -26,7 +27,7 @@ class CharacterStatTemplateInline(admin.TabularInline):
 
 
 @admin.register(CharacterStatsTemplate)
-class CharacterStatsTemplateAdmin(admin.ModelAdmin):
+class CharacterStatsTemplateAdmin(CampaignModelAdmin):
     list_display = ('name', 'description', 'stats_summary')
     search_fields = ('name', 'description')
     fieldsets = (
@@ -117,7 +118,14 @@ class CharacterStatsTemplateAdmin(admin.ModelAdmin):
 
 
 @admin.register(CharacterBiographyTemplate)
-class CharacterBiographyTemplateAdmin(admin.ModelAdmin):
+class CharacterBiographyTemplateAdmin(CampaignModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            # Filter biography templates that are used by character templates in the current campaign
+            return qs.filter(charactertemplate__campaign_id=campaign_id).distinct()
+        return qs
     list_display = ('name', 'avatar_thumbnail', 'gender', 'randomize_gender', 'age_min', 'age_max')
     search_fields = ('name', 'description', 'background', 'appearance')
     fieldsets = (
@@ -294,7 +302,7 @@ class CampaignFilter(SimpleListFilter):
 
 
 @admin.register(CharacterTemplate)
-class CharacterTemplateAdmin(CampaignAdminMixin, admin.ModelAdmin):
+class CharacterTemplateAdmin(CampaignModelAdmin):
     list_display = ('name', 'avatar_thumbnail', 'organization', 'rank', 'behavior', 'campaign', 'clone_template', 'create_npc')
     list_filter = ('behavior', CampaignFilter, 'organization')
     search_fields = ('name', 'description', 'tags')
