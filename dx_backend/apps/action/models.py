@@ -1,4 +1,5 @@
 import typing as t
+import uuid
 
 from django.db import models
 
@@ -20,7 +21,8 @@ class CycleManager(models.Manager):
         return qs.latest('id')
 
     def next(self, campaign: "Campaign"):
-        return self.create(campaign=campaign)
+        current = self.current(campaign=campaign)
+        return self.create(campaign=campaign, number=current.id + 1)
 
     def next_cycle(self, campaign: "Campaign"):
         """
@@ -37,7 +39,12 @@ class Cycle(BaseModel):
     """
     objects = CycleManager()
     id = models.AutoField(primary_key=True)
+    number = models.BigIntegerField(default=0, help_text='Cycle number in the campaign')
     campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='cycles')
+
+    class Meta:
+        unique_together = ('number', 'campaign')
+        ordering = ['-number']
 
 
 class CharacterAction(BaseModel):

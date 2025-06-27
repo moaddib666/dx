@@ -89,7 +89,8 @@ class CharacterActionAdmin(CampaignModelAdmin):
 
     def get_queryset(self, request):
         """
-        Override queryset to annotate whether actions are in the current cycle.
+        Override queryset to annotate whether actions are in the current cycle
+        and filter by campaign.
         """
         qs = super().get_queryset(request)
 
@@ -99,6 +100,8 @@ class CharacterActionAdmin(CampaignModelAdmin):
         if campaign_id:
             from apps.game.models import Campaign
             campaign = Campaign.objects.get(id=campaign_id)
+            # Filter by campaign through cycle relationship
+            qs = qs.filter(cycle__campaign_id=campaign_id)
 
         current_cycle = Cycle.objects.current(campaign=campaign)
         return qs.annotate(is_current_cycle=models.Case(
@@ -131,17 +134,41 @@ class CharacterActionAdmin(CampaignModelAdmin):
 
 
 @admin.register(ActionImpact)
-class ActionImpactAdmin(admin.ModelAdmin):
+class ActionImpactAdmin(CampaignModelAdmin):
     list_display = ('id', 'action', 'target', 'type', 'violation', 'size', 'dice_roll_result')
-    list_filter = ('type', 'violation')
+    list_filter = ('type', 'violation', 'action__cycle__campaign')
     search_fields = ('action__data', 'target__name')
+
+    def get_queryset(self, request):
+        """
+        Override to filter by campaign through action -> cycle -> campaign relationship.
+        """
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+
+        if campaign_id:
+            return qs.filter(action__cycle__campaign_id=campaign_id)
+
+        return qs
 
 
 @admin.register(DiceRollResult)
-class DiceRollResultAdmin(admin.ModelAdmin):
+class DiceRollResultAdmin(CampaignModelAdmin):
     list_display = ('id', 'dice_side', 'multiplier', 'outcome')
-    list_filter = ('outcome',)
+    list_filter = ('outcome', 'actionimpact__action__cycle__campaign')
     search_fields = ('outcome',)
+
+    def get_queryset(self, request):
+        """
+        Override to filter by campaign through actionimpact -> action -> cycle -> campaign relationship.
+        """
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+
+        if campaign_id:
+            return qs.filter(actionimpact__action__cycle__campaign_id=campaign_id).distinct()
+
+        return qs
 
 
 @admin.register(SpecialAction)
