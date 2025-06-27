@@ -1,5 +1,5 @@
 from collections import defaultdict, deque
-from typing import List, Set, Dict, Tuple, Optional, Any
+from typing import List, Set, Dict, Tuple, Optional, Any, Iterable
 
 from apps.game.models import Campaign
 from apps.game.services.clone.base import Dependency
@@ -106,10 +106,40 @@ class DependencyGraph:
         return None
 
 
+class ShapeDistiller:
+
+    def __init__(self):
+        self.lookup_hash_store = set()
+
+    def get_hash(self, dependency: Dependency) -> str:
+        """Generate a unique hash for a dependency based on source and target"""
+        return f"{dependency.source._meta.label}.{dependency.target._meta.label}.{dependency.field.name}"
+
+    def _add_to_lookup(self, dependency: Dependency) -> bool:
+        """Add a dependency to the lookup store if it's unique"""
+        dep_hash = self.get_hash(dependency)
+        if dep_hash in self.lookup_hash_store:
+            return False
+        self.lookup_hash_store.add(dep_hash)
+        return True
+
+    def _clear_lookup(self):
+        """Clear the lookup store"""
+        self.lookup_hash_store.clear()
+
+    def distill(self, dependencies: Iterable[Dependency]) -> Set[Dependency]:
+        """Distill dependencies to unique ones based on source and target"""
+        result = {dep for dep in dependencies if self._add_to_lookup(dep)}
+        self._clear_lookup()
+        return result
+
+
 class DependencyGraphPresenter:
     """Presents Django model dependency graphs"""
 
-    def __init__(self, dependencies: List[Dependency]):
+    def __init__(self, dependencies: List[Dependency], distiller: ShapeDistiller = None):
+        if distiller:
+            dependencies = distiller.distill(dependencies)
         self.dependencies = dependencies
         self.graph = self._build_graph()
 
