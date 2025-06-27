@@ -62,10 +62,10 @@ class BargainAdmin(admin.ModelAdmin):
         )
         items_html = ""
         for offered in obj.side_a_offered_items.all():
-            if offered.item.icon:
+            if offered.item.item.icon:
                 items_html += format_html(
                     '<img src="{}" style="height: 40px; width: 40px; margin: 2px;" />',
-                    offered.item.icon.url
+                    offered.item.item.icon.url
                 )
         return format_html('{}{}', header, items_html) if items_html else "No Items"
     side_a_offered_items_preview.short_description = "Side A Offered Items"
@@ -84,10 +84,10 @@ class BargainAdmin(admin.ModelAdmin):
         )
         items_html = ""
         for offered in obj.side_b_offered_items.all():
-            if offered.item.icon:
+            if offered.item.item.icon:
                 items_html += format_html(
                     '<img src="{}" style="height: 40px; width: 40px; margin: 2px;" />',
-                    offered.item.icon.url
+                    offered.item.item.icon.url
                 )
         return format_html('{}{}', header, items_html) if items_html else "No Items"
     side_b_offered_items_preview.short_description = "Side B Offered Items"
@@ -100,10 +100,10 @@ class OfferedItemAdmin(admin.ModelAdmin):
     list_filter = ('bargain',)
 
     def item_icon(self, obj):
-        if obj.item.icon:
+        if obj.item.item.icon:
             return format_html(
                 '<img src="{}" style="height: 50px; width: 50px; border-radius: 5px;" />',
-                obj.item.icon.url
+                obj.item.item.icon.url
             )
         return "No Icon"
     item_icon.short_description = "Item Icon"
