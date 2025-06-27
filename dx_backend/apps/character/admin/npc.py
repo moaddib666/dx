@@ -472,6 +472,15 @@ class CharacterTemplateAdmin(CampaignAdminMixin, admin.ModelAdmin):
         if template is None:
             return self._get_obj_does_not_exist_redirect(request, self.model._meta, object_id)
 
+        # Get the current campaign from the session
+        campaign_id = request.session.get('campaign_id')
+        campaign = None
+        if campaign_id:
+            from apps.game.models import Campaign
+            campaign = Campaign.objects.get(id=campaign_id)
+        else:
+            campaign = template.campaign
+
         with transaction.atomic():
             # Clone the main template
             new_template = CharacterTemplate.objects.create(
@@ -490,7 +499,7 @@ class CharacterTemplateAdmin(CampaignAdminMixin, admin.ModelAdmin):
                 action_points_multiplier=template.action_points_multiplier,
                 randomize_name=template.randomize_name,
                 name_pattern=template.name_pattern,
-                campaign=template.campaign
+                campaign=campaign
             )
 
             # Clone related objects
@@ -543,9 +552,19 @@ class CharacterTemplateAdmin(CampaignAdminMixin, admin.ModelAdmin):
         if template is None:
             return self._get_obj_does_not_exist_redirect(request, self.model._meta, object_id)
 
+        # Get the current campaign from the session
+        campaign_id = request.session.get('campaign_id')
+        campaign = None
+        if campaign_id:
+            from apps.game.models import Campaign
+            campaign = Campaign.objects.get(id=campaign_id)
+        else:
+            # Fallback to the template's campaign if no campaign in session
+            campaign = template.campaign
+
         # Create the NPC using the factory
         factory = NPCFactory()
-        config = NPCFactoryConfig(template=template)
+        config = NPCFactoryConfig(template=template, campaign=campaign)
 
         try:
             npc = factory.create_npc(config)

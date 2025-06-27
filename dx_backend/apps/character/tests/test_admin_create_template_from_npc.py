@@ -23,17 +23,17 @@ def test_admin_create_template_from_npc():
     """Test the admin action to create a template from an NPC."""
     # Create a factory
     factory = NPCFactory()
-    
+
     # First, create an NPC from a template
     template = CharacterTemplate.objects.first()
     if not template:
         print("No templates available. Please create a template first.")
         return
-    
-    config = NPCFactoryConfig(template=template, name="Test NPC for Admin Action")
+
+    config = NPCFactoryConfig(template=template, name="Test NPC for Admin Action", campaign=template.campaign)
     npc = factory.create_npc(config)
     print(f"Created NPC: {npc.name}")
-    
+
     # Set up the admin environment
     admin_site = AdminSite()
     character_admin = CharacterAdmin(Character, admin_site)
@@ -43,11 +43,11 @@ def test_admin_create_template_from_npc():
     if not request.user:
         print("No superuser found. Please create a superuser first.")
         return
-    
+
     # Execute the admin action
     queryset = Character.objects.filter(pk=npc.pk)
     character_admin.create_template_from_npc(request, queryset)
-    
+
     # Verify that a template was created
     template_name = f"{npc.name} Template"
     template = CharacterTemplate.objects.filter(name=template_name).first()
@@ -55,12 +55,12 @@ def test_admin_create_template_from_npc():
         print(f"Successfully created template: {template.name}")
     else:
         print("Failed to create template")
-    
+
     # Clean up
     if template:
         template.delete()
     npc.delete()
-    
+
     print("Test completed successfully!")
 
 if __name__ == "__main__":

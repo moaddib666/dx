@@ -99,7 +99,8 @@ class GameMasterItemViewSet(viewsets.ReadOnlyModelViewSet):
             world_item = default_world_item_factory.create_world_item(
                 item=item,
                 position=position,
-                dimension=character.dimension if character else None
+                dimension=character.dimension if character else None,
+                campaign=character.campaign
             )
 
             # If character is provided, assign the item to the character

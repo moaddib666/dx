@@ -464,7 +464,7 @@ class FullCharacterInfo(BaseModel):
 
     dimension: int
     # location: uuid.UUID
-    position: uuid.UUID
+    position: Optional[uuid.UUID]
     coordinates: Optional[Coordinate]
     # fight: Optional[uuid.UUID]
     # duel_invitations: list[uuid.UUID]

@@ -61,11 +61,22 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
         template = get_object_or_404(CharacterTemplate, id=template_id)
         position = get_object_or_404(Position, id=position_id)
 
+        # Get the campaign from the user's main character or fall back to the template's campaign
+        campaign = None
+        if (self.request.user.is_authenticated and
+                hasattr(self.request.user, 'main_character') and
+                self.request.user.main_character and
+                self.request.user.main_character.campaign):
+            campaign = self.request.user.main_character.campaign
+        else:
+            campaign = template.campaign
+
         # Create the NPC
         config = NPCFactoryConfig(
             template=template,
             position=position,
-            behavior=template.behavior
+            behavior=template.behavior,
+            campaign=campaign
         )
 
         factory = NPCFactory()

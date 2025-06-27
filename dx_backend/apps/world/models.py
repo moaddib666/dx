@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -130,7 +132,7 @@ class Position(Model):
      The position is part of the sub-location example: SubLocation is the building, Position is the room.
 
     """
-    id = models.UUIDField(primary_key=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     grid_x = models.BigIntegerField(default=0)
     grid_y = models.BigIntegerField(default=0)
     grid_z = models.BigIntegerField(default=0)
