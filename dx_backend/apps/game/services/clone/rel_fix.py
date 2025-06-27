@@ -89,7 +89,7 @@ class ManyToManyUpdater(RelationUpdater):
         Update the target instance's relation based on the dependency.
         """
         logger.debug("Updating ManyToMany relation for %s", dependency.target)
-        related_manager = getattr(dependency.target, dependency.field.name)
+        related_manager = getattr(dependency.target, dependency.field.remote_field.name)
         related_manager.add(dependency.source)
 
 

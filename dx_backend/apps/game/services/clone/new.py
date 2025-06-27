@@ -58,6 +58,8 @@ class InstanceDependencyGraph:
             # only auto created fields are included
             if not field.auto_created:
                 continue
+            if not field.is_relation:
+                continue
             logger.debug(f"Processing [{layer}] field: {field.name} on {instance.__class__.__name__}")
             instances = self.fetch_instances_by_field(instance, field)
             for related_instance in instances:
