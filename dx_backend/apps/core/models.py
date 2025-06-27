@@ -548,8 +548,7 @@ class GameObject(DjangoBaseModel, PolymorphicModel):
     dimension = django_models.ForeignKey("world.Dimension", on_delete=django_models.SET_NULL, null=True, blank=True,
                                          default=1)
     is_active = django_models.BooleanField(default=True)
-    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.SET_NULL, null=True, blank=True,
-                                        default=None)
+    campaign = django_models.ForeignKey('game.Campaign', on_delete=django_models.CASCADE)
 
 
 class StatObject(DjangoBaseModel, PolymorphicModel):
