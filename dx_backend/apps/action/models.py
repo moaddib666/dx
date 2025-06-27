@@ -1,5 +1,4 @@
 import typing as t
-import uuid
 
 from django.db import models
 
@@ -17,12 +16,12 @@ class CycleManager(models.Manager):
     def current(self, campaign: "Campaign"):
         qs = self.filter(campaign=campaign)
         if qs.count() == 0:
-            return self.next(campaign=campaign)
-        return qs.latest('id')
+            return self.create(campaign=campaign, number=0)
+        return qs.latest('number')
 
     def next(self, campaign: "Campaign"):
         current = self.current(campaign=campaign)
-        return self.create(campaign=campaign, number=current.id + 1)
+        return self.create(campaign=campaign, number=current.number + 1)
 
     def next_cycle(self, campaign: "Campaign"):
         """
@@ -34,17 +33,20 @@ class CycleManager(models.Manager):
 class Cycle(BaseModel):
     """
     A cycle is a representation of a turn in the game. It is a way to keep track of the order of actions in a fight.
-    The cycle id is used to determine to order history of actions in a world.
-    To get current cycle, use the latest cycle id.
+    The cycle number is used to determine the order history of actions in a world.
+    To get current cycle, use the latest cycle number.
     """
     objects = CycleManager()
     id = models.AutoField(primary_key=True)
-    number = models.BigIntegerField(default=0, help_text='Cycle number in the campaign')
+    number = models.BigIntegerField(default=0, help_text='Cycle number in the campaign', editable=False)
     campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='cycles')
 
     class Meta:
         unique_together = ('number', 'campaign')
-        ordering = ['-number']
+        ordering = ['number']
+
+    def __str__(self):
+        return f"Cycle {self.number} - {self.campaign.name if self.campaign else 'No Campaign'}"
 
 
 class CharacterAction(BaseModel):

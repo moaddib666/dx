@@ -7,7 +7,7 @@ from .models import Cycle, DiceRollResult, SpecialAction
 
 @admin.register(Cycle)
 class CycleAdmin(CampaignModelAdmin):
-    list_display = ('id', 'campaign', 'created_at', 'updated_at')  # Display the cycle details
+    list_display = ('number', 'id', 'campaign', 'created_at', 'updated_at')  # Display the cycle details
     list_filter = ('campaign',)
     actions = ['start_new_cycle']
 
@@ -53,7 +53,7 @@ class CharacterActionAdmin(CampaignModelAdmin):
 
     def cycle_group(self, obj):
         """
-        Display the cycle ID and visually distinguish the current cycle.
+        Display the cycle number and visually distinguish the current cycle.
         """
         # Get the campaign from the object's cycle
         campaign = obj.cycle.campaign if obj.cycle else None
@@ -61,11 +61,11 @@ class CharacterActionAdmin(CampaignModelAdmin):
         if obj.cycle == current_cycle:
             return format_html(
                 '<span style="font-weight: bold; color: green;">Current Cycle {}</span>',
-                obj.cycle.id
+                obj.cycle.number
             )
         return format_html(
             '<span style="color: gray;">Cycle {}</span>',
-            obj.cycle.id
+            obj.cycle.number
         )
 
     cycle_group.short_description = 'Cycle'
