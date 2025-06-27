@@ -39,6 +39,14 @@ class CharacterStatsTemplateAdmin(CampaignModelAdmin):
     readonly_fields = ('stats_visualization',)
     inlines = [CharacterStatTemplateInline]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            # Filter stats templates that are used by character templates in the current campaign
+            return qs.filter(charactertemplate__campaign_id=campaign_id).distinct()
+        return qs
+
     def stats_summary(self, obj):
         """Display a compact summary of key stats in the list view"""
         stats = obj.get_all_stats()

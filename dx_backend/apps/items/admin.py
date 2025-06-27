@@ -2,12 +2,47 @@ from django.utils.html import format_html
 from django.urls import re_path
 import uuid
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from polymorphic.admin import PolymorphicChildModelAdmin
 from apps.core.admin.mixins import CampaignAdminMixin
+from apps.core.admin import CampaignModelAdmin
 
 from .models import Item, CharacterItem, WorldItem
+
+
+class NPCFilter(SimpleListFilter):
+    title = _('Character Type')
+    parameter_name = 'character__npc'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('1', _('Yes')),
+            ('0', _('No')),
+            ('all', _('All')),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            return queryset.filter(character__npc=True)
+        elif self.value() == '0':
+            return queryset.filter(character__npc=False)
+        return queryset
+
+    def choices(self, changelist):
+        # Default to showing only non-NPCs
+        all_choice = next(super().choices(changelist))
+        all_choice['selected'] = self.value() is None
+        yield all_choice
+
+        for lookup, title in self.lookup_choices:
+            yield {
+                'selected': self.value() == str(lookup),
+                'query_string': changelist.get_query_string({self.parameter_name: lookup}),
+                'display': title,
+            }
 
 
 @admin.register(Item)
@@ -60,9 +95,10 @@ class WorldItemAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
 
 
 @admin.register(CharacterItem)
-class CharacterItemAdmin(admin.ModelAdmin):
+class CharacterItemAdmin(CampaignModelAdmin):
     list_display = ('character', 'get_world_item_name', 'icon_preview')
-    list_filter = ('character', 'world_item__item__type')  # Filters by character and item type
+    list_filter = (NPCFilter, 'character__organization', 'character',
+                   'world_item__item__type')  # Added NPC and organization filters
     search_fields = ('character__name', 'world_item__item__name')  # Assuming Character and Item have `name` fields
     readonly_fields = ('id', 'created_at', 'updated_at', 'icon_preview')  # Adding icon_preview as readonly
     fieldsets = (
@@ -73,6 +109,21 @@ class CharacterItemAdmin(admin.ModelAdmin):
             'fields': ('id', 'created_at', 'updated_at')
         }),
     )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+
+        # Filter by campaign
+        if campaign_id:
+            qs = qs.filter(world_item__campaign_id=campaign_id)
+
+        # By default, show only non-NPC characters unless explicitly filtered
+        if not request.GET.get('character__npc'):
+            qs = qs.filter(character__npc=False)
+
+        return qs
+
     list_per_page = 20  # To control pagination for large datasets
 
     def get_world_item_name(self, obj):
