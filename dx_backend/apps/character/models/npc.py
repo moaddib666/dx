@@ -60,7 +60,7 @@ class CharacterTemplate(BaseModel):
                                     help_text="Pattern for name generation, e.g., '{base_name} {number}'")
 
     # Campaign association
-    campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
+    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
