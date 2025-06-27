@@ -13,6 +13,7 @@ from apps.game.services.npc.rank import NpcRankService
 from apps.game.services.npc.stats import StatsApplier
 from apps.skills.models import LearnedSchool, LearnedSkill
 from apps.items.models import CharacterItem
+from apps.world.models import Position, SubLocation
 from .interface import NPCFactoryConfig, NPCFactoryProtocol
 from ...character.character_items import default_items_svc_factory
 
@@ -303,7 +304,8 @@ class NPCFactory(NPCFactoryProtocol):
                 rank_grade=config.rank_grade,
                 rank_grade_rank=config.rank_grade_rank,
                 character_class=config.character_class,
-                tags=config.tags.copy() if config.tags else []
+                tags=config.tags.copy() if config.tags else [],
+                campaign=config.campaign
             )
 
             # Generate a unique name if needed
@@ -320,6 +322,12 @@ class NPCFactory(NPCFactoryProtocol):
         self.logger.info(f"Creating NPC from template: {config.template.name}")
 
         # Create a new character
+        default_pos, _ = Position.objects.get_or_create(
+            grid_x=1999,
+            grid_y=42,
+            grid_z=13,
+            sub_location=SubLocation.objects.first()
+        )
         npc = Character.objects.create(
             owner=None,  # NPCs don't have owners
             name=config.name or config.template.name,
@@ -330,8 +338,9 @@ class NPCFactory(NPCFactoryProtocol):
             npc=True,
             behavior=config.behavior or config.template.behavior,
             dimension=config.template.dimension,
-            position=config.position,
-            is_active=True
+            position=config.position or default_pos,
+            is_active=True,
+            campaign=config.campaign or config.template.campaign
         )
 
         # Apply template stats
@@ -374,6 +383,8 @@ class NPCFactory(NPCFactoryProtocol):
                 npc.position = config.position
             if config.tags:
                 npc.tags.extend(config.tags)
+            if config.campaign:
+                npc.campaign = config.campaign
 
             npc.save()
             return npc
@@ -481,7 +492,8 @@ class NPCFactory(NPCFactoryProtocol):
             world_item = default_world_item_factory.create_world_item(
                 item=equipment_template.item,
                 position=npc.position,
-                dimension=npc.dimension
+                dimension=npc.dimension,
+                campaign=npc.campaign,
             )
             char_items_factory = default_items_svc_factory.from_character(npc)
             char_items_factory.add_item(world_item)

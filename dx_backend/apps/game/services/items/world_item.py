@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from apps.game.models import Campaign
 from apps.items.models import Item, WorldItem
 from apps.world.models import Position
 
@@ -12,7 +13,8 @@ class WorldItemFactory:
     logger = logging.getLogger("game.services.items.world_item")
 
     @classmethod
-    def create_world_item(cls, item: Item, position: Optional[Position] = None, dimension=None) -> WorldItem:
+    def create_world_item(cls, item: Item, campaign: Campaign, position: Optional[Position] = None,
+                          dimension=None) -> WorldItem:
         """
         Create a WorldItem instance from an Item instance.
         
@@ -20,7 +22,7 @@ class WorldItemFactory:
             item: The Item instance to create a WorldItem from
             position: Optional Position instance to set for the WorldItem
             dimension: Optional Dimension instance to set for the WorldItem
-            
+            campaign: The Campaign instance to associate with the WorldItem
         Returns:
             WorldItem: The created WorldItem instance
         """
@@ -31,7 +33,8 @@ class WorldItemFactory:
             charges_left=item.charges,
             visibility=item.visibility,
             position=position,
-            dimension=dimension
+            dimension=dimension,
+            campaign=campaign,
         )
         
         cls.logger.debug(f"Created WorldItem: {world_item.id}")

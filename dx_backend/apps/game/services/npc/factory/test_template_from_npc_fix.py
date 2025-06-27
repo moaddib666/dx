@@ -24,17 +24,17 @@ def test_template_from_npc_fix():
     """Test that creating a template from an NPC multiple times doesn't cause IntegrityError."""
     # Create a factory
     factory = NPCFactory()
-    
+
     # First, create an NPC from a template
     template = CharacterTemplate.objects.first()
     if not template:
         print("No templates available. Please create a template first.")
         return
-    
-    config = NPCFactoryConfig(template=template, name="Test NPC for Fix")
+
+    config = NPCFactoryConfig(template=template, name="Test NPC for Fix", campaign=template.campaign)
     npc = factory.create_npc(config)
     print(f"Created NPC: {npc.name}")
-    
+
     # Add a school to the NPC
     try:
         from apps.school.models import School
@@ -48,25 +48,25 @@ def test_template_from_npc_fix():
             print(f"Added school: {school.name} to NPC")
     except Exception as e:
         print(f"Could not add school: {e}")
-    
+
     # Create a template from the NPC
     template_name = "Test Template from NPC Fix"
     new_template = factory.create_template_from_npc(npc, template_name)
     print(f"Created template: {new_template.name}")
-    
+
     # Create a template from the NPC again (this would previously cause an IntegrityError)
     try:
         new_template2 = factory.create_template_from_npc(npc, template_name + " 2")
         print(f"Created second template: {new_template2.name}")
-        
+
         # Create a template from the NPC a third time
         new_template3 = factory.create_template_from_npc(npc, template_name + " 3")
         print(f"Created third template: {new_template3.name}")
-        
+
         print("Test passed: No IntegrityError occurred when creating multiple templates from the same NPC")
     except Exception as e:
         print(f"Test failed: {e}")
-    
+
     # Clean up
     try:
         if 'new_template3' in locals():
@@ -77,7 +77,7 @@ def test_template_from_npc_fix():
         npc.delete()
     except Exception as e:
         print(f"Error during cleanup: {e}")
-    
+
     print("Test completed")
 
 if __name__ == "__main__":

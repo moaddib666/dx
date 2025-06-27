@@ -19,6 +19,7 @@ class NPCFactoryConfig:
     rank_grade_rank: t.Optional[int] = None
     character_class: t.Optional[t.List[t.Tuple[str, int]]] = None
     tags: t.List[str] = field(default_factory=list)
+    campaign: t.Optional[t.Any] = None
 
     def validate(self) -> None:
         """Validate the configuration."""
@@ -33,6 +34,9 @@ class NPCFactoryConfig:
 
         if self.rank_grade_rank is not None and self.rank_grade is None:
             raise ValueError("If rank_grade_rank is provided, rank_grade must also be provided")
+
+        if self.campaign is None:
+            raise ValueError("Campaign must be provided")
 
 
 class NPCFactoryProtocol(abc.ABC):

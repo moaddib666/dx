@@ -19,32 +19,32 @@ def test_create_template_from_npc():
     """Test creating a template from an NPC."""
     # Create a factory
     factory = NPCFactory()
-    
+
     # First, create an NPC from a template
     # For this test, we'll use the first available template
     template = CharacterTemplate.objects.first()
     if not template:
         print("No templates available. Please create a template first.")
         return
-    
-    config = NPCFactoryConfig(template=template, name="Test NPC")
+
+    config = NPCFactoryConfig(template=template, name="Test NPC", campaign=template.campaign)
     npc = factory.create_npc(config)
     print(f"Created NPC: {npc.name}")
-    
+
     # Now create a template from the NPC
     new_template = factory.create_template_from_npc(npc, "Test Template from NPC")
     print(f"Created template: {new_template.name}")
-    
+
     # Finally, create a new NPC from the new template
-    new_config = NPCFactoryConfig(template=new_template, name="New Test NPC")
+    new_config = NPCFactoryConfig(template=new_template, name="New Test NPC", campaign=new_template.campaign)
     new_npc = factory.create_npc(new_config)
     print(f"Created new NPC from template: {new_npc.name}")
-    
+
     # Clean up
     new_npc.delete()
     new_template.delete()
     npc.delete()
-    
+
     print("Test completed successfully!")
 
 if __name__ == "__main__":

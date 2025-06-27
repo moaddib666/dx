@@ -21,17 +21,17 @@ def test_template_from_npc_skills():
     """Test that skills are properly copied from an NPC to a template."""
     # Create a factory
     factory = NPCFactory()
-    
+
     # First, create an NPC from a template
     template = CharacterTemplate.objects.first()
     if not template:
         print("No templates available. Please create a template first.")
         return
-    
-    config = NPCFactoryConfig(template=template, name="Test NPC for Skills")
+
+    config = NPCFactoryConfig(template=template, name="Test NPC for Skills", campaign=template.campaign)
     npc = factory.create_npc(config)
     print(f"Created NPC: {npc.name}")
-    
+
     # Add a skill to the NPC
     try:
         from apps.school.models import Skill
@@ -51,33 +51,34 @@ def test_template_from_npc_skills():
         print(f"Could not add skill: {e}")
         npc.delete()
         return
-    
+
     # Now create a template from the NPC
     new_template = factory.create_template_from_npc(npc, "Test Template with Skills")
     print(f"Created template: {new_template.name}")
-    
+
     # Verify that the template has the expected skills
     skill_templates = new_template.skill_templates.all()
     print(f"Template has {skill_templates.count()} skill templates")
     for skill_template in skill_templates:
         print(f"  - Skill: {skill_template.skill.name}, Is Base: {skill_template.is_base}")
-    
+
     # Finally, create a new NPC from the new template
-    new_config = NPCFactoryConfig(template=new_template, name="New Test NPC with Skills")
+    new_config = NPCFactoryConfig(template=new_template, name="New Test NPC with Skills",
+                                  campaign=new_template.campaign)
     new_npc = factory.create_npc(new_config)
     print(f"Created new NPC from template: {new_npc.name}")
-    
+
     # Verify that the new NPC has the expected skills
     learned_skills = new_npc.learned_skills.all()
     print(f"New NPC has {learned_skills.count()} learned skills")
     for learned_skill in learned_skills:
         print(f"  - Skill: {learned_skill.skill.name}, Is Base: {learned_skill.is_base}")
-    
+
     # Clean up
     new_npc.delete()
     new_template.delete()
     npc.delete()
-    
+
     print("Test completed successfully!")
 
 if __name__ == "__main__":
