@@ -1,28 +1,51 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
+from apps.core.admin import CampaignModelAdmin
 from ..models import OrganizationRelation, CharacterRelation
 
 
 @admin.register(OrganizationRelation)
-class OrganizationRelationAdmin(admin.ModelAdmin):
+class OrganizationRelationAdmin(CampaignModelAdmin):
     list_display = ('organization_from', 'type', 'organization_to', 'immutable')
-    list_filter = ('type', 'immutable')
+    list_filter = ('type', 'immutable', 'organization_from__campaign', 'organization_to__campaign')
     search_fields = ('organization_from__name', 'organization_to__name', 'type')
     autocomplete_fields = ('organization_from', 'organization_to')
     list_per_page = 25
     ordering = ('organization_from__name', 'organization_to__name')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(
+                # Include relations where either organization is from the current campaign
+                organization_from__campaign_id=campaign_id) | qs.filter(
+                organization_to__campaign_id=campaign_id
+            )
+        return qs
+
 
 @admin.register(CharacterRelation)
-class CharacterRelationAdmin(admin.ModelAdmin):
+class CharacterRelationAdmin(CampaignModelAdmin):
     list_display = ('character_from_with_avatar', 'type', 'character_to_with_avatar', 'immutable')
-    list_filter = ('type', 'immutable')
+    list_filter = ('type', 'immutable', 'character_from__campaign', 'character_to__campaign')
     search_fields = ('character_from__name', 'character_to__name', 'type',
                      'character_from__biography__background', 'character_to__biography__background')
     autocomplete_fields = ('character_from', 'character_to')
     list_per_page = 25
     ordering = ('character_from__name', 'character_to__name')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(
+                # Include relations where either character is from the current campaign
+                character_from__campaign_id=campaign_id) | qs.filter(
+                character_to__campaign_id=campaign_id
+            )
+        return qs
 
     def character_from_with_avatar(self, obj):
         """Display character_from with avatar"""

@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
+from apps.core.admin import CampaignModelAdmin
 from .models import Bargain, OfferedItem
 
 
 @admin.register(Bargain)
-class BargainAdmin(admin.ModelAdmin):
+class BargainAdmin(CampaignModelAdmin):
     list_display = (
         'id',
         'side_a_display',
@@ -94,10 +95,17 @@ class BargainAdmin(admin.ModelAdmin):
 
 
 @admin.register(OfferedItem)
-class OfferedItemAdmin(admin.ModelAdmin):
+class OfferedItemAdmin(CampaignModelAdmin):
     list_display = ('id', 'bargain', 'item_icon', 'item')
     search_fields = ('id', 'item__name')
-    list_filter = ('bargain',)
+    list_filter = ('bargain', 'item__campaign')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(item__campaign_id=campaign_id)
+        return qs
 
     def item_icon(self, obj):
         if obj.item.item.icon:
