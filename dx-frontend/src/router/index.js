@@ -22,6 +22,7 @@ import CharacterInfo from "@/views/CharacterInfo.vue";
 import MiniMap from "@/views/Cartograph/MiniMap.vue";
 import UserMap from "@/views/Cartograph/UserMap.vue";
 import WorldEditor from "@/views/WorldEditor/WorldEditor.vue";
+import PlayerHomeDashboard from "@/views/PlyerHomeDashboard/PlayerHomeDashboard.vue";
 
 const routes = [
     {path: '/', name: 'Home', component: Home, meta: {requiresAuth: false}},
@@ -32,6 +33,7 @@ const routes = [
     {path: '/characters', name: 'Characters', component: Characters, meta: {requiresAuth: false}},
     {path: '/characters/submit', name: 'CharacterSubmit', component: CharacterSubmit, meta: {requiresAuth: false}},
     {path: '/characters/info', name: 'CharacterInfo', component: CharacterInfo, meta: {requiresAuth: true}},
+    {path: '/player/dashboard', name: 'PlayerHomeDashboard', component: PlayerHomeDashboard, meta: {requiresAuth: true}},
     {path: '/characters/skills', name: 'CharacterSkills', component: CharacterSkills, meta: {requiresAuth: false}},
     {path: '/dice', name: 'Dice', component: DiceTest, meta: {requiresAuth: false}},
     {path: '/gameplay', name: 'Gameplay', component: Gameplay, meta: {requiresAuth: false}},
