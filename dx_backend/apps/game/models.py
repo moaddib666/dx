@@ -15,5 +15,8 @@ class Campaign(BaseModel):
     is_active = models.BooleanField(default=True)
     is_completed = models.BooleanField(default=False)
 
+    masters = models.ManyToManyField('client.Client', related_name='master_campaigns', blank=True)
+    players = models.ManyToManyField('client.Client', related_name='play_campaigns', blank=True)
+
     def __str__(self):
         return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"

@@ -39,7 +39,7 @@ class Client(BaseModel, AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-
+    current_campaign = models.ForeignKey('game.Campaign', on_delete=models.SET_NULL, null=True, blank=True)
     main_character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.SET_NULL, null=True, blank=True,
                                           related_name='client')
 

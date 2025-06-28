@@ -23,9 +23,48 @@ class CampaignAdmin(admin.ModelAdmin):
     """
     Admin interface for Campaign model.
     """
-    list_display = ('name', 'description', 'is_active', 'is_completed', 'clone_campaign')
-    list_filter = ('is_active', 'is_completed')
+    list_display = ('name', 'description', 'is_active', 'is_completed', 'get_masters_count', 'get_players_count',
+                    'view_characters', 'clone_campaign')
+    list_filter = ('is_active', 'is_completed', 'masters', 'players')
+    filter_horizontal = ('masters', 'players')
     search_fields = ('name', 'description')
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'description')
+        }),
+        ('Status', {
+            'fields': ('is_active', 'is_completed')
+        }),
+        ('Participants', {
+            'fields': ('masters', 'players')
+        }),
+    )
+
+    def get_masters_count(self, obj):
+        """Get the number of masters for this campaign"""
+        return obj.masters.count()
+
+    get_masters_count.short_description = 'Masters'
+
+    def get_players_count(self, obj):
+        """Get the number of players for this campaign"""
+        return obj.players.count()
+
+    get_players_count.short_description = 'Players'
+
+    def view_characters(self, obj):
+        """Button to view characters in this campaign"""
+        return format_html(
+            '<a class="button" style="display: inline-block; padding: 6px 10px; margin: 0 2px; '
+            'background: #007bff; color: white; border: none; border-radius: 4px; '
+            'text-decoration: none; font-size: 12px; font-weight: bold; '
+            'box-shadow: 0 1px 3px rgba(0,0,0,0.2); white-space: nowrap; overflow: visible;" href="{}">'
+            '<span style="margin-right: 4px;">👥</span>Characters</a>',
+            f"/admin/character/character/?gameobject_ptr__campaign__id__exact={obj.pk}"
+        )
+
+    view_characters.short_description = 'Characters'
 
     def clone_campaign(self, obj):
         """Button to clone a campaign"""
