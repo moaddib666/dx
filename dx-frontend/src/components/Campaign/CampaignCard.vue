@@ -3,7 +3,8 @@
     class="campaign-card"
     :class="{
       'inactive': !campaign.is_active,
-      'completed': campaign.is_completed
+      'completed': campaign.is_completed,
+      'selected': campaign.selected
     }"
     :style="{ backgroundImage: `url(${campaign.background_image})` }"
   >
@@ -36,6 +37,7 @@ export default {
             'is_active' in campaign &&
             'is_completed' in campaign &&
             'background_image' in campaign
+            // 'selected' is optional
         );
       }
     }
@@ -149,6 +151,20 @@ export default {
 /* Apply both effects if campaign is both inactive and completed */
 .campaign-card.inactive.completed {
   filter: blur(2px) grayscale(70%);
+}
+
+/* Selected campaign styling */
+.campaign-card.selected {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(52, 152, 219, 0.8);
+  z-index: 10;
+}
+
+.campaign-card.selected .campaign-overlay {
+  background: linear-gradient(to right,
+  rgba(0, 0, 0, 0.1) 0%,
+  rgba(0, 0, 0, 0.5) 50%,
+  rgba(52, 152, 219, 0.4) 100%);
 }
 
 /* Responsive adjustments */

@@ -9,9 +9,8 @@
     <div v-else class="dashboard-content">
       <!-- Top section: Campaign selector with CampaignCardHolder -->
       <section class="campaign-selector-section">
-        <h2 class="section-title">Select Campaign</h2>
         <CampaignCardHolder
-          :campaigns="campaigns"
+          :campaigns="sortedCampaigns"
           @campaign-selected="selectCampaign"
         />
       </section>
@@ -47,29 +46,19 @@
         </div>
       </section>
 
-      <!-- Bottom section: Continue Journey button -->
-      <section class="continue-section">
-        <LandingButton
-          :disabled="!selectedCampaignId || !selectedCharacterId"
-          @click="continueJourney"
-        >
-          Continue Journey
-        </LandingButton>
-      </section>
+      <!-- No continue button needed as character selection will automatically continue -->
     </div>
   </div>
 </template>
 
 <script>
 import CampaignCardHolder from "@/components/Campaign/CampaignCardHolder.vue";
-import LandingButton from "@/components/btn/LandingButton.vue";
 import CharacterPreviewCard from "@/components/Character/CharacterPreviewCard.vue";
 
 export default {
   name: "PlayerHomeDashboard",
   components: {
     CampaignCardHolder,
-    LandingButton,
     CharacterPreviewCard
   },
   data() {
@@ -80,6 +69,27 @@ export default {
       selectedCharacterId: null,
       characters: []
     };
+  },
+  computed: {
+    sortedCampaigns() {
+      // Sort campaigns by: selected: true, is_active: true, is_completed: false
+      return [...this.campaigns].sort((a, b) => {
+        // Selected campaigns come first
+        if (a.selected && !b.selected) return -1;
+        if (!a.selected && b.selected) return 1;
+
+        // Then active campaigns
+        if (a.is_active && !b.is_active) return -1;
+        if (!a.is_active && b.is_active) return 1;
+
+        // Then incomplete campaigns
+        if (!a.is_completed && b.is_completed) return -1;
+        if (a.is_completed && !b.is_completed) return 1;
+
+        // If all criteria are equal, sort by name
+        return a.name.localeCompare(b.name);
+      });
+    }
   },
   async mounted() {
     try {
@@ -140,6 +150,12 @@ export default {
     selectCampaign(campaignId) {
       console.log('Campaign selected:', campaignId);
       this.selectedCampaignId = campaignId;
+
+      // Update selected status for all campaigns
+      this.campaigns.forEach(campaign => {
+        campaign.selected = campaign.id === campaignId;
+      });
+
       // Fetch characters for this campaign
       this.fetchCharactersForCampaign(campaignId);
     },
@@ -269,8 +285,8 @@ export default {
     },
     selectCharacter(characterId) {
       this.selectedCharacterId = characterId;
-    },
-    continueJourney() {
+
+      // Automatically continue journey when character is selected
       if (this.selectedCampaignId && this.selectedCharacterId) {
         // Navigate to game with selected campaign and character
         this.$router.push({
@@ -289,11 +305,13 @@ export default {
 <style scoped>
 .player-home-dashboard {
   width: 100%;
-  max-width: 1200px;
+  max-width: 90vw;
   margin: 0 auto;
   padding: 20px;
-  min-height: 100vh;
+  max-height: 80vh;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .loading-overlay {
@@ -334,32 +352,36 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 30px;
+  overflow-x: hidden;
 }
 
 /* Top section: Campaign selector */
 .campaign-selector-section {
-  width: 100%;
+  margin-left: 10rem;
+  margin-right: 10rem;
 }
 
 .section-title {
   font-size: 24px;
   margin-bottom: 20px;
-  color: #333;
   font-weight: 600;
 }
 
 /* Middle section: Characters */
 .characters-section {
   width: 100%;
+  overflow-x: hidden;
 }
 
 .characters-container {
   display: flex;
   gap: 20px;
+  overflow-x: hidden;
 }
 
 .available-characters {
   flex: 9; /* 90% of the space */
+  overflow-x: hidden;
 }
 
 
@@ -374,6 +396,46 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   margin-bottom: 20px;
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+}
+
+/* Scrollbar Styling */
+.characters-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.characters-grid::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.characters-grid::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.characters-grid::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Apply same scrollbar styling to the dashboard */
+.player-home-dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+
+.player-home-dashboard::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.player-home-dashboard::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.player-home-dashboard::-webkit-scrollbar-thumb:hover {
+  background: #666;
 }
 
 .character-placeholder, .add-character-placeholder {
@@ -413,13 +475,16 @@ export default {
 
 .debug-message {
   grid-column: 1 / -1; /* Span all columns */
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  font-weight: bold;
+  padding: 12px;
+  margin-bottom: 15px;
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .character-info-placeholder {
@@ -435,25 +500,23 @@ export default {
   text-align: center;
 }
 
-/* Bottom section: Continue button */
-.continue-section {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
+/* No continue button section needed */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .characters-container {
     flex-direction: column;
+    overflow-x: hidden;
   }
 
   .available-characters, .selected-character-info {
     flex: 1 1 100%;
+    overflow-x: hidden;
   }
 
   .characters-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    overflow-x: hidden;
   }
 }
 </style>
