@@ -23,23 +23,25 @@
           <div class="available-characters">
             <h3 class="subsection-title">Available Characters</h3>
             <div class="characters-grid">
-              <!-- Placeholder for character cards -->
-              <div class="character-placeholder" v-for="n in 3" :key="n">
-                Character {{ n }}
+              <!-- Debug message -->
+              <div v-if="characters.length === 0" class="debug-message">
+                No characters available. Please select a campaign.
+              </div>
+
+              <!-- Debug message showing character count -->
+              <div v-else class="debug-message">
+                Found {{ characters.length }} characters for the selected campaign.
+              </div>
+
+              <!-- Character cards -->
+              <div v-for="character in characters" :key="character.id" @click="selectCharacter(character.id)" class="character-card-wrapper">
+                <CharacterPreviewCard :character="character" />
               </div>
 
               <!-- Placeholder for adding a new character -->
               <div class="add-character-placeholder">
                 + Add Character
               </div>
-            </div>
-          </div>
-
-          <!-- Right side (10%): Selected character info (out of scope for now) -->
-          <div class="selected-character-info">
-            <h3 class="subsection-title">Selected Character</h3>
-            <div class="character-info-placeholder">
-              Character details will appear here
             </div>
           </div>
         </div>
@@ -61,12 +63,14 @@
 <script>
 import CampaignCardHolder from "@/components/Campaign/CampaignCardHolder.vue";
 import LandingButton from "@/components/btn/LandingButton.vue";
+import CharacterPreviewCard from "@/components/Character/CharacterPreviewCard.vue";
 
 export default {
   name: "PlayerHomeDashboard",
   components: {
     CampaignCardHolder,
-    LandingButton
+    LandingButton,
+    CharacterPreviewCard
   },
   data() {
     return {
@@ -83,6 +87,12 @@ export default {
       // Fetch campaigns data
       await this.fetchCampaigns();
       // Additional initialization if needed
+
+      // For testing, let's automatically select the first campaign
+      if (this.campaigns.length > 0) {
+        console.log('Auto-selecting first campaign for testing');
+        this.selectCampaign(this.campaigns[0].id);
+      }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
     } finally {
@@ -128,15 +138,134 @@ export default {
       ];
     },
     selectCampaign(campaignId) {
+      console.log('Campaign selected:', campaignId);
       this.selectedCampaignId = campaignId;
       // Fetch characters for this campaign
       this.fetchCharactersForCampaign(campaignId);
     },
     async fetchCharactersForCampaign(campaignId) {
       // Mock data for now - would be replaced with actual API call
+      console.log('Fetching characters for campaign:', campaignId);
       this.characters = [
-        // Character data would go here
+        {
+          "id": "f3c4216f-cbaa-4792-b6e6-1cedd502defe",
+          "name": "The Veiled Arbiter",
+          "biography": {
+            "id": "012e5d6e-bad2-459c-a7a6-62329ecd7508",
+            "created_at": "2024-12-24T14:18:04.753000Z",
+            "updated_at": "2024-12-24T14:19:28.959000Z",
+            "age": 900,
+            "gender": "Other",
+            "background": "The Veiled Arbiter exists beyond the bounds of mortal realms, serving as the omniscient overseer of the game world. It appears to inspect, guide, or intervene when the balance of Flow or the integrity of the realm is threatened.",
+            "appearance": "A translucent figure cloaked in flowing, dark robes inscribed with glowing blue and silver symbols. Its hood obscures its face, revealing only glowing white eyes.",
+            "avatar": "http://localhost:8000/media/avatars/83A73E18-2066-4263-B8F3-F299660160F4.PNG",
+            "character": "f3c4216f-cbaa-4792-b6e6-1cedd502defe"
+          },
+          "npc": false,
+          "rank": {
+            "name": "Mythical Paragon",
+            "grade": 2,
+            "experience_needed": 284460
+          },
+          "path": {
+            "name": "Path of JSon",
+            "description": "A path focusing on magical abilities.",
+            "icon": "http://localhost:8000/media/icons/path/json.webp",
+            "id": "7f4e36d3-3f43-4e13-bdae-3e3777e1d3a6"
+          },
+          "experience": 0,
+          "tags": [
+            "Game Master",
+            "Phantom",
+            "Flow Manipulator"
+          ],
+          "resetting_base_stats": false,
+          "is_active": true,
+          "campaign": {
+            "id": campaignId,
+            "name": "First Campaign"
+          }
+        },
+        {
+          "id": "a1b2c3d4-e5f6-4792-b6e6-1cedd502defe",
+          "name": "Shadow Walker",
+          "biography": {
+            "id": "e5f6g7h8-i9j0-459c-a7a6-62329ecd7508",
+            "created_at": "2024-12-24T14:18:04.753000Z",
+            "updated_at": "2024-12-24T14:19:28.959000Z",
+            "age": 35,
+            "gender": "Female",
+            "background": "A mysterious assassin who moves between shadows, Shadow Walker has a dark past and seeks redemption through her adventures. She is known for her stealth and precision.",
+            "appearance": "A slender figure dressed in dark leather armor with a hood that partially obscures her face. Her eyes glow with a faint purple light.",
+            "avatar": "http://localhost:8000/media/avatars/shadow-walker.PNG",
+            "character": "a1b2c3d4-e5f6-4792-b6e6-1cedd502defe"
+          },
+          "npc": false,
+          "rank": {
+            "name": "Elite Adventurer",
+            "grade": 3,
+            "experience_needed": 150000
+          },
+          "path": {
+            "name": "Path of Shadows",
+            "description": "A path focusing on stealth and assassination.",
+            "icon": "http://localhost:8000/media/icons/path/shadow.webp",
+            "id": "8a9b0c1d-2e3f-4g5h-6i7j-8k9l0m1n2o3p"
+          },
+          "experience": 75000,
+          "tags": [
+            "Assassin",
+            "Rogue",
+            "Shadow Magic"
+          ],
+          "resetting_base_stats": false,
+          "is_active": true,
+          "campaign": {
+            "id": campaignId,
+            "name": "First Campaign"
+          }
+        },
+        {
+          "id": "q1w2e3r4-t5y6-7u8i-9o0p-a1s2d3f4g5h6",
+          "name": "Eldrin Lightbringer",
+          "biography": {
+            "id": "j1k2l3m4-n5o6-p7q8-r9s0-t1u2v3w4x5y6",
+            "created_at": "2024-12-24T14:18:04.753000Z",
+            "updated_at": "2024-12-24T14:19:28.959000Z",
+            "age": 150,
+            "gender": "Male",
+            "background": "An ancient elf who has dedicated his life to fighting darkness and spreading light. Eldrin is a powerful healer and a beacon of hope in dark times.",
+            "appearance": "A tall, slender elf with long silver hair and glowing golden eyes. He wears white and gold robes adorned with symbols of the sun.",
+            "avatar": "http://localhost:8000/media/avatars/eldrin.PNG",
+            "character": "q1w2e3r4-t5y6-7u8i-9o0p-a1s2d3f4g5h6"
+          },
+          "npc": false,
+          "rank": {
+            "name": "Legendary Hero",
+            "grade": 1,
+            "experience_needed": 500000
+          },
+          "path": {
+            "name": "Path of Light",
+            "description": "A path focusing on healing and light magic.",
+            "icon": "http://localhost:8000/media/icons/path/light.webp",
+            "id": "z1x2c3v4-b5n6-m7a8-s9d0-f1g2h3j4k5l6"
+          },
+          "experience": 450000,
+          "tags": [
+            "Healer",
+            "Light Magic",
+            "Ancient Elf"
+          ],
+          "resetting_base_stats": false,
+          "is_active": false,
+          "campaign": {
+            "id": campaignId,
+            "name": "First Campaign"
+          }
+        }
       ];
+      console.log('Characters array after fetch:', this.characters);
     },
     selectCharacter(characterId) {
       this.selectedCharacterId = characterId;
@@ -233,9 +362,6 @@ export default {
   flex: 9; /* 90% of the space */
 }
 
-.selected-character-info {
-  flex: 1; /* 10% of the space */
-}
 
 .subsection-title {
   font-size: 18px;
@@ -245,8 +371,9 @@ export default {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .character-placeholder, .add-character-placeholder {
@@ -275,6 +402,24 @@ export default {
 .add-character-placeholder:hover {
   border-color: #3498db;
   color: #3498db;
+}
+
+.character-card-wrapper {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.debug-message {
+  grid-column: 1 / -1; /* Span all columns */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
 .character-info-placeholder {
