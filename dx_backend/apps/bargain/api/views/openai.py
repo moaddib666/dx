@@ -88,7 +88,9 @@ class OpenBargainItemsViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin,
         character = self.get_character()
         bargain = get_object_or_404(Bargain, id=self.kwargs['bargain_pk'])
         world_item = serializer.validated_data['item']
-        get_object_or_404(character.equipped_items, world_item=world_item)
+        # Check if character has this item (using filter instead of get to handle multiple items)
+        if not character.equipped_items.filter(world_item=world_item).exists():
+            raise ValidationError("Character does not have this item")
         try:
             self.factory.from_bargain(bargain).add_item(character, world_item)
         except ValueError as e:
