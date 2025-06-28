@@ -33,9 +33,14 @@ class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        if user.is_superuser:
-            return qs
-        return Character.objects.filter(position=user.main_character.position, is_active=True)
+        if not user.is_superuser:
+            qs = qs.filter(
+                position=user.main_character.position,
+                is_active=True
+            )
+        return qs.filter(
+            campaign=user.main_character.campaign,
+        )
 
     @transaction.atomic
     def perform_create(self, serializer):
