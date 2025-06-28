@@ -48,6 +48,10 @@ export default {
       required: true,
       default: () => []
     },
+    selectedCampaignId: {
+      type: String,
+      default: null
+    },
     visibleCards: {
       type: Number,
       default: 3
@@ -57,6 +61,16 @@ export default {
     return {
       startIndex: 0
     };
+  },
+  watch: {
+    selectedCampaignId: {
+      immediate: true,
+      handler(newId) {
+        if (newId) {
+          this.scrollToSelectedCampaign(newId);
+        }
+      }
+    }
   },
   computed: {
     visibleCampaigns() {
@@ -72,6 +86,24 @@ export default {
     scrollRight() {
       if (this.startIndex < this.campaigns.length - this.visibleCards) {
         this.startIndex++;
+      }
+    },
+    scrollToSelectedCampaign(campaignId) {
+      // Find the index of the selected campaign
+      const selectedIndex = this.campaigns.findIndex(campaign => campaign.id === campaignId);
+
+      // If found, adjust startIndex to make it visible
+      if (selectedIndex !== -1) {
+        // If the selected campaign is before the current visible range
+        if (selectedIndex < this.startIndex) {
+          this.startIndex = selectedIndex;
+        }
+        // If the selected campaign is after the current visible range
+        else if (selectedIndex >= this.startIndex + this.visibleCards) {
+          // Set startIndex so that the selected campaign is the last visible one
+          this.startIndex = Math.max(0, selectedIndex - this.visibleCards + 1);
+        }
+        // If it's already visible, no need to change startIndex
       }
     },
     selectCampaign(campaignId) {

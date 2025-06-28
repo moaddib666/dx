@@ -11,6 +11,7 @@
       <section class="campaign-selector-section">
         <CampaignCardHolder
           :campaigns="sortedCampaigns"
+          :selectedCampaignId="selectedCampaignId"
           @campaign-selected="selectCampaign"
         />
       </section>
@@ -20,7 +21,6 @@
         <div class="characters-container">
           <!-- Left side (90%): Available characters -->
           <div class="available-characters">
-            <h3 class="subsection-title">Available Characters</h3>
             <div class="characters-grid">
               <!-- Debug message -->
               <div v-if="characters.length === 0" class="debug-message">
