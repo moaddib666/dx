@@ -222,19 +222,30 @@ class PositionConnectionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Map)
-class MapAdmin(admin.ModelAdmin):
+class MapAdmin(CampaignModelAdmin):
     list_display = ('id', 'name', 'organization', 'is_active')
     list_filter = ('is_active', 'organization')
     search_fields = ('name', 'description', 'organization__name')
     ordering = ('name',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(organization__campaign_id=campaign_id)
+        return qs
+
 
 @admin.register(MapPosition)
-class MapPositionAdmin(admin.ModelAdmin):
+class MapPositionAdmin(CampaignModelAdmin):
     list_display = ('id', 'map', 'position', 'is_active')
-    list_filter = ('is_active', 'map__name')
+    list_filter = ('is_active', 'map__name', 'map__organization__campaign')
     search_fields = ('map__name', 'position__sub_location__name', 'position__coordinates')
     ordering = ('map', 'position')
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('map', 'position')
+        qs = super().get_queryset(request).select_related('map', 'position')
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(map__organization__campaign_id=campaign_id)
+        return qs

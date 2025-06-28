@@ -16,10 +16,22 @@ class BargainAdmin(CampaignModelAdmin):
         'cancelled',
         'completed',
     )
-    list_filter = ('cancelled', 'completed', 'side_a_accepted', 'side_b_accepted')
+    list_filter = ('cancelled', 'completed', 'side_a_accepted', 'side_b_accepted', 'side_a__campaign',
+                   'side_b__campaign')
     search_fields = ('id', 'side_a__name', 'side_b__name')
     filter_horizontal = ('side_a_offered_items', 'side_b_offered_items')
     readonly_fields = ('side_a_offered_items_preview', 'side_b_offered_items_preview')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        campaign_id = request.session.get('campaign_id')
+        if campaign_id:
+            return qs.filter(
+                # Include bargains where either side is from the current campaign
+                side_a__campaign_id=campaign_id) | qs.filter(
+                side_b__campaign_id=campaign_id
+            )
+        return qs
 
     def side_a_display(self, obj):
         if obj.side_a:
