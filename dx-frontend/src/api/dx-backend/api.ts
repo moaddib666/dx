@@ -5428,6 +5428,49 @@ export interface PatchedOpenAIClientManagementRequest {
     'user_permissions'?: Array<number>;
 }
 /**
+ * Serializer for PositionConnection model.
+ * @export
+ * @interface PatchedPositionConnectionRequest
+ */
+export interface PatchedPositionConnectionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'position_from'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'position_to'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'locked'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'is_public'?: boolean;
+    /**
+     * 
+     * @type {any}
+     * @memberof PatchedPositionConnectionRequest
+     */
+    'config'?: any | null;
+}
+/**
  * Serializer for Position model.
  * @export
  * @interface PatchedPositionRequest
@@ -5569,6 +5612,12 @@ export interface Position {
     'sub_location': string;
     /**
      * 
+     * @type {SubLocation}
+     * @memberof Position
+     */
+    'sub_location_details': SubLocation;
+    /**
+     * 
      * @type {any}
      * @memberof Position
      */
@@ -5618,10 +5667,22 @@ export interface PositionConnection {
     'position_to': string;
     /**
      * 
+     * @type {Position}
+     * @memberof PositionConnection
+     */
+    'position_from_details': Position;
+    /**
+     * 
+     * @type {Position}
+     * @memberof PositionConnection
+     */
+    'position_to_details': Position;
+    /**
+     * 
      * @type {boolean}
      * @memberof PositionConnection
      */
-    'is_locked': boolean;
+    'locked'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -5648,48 +5709,153 @@ export interface PositionConnection {
     'is_horizontal': string;
     /**
      * 
-     * @type {PositionRelationConfiguration}
+     * @type {any}
      * @memberof PositionConnection
      */
-    'config': PositionRelationConfiguration;
+    'config'?: any | null;
+}
+/**
+ * Serializer for creating a connection between two positions.
+ * @export
+ * @interface PositionConnectionCreateRequest
+ */
+export interface PositionConnectionCreateRequest {
+    /**
+     * Source position UUID - identifies the starting point of the connection
+     * @type {string}
+     * @memberof PositionConnectionCreateRequest
+     */
+    'position_from': string;
+    /**
+     * Target position UUID - identifies the ending point of the connection
+     * @type {string}
+     * @memberof PositionConnectionCreateRequest
+     */
+    'position_to': string;
+    /**
+     * Controls whether players can traverse this connection
+     * @type {boolean}
+     * @memberof PositionConnectionCreateRequest
+     */
+    'locked'?: boolean;
+    /**
+     * Determines if the connection is currently usable in the game
+     * @type {boolean}
+     * @memberof PositionConnectionCreateRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * Indicates if the connection is visible to all players
+     * @type {boolean}
+     * @memberof PositionConnectionCreateRequest
+     */
+    'is_public'?: boolean;
+}
+/**
+ * Serializer for PositionConnection model.
+ * @export
+ * @interface PositionConnectionRequest
+ */
+export interface PositionConnectionRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnectionRequest
+     */
+    'position_from': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnectionRequest
+     */
+    'position_to': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnectionRequest
+     */
+    'locked'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnectionRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnectionRequest
+     */
+    'is_public'?: boolean;
+    /**
+     * 
+     * @type {any}
+     * @memberof PositionConnectionRequest
+     */
+    'config'?: any | null;
 }
 /**
  * Serializer for PositionConnectionRequirement objects.
  * @export
- * @interface PositionConnectionRequirement
+ * @interface PositionConnectionRequirementRequest
  */
-export interface PositionConnectionRequirement {
+export interface PositionConnectionRequirementRequest {
     /**
      * 
      * @type {string}
-     * @memberof PositionConnectionRequirement
+     * @memberof PositionConnectionRequirementRequest
      */
     'item_id'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof PositionConnectionRequirement
+     * @memberof PositionConnectionRequirementRequest
      */
     'skill_id'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof PositionConnectionRequirement
+     * @memberof PositionConnectionRequirementRequest
      */
     'character_id'?: string | null;
 }
 /**
+ * Serializer for moving a position to new coordinates.
+ * @export
+ * @interface PositionMoveRequest
+ */
+export interface PositionMoveRequest {
+    /**
+     * New X coordinate
+     * @type {number}
+     * @memberof PositionMoveRequest
+     */
+    'grid_x': number;
+    /**
+     * New Y coordinate
+     * @type {number}
+     * @memberof PositionMoveRequest
+     */
+    'grid_y': number;
+    /**
+     * New Z coordinate
+     * @type {number}
+     * @memberof PositionMoveRequest
+     */
+    'grid_z': number;
+}
+/**
  * Serializer for PositionConnectionConfig objects.
  * @export
- * @interface PositionRelationConfiguration
+ * @interface PositionRelationConfigurationRequest
  */
-export interface PositionRelationConfiguration {
+export interface PositionRelationConfigurationRequest {
     /**
      * 
-     * @type {Array<PositionConnectionRequirement>}
-     * @memberof PositionRelationConfiguration
+     * @type {Array<PositionConnectionRequirementRequest>}
+     * @memberof PositionRelationConfigurationRequest
      */
-    'requirements'?: Array<PositionConnectionRequirement>;
+    'requirements'?: Array<PositionConnectionRequirementRequest>;
 }
 /**
  * Serializer for Position model.
@@ -6326,7 +6492,7 @@ export interface StatRequirement {
 
 
 /**
- * 
+ * Serializer for SubLocation model.
  * @export
  * @interface SubLocation
  */
@@ -6337,18 +6503,6 @@ export interface SubLocation {
      * @memberof SubLocation
      */
     'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SubLocation
-     */
-    'created_at'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SubLocation
-     */
-    'updated_at': string;
     /**
      * 
      * @type {string}
@@ -6366,19 +6520,44 @@ export interface SubLocation {
      * @type {string}
      * @memberof SubLocation
      */
-    'image'?: string | null;
+    'location': string;
     /**
      * 
      * @type {boolean}
      * @memberof SubLocation
      */
     'is_active'?: boolean;
+}
+/**
+ * Serializer for SubLocation model.
+ * @export
+ * @interface SubLocationRequest
+ */
+export interface SubLocationRequest {
     /**
      * 
      * @type {string}
-     * @memberof SubLocation
+     * @memberof SubLocationRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubLocationRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubLocationRequest
      */
     'location': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SubLocationRequest
+     */
+    'is_active'?: boolean;
 }
 /**
  * 
@@ -12748,6 +12927,1977 @@ export class EffectsApi extends BaseAPI {
      */
     public effectsActiveRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return EffectsApiFp(this.configuration).effectsActiveRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GMWorldEditiorPositionConnectionsApi - axios parameter creator
+ * @export
+ */
+export const GMWorldEditiorPositionConnectionsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Activate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsActivateCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsActivateCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsActivateCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/activate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Configure a connection with requirements
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionRelationConfigurationRequest} [positionRelationConfigurationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsConfigureCreate: async (id: number, positionRelationConfigurationRequest?: PositionRelationConfigurationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsConfigureCreate', 'id', id)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/configure/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionRelationConfigurationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Create a connection between two positions
+         * @param {PositionConnectionCreateRequest} positionConnectionCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsConnectCreate: async (positionConnectionCreateRequest: PositionConnectionCreateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'positionConnectionCreateRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsConnectCreate', 'positionConnectionCreateRequest', positionConnectionCreateRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/connect/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionCreateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsCreate: async (positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Deactivate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsDeactivateCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsDeactivateCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsDeactivateCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/deactivate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsDestroy: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsDestroy', 'id', id)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {boolean} [isActive] 
+         * @param {boolean} [isPublic] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsList: async (isActive?: boolean, isPublic?: boolean, ordering?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/world-position-connections/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (isActive !== undefined) {
+                localVarQueryParameter['is_active'] = isActive;
+            }
+
+            if (isPublic !== undefined) {
+                localVarQueryParameter['is_public'] = isPublic;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsLockCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsLockCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsLockCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/lock/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PatchedPositionConnectionRequest} [patchedPositionConnectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsPartialUpdate: async (id: number, patchedPositionConnectionRequest?: PatchedPositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsPartialUpdate', 'id', id)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedPositionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsRetrieve: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Set a connection as private
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsSetPrivateCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsSetPrivateCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsSetPrivateCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/setPrivate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Set a connection as public
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsSetPublicCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsSetPublicCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsSetPublicCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/setPublic/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Unlock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsUnlockCreate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsUnlockCreate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsUnlockCreate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/unlock/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsUpdate: async (id: number, positionConnectionRequest: PositionConnectionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsUpdate', 'id', id)
+            // verify required parameter 'positionConnectionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionConnectionsUpdate', 'positionConnectionRequest', positionConnectionRequest)
+            const localVarPath = `/api/gamemaster/world-position-connections/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionConnectionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GMWorldEditiorPositionConnectionsApi - functional programming interface
+ * @export
+ */
+export const GMWorldEditiorPositionConnectionsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GMWorldEditiorPositionConnectionsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Activate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsActivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsActivateCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsActivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Configure a connection with requirements
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionRelationConfigurationRequest} [positionRelationConfigurationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsConfigureCreate(id: number, positionRelationConfigurationRequest?: PositionRelationConfigurationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsConfigureCreate(id, positionRelationConfigurationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsConfigureCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Create a connection between two positions
+         * @param {PositionConnectionCreateRequest} positionConnectionCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest: PositionConnectionCreateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsConnectCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsCreate(positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsCreate(positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Deactivate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsDeactivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsDeactivateCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsDeactivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsDestroy(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {boolean} [isActive] 
+         * @param {boolean} [isPublic] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsList(isActive?: boolean, isPublic?: boolean, ordering?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PositionConnection>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsList(isActive, isPublic, ordering, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Lock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsLockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsLockCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsLockCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PatchedPositionConnectionRequest} [patchedPositionConnectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsPartialUpdate(id: number, patchedPositionConnectionRequest?: PatchedPositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsPartialUpdate(id, patchedPositionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsRetrieve(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Set a connection as private
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsSetPrivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsSetPrivateCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsSetPrivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Set a connection as public
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsSetPublicCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsSetPublicCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsSetPublicCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Unlock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsUnlockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsUnlockCreate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsUnlockCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionConnectionsUpdate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PositionConnection>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionConnectionsUpdate(id, positionConnectionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionConnectionsApi.gamemasterWorldPositionConnectionsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GMWorldEditiorPositionConnectionsApi - factory interface
+ * @export
+ */
+export const GMWorldEditiorPositionConnectionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GMWorldEditiorPositionConnectionsApiFp(configuration)
+    return {
+        /**
+         * Activate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsActivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsActivateCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Configure a connection with requirements
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionRelationConfigurationRequest} [positionRelationConfigurationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsConfigureCreate(id: number, positionRelationConfigurationRequest?: PositionRelationConfigurationRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsConfigureCreate(id, positionRelationConfigurationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Create a connection between two positions
+         * @param {PositionConnectionCreateRequest} positionConnectionCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest: PositionConnectionCreateRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsCreate(positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsCreate(positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Deactivate a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsDeactivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsDeactivateCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsDestroy(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.gamemasterWorldPositionConnectionsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {boolean} [isActive] 
+         * @param {boolean} [isPublic] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsList(isActive?: boolean, isPublic?: boolean, ordering?: string, options?: any): AxiosPromise<Array<PositionConnection>> {
+            return localVarFp.gamemasterWorldPositionConnectionsList(isActive, isPublic, ordering, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsLockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsLockCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PatchedPositionConnectionRequest} [patchedPositionConnectionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsPartialUpdate(id: number, patchedPositionConnectionRequest?: PatchedPositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsPartialUpdate(id, patchedPositionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsRetrieve(id: number, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Set a connection as private
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsSetPrivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsSetPrivateCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Set a connection as public
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsSetPublicCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsSetPublicCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Unlock a connection
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsUnlockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsUnlockCreate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing position connections in the world
+         * @param {number} id A unique integer value identifying this position connection.
+         * @param {PositionConnectionRequest} positionConnectionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionConnectionsUpdate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: any): AxiosPromise<PositionConnection> {
+            return localVarFp.gamemasterWorldPositionConnectionsUpdate(id, positionConnectionRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GMWorldEditiorPositionConnectionsApi - object-oriented interface
+ * @export
+ * @class GMWorldEditiorPositionConnectionsApi
+ * @extends {BaseAPI}
+ */
+export class GMWorldEditiorPositionConnectionsApi extends BaseAPI {
+    /**
+     * Activate a connection
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsActivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsActivateCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Configure a connection with requirements
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionRelationConfigurationRequest} [positionRelationConfigurationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsConfigureCreate(id: number, positionRelationConfigurationRequest?: PositionRelationConfigurationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsConfigureCreate(id, positionRelationConfigurationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Create a connection between two positions
+     * @param {PositionConnectionCreateRequest} positionConnectionCreateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest: PositionConnectionCreateRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsConnectCreate(positionConnectionCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsCreate(positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsCreate(positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Deactivate a connection
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsDeactivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsDeactivateCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsDestroy(id: number, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {boolean} [isActive] 
+     * @param {boolean} [isPublic] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsList(isActive?: boolean, isPublic?: boolean, ordering?: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsList(isActive, isPublic, ordering, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lock a connection
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsLockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsLockCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PatchedPositionConnectionRequest} [patchedPositionConnectionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsPartialUpdate(id: number, patchedPositionConnectionRequest?: PatchedPositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsPartialUpdate(id, patchedPositionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsRetrieve(id: number, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Set a connection as private
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsSetPrivateCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsSetPrivateCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Set a connection as public
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsSetPublicCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsSetPublicCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Unlock a connection
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsUnlockCreate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsUnlockCreate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing position connections in the world
+     * @param {number} id A unique integer value identifying this position connection.
+     * @param {PositionConnectionRequest} positionConnectionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionConnectionsApi
+     */
+    public gamemasterWorldPositionConnectionsUpdate(id: number, positionConnectionRequest: PositionConnectionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionConnectionsApiFp(this.configuration).gamemasterWorldPositionConnectionsUpdate(id, positionConnectionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GMWorldEditiorPositionsApi - axios parameter creator
+ * @export
+ */
+export const GMWorldEditiorPositionsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * API for managing positions in the world
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsCreate: async (positionRequest: PositionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'positionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsCreate', 'positionRequest', positionRequest)
+            const localVarPath = `/api/gamemaster/world-positions/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsDestroy', 'id', id)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing positions in the world
+         * @param {number} [gridZ] 
+         * @param {boolean} [isSafe] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [subLocation] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsList: async (gridZ?: number, isSafe?: boolean, ordering?: string, subLocation?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/world-positions/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (gridZ !== undefined) {
+                localVarQueryParameter['grid_z'] = gridZ;
+            }
+
+            if (isSafe !== undefined) {
+                localVarQueryParameter['is_safe'] = isSafe;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (subLocation !== undefined) {
+                localVarQueryParameter['sub_location'] = subLocation;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Mark a position as dangerous
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMarkDangerousCreate: async (id: string, positionRequest: PositionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMarkDangerousCreate', 'id', id)
+            // verify required parameter 'positionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMarkDangerousCreate', 'positionRequest', positionRequest)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/markDangerous/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Mark a position as safe
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMarkSafeCreate: async (id: string, positionRequest: PositionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMarkSafeCreate', 'id', id)
+            // verify required parameter 'positionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMarkSafeCreate', 'positionRequest', positionRequest)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/markSafe/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Move a position to new coordinates
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionMoveRequest} positionMoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMoveCreate: async (id: string, positionMoveRequest: PositionMoveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMoveCreate', 'id', id)
+            // verify required parameter 'positionMoveRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsMoveCreate', 'positionMoveRequest', positionMoveRequest)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/move/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionMoveRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PatchedPositionRequest} [patchedPositionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsPartialUpdate: async (id: string, patchedPositionRequest?: PatchedPositionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsPartialUpdate', 'id', id)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedPositionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsUpdate: async (id: string, positionRequest: PositionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsUpdate', 'id', id)
+            // verify required parameter 'positionRequest' is not null or undefined
+            assertParamExists('gamemasterWorldPositionsUpdate', 'positionRequest', positionRequest)
+            const localVarPath = `/api/gamemaster/world-positions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(positionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GMWorldEditiorPositionsApi - functional programming interface
+ * @export
+ */
+export const GMWorldEditiorPositionsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GMWorldEditiorPositionsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * API for managing positions in the world
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsCreate(positionRequest: PositionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsCreate(positionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing positions in the world
+         * @param {number} [gridZ] 
+         * @param {boolean} [isSafe] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [subLocation] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsList(gridZ?: number, isSafe?: boolean, ordering?: string, subLocation?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Position>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsList(gridZ, isSafe, ordering, subLocation, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Mark a position as dangerous
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsMarkDangerousCreate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsMarkDangerousCreate(id, positionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsMarkDangerousCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Mark a position as safe
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsMarkSafeCreate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsMarkSafeCreate(id, positionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsMarkSafeCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Move a position to new coordinates
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionMoveRequest} positionMoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsMoveCreate(id: string, positionMoveRequest: PositionMoveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsMoveCreate(id, positionMoveRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsMoveCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PatchedPositionRequest} [patchedPositionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsPartialUpdate(id: string, patchedPositionRequest?: PatchedPositionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsPartialUpdate(id, patchedPositionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldPositionsUpdate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldPositionsUpdate(id, positionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditiorPositionsApi.gamemasterWorldPositionsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GMWorldEditiorPositionsApi - factory interface
+ * @export
+ */
+export const GMWorldEditiorPositionsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GMWorldEditiorPositionsApiFp(configuration)
+    return {
+        /**
+         * API for managing positions in the world
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsCreate(positionRequest: PositionRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsCreate(positionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.gamemasterWorldPositionsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing positions in the world
+         * @param {number} [gridZ] 
+         * @param {boolean} [isSafe] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [subLocation] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsList(gridZ?: number, isSafe?: boolean, ordering?: string, subLocation?: string, options?: any): AxiosPromise<Array<Position>> {
+            return localVarFp.gamemasterWorldPositionsList(gridZ, isSafe, ordering, subLocation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Mark a position as dangerous
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMarkDangerousCreate(id: string, positionRequest: PositionRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsMarkDangerousCreate(id, positionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Mark a position as safe
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMarkSafeCreate(id: string, positionRequest: PositionRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsMarkSafeCreate(id, positionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Move a position to new coordinates
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionMoveRequest} positionMoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsMoveCreate(id: string, positionMoveRequest: PositionMoveRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsMoveCreate(id, positionMoveRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PatchedPositionRequest} [patchedPositionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsPartialUpdate(id: string, patchedPositionRequest?: PatchedPositionRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsPartialUpdate(id, patchedPositionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsRetrieve(id: string, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing positions in the world
+         * @param {string} id A UUID string identifying this position.
+         * @param {PositionRequest} positionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldPositionsUpdate(id: string, positionRequest: PositionRequest, options?: any): AxiosPromise<Position> {
+            return localVarFp.gamemasterWorldPositionsUpdate(id, positionRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GMWorldEditiorPositionsApi - object-oriented interface
+ * @export
+ * @class GMWorldEditiorPositionsApi
+ * @extends {BaseAPI}
+ */
+export class GMWorldEditiorPositionsApi extends BaseAPI {
+    /**
+     * API for managing positions in the world
+     * @param {PositionRequest} positionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsCreate(positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsCreate(positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing positions in the world
+     * @param {string} id A UUID string identifying this position.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing positions in the world
+     * @param {number} [gridZ] 
+     * @param {boolean} [isSafe] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [subLocation] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsList(gridZ?: number, isSafe?: boolean, ordering?: string, subLocation?: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsList(gridZ, isSafe, ordering, subLocation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Mark a position as dangerous
+     * @param {string} id A UUID string identifying this position.
+     * @param {PositionRequest} positionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsMarkDangerousCreate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsMarkDangerousCreate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Mark a position as safe
+     * @param {string} id A UUID string identifying this position.
+     * @param {PositionRequest} positionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsMarkSafeCreate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsMarkSafeCreate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Move a position to new coordinates
+     * @param {string} id A UUID string identifying this position.
+     * @param {PositionMoveRequest} positionMoveRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsMoveCreate(id: string, positionMoveRequest: PositionMoveRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsMoveCreate(id, positionMoveRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing positions in the world
+     * @param {string} id A UUID string identifying this position.
+     * @param {PatchedPositionRequest} [patchedPositionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsPartialUpdate(id: string, patchedPositionRequest?: PatchedPositionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsPartialUpdate(id, patchedPositionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing positions in the world
+     * @param {string} id A UUID string identifying this position.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing positions in the world
+     * @param {string} id A UUID string identifying this position.
+     * @param {PositionRequest} positionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditiorPositionsApi
+     */
+    public gamemasterWorldPositionsUpdate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsUpdate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

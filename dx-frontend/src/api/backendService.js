@@ -9,6 +9,8 @@ import {
     EffectsApi,
     GalleryApi,
     GamemasterApi,
+    GMWorldEditiorPositionConnectionsApi,
+    GMWorldEditiorPositionsApi,
     ItemsApi,
     ModificatorsApi,
     SchoolApi,
@@ -35,3 +37,5 @@ export const GalleryGameApi = new GalleryApi(GameApiConfig);
 export const ItemsGameApi = new ItemsApi(GameApiConfig);
 export const ShieldsGameApi = new ShieldsApi(GameApiConfig);
 export const GameMasterApi = new GamemasterApi(GameApiConfig);
+export const GMWorldPositionConnectionsApi = new GMWorldEditiorPositionConnectionsApi(GameApiConfig);
+export const GMWorldPositionsApi = new GMWorldEditiorPositionsApi(GameApiConfig);
