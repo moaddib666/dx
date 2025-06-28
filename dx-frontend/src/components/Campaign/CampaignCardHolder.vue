@@ -85,6 +85,7 @@ export default {
 .campaign-card-holder {
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   width: 100%;
   padding: 1rem 0;
@@ -100,12 +101,17 @@ export default {
   width: 100%;
   gap: 1rem;
   padding: 0.5rem 0;
+  justify-content: center;
 }
 
 .card-wrapper {
   flex: 0 0 auto;
   transition: transform 0.3s ease;
   cursor: pointer;
+  margin: 0 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-wrapper:hover {
@@ -167,11 +173,19 @@ export default {
   .cards-container {
     gap: 0.75rem;
   }
+
+  .card-wrapper {
+    margin: 0 0.4rem;
+  }
 }
 
 @media (max-width: 900px) {
   .campaign-card-holder {
     padding: 0.75rem 0;
+  }
+
+  .card-wrapper {
+    margin: 0 0.3rem;
   }
 }
 
@@ -192,6 +206,10 @@ export default {
 
   .cards-container {
     gap: 0.5rem;
+  }
+
+  .card-wrapper {
+    margin: 0 0.25rem;
   }
 }
 </style>
