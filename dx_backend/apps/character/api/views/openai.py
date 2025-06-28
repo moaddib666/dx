@@ -21,6 +21,69 @@ from apps.game.services.character.template import CharacterTemplateService
 from apps.game.services.rand_dice import DiceService
 
 
+class ClientCharacterManagementViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet for managing characters in the client application.
+    Provides read-only access to character data.
+
+    1. **get_queryset**: Returns the queryset of characters for the authenticated user.
+    2. **we se all active and non active characters**: Filters characters based on the user's main character's position and campaign.
+    3. **no npc characters are allowed**: Ensures that only characters related to the user's main character's campaign are returned.
+    4. **select character** allows client to choose a character to play with.
+    """
+    queryset = Character.objects.all()
+    serializer_class = OpenaiCharacterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CharacterFilter
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = super().get_queryset()
+
+        # Filter characters owned by the user (both active and inactive)
+        qs = qs.filter(
+            owner=user,
+            npc=False  # Exclude NPC characters
+        )
+
+        return qs
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @transaction.atomic
+    def select_character(self, request, pk=None):
+        """
+        Select a character as the user's main character.
+        """
+        user = request.user
+        character = self.get_object()
+
+        # Ensure the character belongs to the user
+        if character.owner != user:
+            return Response(
+                {"detail": "You do not own this character."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Set as main character
+        user.main_character = character
+        user.save(update_fields=['main_character'])
+
+        return Response({"detail": "Character selected successfully."}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def current_character(self, request):
+        """
+        Get the user's current main character.
+        """
+        user = request.user
+        if not hasattr(user, 'main_character') or not user.main_character:
+            return Response({"detail": "No main character selected."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(user.main_character)
+        return Response(data=serializer.data)
+
+
 class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Character.objects.filter(is_active=True)
     serializer_class = OpenaiCharacterSerializer

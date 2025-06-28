@@ -43,6 +43,7 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
     biography = OpenaiCharacterBioSerializer()
     rank = RankSerializer()
     path = ThePathSerializer()
+    campaign_name = serializers.CharField(source='campaign.name', read_only=True)
 
     def validate_age(self, value):
         if not (18 <= value <= 200):
@@ -51,7 +52,19 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Character
-        fields = ['id', 'name', 'biography', "npc", "rank", "path", "experience", "tags", "resetting_base_stats", "is_active"]
+        fields = [
+            'id',
+            'name',
+            'biography',
+            "npc",
+            "rank",
+            "path",
+            "experience",
+            "tags",
+            "resetting_base_stats",
+            "is_active",
+            "campaign_name"
+        ]
 
 
 class CharacterAttrsSerializer(serializers.Serializer):
