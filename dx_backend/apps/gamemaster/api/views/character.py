@@ -26,6 +26,15 @@ class GameMasterCharacterViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterFilter
 
+    def get_queryset(self):
+        """
+        Override to filter characters by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
+
     god_interventions_factory = GodInterventionsFactory()
 
     @action(detail=True, methods=['get'])

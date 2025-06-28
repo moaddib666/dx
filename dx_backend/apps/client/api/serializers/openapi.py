@@ -39,16 +39,10 @@ class OpenAICampaignSerializer(serializers.ModelSerializer):
 
 
 class CurrentCampaignSerializer(serializers.ModelSerializer):
-    current_campaign_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Client
-        fields = ['current_campaign', 'current_campaign_details']
-
-    def get_current_campaign_details(self, obj):
-        if obj.current_campaign:
-            return OpenAICampaignSerializer(obj.current_campaign).data
-        return None
+        fields = ['current_campaign']
 
 
 class BasicCharacterSerializer(serializers.ModelSerializer):

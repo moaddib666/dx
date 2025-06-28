@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -43,6 +43,7 @@ class OpenAICampaignManagementViewSet(viewsets.GenericViewSet):
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = OpenAICampaignSerializer
+    queryset = Campaign.objects.all()
 
     def get_queryset(self):
         """
@@ -91,54 +92,20 @@ class OpenAICampaignManagementViewSet(viewsets.GenericViewSet):
         the current_campaign field will be null.
         """
         client = request.user
-
-        # Check if client has a current campaign
-        if not client.current_campaign:
-            # Still return a valid response, but with null values
-            serializer = CurrentCampaignSerializer(client)
-            return Response(serializer.data)
-
-        # Check if the current campaign is still active and accessible
-        try:
-            self.get_queryset().get(pk=client.current_campaign.pk)
-        except Campaign.DoesNotExist:
-            # Current campaign is no longer active or accessible, reset it
-            client.current_campaign = None
-            client.save()
-
-        serializer = CurrentCampaignSerializer(client)
+        serializer = CurrentCampaignSerializer(client, context=self.get_serializer_context())
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['post'], serializer_class=serializers.Serializer)
     def set_current_campaign(self, request, pk=None):
         """
         Set the current campaign for the client.
 
         The campaign must be active and the client must be either a player or a master in the campaign.
         """
+        campaign = self.get_object()  # Ensure the viewset is properly initialized
         client = request.user
-
-        # Validate campaign exists and client has access to it
-        try:
-            campaign = self.get_queryset().get(pk=pk)
-        except Campaign.DoesNotExist:
-            return Response(
-                {"detail": "Campaign not found or you don't have access to it."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Validate campaign is active
-        if not campaign.is_active:
-            return Response(
-                {"detail": "Cannot set inactive campaign as current."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Set current campaign
         client.current_campaign = campaign
         client.save()
-
-        # Return updated client data
         serializer = CurrentCampaignSerializer(client)
         return Response(serializer.data)
 

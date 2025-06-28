@@ -66,7 +66,7 @@ class CharacterActionsLogViewSet(
         user = self.request.user
         main_character = user.main_character
         # Get the campaign from the main character
-        campaign = main_character.campaign if main_character else None
+        campaign = self.request.user.current_campaign
         current_cycle = Cycle.objects.current(campaign=campaign)
         depth = 3  # 3 cycles back
         cycle__in = []
@@ -97,8 +97,12 @@ class CharacterActionsViewSet(
 
     def get_queryset(self):
         user = self.request.user
+        campaign = self.request.user.current_campaign
         character = user.main_character
-        qs = super().get_queryset()
+        qs = super().get_queryset().filter(
+            cycle__campaign=campaign,
+            cycle__isnull=False,
+        )
         return qs.filter(initiator=character) | qs.filter(target=character)
 
     @transaction.atomic
@@ -120,9 +124,7 @@ class CharacterActionsViewSet(
             serializer_class=serializers.Serializer)
     def next_cycle(self, request):
         # Get the campaign from the user's main character
-        campaign = None
-        if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
-            campaign = request.user.main_character.campaign
+        campaign = self.request.user.current_campaign
 
         current_cycle = Cycle.objects.current(campaign=campaign)
         svc = ACTION_PIPELINE_TOOL.cycle_player_factory(
@@ -168,6 +170,12 @@ class GameMasterActionsViewSet(
         SearchFilter,
     ]
 
+    def get_queryset(self):
+        campaign = self.request.user.current_campaign
+        return super().get_queryset().filter(
+            cycle__campaign=campaign,
+            cycle__isnull=False,
+        )
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=RegisterImpactActionSerializer)
     @transaction.atomic

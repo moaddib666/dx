@@ -154,8 +154,8 @@ class PositionManagementViewSet(GenericGameViewSet):
         #
         #  # "gameobjects": [ uuid, uuid, ... ] # TODO: implement game objects id, type, interface
 
-        character = self.get_character()  # Assume this fetches the character
-        position = character.position  # Assume the character has a related Position object
+        character = self.get_character()
+        position = character.position
 
         # Serialize the position details
         serializer = self.get_serializer(position, context=self.get_serializer_context())

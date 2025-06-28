@@ -19,6 +19,15 @@ class NPCViewSet(viewsets.GenericViewSet):
     queryset = Character.objects.filter(npc=True)
     serializer_class = GameMasterCharacterInfoSerializer
 
+    def get_queryset(self):
+        """
+        Override to filter NPCs by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
+
     @extend_schema(
         responses={200: GameMasterCharacterInfoSerializer}
     )

@@ -100,7 +100,7 @@ class GameMasterItemViewSet(viewsets.ReadOnlyModelViewSet):
                 item=item,
                 position=position,
                 dimension=character.dimension if character else None,
-                campaign=character.campaign
+                campaign=self.request.user.current_campaign
             )
 
             # If character is provided, assign the item to the character
@@ -131,6 +131,14 @@ class GameMasterWorldItemViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]
 
+    def get_queryset(self):
+        """
+        Override to filter world items by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
 
 class GameMasterCharacterItemViewSet(viewsets.ModelViewSet):
     """
@@ -141,3 +149,12 @@ class GameMasterCharacterItemViewSet(viewsets.ModelViewSet):
     serializer_class = CharacterItemSerializer
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]
+
+    def get_queryset(self):
+        """
+        Override to filter character items by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(character__campaign=self.request.user.current_campaign)
+        return queryset

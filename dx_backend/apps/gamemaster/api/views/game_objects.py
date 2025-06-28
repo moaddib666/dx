@@ -38,6 +38,14 @@ class GameObjectViewSet(CampaignFilterMixin, viewsets.ModelViewSet):
     filterset_class = GameObjectFilter
     ordering_fields = ['id', 'is_active']
 
+    def get_queryset(self):
+        """
+        Override to filter game objects by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
 
     @action(detail=True, methods=['post'])
     def move(self, request, pk=None):

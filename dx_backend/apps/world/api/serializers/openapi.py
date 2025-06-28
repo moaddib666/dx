@@ -174,6 +174,12 @@ class TeleportPositionSerializer(serializers.Serializer):
 
 
 class PositionSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._client = self.context.get('request').user if 'request' in self.context else None
+        if not self._client:
+            raise serializers.ValidationError("User context is required for PositionSerializer.")
+
     connections = serializers.SerializerMethodField()
     location = serializers.UUIDField(source='sub_location.location_id')
     characters = serializers.SerializerMethodField()
@@ -188,7 +194,12 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def get_anomalies(self, obj):
         """Retrieve all anomalies in the current position."""
-        return [t.id for t in obj.gameobject_set.instance_of(DimensionAnomaly) if not t.known]
+        return [
+            t.id for t in
+            obj.gameobject_set.instance_of(DimensionAnomaly).filter(
+                campaign=self._client.current_campaign
+            ) if not t.known
+        ]
 
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""
@@ -205,7 +216,8 @@ class PositionSerializer(serializers.ModelSerializer):
 
     def get_characters(self, obj):
         """Retrieve all characters in the current position."""
-        return [character.id for character in obj.gameobject_set.instance_of(Character)]
+        return [character.id for character in
+                obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign)]
 
     def get_image(self, obj):
         """Retrieve the background of the current position."""

@@ -44,7 +44,8 @@ class ClientCharacterManagementViewSet(viewsets.ReadOnlyModelViewSet):
         # Filter characters owned by the user (both active and inactive)
         qs = qs.filter(
             owner=user,
-            npc=False  # Exclude NPC characters
+            npc=False,  # Exclude NPC characters
+            campaign=user.current_campaign,  # Ensure characters are in the user's current campaign
         )
 
         return qs
@@ -102,7 +103,7 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
                 is_active=True
             )
         return qs.filter(
-            campaign=user.main_character.campaign,
+            campaign=user.current_campaign,
         )
 
     @transaction.atomic
@@ -124,6 +125,8 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
             gender=serializer.validated_data['gender'],
         )
         serializer.instance = character
+        response_serializer = self.get_serializer(character)
+        return Response(data=response_serializer.data)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def character_details(self, request):
@@ -206,6 +209,10 @@ class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterFilter
 
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            campaign=self.request.user.current_campaign,
+        )
     @action(detail=True, methods=['get'],
             serializer_class=CharacterInfoSerializer)
     def character_info(self, request, pk=None):

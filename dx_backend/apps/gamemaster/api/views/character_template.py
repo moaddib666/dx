@@ -11,7 +11,8 @@ from apps.game.services.npc.factory import NPCFactory
 from apps.game.services.npc.factory.interface import NPCFactoryConfig
 from apps.gamemaster.api.filters import CharacterTemplateFilter
 from apps.gamemaster.api.serializers.character import GameMasterCharacterInfoSerializer
-from apps.gamemaster.api.serializers.character_template import CharacterTemplateSerializer, CreateNPCFromTemplateSerializer
+from apps.gamemaster.api.serializers.character_template import CharacterTemplateSerializer, \
+    CreateNPCFromTemplateSerializer
 from apps.world.models import Position
 
 
@@ -22,6 +23,7 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
     This viewset provides read-only operations for character templates and an action
     to create NPCs from templates.
     """
+
     class StandardResultsSetPagination(pagination.PageNumberPagination):
         page_size = 100
         page_size_query_param = 'page_size'
@@ -33,6 +35,15 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterTemplateFilter
     pagination_class = StandardResultsSetPagination
+
+    def get_queryset(self):
+        """
+        Override to filter character templates by the current campaign if applicable.
+        """
+        queryset = super().get_queryset()
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            return queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
 
     def get_serializer_context(self):
         """
