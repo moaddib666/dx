@@ -4,6 +4,7 @@ from collections import defaultdict
 
 from django.db.models import OuterRef, Exists
 
+from apps.action.models import Cycle
 from apps.character.models import Character
 from apps.game.services.action.npc.behavior import DefaultBehaviorPattern
 from apps.game.services.action.npc.position import PositionCharactersBehaviorStateService
@@ -20,19 +21,21 @@ class NpcActionScheduler:
 
     logger = logging.getLogger("game.service.action.npcScheduler")
 
-    def get_active_characters(self) -> t.Dict["Position", t.Dict["Organization", t.List["Character"]]]:
+    def get_active_characters(self, cycle: "Cycle") -> t.Dict["Position", t.Dict["Organization", t.List["Character"]]]:
         """
         Version that uses actual Position and Organization model instances as keys.
         """
         players_in_position = Character.objects.filter(
             npc=False,
             is_active=True,
-            position=OuterRef('position')
+            position=OuterRef('position'),
+            campaign=cycle.campaign,
         )
 
         active_npcs = Character.objects.filter(
             is_active=True,
-            position__isnull=False
+            position__isnull=False,
+            campaign=cycle.campaign,
         ).annotate(
             has_players=Exists(players_in_position)
         ).filter(
@@ -47,11 +50,11 @@ class NpcActionScheduler:
 
         return {pos: dict(orgs) for pos, orgs in result.items()}
 
-    def schedule_actions(self):
+    def schedule_actions(self, cycle: "Cycle") -> None:
         """
         Schedule NPC actions.
         """
-        for position, org_with_characters in self.get_active_characters().items():
+        for position, org_with_characters in self.get_active_characters(cycle).items():
             logging.debug(f"Scheduling actions for NPCs in position {position} with organization {org_with_characters}")
             context = PositionCharactersBehaviorStateService(position, org_with_characters).prepare()
             for org_name, characters in org_with_characters.items():

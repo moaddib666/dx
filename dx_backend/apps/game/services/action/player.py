@@ -53,7 +53,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
     def prepare(self):
         self.base_stats_applier.apply()
-        self.npc_actions_scheduler.schedule_actions()
+        self.npc_actions_scheduler.schedule_actions(self.cycle)
         self.auto_map_svc.map_characters()
         self.perform_follow_chase()
 
