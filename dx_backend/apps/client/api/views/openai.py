@@ -3,10 +3,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.client.api.serializers.openapi import (
-    OpenAIClientManagementSerializer, 
+    OpenAIClientManagementSerializer,
     RegistrationFormSerializer,
     OpenAICampaignSerializer,
-    CurrentCampaignSerializer
+    CurrentCampaignSerializer,
+    CurrentClientInfoSerializer
 )
 from apps.client.models import Client
 from apps.game.models import Campaign
@@ -52,7 +53,7 @@ class OpenAICampaignManagementViewSet(viewsets.GenericViewSet):
             return Campaign.objects.none()
 
         client = self.request.user
-        return (Campaign.objects.filter(players=client, is_active=True) | 
+        return (Campaign.objects.filter(players=client, is_active=True) |
                 Campaign.objects.filter(masters=client, is_active=True)).distinct()
 
     @action(detail=False, methods=['get'])
@@ -139,4 +140,28 @@ class OpenAICampaignManagementViewSet(viewsets.GenericViewSet):
 
         # Return updated client data
         serializer = CurrentCampaignSerializer(client)
+        return Response(serializer.data)
+
+
+class CurrentClientViewSet(viewsets.GenericViewSet):
+    """
+    ViewSet to get the current authenticated client.
+
+    This viewset provides a single endpoint to retrieve the current client's details.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CurrentClientInfoSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    @action(detail=False, methods=['get'])
+    def info(self, request):
+        """
+        Get the basic information of the current authenticated client.
+        This enpoint used by game client to get current client information
+        It contains information about: is_active, current_campaign, main_character, play_campaigns, master_campaigns, owned_characters
+        """
+        client = self.get_object()
+        serializer = CurrentClientInfoSerializer(client, context=self.get_serializer_context())
         return Response(serializer.data)

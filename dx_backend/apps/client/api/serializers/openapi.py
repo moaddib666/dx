@@ -1,7 +1,9 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from apps.client.models import Client
 from apps.game.models import Campaign
+from apps.character.models import Character
 
 
 class OpenAIClientManagementSerializer(serializers.ModelSerializer):
@@ -47,3 +49,41 @@ class CurrentCampaignSerializer(serializers.ModelSerializer):
         if obj.current_campaign:
             return OpenAICampaignSerializer(obj.current_campaign).data
         return None
+
+
+class BasicCharacterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        fields = ['id', 'name', 'is_active']
+
+
+# Dirty Hack for now
+from apps.character.api.serializers.openapi import OpenaiCharacterSerializer
+
+
+class CurrentClientInfoSerializer(serializers.ModelSerializer):
+    current_campaign = OpenAICampaignSerializer(read_only=True)
+    play_campaigns = OpenAICampaignSerializer(many=True, read_only=True)
+    master_campaigns = OpenAICampaignSerializer(many=True, read_only=True)
+    owned_characters = serializers.SerializerMethodField()
+    main_character = OpenaiCharacterSerializer(read_only=True)
+
+    @extend_schema_field(OpenaiCharacterSerializer(many=True))
+    def get_owned_characters(self, obj):
+        # Filter out NPC characters (npc=True)
+        characters = obj.available_characters.filter(npc=False)
+        return OpenaiCharacterSerializer(
+            characters, many=True, context=self.context
+        ).data
+
+    class Meta:
+        model = Client
+        fields = [
+            'id',
+            'is_active',
+            'current_campaign',
+            'main_character',
+            'play_campaigns',
+            'master_campaigns',
+            'owned_characters'
+        ]

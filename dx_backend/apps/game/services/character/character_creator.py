@@ -44,6 +44,7 @@ class CharacterCreator:
             path_id=dto.path,
             tags=dto.tags,
             is_active=False,
+            campaign=self.client.current_campaign,
         )
         character.position = position
         character.save()
