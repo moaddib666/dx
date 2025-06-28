@@ -16,6 +16,9 @@ class PlayerService {
      * @returns {Object|null} The attribute object, or null if not found.
      */
     getAttribute(attributeName) {
+        if (!this.player.attributes || !Array.isArray(this.player.attributes)) {
+            return null;
+        }
         const attribute = this.player.attributes.find(attr => attr.name === attributeName);
         return attribute || null;
     }
@@ -34,7 +37,7 @@ class PlayerService {
      * @returns {string} The player's position.
      */
     getPosition() {
-        return this.player.position;
+        return this.player.position || null;
     }
 
     /**
@@ -42,7 +45,7 @@ class PlayerService {
      * @returns {string} The player's name.
      */
     getName() {
-        return this.player.name;
+        return this.player.name || '';
     }
 
     /**
@@ -50,7 +53,7 @@ class PlayerService {
      * @returns {number} The player's rank grade.
      */
     getRankGrade() {
-        return this.player.rank_grade;
+        return this.player.rank_grade || 0;
     }
 
     /**
@@ -58,7 +61,7 @@ class PlayerService {
      * @returns {boolean} True if the player is in a fight, false otherwise.
      */
     isInFight() {
-        return this.player.fight !== null;
+        return this.player.fight !== null && this.player.fight !== undefined;
     }
 
     /**

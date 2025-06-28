@@ -296,7 +296,7 @@ export default {
       this.connections = {};
       this.characters = [];
       this.npcCharacters = [];
-      this.playerInfo = { id: null, coordinates: null };
+      this.playerInfo = { id: null, coordinates: null, attributes: [] };
       this.playerGeneralInfo = { biography: { avatar: null } };
       this.playerSkills = [];
       this.activeEffects = [];
@@ -660,7 +660,11 @@ export default {
       } catch (error) {
         console.error("Error getting player info:", error);
         // Initialize with default values to prevent errors
-        this.playerInfo = { id: null, coordinates: null };
+        this.playerInfo = {
+          id: null,
+          coordinates: null,
+          attributes: [] // Add empty attributes array to prevent errors
+        };
         if (this.playerGeneralInfo === null) {
           this.playerGeneralInfo = { biography: { avatar: null } };
         }

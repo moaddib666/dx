@@ -152,7 +152,7 @@ export default {
 
 .nav-arrow {
   position: absolute;
-  z-index: 10;
+  z-index: 100;
   width: 40px;
   height: 40px;
   border-radius: 50%;

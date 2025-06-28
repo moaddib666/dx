@@ -244,7 +244,8 @@ export default {
       console.log("Character Creation Finished", this.steps.map(step => step.data));
       try {
         await this.submitCharacter();
-        this.$router.push({name: 'CharacterInfo'})
+        // Navigate to the player dashboard after character creation
+        this.$router.push({name: 'PlayerHomeDashboard'})
       } catch (error) {
         console.error(error);
       }

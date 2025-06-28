@@ -161,11 +161,6 @@ export default {
             :path="playerInfo.path.name"
             :selected="[]"
         />
-        <div v-if="playerInfo?.is_active" class="play">
-          <LandingButton :action="playGame">
-            Continue Your Journey
-          </LandingButton>
-        </div>
       </div>
     </div>
     <!-- Error or Not Ready -->

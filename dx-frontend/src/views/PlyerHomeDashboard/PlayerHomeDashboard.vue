@@ -38,8 +38,15 @@
               </div>
 
               <!-- Placeholder for adding a new character -->
-              <div class="add-character-placeholder">
-                + Add Character
+              <div class="add-character-placeholder" @click="createCharacter">
+                <div class="add-character-content">
+                  <div class="add-icon">+</div>
+                  <div class="add-text">Add Character</div>
+                </div>
+                <!-- Flow border effect -->
+                <div class="flow-border-add"></div>
+                <!-- Hover glow effect -->
+                <div class="hover-glow-add"></div>
               </div>
             </div>
           </div>
@@ -54,6 +61,7 @@
 <script>
 import CampaignCardHolder from "@/components/Campaign/CampaignCardHolder.vue";
 import CharacterPreviewCard from "@/components/Character/CharacterPreviewCard.vue";
+import ClientManagerService from "@/services/clientManagerService.js";
 
 export default {
   name: "PlayerHomeDashboard",
@@ -94,6 +102,8 @@ export default {
   async mounted() {
     try {
       this.loading = true;
+      // Clear the client info cache to ensure fresh data is fetched
+      ClientManagerService.clearClientInfoCache();
       // Fetch campaigns data
       await this.fetchCampaigns();
       // Additional initialization if needed
@@ -111,43 +121,40 @@ export default {
   },
   methods: {
     async fetchCampaigns() {
-      // Mock data for now - would be replaced with actual API call
-      this.campaigns = [
-        {
-          id: "b6de2027-2372-434f-bff4-b799ef5d1cd2",
-          name: "First Campaign",
-          description: "This is first one",
-          is_active: true,
-          is_completed: false,
-          background_image: "http://localhost:8000/media/campaigns/ele-of-eternity.png"
-        },
-        {
-          id: "c7ef3138-3483-545f-cgg5-c899ef5d2de3",
-          name: "Second Campaign",
-          description: "The adventure continues",
-          is_active: true,
-          is_completed: true,
-          background_image: "http://localhost:8000/media/campaigns/ele-of-eternity.png"
-        },
-        {
-          id: "d8fg4249-4594-656g-dhh6-d900ef5d3ef4",
-          name: "Legacy Campaign",
-          description: "An old but gold adventure",
-          is_active: false,
-          is_completed: false,
-          background_image: "http://localhost:8000/media/campaigns/ele-of-eternity.png"
-        },
-        {
-          id: "d8fg4249-4594-656g-dhh6-d900ef5d3ef4",
-          name: "Legacy Campaign",
-          description: "An old but gold adventure",
-          is_active: false,
-          is_completed: true,
-          background_image: "http://localhost:8000/media/campaigns/ele-of-eternity.png"
+      try {
+        // Get client info from ClientManagerService
+        const clientInfo = await ClientManagerService.getCurrentClientInfo();
+
+        // Combine play_campaigns and master_campaigns
+        const allCampaigns = [
+          ...clientInfo.play_campaigns,
+          ...clientInfo.master_campaigns
+        ];
+
+        // Remove duplicates (in case a campaign appears in both arrays)
+        const uniqueCampaigns = Array.from(new Map(
+          allCampaigns.map(campaign => [campaign.id, campaign])
+        ).values());
+
+        // Mark the current campaign as selected
+        this.campaigns = uniqueCampaigns.map(campaign => ({
+          ...campaign,
+          selected: campaign.id === clientInfo.current_campaign?.id,
+          // Set default values for properties that might not be in the API response
+          is_active: campaign.is_active !== undefined ? campaign.is_active : true,
+          is_completed: campaign.is_completed !== undefined ? campaign.is_completed : false
+        }));
+
+        // If there's a current campaign, set it as selected
+        if (clientInfo.current_campaign) {
+          this.selectedCampaignId = clientInfo.current_campaign.id;
         }
-      ];
+      } catch (error) {
+        console.error("Error fetching campaigns:", error);
+        this.campaigns = []; // Set empty array on error
+      }
     },
-    selectCampaign(campaignId) {
+    async selectCampaign(campaignId) {
       console.log('Campaign selected:', campaignId);
       this.selectedCampaignId = campaignId;
 
@@ -156,147 +163,64 @@ export default {
         campaign.selected = campaign.id === campaignId;
       });
 
+      try {
+        // Call the ClientManagerService to set the current campaign
+        await ClientManagerService.setCurrentCampaign(campaignId);
+      } catch (error) {
+        console.error('Error setting current campaign on backend:', error);
+      }
+
       // Fetch characters for this campaign
       this.fetchCharactersForCampaign(campaignId);
     },
     async fetchCharactersForCampaign(campaignId) {
-      // Mock data for now - would be replaced with actual API call
-      console.log('Fetching characters for campaign:', campaignId);
-      this.characters = [
-        {
-          "id": "f3c4216f-cbaa-4792-b6e6-1cedd502defe",
-          "name": "The Veiled Arbiter",
-          "biography": {
-            "id": "012e5d6e-bad2-459c-a7a6-62329ecd7508",
-            "created_at": "2024-12-24T14:18:04.753000Z",
-            "updated_at": "2024-12-24T14:19:28.959000Z",
-            "age": 900,
-            "gender": "Other",
-            "background": "The Veiled Arbiter exists beyond the bounds of mortal realms, serving as the omniscient overseer of the game world. It appears to inspect, guide, or intervene when the balance of Flow or the integrity of the realm is threatened.",
-            "appearance": "A translucent figure cloaked in flowing, dark robes inscribed with glowing blue and silver symbols. Its hood obscures its face, revealing only glowing white eyes.",
-            "avatar": "http://localhost:8000/media/avatars/83A73E18-2066-4263-B8F3-F299660160F4.PNG",
-            "character": "f3c4216f-cbaa-4792-b6e6-1cedd502defe"
-          },
-          "npc": false,
-          "rank": {
-            "name": "Mythical Paragon",
-            "grade": 2,
-            "experience_needed": 284460
-          },
-          "path": {
-            "name": "Path of JSon",
-            "description": "A path focusing on magical abilities.",
-            "icon": "http://localhost:8000/media/icons/path/json.webp",
-            "id": "7f4e36d3-3f43-4e13-bdae-3e3777e1d3a6"
-          },
-          "experience": 0,
-          "tags": [
-            "Game Master",
-            "Phantom",
-            "Flow Manipulator"
-          ],
-          "resetting_base_stats": false,
-          "is_active": true,
-          "campaign": {
-            "id": campaignId,
-            "name": "First Campaign"
-          }
-        },
-        {
-          "id": "a1b2c3d4-e5f6-4792-b6e6-1cedd502defe",
-          "name": "Shadow Walker",
-          "biography": {
-            "id": "e5f6g7h8-i9j0-459c-a7a6-62329ecd7508",
-            "created_at": "2024-12-24T14:18:04.753000Z",
-            "updated_at": "2024-12-24T14:19:28.959000Z",
-            "age": 35,
-            "gender": "Female",
-            "background": "A mysterious assassin who moves between shadows, Shadow Walker has a dark past and seeks redemption through her adventures. She is known for her stealth and precision.",
-            "appearance": "A slender figure dressed in dark leather armor with a hood that partially obscures her face. Her eyes glow with a faint purple light.",
-            "avatar": "http://localhost:8000/media/avatars/shadow-walker.PNG",
-            "character": "a1b2c3d4-e5f6-4792-b6e6-1cedd502defe"
-          },
-          "npc": false,
-          "rank": {
-            "name": "Elite Adventurer",
-            "grade": 3,
-            "experience_needed": 150000
-          },
-          "path": {
-            "name": "Path of Shadows",
-            "description": "A path focusing on stealth and assassination.",
-            "icon": "http://localhost:8000/media/icons/path/shadow.webp",
-            "id": "8a9b0c1d-2e3f-4g5h-6i7j-8k9l0m1n2o3p"
-          },
-          "experience": 75000,
-          "tags": [
-            "Assassin",
-            "Rogue",
-            "Shadow Magic"
-          ],
-          "resetting_base_stats": false,
-          "is_active": true,
-          "campaign": {
-            "id": campaignId,
-            "name": "First Campaign"
-          }
-        },
-        {
-          "id": "q1w2e3r4-t5y6-7u8i-9o0p-a1s2d3f4g5h6",
-          "name": "Eldrin Lightbringer",
-          "biography": {
-            "id": "j1k2l3m4-n5o6-p7q8-r9s0-t1u2v3w4x5y6",
-            "created_at": "2024-12-24T14:18:04.753000Z",
-            "updated_at": "2024-12-24T14:19:28.959000Z",
-            "age": 150,
-            "gender": "Male",
-            "background": "An ancient elf who has dedicated his life to fighting darkness and spreading light. Eldrin is a powerful healer and a beacon of hope in dark times.",
-            "appearance": "A tall, slender elf with long silver hair and glowing golden eyes. He wears white and gold robes adorned with symbols of the sun.",
-            "avatar": "http://localhost:8000/media/avatars/eldrin.PNG",
-            "character": "q1w2e3r4-t5y6-7u8i-9o0p-a1s2d3f4g5h6"
-          },
-          "npc": false,
-          "rank": {
-            "name": "Legendary Hero",
-            "grade": 1,
-            "experience_needed": 500000
-          },
-          "path": {
-            "name": "Path of Light",
-            "description": "A path focusing on healing and light magic.",
-            "icon": "http://localhost:8000/media/icons/path/light.webp",
-            "id": "z1x2c3v4-b5n6-m7a8-s9d0-f1g2h3j4k5l6"
-          },
-          "experience": 450000,
-          "tags": [
-            "Healer",
-            "Light Magic",
-            "Ancient Elf"
-          ],
-          "resetting_base_stats": false,
-          "is_active": false,
-          "campaign": {
-            "id": campaignId,
-            "name": "First Campaign"
-          }
-        }
-      ];
-      console.log('Characters array after fetch:', this.characters);
-    },
-    selectCharacter(characterId) {
-      this.selectedCharacterId = characterId;
+      try {
+        console.log('Fetching characters for campaign:', campaignId);
 
-      // Automatically continue journey when character is selected
-      if (this.selectedCampaignId && this.selectedCharacterId) {
-        // Navigate to game with selected campaign and character
-        this.$router.push({
-          name: 'Game',
-          params: {
-            campaignId: this.selectedCampaignId,
-            characterId: this.selectedCharacterId
-          }
-        });
+        // Get client info from ClientManagerService
+        const clientInfo = await ClientManagerService.getCurrentClientInfo();
+
+        // Filter owned characters to only show those for the selected campaign
+        this.characters = clientInfo.owned_characters.filter(character =>
+          character.campaign && character.campaign.id === campaignId
+        );
+
+        console.log('Characters array after fetch:', this.characters);
+      } catch (error) {
+        console.error(`Error fetching characters for campaign ${campaignId}:`, error);
+        this.characters = []; // Set empty array on error
       }
+    },
+    async selectCharacter(characterId) {
+      try {
+        this.loading = true;
+        this.selectedCharacterId = characterId;
+
+        // Use the ClientManagerService to select the character
+        await ClientManagerService.useCharacter(characterId);
+
+        // Automatically continue journey when character is selected
+        if (this.selectedCampaignId && this.selectedCharacterId) {
+          // Navigate to game with selected campaign and character
+          this.$router.push({
+            name: 'Game',
+            params: {
+              campaignId: this.selectedCampaignId,
+              characterId: this.selectedCharacterId
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Error selecting character with id ${characterId}:`, error);
+        // Show error to user (could be implemented with a toast notification)
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    createCharacter() {
+      // Navigate to the character submission page
+      this.$router.push({ name: 'CharacterSubmit' });
     }
   }
 };
@@ -310,7 +234,7 @@ export default {
   padding: 20px;
   max-height: 80vh;
   position: relative;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -357,8 +281,8 @@ export default {
 
 /* Top section: Campaign selector */
 .campaign-selector-section {
-  margin-left: 10rem;
-  margin-right: 10rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 .section-title {
@@ -457,13 +381,123 @@ export default {
 }
 
 .add-character-placeholder {
-  border: 2px dashed #ccc;
-  background-color: transparent;
+  width: 320px;
+  height: 200px;
+  border-radius: 12px;
+  background-color: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(64, 169, 255, 0.2);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
 .add-character-placeholder:hover {
-  border-color: #3498db;
-  color: #3498db;
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(64, 169, 255, 0.5);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 32px rgba(64, 169, 255, 0.3),
+    0 0 0 1px rgba(64, 169, 255, 0.4);
+}
+
+.add-character-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.add-icon {
+  font-size: 3rem;
+  color: rgba(64, 169, 255, 0.7);
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.add-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.add-character-placeholder:hover .add-icon {
+  color: rgba(64, 169, 255, 1);
+  transform: scale(1.1);
+}
+
+/* Flow border effect for add character placeholder */
+.flow-border-add {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(64, 169, 255, 0.1),
+    transparent,
+    rgba(138, 43, 226, 0.1),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorderAdd 6s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.add-character-placeholder:hover .flow-border-add {
+  opacity: 1;
+}
+
+@keyframes flowBorderAdd {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Hover glow effect for add character placeholder */
+.hover-glow-add {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 14px;
+  background: linear-gradient(45deg,
+    rgba(64, 169, 255, 0.3),
+    rgba(138, 43, 226, 0.3),
+    rgba(64, 169, 255, 0.3)
+  );
+  background-size: 300% 300%;
+  opacity: 0;
+  z-index: -1;
+  animation: glowPulseAdd 3s ease-in-out infinite;
+  transition: opacity 0.3s ease;
+}
+
+.add-character-placeholder:hover .hover-glow-add {
+  opacity: 1;
+}
+
+@keyframes glowPulseAdd {
+  0%, 100% {
+    background-position: 0% 50%;
+    opacity: 0.5;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 0.8;
+  }
 }
 
 .character-card-wrapper {
@@ -503,6 +537,28 @@ export default {
 /* No continue button section needed */
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+  .add-character-placeholder {
+    width: 300px;
+    height: 190px;
+  }
+}
+
+@media (max-width: 900px) {
+  .add-character-placeholder {
+    width: 280px;
+    height: 180px;
+  }
+
+  .add-character-content {
+    padding: 14px;
+  }
+
+  .add-text {
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .characters-container {
     flex-direction: column;
@@ -517,6 +573,24 @@ export default {
   .characters-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     overflow-x: hidden;
+  }
+
+  .add-character-placeholder {
+    width: 260px;
+    height: 170px;
+  }
+
+  .add-character-content {
+    padding: 12px;
+  }
+
+  .add-text {
+    font-size: 1rem;
+  }
+
+  .add-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
   }
 }
 </style>

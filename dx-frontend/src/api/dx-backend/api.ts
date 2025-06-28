@@ -596,6 +596,44 @@ export interface Bio {
 /**
  * 
  * @export
+ * @interface Campaign
+ */
+export interface Campaign {
+    /**
+     * 
+     * @type {string}
+     * @memberof Campaign
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Campaign
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface CampaignRequest
+ */
+export interface CampaignRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof CampaignRequest
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CampaignRequest
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface CharacterAction
  */
 export interface CharacterAction {
@@ -1745,6 +1783,55 @@ export interface CurrencyTokenRequest {
 /**
  * 
  * @export
+ * @interface CurrentClientInfo
+ */
+export interface CurrentClientInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof CurrentClientInfo
+     */
+    'id': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CurrentClientInfo
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {OpenAICampaign}
+     * @memberof CurrentClientInfo
+     */
+    'current_campaign': OpenAICampaign;
+    /**
+     * 
+     * @type {OpenaiCharacter}
+     * @memberof CurrentClientInfo
+     */
+    'main_character': OpenaiCharacter;
+    /**
+     * 
+     * @type {Array<OpenAICampaign>}
+     * @memberof CurrentClientInfo
+     */
+    'play_campaigns': Array<OpenAICampaign>;
+    /**
+     * 
+     * @type {Array<OpenAICampaign>}
+     * @memberof CurrentClientInfo
+     */
+    'master_campaigns': Array<OpenAICampaign>;
+    /**
+     * 
+     * @type {Array<OpenaiCharacter>}
+     * @memberof CurrentClientInfo
+     */
+    'owned_characters': Array<OpenaiCharacter>;
+}
+/**
+ * 
+ * @export
  * @interface CurrentTurn
  */
 export interface CurrentTurn {
@@ -1778,13 +1865,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -4206,31 +4293,6 @@ export interface OpenAICampaign {
 /**
  * 
  * @export
- * @interface OpenAICampaignRequest
- */
-export interface OpenAICampaignRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof OpenAICampaignRequest
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof OpenAICampaignRequest
-     */
-    'description': string;
-    /**
-     * 
-     * @type {File}
-     * @memberof OpenAICampaignRequest
-     */
-    'background_image'?: File | null;
-}
-/**
- * 
- * @export
  * @interface OpenAIClientManagement
  */
 export interface OpenAIClientManagement {
@@ -4474,10 +4536,10 @@ export interface OpenaiCharacter {
     'is_active'?: boolean;
     /**
      * 
-     * @type {string}
+     * @type {Campaign}
      * @memberof OpenaiCharacter
      */
-    'campaign_name': string;
+    'campaign': Campaign;
 }
 /**
  * 
@@ -4653,6 +4715,12 @@ export interface OpenaiCharacterRequest {
      * @memberof OpenaiCharacterRequest
      */
     'is_active'?: boolean;
+    /**
+     * 
+     * @type {CampaignRequest}
+     * @memberof OpenaiCharacterRequest
+     */
+    'campaign': CampaignRequest;
 }
 /**
  * 
@@ -10610,15 +10678,12 @@ export const ClientApiAxiosParamCreator = function (configuration?: Configuratio
         /**
          * Set the current campaign for the client.  The campaign must be active and the client must be either a player or a master in the campaign.
          * @param {string} id A UUID string identifying this campaign.
-         * @param {OpenAICampaignRequest} openAICampaignRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        clientCampaignsSetCurrentCampaignCreate: async (id: string, openAICampaignRequest: OpenAICampaignRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        clientCampaignsSetCurrentCampaignCreate: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('clientCampaignsSetCurrentCampaignCreate', 'id', id)
-            // verify required parameter 'openAICampaignRequest' is not null or undefined
-            assertParamExists('clientCampaignsSetCurrentCampaignCreate', 'openAICampaignRequest', openAICampaignRequest)
             const localVarPath = `/api/client/campaigns/{id}/set_current_campaign/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -10644,12 +10709,9 @@ export const ClientApiAxiosParamCreator = function (configuration?: Configuratio
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(openAICampaignRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10695,6 +10757,45 @@ export const ClientApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(openAIClientManagementRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get the basic information of the current authenticated client. This enpoint used by game client to get current client information It contains information about: is_active, current_campaign, main_character, play_campaigns, master_campaigns, owned_characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientCurrentInfoRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/client/current/info/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -10992,12 +11093,11 @@ export const ClientApiFp = function(configuration?: Configuration) {
         /**
          * Set the current campaign for the client.  The campaign must be active and the client must be either a player or a master in the campaign.
          * @param {string} id A UUID string identifying this campaign.
-         * @param {OpenAICampaignRequest} openAICampaignRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async clientCampaignsSetCurrentCampaignCreate(id: string, openAICampaignRequest: OpenAICampaignRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenAICampaign>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.clientCampaignsSetCurrentCampaignCreate(id, openAICampaignRequest, options);
+        async clientCampaignsSetCurrentCampaignCreate(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.clientCampaignsSetCurrentCampaignCreate(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ClientApi.clientCampaignsSetCurrentCampaignCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11012,6 +11112,17 @@ export const ClientApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.clientCreate(openAIClientManagementRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ClientApi.clientCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get the basic information of the current authenticated client. This enpoint used by game client to get current client information It contains information about: is_active, current_campaign, main_character, play_campaigns, master_campaigns, owned_characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async clientCurrentInfoRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CurrentClientInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.clientCurrentInfoRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClientApi.clientCurrentInfoRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -11116,12 +11227,11 @@ export const ClientApiFactory = function (configuration?: Configuration, basePat
         /**
          * Set the current campaign for the client.  The campaign must be active and the client must be either a player or a master in the campaign.
          * @param {string} id A UUID string identifying this campaign.
-         * @param {OpenAICampaignRequest} openAICampaignRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        clientCampaignsSetCurrentCampaignCreate(id: string, openAICampaignRequest: OpenAICampaignRequest, options?: any): AxiosPromise<OpenAICampaign> {
-            return localVarFp.clientCampaignsSetCurrentCampaignCreate(id, openAICampaignRequest, options).then((request) => request(axios, basePath));
+        clientCampaignsSetCurrentCampaignCreate(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.clientCampaignsSetCurrentCampaignCreate(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11131,6 +11241,14 @@ export const ClientApiFactory = function (configuration?: Configuration, basePat
          */
         clientCreate(openAIClientManagementRequest: OpenAIClientManagementRequest, options?: any): AxiosPromise<OpenAIClientManagement> {
             return localVarFp.clientCreate(openAIClientManagementRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get the basic information of the current authenticated client. This enpoint used by game client to get current client information It contains information about: is_active, current_campaign, main_character, play_campaigns, master_campaigns, owned_characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientCurrentInfoRetrieve(options?: any): AxiosPromise<CurrentClientInfo> {
+            return localVarFp.clientCurrentInfoRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11220,13 +11338,12 @@ export class ClientApi extends BaseAPI {
     /**
      * Set the current campaign for the client.  The campaign must be active and the client must be either a player or a master in the campaign.
      * @param {string} id A UUID string identifying this campaign.
-     * @param {OpenAICampaignRequest} openAICampaignRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ClientApi
      */
-    public clientCampaignsSetCurrentCampaignCreate(id: string, openAICampaignRequest: OpenAICampaignRequest, options?: RawAxiosRequestConfig) {
-        return ClientApiFp(this.configuration).clientCampaignsSetCurrentCampaignCreate(id, openAICampaignRequest, options).then((request) => request(this.axios, this.basePath));
+    public clientCampaignsSetCurrentCampaignCreate(id: string, options?: RawAxiosRequestConfig) {
+        return ClientApiFp(this.configuration).clientCampaignsSetCurrentCampaignCreate(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11238,6 +11355,16 @@ export class ClientApi extends BaseAPI {
      */
     public clientCreate(openAIClientManagementRequest: OpenAIClientManagementRequest, options?: RawAxiosRequestConfig) {
         return ClientApiFp(this.configuration).clientCreate(openAIClientManagementRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get the basic information of the current authenticated client. This enpoint used by game client to get current client information It contains information about: is_active, current_campaign, main_character, play_campaigns, master_campaigns, owned_characters
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientApi
+     */
+    public clientCurrentInfoRetrieve(options?: RawAxiosRequestConfig) {
+        return ClientApiFp(this.configuration).clientCurrentInfoRetrieve(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -1,7 +1,7 @@
 <template>
   <div
       class="character-card"
-      :style="{ backgroundImage: `url(${character.biography.avatar})` }"
+      :style="{ backgroundImage: `url(${avatarUrl})` }"
   >
     <!-- Main backdrop overlay for readability -->
     <div class="character-backdrop"></div>
@@ -13,12 +13,12 @@
     <div class="character-content">
       <!-- Header section -->
       <div class="character-header">
-        <h3 class="character-title">{{ character.name }}</h3>
+        <h3 class="character-title">{{ characterName }}</h3>
         <div class="character-path">
-          <div class="path-icon-wrapper" v-if="character.path && character.path.icon">
-            <img :src="character.path.icon" class="path-icon" alt="Path Icon">
+          <div class="path-icon-wrapper" v-if="hasPathIcon">
+            <img :src="pathIcon" class="path-icon" alt="Path Icon">
           </div>
-          <span class="path-name">{{ character.path ? character.path.name : 'No Path' }}</span>
+          <span class="path-name">{{ pathName }}</span>
         </div>
       </div>
 
@@ -30,16 +30,16 @@
       <!-- Footer with tags and rank -->
       <div class="character-footer">
         <div class="character-tags">
-          <span v-for="(tag, index) in character.tags.slice(0, 1)" :key="index" class="tag-badge">
+          <span v-for="(tag, index) in characterTags.slice(0, 1)" :key="index" class="tag-badge">
             {{ tag.length > 15 ? tag.substring(0, 15) + '...' : tag }}
           </span>
-          <span v-if="character.tags.length > 3" class="tag-badge tag-more">
-            +{{ character.tags.length - 3 }}
+          <span v-if="characterTags.length > 3" class="tag-badge tag-more">
+            +{{ characterTags.length - 3 }}
           </span>
         </div>
 
         <div class="rank-badge">
-          <span class="rank-text">{{ character.rank.name }}</span>
+          <span class="rank-text">{{ rankName }}</span>
         </div>
       </div>
     </div>
@@ -79,6 +79,42 @@ export default {
       }
       const bio = this.character.biography.background;
       return bio.length > 80 ? bio.substring(0, 80) + '...' : bio;
+    },
+    avatarUrl() {
+      // Safely handle null biography or missing avatar
+      return this.character.biography && this.character.biography.avatar
+        ? this.character.biography.avatar
+        : '/img/default-avatar.png'; // Return a default avatar URL
+    },
+    characterTags() {
+      // Safely handle null or undefined tags
+      return this.character.tags || [];
+    },
+    rankName() {
+      // Safely handle null or undefined rank
+      return this.character.rank && this.character.rank.name
+        ? this.character.rank.name
+        : 'Unknown Rank';
+    },
+    pathName() {
+      // Safely handle null or undefined path
+      return this.character.path && this.character.path.name
+        ? this.character.path.name
+        : 'No Path';
+    },
+    characterName() {
+      // Safely handle null or undefined character name
+      return this.character.name || 'Unnamed Character';
+    },
+    hasPathIcon() {
+      // Check if path and path.icon exist
+      return !!(this.character.path && this.character.path.icon);
+    },
+    pathIcon() {
+      // Safely get path icon
+      return this.character.path && this.character.path.icon
+        ? this.character.path.icon
+        : '';
     }
   }
 };
