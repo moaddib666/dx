@@ -5,6 +5,7 @@ from rest_framework import serializers
 from apps.action.models import DiceRollResult
 from apps.character.models import Character, CharacterBiography, Stat, Rank
 from apps.core.models import AttributeType, GenderEnum
+from apps.game.models import Campaign
 from apps.school.models import ThePath
 
 
@@ -39,11 +40,20 @@ class RankSerializer(serializers.ModelSerializer):
         fields = ['name', 'grade', 'experience_needed']
 
 
+class CampaignSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = Campaign
+        fields = ['id', 'name']
+
+
 class OpenaiCharacterSerializer(serializers.ModelSerializer):
     biography = OpenaiCharacterBioSerializer()
     rank = RankSerializer()
     path = ThePathSerializer()
-    campaign_name = serializers.CharField(source='campaign.name', read_only=True)
+    campaign = CampaignSerializer()
 
     def validate_age(self, value):
         if not (18 <= value <= 200):
@@ -63,7 +73,7 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
             "tags",
             "resetting_base_stats",
             "is_active",
-            "campaign_name"
+            "campaign"
         ]
 
 
