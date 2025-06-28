@@ -16,8 +16,10 @@ from apps.core.models import BriefCharacterInfo, AttributeType, AttributeHolder,
 from apps.game.dto.impact import CalculatedImpact
 from apps.game.exceptions import GameLogicException
 from apps.game.services.character.character_abilities import can
+from apps.game.services.character.character_items import has_item
 from apps.game.services.character.character_normalizer import normalize_character_power
 from apps.game.services.rand_dice import DiceService
+from apps.items.models import Item
 from apps.school.models import Skill
 from apps.shields.models import ActiveShield
 
@@ -356,3 +358,6 @@ class CharacterService:
 
     def can(self, skill_type: SkillTypes) -> CharacterAbility:
         return can(self, skill_type)
+
+    def has_item(self, item_id: uuid.UUID) -> bool:
+        raise has_item(self.character, item=Item(id=item_id))

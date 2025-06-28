@@ -26,6 +26,14 @@ class GridZParameterSerializer(serializers.Serializer):
     grid_z = serializers.IntegerField(required=False, help_text="Filter by grid_z coordinate")
 
 
+class MapResponseSerializer(serializers.Serializer):
+    """
+    Response serializer for the map endpoint.
+    """
+    positions = PositionSerializer(many=True)
+    connections = PositionConnectionSerializer(many=True)
+
+
 class WorldMapViewSet(viewsets.ModelViewSet):
     """
     ViewSet for game masters to manage the world map.
@@ -272,7 +280,7 @@ class WorldMapViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-    @extend_schema(parameters=[GridZParameterSerializer])
+    @extend_schema(parameters=[GridZParameterSerializer], responses={200: MapResponseSerializer})
     @action(detail=False, methods=['get'])
     def map(self, request):
         """

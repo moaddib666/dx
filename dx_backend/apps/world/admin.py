@@ -212,8 +212,8 @@ class PositionConnectionForm(ModelForm):
 @admin.register(PositionConnection)
 class PositionConnectionAdmin(admin.ModelAdmin):
     form = PositionConnectionForm
-    list_display = ('id', 'position_from', 'position_to', 'is_active', 'is_public', 'is_locked', "is_vertical")
-    list_filter = ('is_active', 'is_public', 'is_locked', 'position_from__sub_location')
+    list_display = ('id', 'position_from', 'position_to', 'is_active', 'is_public', 'locked', "is_vertical")
+    list_filter = ('is_active', 'is_public', 'locked', 'position_from__sub_location')
     search_fields = ('position_from__id', 'position_to__id')
     ordering = ('position_from', 'position_to')
 

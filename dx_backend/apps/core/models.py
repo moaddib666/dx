@@ -4,7 +4,7 @@ from enum import StrEnum
 from typing import Optional, List
 
 from polymorphic.models import PolymorphicModel
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class DjangoChoicesMixin:
@@ -718,3 +718,18 @@ class CharacterAbility(BaseModel):
             bool: True if the character has skills or items for this ability type, False otherwise.
         """
         return bool(self.skills or self.items)
+
+
+class PositionConnectionRequirement(BaseModel):
+    item_id: Optional[uuid.UUID] = None  # ID of the item required for the connection
+    skill_id: Optional[uuid.UUID] = None  # ID of the skill required for the connection
+    character_id: Optional[uuid.UUID] = None  # ID of the character required for the connection
+
+
+class PositionConnectionConfig(BaseModel):
+    """
+   The smart configuration for the position connection.
+   That shows if the connection is available for the character or not.
+   """
+    requirements: list[PositionConnectionRequirement] = Field(
+        default_factory=list)  # List of requirements for the connection

@@ -162,11 +162,11 @@ class PositionConnection(models.Model):
     position_to = models.ForeignKey(
         'Position', on_delete=models.CASCADE, related_name='position_to'
     )
-    # TODO: Plan to create the PositionConnectionOverrides model to be able on campaign, organization, character
-    #  level override the connection properties
-    is_locked = models.BooleanField(default=False)
+    locked = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_public = models.BooleanField(default=True)
+
+    config = models.JSONField(default=dict, blank=True, null=True)
 
     def is_vertical(self):
         return self.position_to.grid_z != self.position_from.grid_z

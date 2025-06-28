@@ -3716,6 +3716,25 @@ export interface MapPositionMutableRequest {
     'labels'?: Array<string>;
 }
 /**
+ * Response serializer for the map endpoint.
+ * @export
+ * @interface MapResponse
+ */
+export interface MapResponse {
+    /**
+     * 
+     * @type {Array<Position>}
+     * @memberof MapResponse
+     */
+    'positions': Array<Position>;
+    /**
+     * 
+     * @type {Array<PositionConnection>}
+     * @memberof MapResponse
+     */
+    'connections': Array<PositionConnection>;
+}
+/**
  * 
  * @export
  * @interface MiniMap
@@ -5572,6 +5591,105 @@ export interface Position {
      * @memberof Position
      */
     'coordinates': string;
+}
+/**
+ * Serializer for PositionConnection model.
+ * @export
+ * @interface PositionConnection
+ */
+export interface PositionConnection {
+    /**
+     * 
+     * @type {number}
+     * @memberof PositionConnection
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnection
+     */
+    'position_from': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnection
+     */
+    'position_to': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnection
+     */
+    'is_locked': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnection
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PositionConnection
+     */
+    'is_public'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnection
+     */
+    'is_vertical': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnection
+     */
+    'is_horizontal': string;
+    /**
+     * 
+     * @type {PositionRelationConfiguration}
+     * @memberof PositionConnection
+     */
+    'config': PositionRelationConfiguration;
+}
+/**
+ * Serializer for PositionConnectionRequirement objects.
+ * @export
+ * @interface PositionConnectionRequirement
+ */
+export interface PositionConnectionRequirement {
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnectionRequirement
+     */
+    'item_id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnectionRequirement
+     */
+    'skill_id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PositionConnectionRequirement
+     */
+    'character_id'?: string | null;
+}
+/**
+ * Serializer for PositionConnectionConfig objects.
+ * @export
+ * @interface PositionRelationConfiguration
+ */
+export interface PositionRelationConfiguration {
+    /**
+     * 
+     * @type {Array<PositionConnectionRequirement>}
+     * @memberof PositionRelationConfiguration
+     */
+    'requirements'?: Array<PositionConnectionRequirement>;
 }
 /**
  * Serializer for Position model.
@@ -14907,7 +15025,7 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterWorldMapMapRetrieve(gridZ?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+        async gamemasterWorldMapMapRetrieve(gridZ?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<MapResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldMapMapRetrieve(gridZ, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterWorldMapMapRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -15286,7 +15404,7 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterWorldMapMapRetrieve(gridZ?: number, options?: any): AxiosPromise<Position> {
+        gamemasterWorldMapMapRetrieve(gridZ?: number, options?: any): AxiosPromise<MapResponse> {
             return localVarFp.gamemasterWorldMapMapRetrieve(gridZ, options).then((request) => request(axios, basePath));
         },
         /**

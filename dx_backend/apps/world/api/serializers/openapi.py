@@ -1,7 +1,10 @@
 from django.db import models
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from apps.character.models import Character
+from apps.game.services.character.core import CharacterService
+from apps.game.services.world.position_connection import PositionConnectionService
 from apps.world.models import Area, Location, Dimension, City, SubLocation, MapPosition, Map
 
 
@@ -59,13 +62,32 @@ class CharacterInfoSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from apps.world.models import Position, PositionConnection
-from apps.core.models import DirectionEnum, DimensionAnomaly
+from apps.core.models import DirectionEnum, DimensionAnomaly, PositionConnectionConfig, PositionConnectionRequirement
+
+
+class PositionConnectionRequirementSerializer(serializers.Serializer):
+    """
+    Serializer for PositionConnectionRequirement objects.
+    """
+    item_id = serializers.UUIDField(required=False, allow_null=True)
+    skill_id = serializers.UUIDField(required=False, allow_null=True)
+    character_id = serializers.UUIDField(required=False, allow_null=True)
+
+
+class PositionRelationConfigurationSerializer(serializers.Serializer):
+    """
+    Serializer for PositionConnectionConfig objects.
+    """
+    requirements = PositionConnectionRequirementSerializer(many=True, required=False, default=list)
 
 
 class PositionConnectionSerializer(serializers.ModelSerializer):
     direction = serializers.SerializerMethodField()
     to_position = serializers.SerializerMethodField()
+    is_locked = serializers.SerializerMethodField(method_name="_is_locked")
+    config = PositionRelationConfigurationSerializer()
 
+    @extend_schema_field(serializers.UUIDField())
     def get_to_position(self, obj):
         if obj.position_from == self.context.get('current_position'):
             return obj.position_to.id
@@ -73,8 +95,15 @@ class PositionConnectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PositionConnection
-        fields = ('to_position', 'is_active', 'is_public', 'direction', "is_locked")
+        fields = ('to_position', 'is_active', 'is_public', 'direction', "is_locked", "config")
 
+    @extend_schema_field(serializers.BooleanField())
+    def _is_locked(self, obj):
+        character_svc = CharacterService(self.context.get('client').main_character)
+        pos_conn_svc = PositionConnectionService(obj)
+        return not pos_conn_svc.is_accessible(character_svc)
+
+    @extend_schema_field(serializers.ChoiceField(choices=DirectionEnum.choices()))
     def get_direction(self, obj):
         """Compute the direction based on the current position's role."""
         current_position = self.context.get('current_position')  # Pass current position via context
@@ -210,7 +239,7 @@ class PositionSerializer(serializers.ModelSerializer):
         serializer = PositionConnectionSerializer(
             connections,
             many=True,
-            context={'current_position': obj}  # Pass the current position to the connection serializer
+            context={'current_position': obj, "client": self._client, **self.context}
         )
         return serializer.data
 

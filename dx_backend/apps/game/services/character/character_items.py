@@ -1,12 +1,13 @@
 import logging
 
-from apps.items.models import CharacterItem, WorldItem
+from apps.character.models import Character
+from apps.items.models import CharacterItem, WorldItem, Item
 
 
 class CharacterItemsService:
     logger = logging.getLogger("game.services.character.items")
 
-    def __init__(self, character):
+    def __init__(self, character: "Character"):
         self.character = character
         self.logger.info(f"Initialized CharacterItemsService for character: {character.id} - {character.name}")
 
@@ -68,11 +69,29 @@ class CharacterItemsService:
             f"WorldItem {item.id} picked up by character {self.character.id}. Position set to None."
         )
 
+    def has_item(self, item: Item) -> bool:
+        """
+        Check if the character has the specified item.
+        """
+        has_item = self.character.equipped_items.filter(world_item=item).exists()
+        self.logger.debug(
+            f"Character {self.character.id} has item {item.id}: {has_item}"
+        )
+        return has_item
+
 
 class CharacterItemsServiceFactory:
 
-    def from_character(self, character):
+    def from_character(self, character: "Character"):
         return CharacterItemsService(character)
 
 
 default_items_svc_factory = CharacterItemsServiceFactory()
+
+
+def has_item(character: "Character", item: Item) -> bool:
+    """
+    Check if the character has the specified item.
+    """
+    svc = default_items_svc_factory.from_character(character)
+    return svc.has_item(item)

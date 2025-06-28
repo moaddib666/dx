@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.world.models import Position, PositionConnection
+from apps.world.api.serializers.openapi import PositionRelationConfigurationSerializer
 
 
 class PositionSerializer(serializers.ModelSerializer):
@@ -17,6 +18,10 @@ class PositionConnectionSerializer(serializers.ModelSerializer):
     """
     Serializer for PositionConnection model.
     """
+    is_locked = serializers.BooleanField(source='locked', read_only=True)
+    config = PositionRelationConfigurationSerializer()
+
     class Meta:
         model = PositionConnection
-        fields = ['id', 'position_from', 'position_to', 'is_locked', 'is_active', 'is_public', 'is_vertical', 'is_horizontal']
+        fields = ['id', 'position_from', 'position_to', 'is_locked', 'is_active', 'is_public', 'is_vertical',
+                  'is_horizontal', 'config']
