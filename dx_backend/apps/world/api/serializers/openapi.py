@@ -329,6 +329,8 @@ class CharacterPositionSerializer(serializers.ModelSerializer):
 
 
 class PositionConnectionMinimalSerializer(serializers.ModelSerializer):
+    is_locked = serializers.BooleanField(source='locked', read_only=True)
+
     class Meta:
         model = PositionConnection
         fields = ('position_from', 'position_to', 'is_vertical', 'is_locked')

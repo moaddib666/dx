@@ -11,7 +11,8 @@ from apps.gamemaster.api.views.items import GameMasterItemViewSet, GameMasterWor
     GameMasterCharacterItemViewSet
 from apps.gamemaster.api.views.school import GameMasterSchoolViewSet, GameMasterSkillViewSet, GameMasterPathViewSet
 from apps.gamemaster.api.views.skills import GameMasterLearnedSkillViewSet, GameMasterLearnedSchoolViewSet
-from apps.gamemaster.api.views.world import WorldMapViewSet
+from apps.gamemaster.api.views.world import WorldMapViewSet, PositionManagementViewSet, \
+    PositionConnectionManagementViewSet
 
 GameMasterRouter = DefaultRouter()
 
@@ -48,6 +49,9 @@ GameMasterRouter.register('game-objects', GameObjectViewSet, basename='gamemaste
 
 # World Map viewset
 GameMasterRouter.register('world-map', WorldMapViewSet, basename='gamemaster-world-map')
+GameMasterRouter.register('world-positions', PositionManagementViewSet, basename='gamemaster-world-positions')
+GameMasterRouter.register('world-position-connections', PositionConnectionManagementViewSet,
+                          basename='gamemaster-world-position-connections')
 
 # Impersonation viewset
 GameMasterRouter.register('impersonation', GameMasterImpersonationViewSet, basename='gamemaster-impersonation')
