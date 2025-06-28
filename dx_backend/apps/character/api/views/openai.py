@@ -84,7 +84,7 @@ class ClientCharacterManagementViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(data=serializer.data)
 
 
-class OpenAISchoolsManagementViewSet(viewsets.ReadOnlyModelViewSet):
+class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Character.objects.filter(is_active=True)
     serializer_class = OpenaiCharacterSerializer
     permission_classes = [permissions.IsAuthenticated]

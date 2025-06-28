@@ -24,14 +24,14 @@ class CampaignAdmin(admin.ModelAdmin):
     Admin interface for Campaign model.
     """
     list_display = ('name', 'description', 'is_active', 'is_completed', 'get_masters_count', 'get_players_count',
-                    'view_characters', 'clone_campaign')
+                    'display_background_image', 'view_characters', 'clone_campaign')
     list_filter = ('is_active', 'is_completed', 'masters', 'players')
     filter_horizontal = ('masters', 'players')
     search_fields = ('name', 'description')
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'description')
+            'fields': ('name', 'description', 'background_image')
         }),
         ('Status', {
             'fields': ('is_active', 'is_completed')
@@ -52,6 +52,17 @@ class CampaignAdmin(admin.ModelAdmin):
         return obj.players.count()
 
     get_players_count.short_description = 'Players'
+
+    def display_background_image(self, obj):
+        """Display the background image as a thumbnail"""
+        if obj.background_image and hasattr(obj.background_image, 'url'):
+            return format_html(
+                '<img src="{}" width="100" height="auto" style="object-fit: cover; border-radius: 4px;" />',
+                obj.background_image.url
+            )
+        return format_html('<span style="color: #999;">No image</span>')
+
+    display_background_image.short_description = 'Background Image'
 
     def view_characters(self, obj):
         """Button to view characters in this campaign"""

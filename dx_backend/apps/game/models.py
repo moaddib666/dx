@@ -18,5 +18,7 @@ class Campaign(BaseModel):
     masters = models.ManyToManyField('client.Client', related_name='master_campaigns', blank=True)
     players = models.ManyToManyField('client.Client', related_name='play_campaigns', blank=True)
 
+    background_image = models.ImageField(upload_to='campaigns/', null=True, blank=True)
+
     def __str__(self):
         return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"
