@@ -2239,7 +2239,7 @@ export interface FullCharacterInfo {
      * @type {string}
      * @memberof FullCharacterInfo
      */
-    'position': string;
+    'position': string | null;
     /**
      * 
      * @type {Coordinate}
@@ -2675,7 +2675,7 @@ export interface GameMasterCharacterInfo {
      * @type {string}
      * @memberof GameMasterCharacterInfo
      */
-    'campaign'?: string | null;
+    'campaign': string;
     /**
      * 
      * @type {string}
@@ -2937,7 +2937,7 @@ export interface GameObject {
      * @type {string}
      * @memberof GameObject
      */
-    'campaign'?: string | null;
+    'campaign': string;
     /**
      * 
      * @type {string}
@@ -2980,7 +2980,20 @@ export interface GameObjectRequest {
      * @type {string}
      * @memberof GameObjectRequest
      */
-    'campaign'?: string | null;
+    'campaign': string;
+}
+/**
+ * 
+ * @export
+ * @interface GamemasterImpersonationImpersonateCreate400Response
+ */
+export interface GamemasterImpersonationImpersonateCreate400Response {
+    /**
+     * 
+     * @type {string}
+     * @memberof GamemasterImpersonationImpersonateCreate400Response
+     */
+    'detail'?: string;
 }
 /**
  * * `Male` - Male * `Female` - Female * `Other` - Other
@@ -3008,7 +3021,7 @@ export interface GenericPosition {
      * @type {string}
      * @memberof GenericPosition
      */
-    'id': string;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -3299,6 +3312,38 @@ export const ImpactViolationType = {
 export type ImpactViolationType = typeof ImpactViolationType[keyof typeof ImpactViolationType];
 
 
+/**
+ * Serializer for the impersonation request.
+ * @export
+ * @interface ImpersonationRequestRequest
+ */
+export interface ImpersonationRequestRequest {
+    /**
+     * UUID of the character to impersonate
+     * @type {string}
+     * @memberof ImpersonationRequestRequest
+     */
+    'character_id': string;
+}
+/**
+ * Serializer for the impersonation response.
+ * @export
+ * @interface ImpersonationResponse
+ */
+export interface ImpersonationResponse {
+    /**
+     * JWT refresh token for the impersonated user
+     * @type {string}
+     * @memberof ImpersonationResponse
+     */
+    'refresh': string;
+    /**
+     * JWT access token for the impersonated user
+     * @type {string}
+     * @memberof ImpersonationResponse
+     */
+    'access': string;
+}
 /**
  * 
  * @export
@@ -3744,6 +3789,21 @@ export interface ModificatorRequest {
     'stat_modificators': Array<StatModificatorRequest>;
 }
 /**
+ * * `Path of John` - Path of John * `Path of JSon` - Path of JSon * `Not Chosen` - Not Chosen
+ * @export
+ * @enum {string}
+ */
+
+export const Name535Enum = {
+    PathOfJohn: 'Path of John',
+    PathOfJSon: 'Path of JSon',
+    NotChosen: 'Not Chosen'
+} as const;
+
+export type Name535Enum = typeof Name535Enum[keyof typeof Name535Enum];
+
+
+/**
  * 
  * @export
  * @interface Nested
@@ -3856,7 +3916,7 @@ export interface Nested {
      * @type {string}
      * @memberof Nested
      */
-    'campaign'?: string | null;
+    'campaign': string;
     /**
      * 
      * @type {string}
@@ -3991,7 +4051,7 @@ export interface NestedRequest {
      * @type {string}
      * @memberof NestedRequest
      */
-    'campaign'?: string | null;
+    'campaign': string;
     /**
      * 
      * @type {string}
@@ -4332,6 +4392,12 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacter
+     */
+    'campaign_name': string;
 }
 /**
  * 
@@ -4399,6 +4465,118 @@ export interface OpenaiCharacterBio {
 /**
  * 
  * @export
+ * @interface OpenaiCharacterBioRequest
+ */
+export interface OpenaiCharacterBioRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'created_at'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'age': number;
+    /**
+     * 
+     * @type {GenderEnum}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'gender'?: GenderEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'background'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'appearance'?: string;
+    /**
+     * 
+     * @type {File}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'avatar'?: File;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterBioRequest
+     */
+    'character': string;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface OpenaiCharacterRequest
+ */
+export interface OpenaiCharacterRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {OpenaiCharacterBioRequest}
+     * @memberof OpenaiCharacterRequest
+     */
+    'biography': OpenaiCharacterBioRequest;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OpenaiCharacterRequest
+     */
+    'npc'?: boolean;
+    /**
+     * 
+     * @type {RankRequest}
+     * @memberof OpenaiCharacterRequest
+     */
+    'rank': RankRequest;
+    /**
+     * 
+     * @type {ThePathRequest}
+     * @memberof OpenaiCharacterRequest
+     */
+    'path': ThePathRequest;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpenaiCharacterRequest
+     */
+    'experience'?: number;
+    /**
+     * 
+     * @type {any}
+     * @memberof OpenaiCharacterRequest
+     */
+    'tags'?: any;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OpenaiCharacterRequest
+     */
+    'resetting_base_stats'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof OpenaiCharacterRequest
+     */
+    'is_active'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface OpenaiPath
  */
 export interface OpenaiPath {
@@ -4422,10 +4600,10 @@ export interface OpenaiPath {
     'updated_at': string;
     /**
      * 
-     * @type {string}
+     * @type {Name535Enum}
      * @memberof OpenaiPath
      */
-    'name': string;
+    'name'?: Name535Enum;
     /**
      * 
      * @type {string}
@@ -4439,6 +4617,8 @@ export interface OpenaiPath {
      */
     'icon'?: string | null;
 }
+
+
 /**
  * 
  * @export
@@ -4471,10 +4651,10 @@ export interface OpenaiPathWithSchools {
     'updated_at': string;
     /**
      * 
-     * @type {string}
+     * @type {Name535Enum}
      * @memberof OpenaiPathWithSchools
      */
-    'name': string;
+    'name'?: Name535Enum;
     /**
      * 
      * @type {string}
@@ -4488,6 +4668,8 @@ export interface OpenaiPathWithSchools {
      */
     'icon'?: string | null;
 }
+
+
 /**
  * 
  * @export
@@ -4963,7 +5145,7 @@ export interface PatchedGameObjectRequest {
      * @type {string}
      * @memberof PatchedGameObjectRequest
      */
-    'campaign'?: string | null;
+    'campaign'?: string;
 }
 /**
  * 
@@ -5174,7 +5356,7 @@ export interface PatchedWorldItemRequest {
      * @type {string}
      * @memberof PatchedWorldItemRequest
      */
-    'campaign'?: string | null;
+    'campaign'?: string;
 }
 /**
  * Serializer for Position model.
@@ -5187,7 +5369,7 @@ export interface Position {
      * @type {string}
      * @memberof Position
      */
-    'id': string;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -5248,7 +5430,7 @@ export interface PositionRequest {
      * @type {string}
      * @memberof PositionRequest
      */
-    'id': string;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -5329,6 +5511,31 @@ export interface Rank {
      * 
      * @type {number}
      * @memberof Rank
+     */
+    'experience_needed'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface RankRequest
+ */
+export interface RankRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof RankRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RankRequest
+     */
+    'grade'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RankRequest
      */
     'experience_needed'?: number;
 }
@@ -6017,10 +6224,10 @@ export interface TeleportPositionRequest {
 export interface ThePath {
     /**
      * 
-     * @type {string}
+     * @type {Name535Enum}
      * @memberof ThePath
      */
-    'name': string;
+    'name'?: Name535Enum;
     /**
      * 
      * @type {string}
@@ -6040,6 +6247,35 @@ export interface ThePath {
      */
     'id': string;
 }
+
+
+/**
+ * 
+ * @export
+ * @interface ThePathRequest
+ */
+export interface ThePathRequest {
+    /**
+     * 
+     * @type {Name535Enum}
+     * @memberof ThePathRequest
+     */
+    'name'?: Name535Enum;
+    /**
+     * 
+     * @type {string}
+     * @memberof ThePathRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {File}
+     * @memberof ThePathRequest
+     */
+    'icon'?: File | null;
+}
+
+
 /**
  * 
  * @export
@@ -6314,7 +6550,7 @@ export interface WorldItem {
      * @type {string}
      * @memberof WorldItem
      */
-    'campaign'?: string | null;
+    'campaign': string;
 }
 /**
  * 
@@ -6363,7 +6599,7 @@ export interface WorldItemRequest {
      * @type {string}
      * @memberof WorldItemRequest
      */
-    'campaign'?: string | null;
+    'campaign': string;
 }
 
 /**
@@ -6373,7 +6609,7 @@ export interface WorldItemRequest {
 export const ActionApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {CharacterActionRequest} [characterActionRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6416,7 +6652,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6455,7 +6691,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6498,7 +6734,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6541,7 +6777,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -6595,7 +6831,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {PatchedGameMasterCharacterActionLogRequest} [patchedGameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -6642,7 +6878,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionRequest} gameMasterCharacterActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6687,7 +6923,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {RegisterImpactActionRequest} registerImpactActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6732,7 +6968,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6775,7 +7011,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -6822,7 +7058,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -6876,7 +7112,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6915,7 +7151,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6954,7 +7190,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -6993,7 +7229,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7032,7 +7268,7 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7085,7 +7321,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ActionApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {CharacterActionRequest} [characterActionRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7097,7 +7333,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7108,7 +7344,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7120,7 +7356,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7132,7 +7368,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -7146,7 +7382,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {PatchedGameMasterCharacterActionLogRequest} [patchedGameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -7159,7 +7395,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionRequest} gameMasterCharacterActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7171,7 +7407,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {RegisterImpactActionRequest} registerImpactActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7183,7 +7419,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7195,7 +7431,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -7208,7 +7444,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -7222,7 +7458,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7233,7 +7469,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7244,7 +7480,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7255,7 +7491,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7266,7 +7502,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7288,7 +7524,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
     const localVarFp = ActionApiFp(configuration)
     return {
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {CharacterActionRequest} [characterActionRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7297,7 +7533,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionCreate(characterActionRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7305,7 +7541,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionCurrentCycleRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7314,7 +7550,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmCreate(gameMasterCharacterActionLogRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7323,7 +7559,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmDestroy(id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -7334,7 +7570,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmList(limit, offset, search, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {PatchedGameMasterCharacterActionLogRequest} [patchedGameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -7344,7 +7580,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmPartialUpdate(id, patchedGameMasterCharacterActionLogRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {GameMasterCharacterActionRequest} gameMasterCharacterActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7353,7 +7589,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmRegisterCharacterActionCreate(gameMasterCharacterActionRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {RegisterImpactActionRequest} registerImpactActionRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7362,7 +7598,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmRegisterImpactCreate(registerImpactActionRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7371,7 +7607,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {string} id A UUID string identifying this character action.
          * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
          * @param {*} [options] Override http request option.
@@ -7381,7 +7617,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionGmUpdate(id, gameMasterCharacterActionLogRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {number} [limit] Number of results to return per page.
          * @param {number} [offset] The initial index from which to return the results.
          * @param {string} [search] A search term.
@@ -7392,7 +7628,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionLogList(limit, offset, search, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7400,7 +7636,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionNextCycleCreate(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7408,7 +7644,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionScheduledActionsRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7416,7 +7652,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionSpecialAvailableRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7424,7 +7660,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.actionSpecialList(options).then((request) => request(axios, basePath));
         },
         /**
-         * 
+         * Simple mixin that filters queryset by user\'s campaign
          * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7443,7 +7679,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
  */
 export class ActionApi extends BaseAPI {
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {CharacterActionRequest} [characterActionRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7454,7 +7690,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ActionApi
@@ -7464,7 +7700,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7475,7 +7711,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {string} id A UUID string identifying this character action.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7486,7 +7722,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {string} [search] A search term.
@@ -7499,7 +7735,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {string} id A UUID string identifying this character action.
      * @param {PatchedGameMasterCharacterActionLogRequest} [patchedGameMasterCharacterActionLogRequest] 
      * @param {*} [options] Override http request option.
@@ -7511,7 +7747,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {GameMasterCharacterActionRequest} gameMasterCharacterActionRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7522,7 +7758,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {RegisterImpactActionRequest} registerImpactActionRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7533,7 +7769,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {string} id A UUID string identifying this character action.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7544,7 +7780,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {string} id A UUID string identifying this character action.
      * @param {GameMasterCharacterActionLogRequest} [gameMasterCharacterActionLogRequest] 
      * @param {*} [options] Override http request option.
@@ -7556,7 +7792,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {number} [limit] Number of results to return per page.
      * @param {number} [offset] The initial index from which to return the results.
      * @param {string} [search] A search term.
@@ -7569,7 +7805,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ActionApi
@@ -7579,7 +7815,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ActionApi
@@ -7589,7 +7825,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ActionApi
@@ -7599,7 +7835,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ActionApi
@@ -7609,7 +7845,7 @@ export class ActionApi extends BaseAPI {
     }
 
     /**
-     * 
+     * Simple mixin that filters queryset by user\'s campaign
      * @param {ActionSpecialRetrieveActionTypeEnum} actionType 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -8772,6 +9008,195 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
     return {
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterDetailsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/character_details/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterInfoRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/character_info/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterStatsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/character_stats/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterTemplateRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/character_template/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CharacterPathRequest} [characterPathRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterChosePathCreate: async (characterPathRequest?: CharacterPathRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/chose_path/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(characterPathRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8906,204 +9331,15 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterDetailsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/character_details/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterInfoRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/character_info/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterStatsRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/character_stats/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterTemplateRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/character_template/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {CharacterPathRequest} [characterPathRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerChosePathCreate: async (characterPathRequest?: CharacterPathRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/chose_path/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(characterPathRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * Create a new character for the user.
          * @param {CharacterGenericDataRequest} characterGenericDataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerImportCharacterCreate: async (characterGenericDataRequest: CharacterGenericDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        characterImportCharacterCreate: async (characterGenericDataRequest: CharacterGenericDataRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'characterGenericDataRequest' is not null or undefined
-            assertParamExists('characterPlayerImportCharacterCreate', 'characterGenericDataRequest', characterGenericDataRequest)
-            const localVarPath = `/api/character/player/import_character/`;
+            assertParamExists('characterImportCharacterCreate', 'characterGenericDataRequest', characterGenericDataRequest)
+            const localVarPath = `/api/character/import_character/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9145,8 +9381,8 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerList: async (npc?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/character/player/`;
+        characterList: async (npc?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -9184,15 +9420,195 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
+         * Get the user\'s current main character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedCurrentCharacterRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/player/owned/current_character/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {boolean} [npc] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedList: async (npc?: boolean, position?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/player/owned/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (npc !== undefined) {
+                localVarQueryParameter['npc'] = npc;
+            }
+
+            if (position !== undefined) {
+                localVarQueryParameter['position'] = position;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('characterPlayerOwnedRetrieve', 'id', id)
+            const localVarPath = `/api/character/player/owned/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Select a character as the user\'s main character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedSelectCharacterCreate: async (id: string, openaiCharacterRequest: OpenaiCharacterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('characterPlayerOwnedSelectCharacterCreate', 'id', id)
+            // verify required parameter 'openaiCharacterRequest' is not null or undefined
+            assertParamExists('characterPlayerOwnedSelectCharacterCreate', 'openaiCharacterRequest', openaiCharacterRequest)
+            const localVarPath = `/api/character/player/owned/{id}/select_character/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(openaiCharacterRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        characterRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('characterPlayerRetrieve', 'id', id)
-            const localVarPath = `/api/character/player/{id}/`
+            assertParamExists('characterRetrieve', 'id', id)
+            const localVarPath = `/api/character/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -9404,6 +9820,62 @@ export const CharacterApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterCharacterDetailsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterCharacterDetailsRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterCharacterDetailsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterCharacterInfoRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterCharacterInfoRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterCharacterInfoRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterCharacterStatsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterStats>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterCharacterStatsRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterCharacterStatsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterCharacterTemplateRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterTemplateFull>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterCharacterTemplateRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterCharacterTemplateRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CharacterPathRequest} [characterPathRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterPath>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterChosePathCreate(characterPathRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterChosePathCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9440,71 +9912,15 @@ export const CharacterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async characterPlayerCharacterDetailsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterDetailsRetrieve(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterDetailsRetrieve']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async characterPlayerCharacterInfoRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterInfo>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterInfoRetrieve(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterInfoRetrieve']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async characterPlayerCharacterStatsRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterStats>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterStatsRetrieve(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterStatsRetrieve']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async characterPlayerCharacterTemplateRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterTemplateFull>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerCharacterTemplateRetrieve(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerCharacterTemplateRetrieve']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {CharacterPathRequest} [characterPathRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async characterPlayerChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterPath>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerChosePathCreate(characterPathRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerChosePathCreate']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
          * Create a new character for the user.
          * @param {CharacterGenericDataRequest} characterGenericDataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async characterPlayerImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterGenericData>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerImportCharacterCreate(characterGenericDataRequest, options);
+        async characterImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterGenericData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterImportCharacterCreate(characterGenericDataRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerImportCharacterCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterImportCharacterCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -9513,10 +9929,59 @@ export const CharacterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async characterPlayerList(npc?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpenaiCharacter>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerList(npc, options);
+        async characterList(npc?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpenaiCharacter>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterList(npc, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerList']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get the user\'s current main character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerOwnedCurrentCharacterRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerOwnedCurrentCharacterRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerOwnedCurrentCharacterRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {boolean} [npc] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerOwnedList(npc?: boolean, position?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpenaiCharacter>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerOwnedList(npc, position, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerOwnedList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerOwnedRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerOwnedRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerOwnedRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Select a character as the user\'s main character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerOwnedSelectCharacterCreate(id: string, openaiCharacterRequest: OpenaiCharacterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerOwnedSelectCharacterCreate(id, openaiCharacterRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerOwnedSelectCharacterCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -9525,10 +9990,10 @@ export const CharacterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async characterPlayerRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerRetrieve(id, options);
+        async characterRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerRetrieve']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -9589,6 +10054,47 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
     return {
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterDetailsRetrieve(options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterCharacterDetailsRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterInfoRetrieve(options?: any): AxiosPromise<CharacterInfo> {
+            return localVarFp.characterCharacterInfoRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterStatsRetrieve(options?: any): AxiosPromise<CharacterStats> {
+            return localVarFp.characterCharacterStatsRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterCharacterTemplateRetrieve(options?: any): AxiosPromise<CharacterTemplateFull> {
+            return localVarFp.characterCharacterTemplateRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CharacterPathRequest} [characterPathRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: any): AxiosPromise<CharacterPath> {
+            return localVarFp.characterChosePathCreate(characterPathRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {string} id A UUID string identifying this character.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9616,54 +10122,13 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
             return localVarFp.characterGmRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterDetailsRetrieve(options?: any): AxiosPromise<OpenaiCharacter> {
-            return localVarFp.characterPlayerCharacterDetailsRetrieve(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterInfoRetrieve(options?: any): AxiosPromise<CharacterInfo> {
-            return localVarFp.characterPlayerCharacterInfoRetrieve(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterStatsRetrieve(options?: any): AxiosPromise<CharacterStats> {
-            return localVarFp.characterPlayerCharacterStatsRetrieve(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerCharacterTemplateRetrieve(options?: any): AxiosPromise<CharacterTemplateFull> {
-            return localVarFp.characterPlayerCharacterTemplateRetrieve(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {CharacterPathRequest} [characterPathRequest] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        characterPlayerChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: any): AxiosPromise<CharacterPath> {
-            return localVarFp.characterPlayerChosePathCreate(characterPathRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
          * Create a new character for the user.
          * @param {CharacterGenericDataRequest} characterGenericDataRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: any): AxiosPromise<CharacterGenericData> {
-            return localVarFp.characterPlayerImportCharacterCreate(characterGenericDataRequest, options).then((request) => request(axios, basePath));
+        characterImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: any): AxiosPromise<CharacterGenericData> {
+            return localVarFp.characterImportCharacterCreate(characterGenericDataRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9671,8 +10136,45 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerList(npc?: boolean, options?: any): AxiosPromise<Array<OpenaiCharacter>> {
-            return localVarFp.characterPlayerList(npc, options).then((request) => request(axios, basePath));
+        characterList(npc?: boolean, options?: any): AxiosPromise<Array<OpenaiCharacter>> {
+            return localVarFp.characterList(npc, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get the user\'s current main character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedCurrentCharacterRetrieve(options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterPlayerOwnedCurrentCharacterRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {boolean} [npc] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedList(npc?: boolean, position?: string, options?: any): AxiosPromise<Array<OpenaiCharacter>> {
+            return localVarFp.characterPlayerOwnedList(npc, position, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+         * @param {string} id A UUID string identifying this character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedRetrieve(id: string, options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterPlayerOwnedRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Select a character as the user\'s main character.
+         * @param {string} id A UUID string identifying this character.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerOwnedSelectCharacterCreate(id: string, openaiCharacterRequest: OpenaiCharacterRequest, options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterPlayerOwnedSelectCharacterCreate(id, openaiCharacterRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9680,8 +10182,8 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        characterPlayerRetrieve(id: string, options?: any): AxiosPromise<OpenaiCharacter> {
-            return localVarFp.characterPlayerRetrieve(id, options).then((request) => request(axios, basePath));
+        characterRetrieve(id: string, options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9729,6 +10231,57 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
 export class CharacterApi extends BaseAPI {
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterCharacterDetailsRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterCharacterDetailsRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterCharacterInfoRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterCharacterInfoRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterCharacterStatsRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterCharacterStatsRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterCharacterTemplateRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterCharacterTemplateRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CharacterPathRequest} [characterPathRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterChosePathCreate(characterPathRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {string} id A UUID string identifying this character.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9762,65 +10315,14 @@ export class CharacterApi extends BaseAPI {
     }
 
     /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CharacterApi
-     */
-    public characterPlayerCharacterDetailsRetrieve(options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerCharacterDetailsRetrieve(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CharacterApi
-     */
-    public characterPlayerCharacterInfoRetrieve(options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerCharacterInfoRetrieve(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CharacterApi
-     */
-    public characterPlayerCharacterStatsRetrieve(options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerCharacterStatsRetrieve(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CharacterApi
-     */
-    public characterPlayerCharacterTemplateRetrieve(options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerCharacterTemplateRetrieve(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {CharacterPathRequest} [characterPathRequest] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof CharacterApi
-     */
-    public characterPlayerChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerChosePathCreate(characterPathRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * Create a new character for the user.
      * @param {CharacterGenericDataRequest} characterGenericDataRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof CharacterApi
      */
-    public characterPlayerImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerImportCharacterCreate(characterGenericDataRequest, options).then((request) => request(this.axios, this.basePath));
+    public characterImportCharacterCreate(characterGenericDataRequest: CharacterGenericDataRequest, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterImportCharacterCreate(characterGenericDataRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9830,8 +10332,53 @@ export class CharacterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CharacterApi
      */
-    public characterPlayerList(npc?: boolean, options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerList(npc, options).then((request) => request(this.axios, this.basePath));
+    public characterList(npc?: boolean, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterList(npc, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get the user\'s current main character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerOwnedCurrentCharacterRetrieve(options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerOwnedCurrentCharacterRetrieve(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+     * @param {boolean} [npc] 
+     * @param {string} [position] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerOwnedList(npc?: boolean, position?: string, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerOwnedList(npc, position, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for managing characters in the client application. Provides read-only access to character data.  1. **get_queryset**: Returns the queryset of characters for the authenticated user. 2. **we se all active and non active characters**: Filters characters based on the user\'s main character\'s position and campaign. 3. **no npc characters are allowed**: Ensures that only characters related to the user\'s main character\'s campaign are returned. 4. **select character** allows client to choose a character to play with.
+     * @param {string} id A UUID string identifying this character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerOwnedRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerOwnedRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Select a character as the user\'s main character.
+     * @param {string} id A UUID string identifying this character.
+     * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerOwnedSelectCharacterCreate(id: string, openaiCharacterRequest: OpenaiCharacterRequest, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerOwnedSelectCharacterCreate(id, openaiCharacterRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9841,8 +10388,8 @@ export class CharacterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof CharacterApi
      */
-    public characterPlayerRetrieve(id: string, options?: RawAxiosRequestConfig) {
-        return CharacterApiFp(this.configuration).characterPlayerRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    public characterRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -12311,13 +12858,15 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsCloneCreate: async (id: string, gameObjectRequest?: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterGameObjectsCloneCreate: async (id: string, gameObjectRequest: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('gamemasterGameObjectsCloneCreate', 'id', id)
+            // verify required parameter 'gameObjectRequest' is not null or undefined
+            assertParamExists('gamemasterGameObjectsCloneCreate', 'gameObjectRequest', gameObjectRequest)
             const localVarPath = `/api/gamemaster/game-objects/{id}/clone/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12357,11 +12906,13 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         },
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsCreate: async (gameObjectRequest?: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterGameObjectsCreate: async (gameObjectRequest: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gameObjectRequest' is not null or undefined
+            assertParamExists('gamemasterGameObjectsCreate', 'gameObjectRequest', gameObjectRequest)
             const localVarPath = `/api/gamemaster/game-objects/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12513,13 +13064,15 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         /**
          * Move a game object to a new position.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsMoveCreate: async (id: string, gameObjectRequest?: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterGameObjectsMoveCreate: async (id: string, gameObjectRequest: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('gamemasterGameObjectsMoveCreate', 'id', id)
+            // verify required parameter 'gameObjectRequest' is not null or undefined
+            assertParamExists('gamemasterGameObjectsMoveCreate', 'gameObjectRequest', gameObjectRequest)
             const localVarPath = `/api/gamemaster/game-objects/{id}/move/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12650,13 +13203,15 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         /**
          * Toggle the active status of a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsToggleActiveCreate: async (id: string, gameObjectRequest?: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterGameObjectsToggleActiveCreate: async (id: string, gameObjectRequest: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('gamemasterGameObjectsToggleActiveCreate', 'id', id)
+            // verify required parameter 'gameObjectRequest' is not null or undefined
+            assertParamExists('gamemasterGameObjectsToggleActiveCreate', 'gameObjectRequest', gameObjectRequest)
             const localVarPath = `/api/gamemaster/game-objects/{id}/toggle_active/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12697,13 +13252,15 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsUpdate: async (id: string, gameObjectRequest?: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterGameObjectsUpdate: async (id: string, gameObjectRequest: GameObjectRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('gamemasterGameObjectsUpdate', 'id', id)
+            // verify required parameter 'gameObjectRequest' is not null or undefined
+            assertParamExists('gamemasterGameObjectsUpdate', 'gameObjectRequest', gameObjectRequest)
             const localVarPath = `/api/gamemaster/game-objects/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -12735,6 +13292,51 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(gameObjectRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get a login token for a user based on a character ID
+         * @param {ImpersonationRequestRequest} impersonationRequestRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterImpersonationImpersonateCreate: async (impersonationRequestRequest: ImpersonationRequestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'impersonationRequestRequest' is not null or undefined
+            assertParamExists('gamemasterImpersonationImpersonateCreate', 'impersonationRequestRequest', impersonationRequestRequest)
+            const localVarPath = `/api/gamemaster/impersonation/impersonate/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(impersonationRequestRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -13616,11 +14218,11 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
+        async gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterGameObjectsCloneCreate(id, gameObjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterGameObjectsCloneCreate']?.[localVarOperationServerIndex]?.url;
@@ -13628,11 +14230,11 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         },
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterGameObjectsCreate(gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
+        async gamemasterGameObjectsCreate(gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterGameObjectsCreate(gameObjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterGameObjectsCreate']?.[localVarOperationServerIndex]?.url;
@@ -13670,11 +14272,11 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         /**
          * Move a game object to a new position.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
+        async gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterGameObjectsMoveCreate(id, gameObjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterGameObjectsMoveCreate']?.[localVarOperationServerIndex]?.url;
@@ -13708,11 +14310,11 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         /**
          * Toggle the active status of a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
+        async gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterGameObjectsToggleActiveCreate(id, gameObjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterGameObjectsToggleActiveCreate']?.[localVarOperationServerIndex]?.url;
@@ -13721,14 +14323,26 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterGameObjectsUpdate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
+        async gamemasterGameObjectsUpdate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterGameObjectsUpdate(id, gameObjectRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterGameObjectsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get a login token for a user based on a character ID
+         * @param {ImpersonationRequestRequest} impersonationRequestRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterImpersonationImpersonateCreate(impersonationRequestRequest: ImpersonationRequestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ImpersonationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterImpersonationImpersonateCreate(impersonationRequestRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterImpersonationImpersonateCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -14043,20 +14657,20 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
         /**
          * Clone a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
+        gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
             return localVarFp.gamemasterGameObjectsCloneCreate(id, gameObjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsCreate(gameObjectRequest?: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
+        gamemasterGameObjectsCreate(gameObjectRequest: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
             return localVarFp.gamemasterGameObjectsCreate(gameObjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14085,11 +14699,11 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
         /**
          * Move a game object to a new position.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
+        gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
             return localVarFp.gamemasterGameObjectsMoveCreate(id, gameObjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -14114,22 +14728,31 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
         /**
          * Toggle the active status of a game object.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
+        gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
             return localVarFp.gamemasterGameObjectsToggleActiveCreate(id, gameObjectRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
          * @param {string} id A UUID string identifying this game object.
-         * @param {GameObjectRequest} [gameObjectRequest] 
+         * @param {GameObjectRequest} gameObjectRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterGameObjectsUpdate(id: string, gameObjectRequest?: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
+        gamemasterGameObjectsUpdate(id: string, gameObjectRequest: GameObjectRequest, options?: any): AxiosPromise<GameObject> {
             return localVarFp.gamemasterGameObjectsUpdate(id, gameObjectRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get a login token for a user based on a character ID
+         * @param {ImpersonationRequestRequest} impersonationRequestRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterImpersonationImpersonateCreate(impersonationRequestRequest: ImpersonationRequestRequest, options?: any): AxiosPromise<ImpersonationResponse> {
+            return localVarFp.gamemasterImpersonationImpersonateCreate(impersonationRequestRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ViewSet for game masters to manage items. This viewset provides full CRUD operations for items.
@@ -14415,23 +15038,23 @@ export class GamemasterApi extends BaseAPI {
     /**
      * Clone a game object.
      * @param {string} id A UUID string identifying this game object.
-     * @param {GameObjectRequest} [gameObjectRequest] 
+     * @param {GameObjectRequest} gameObjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
+    public gamemasterGameObjectsCloneCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsCloneCreate(id, gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
-     * @param {GameObjectRequest} [gameObjectRequest] 
+     * @param {GameObjectRequest} gameObjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterGameObjectsCreate(gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
+    public gamemasterGameObjectsCreate(gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsCreate(gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -14465,12 +15088,12 @@ export class GamemasterApi extends BaseAPI {
     /**
      * Move a game object to a new position.
      * @param {string} id A UUID string identifying this game object.
-     * @param {GameObjectRequest} [gameObjectRequest] 
+     * @param {GameObjectRequest} gameObjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
+    public gamemasterGameObjectsMoveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsMoveCreate(id, gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
@@ -14500,25 +15123,36 @@ export class GamemasterApi extends BaseAPI {
     /**
      * Toggle the active status of a game object.
      * @param {string} id A UUID string identifying this game object.
-     * @param {GameObjectRequest} [gameObjectRequest] 
+     * @param {GameObjectRequest} gameObjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
+    public gamemasterGameObjectsToggleActiveCreate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsToggleActiveCreate(id, gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * ViewSet for game masters to manage game objects. This viewset provides operations for listing, retrieving, creating, updating, and deleting game objects. It also provides custom actions for moving, cloning, and disabling/enabling game objects.
      * @param {string} id A UUID string identifying this game object.
-     * @param {GameObjectRequest} [gameObjectRequest] 
+     * @param {GameObjectRequest} gameObjectRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterGameObjectsUpdate(id: string, gameObjectRequest?: GameObjectRequest, options?: RawAxiosRequestConfig) {
+    public gamemasterGameObjectsUpdate(id: string, gameObjectRequest: GameObjectRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterGameObjectsUpdate(id, gameObjectRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get a login token for a user based on a character ID
+     * @param {ImpersonationRequestRequest} impersonationRequestRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterImpersonationImpersonateCreate(impersonationRequestRequest: ImpersonationRequestRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterImpersonationImpersonateCreate(impersonationRequestRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
