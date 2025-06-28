@@ -6,6 +6,7 @@ from django.db.models import Model
 
 from apps.game.services.clone.base import Dependency, DependencyFactory
 from apps.game.services.clone.clone_strategy import CloneStrategy
+from apps.game.services.clone.filter import ModelFilter
 from apps.game.services.clone.related_objects_fetch import FieldRelationFetcher, get_default_relations_fetcher
 
 logger = logging.getLogger("apps.game.services.clone")
@@ -30,13 +31,16 @@ class InstanceDependencyGraph:
     deps_factory: DependencyFactory
     dependencies: list[Dependency]
     field_relation_fetcher: FieldRelationFetcher
+    filter: ModelFilter
 
-    def __init__(self, instance: Model, relation_fetcher: FieldRelationFetcher = None):
+    def __init__(self, instance: Model, relation_fetcher: FieldRelationFetcher = None,
+                 model_filter: ModelFilter = None):
         self.instance = instance
         self.history = History()
         self.deps_factory = DependencyFactory()
         self.dependencies: list[Dependency] = []
         self.relation_fetcher: FieldRelationFetcher = relation_fetcher or get_default_relations_fetcher()
+        self.filter: ModelFilter = model_filter
 
     def discover(self):
         """
@@ -60,6 +64,10 @@ class InstanceDependencyGraph:
                 continue
             if not field.is_relation:
                 continue
+            if self.filter:
+                if not self.filter.filter(field.related_model):
+                    logger.debug(f"Skipping field {field.name} on {field.model} due to filter")
+                    continue
             logger.debug(f"Processing [{layer}] field: {field.name} on {instance.__class__.__name__}")
             instances = self.fetch_instances_by_field(instance, field)
             for related_instance in instances:
