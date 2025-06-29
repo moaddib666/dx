@@ -1,0 +1,201 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+    <style>
+        .clone-preview-container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .clone-preview-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .clone-preview-header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .clone-preview-info {
+            margin-bottom: 20px;
+        }
+
+        .clone-preview-info p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .clone-preview-summary {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        .clone-preview-summary h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .clone-preview-summary ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .clone-preview-summary li {
+            margin-bottom: 5px;
+        }
+
+        .clone-preview-dependencies {
+            margin-bottom: 20px;
+        }
+
+        .clone-preview-dependencies h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .dependency-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .dependency-table th, .dependency-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dependency-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .dependency-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .model-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            background-color: #2196F3;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button.secondary {
+            background-color: #2196F3;
+        }
+
+        .button.secondary:hover {
+            background-color: #0b7dda;
+        }
+
+        .button.danger {
+            background-color: #f44336;
+        }
+
+        .button.danger:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="clone-preview-container">
+        <div class="clone-preview-header">
+            <h1>Clone Campaign Preview: {{ campaign.name }}</h1>
+        </div>
+
+        <div class="clone-preview-info">
+            <p><strong>Name:</strong> {{ campaign.name }}</p>
+            <p><strong>Description:</strong> {{ campaign.description }}</p>
+            <p><strong>Status:</strong> {% if campaign.is_active %}Active{% else %}Inactive{% endif %}
+                {% if campaign.is_completed %} (Completed){% endif %}</p>
+        </div>
+
+        <div class="clone-preview-summary">
+            <h2>Cloning Summary</h2>
+            <p>The following is a summary of objects that will be cloned:</p>
+            <ul>
+                <li><strong>Total Dependencies:</strong> {{ dependency_count }}</li>
+                {% if analysis.cycles %}
+                    <li><strong>Warning:</strong> {{ analysis.cycles|length }} cycles detected in the dependency graph
+                    </li>
+                {% endif %}
+                <li><strong>Maximum Dependency Depth:</strong> {{ analysis.max_depth }}</li>
+            </ul>
+
+            <p>The cloned campaign will have the following properties:</p>
+            <ul>
+                <li>Name: {{ campaign.name }} (clone) [timestamp]</li>
+                <li>Status: Inactive</li>
+                <li>Completed: No</li>
+            </ul>
+        </div>
+
+        <div class="clone-preview-dependencies">
+            <h2>Dependencies by Model Type</h2>
+
+            <table class="dependency-table">
+                <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for model_name, count in analysis.model_counts.items %}
+                    <tr>
+                        <td><span class="model-badge">{{ model_name }}</span></td>
+                        <td>{{ count }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="button-container">
+            <a href="{{ execute_url }}" class="button">Clone Now</a>
+            <a href="{{ graph_url }}" class="button secondary" target="_blank">View Dependency Graph</a>
+            <a href="{% url 'admin:game_campaign_changelist' %}" class="button danger">Cancel</a>
+        </div>
+    </div>
+{% endblock %}

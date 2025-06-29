@@ -1,0 +1,143 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+    <style>
+        .clone-campaign-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .clone-campaign-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .clone-campaign-header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .clone-campaign-info {
+            margin-bottom: 20px;
+        }
+
+        .clone-campaign-info p {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .clone-campaign-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .clone-campaign-action {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .clone-campaign-action h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .clone-campaign-action p {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button.secondary {
+            background-color: #2196F3;
+        }
+
+        .button.secondary:hover {
+            background-color: #0b7dda;
+        }
+
+        .button.danger {
+            background-color: #f44336;
+        }
+
+        .button.danger:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="clone-campaign-container">
+        <div class="clone-campaign-header">
+            <h1>Clone Campaign: {{ campaign.name }}</h1>
+        </div>
+
+        <div class="clone-campaign-info">
+            <p><strong>Name:</strong> {{ campaign.name }}</p>
+            <p><strong>Description:</strong> {{ campaign.description }}</p>
+            <p><strong>Status:</strong> {% if campaign.is_active %}Active{% else %}Inactive{% endif %}
+                {% if campaign.is_completed %} (Completed){% endif %}</p>
+        </div>
+
+        <div class="clone-campaign-actions">
+            <div class="clone-campaign-action">
+                <h2>Preview Dependencies</h2>
+                <p>View all the objects that will be cloned along with this campaign. This helps you understand the
+                    scope of the cloning operation.</p>
+                <div class="button-container">
+                    <a href="{{ preview_url }}" class="button secondary">Preview Dependencies</a>
+                </div>
+            </div>
+
+            <div class="clone-campaign-action">
+                <h2>View Dependency Graph</h2>
+                <p>Visualize the relationships between objects that will be cloned. This helps you understand the
+                    structure of the campaign.</p>
+                <div class="button-container">
+                    <a href="{{ graph_url }}" class="button secondary" target="_blank">View Graph</a>
+                </div>
+            </div>
+
+            <div class="clone-campaign-action">
+                <h2>Clone Campaign</h2>
+                <p>Create a copy of this campaign with all its dependencies. The new campaign will be inactive by
+                    default.</p>
+                <div class="button-container">
+                    <a href="{{ execute_url }}" class="button">Clone Now</a>
+                    <a href="{% url 'admin:game_campaign_changelist' %}" class="button danger">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
