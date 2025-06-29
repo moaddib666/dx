@@ -27,7 +27,6 @@ def set_models_campaign(apps, schema_editor):
     Location = apps.get_model('world', 'Location')
     SubLocation = apps.get_model('world', 'SubLocation')
     Cycle = apps.get_model('action', 'Cycle')
-    CharacterAction = apps.get_model('action', 'CharacterAction')
 
     # Update all GameObject instances (this includes Character, WorldItem, etc.)
     GameObject.objects.filter(campaign__isnull=True).update(campaign=campaign)
@@ -44,7 +43,6 @@ def set_models_campaign(apps, schema_editor):
     Location.objects.filter(campaign__isnull=True).update(campaign=campaign)
     SubLocation.objects.filter(campaign__isnull=True).update(campaign=campaign)
     Cycle.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    CharacterAction.objects.filter(campaign__isnull=True).update(campaign=campaign)
 
 
 def reverse_func(apps, schema_editor):
