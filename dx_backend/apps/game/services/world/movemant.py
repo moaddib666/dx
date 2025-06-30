@@ -6,6 +6,7 @@ from apps.character.models import Character
 from apps.core.models import BehaviorModel, CharacterStats
 from apps.game.exceptions import GameException
 from apps.game.services.character.core import CharacterService
+from apps.game.services.world.position_connection import PositionConnectionService
 from apps.world.models import Position, PositionConnection
 
 
@@ -53,17 +54,24 @@ class MovementService:
         # Check if the target position is reachable
         current_position = character.position
 
-        # Look for active, unlocked, and public connections
-        connection_exists = PositionConnection.objects.filter(
+        # Find the connection between the current position and the target position
+        connection = PositionConnection.objects.filter(
             models.Q(position_from=current_position, position_to=position) |
-            models.Q(position_from=position, position_to=current_position),
-            is_active=True,
-            is_locked=False,
-            is_public=True
-        ).exists()
+            models.Q(position_from=position, position_to=current_position)
+        ).first()
 
-        if not connection_exists:
+        if not connection:
             raise self.MovementError(f"Position {position} is not reachable from {current_position}.")
+
+        # Create a CharacterService instance for the character
+        char_svc = CharacterService(character)
+
+        # Create a PositionConnectionService instance for the connection
+        connection_svc = PositionConnectionService(connection)
+
+        # Check if the connection is accessible for the character
+        if not connection_svc.is_accessible(char_svc):
+            raise self.MovementError(f"Position {position} is not accessible from {current_position}.")
 
         if include_npc:
             self.validate_other_requirements(character, position)
