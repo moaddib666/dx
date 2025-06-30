@@ -20,5 +20,7 @@ class Campaign(BaseModel):
 
     background_image = models.ImageField(upload_to='campaigns/', null=True, blank=True)
 
+    default = models.BooleanField(default=False, help_text="Indicates if this is the default campaign for new clients.")
+
     def __str__(self):
         return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"

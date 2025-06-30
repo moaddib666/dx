@@ -22,6 +22,7 @@ class CharacterCreator:
             current_health_points=50,
             current_energy_points=0,
             current_active_points=10,
+            campaign=self.client.current_campaign,
         )
 
         if not self.client.main_character:
