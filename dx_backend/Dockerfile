@@ -4,6 +4,7 @@ WORKDIR /application
 
 COPY ./apps apps
 COPY ./dx_backend dx_backend
+COPY ./templates templates
 COPY /manage.py manage.py
 COPY ./Pipfile Pipfile
 COPY ./Pipfile.lock Pipfile.lock
