@@ -6,12 +6,13 @@
 
       <!-- Hero Image -->
       <section class="hero-section">
-        <img
-            src="@/assets/images/faq/faq-hero-section.png"
-            alt="Dimension-X world overview showing magical and technological elements"
-            class="hero-image"
-        />
+        <div class="hero-image" aria-label="Dimension-X world overview showing magical and technological elements" @click="toggleZoom($event)"></div>
       </section>
+
+      <!-- Zoom Modal -->
+      <div v-if="isZoomed" class="zoom-modal" @click="closeZoom">
+        <div class="zoomed-image" :style="zoomedImageStyle"></div>
+      </div>
 
       <!-- How To Start -->
       <section class="content-section">
@@ -30,7 +31,8 @@
             <img
                 src="@/assets/images/faq/faq-creation-path.png"
                 alt="Character creation interface"
-                class="section-image"
+                class="section-image zoomable-image"
+                @click="toggleZoom($event)"
             />
             <p class="image-caption">Character creation process</p>
           </div>
@@ -45,7 +47,8 @@
             <img
                 src="@/assets/images/faq/faq-gameplay-example.png"
                 alt="Game interface showing combat and character stats"
-                class="section-image"
+                class="section-image zoomable-image"
+                @click="toggleZoom($event)"
             />
             <p class="image-caption">Game interface overview</p>
           </div>
@@ -112,28 +115,48 @@
           <h3 class="subsection-title">Dimensions</h3>
           <div class="dimensions-grid">
             <div class="dimension-item">
-              <img src="@/assets/images/dx-1.webp" alt="1st Dimension" class="dimension-image" />
+              <img
+                src="@/assets/images/dx-1.webp"
+                alt="1st Dimension"
+                class="dimension-image zoomable-image"
+                @click="toggleZoom($event)"
+              />
               <div class="dimension-info">
                 <h4>1st Dimension</h4>
                 <p>Safe real world, energy regenerates</p>
               </div>
             </div>
             <div class="dimension-item">
-              <img src="@/assets/images/dx-2.webp" alt="2nd Dimension" class="dimension-image" />
+              <img
+                src="@/assets/images/dx-2.webp"
+                alt="2nd Dimension"
+                class="dimension-image zoomable-image"
+                @click="toggleZoom($event)"
+              />
               <div class="dimension-info">
                 <h4>2nd Dimension</h4>
                 <p>Faster time, energy drains slowly</p>
               </div>
             </div>
             <div class="dimension-item">
-              <img src="@/assets/images/dx-3.webp" alt="3rd Dimension" class="dimension-image" />
+              <img
+                src="@/assets/images/dx-3.webp"
+                alt="3rd Dimension"
+                class="dimension-image zoomable-image"
+                @click="toggleZoom($event)"
+              />
               <div class="dimension-info">
                 <h4>3rd Dimension</h4>
                 <p>Dangerous shadows, heavy energy drain</p>
               </div>
             </div>
             <div class="dimension-item">
-              <img src="@/assets/images/dx-4.webp" alt="4th Dimension" class="dimension-image" />
+              <img
+                src="@/assets/images/dx-4.webp"
+                alt="4th Dimension"
+                class="dimension-image zoomable-image"
+                @click="toggleZoom($event)"
+              />
               <div class="dimension-info">
                 <h4>4th Dimension</h4>
                 <p>Brutal storms, extreme energy cost</p>
@@ -156,7 +179,8 @@
             <img
                 src="@/assets/images/faq/faq-gm-dashboard.png"
                 alt="Game Master interface dashboard"
-                class="section-image"
+                class="section-image zoomable-image"
+                @click="toggleZoom($event)"
             />
             <p class="image-caption">GM Dashboard (Coming Soon)</p>
           </div>
@@ -188,7 +212,8 @@
           <img
               src="@/assets/images/faq/faq-arbitor-rules.png"
               alt="Group of players enjoying the game"
-              class="rules-image"
+              class="rules-image zoomable-image"
+              @click="toggleZoom($event)"
           />
         </div>
       </section>
@@ -211,6 +236,45 @@ export default {
   name: 'NewcomersGuide',
   components: {
     TitleComponent
+  },
+  data() {
+    return {
+      isZoomed: false,
+      currentZoomedImage: ''
+    };
+  },
+  computed: {
+    zoomedImageStyle() {
+      return {
+        backgroundImage: `url(${this.currentZoomedImage})`
+      };
+    }
+  },
+  methods: {
+    toggleZoom(event) {
+      // Get the image element from the event
+      const imgElement = event.target.tagName === 'IMG' ? event.target : event.target.querySelector('img');
+
+      if (imgElement) {
+        // Use the actual resolved src from the DOM
+        this.currentZoomedImage = imgElement.src;
+      } else if (event.target.classList.contains('hero-image')) {
+        // Special case for hero image which is a background image
+        // Get computed style to extract the actual URL
+        const style = getComputedStyle(event.target);
+        const bgImage = style.backgroundImage;
+        // Extract URL from the "url('...')" format
+        const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+        this.currentZoomedImage = url;
+      }
+
+      this.isZoomed = !this.isZoomed;
+    },
+    closeZoom() {
+      if (this.isZoomed) {
+        this.isZoomed = false;
+      }
+    }
   }
 };
 </script>
@@ -231,15 +295,97 @@ export default {
 /* Hero Section */
 .hero-section {
   margin-bottom: 3rem;
+  margin-top: 2rem;
   text-align: center;
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
+  z-index: 1;
+  pointer-events: none;
+  animation: borderPulse 3s infinite alternate;
 }
 
 .hero-image {
   width: 100%;
-  max-height: 300px;
-  object-fit: cover;
+  height: 100%;
+  background-image: url('@/assets/images/faq/faq-hero-section.png');
+  background-size: cover;
+  background-position: center 10%;
+  background-attachment: fixed;
+  border-radius: 10px;
+  position: relative;
+}
+
+.hero-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
+  border-radius: 10px;
+}
+
+/* Zoom Modal */
+.zoom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.zoomed-image {
+  width: 90%;
+  height: 90%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes borderPulse {
+  0% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Content Sections */
@@ -277,10 +423,44 @@ export default {
 
 .section-image {
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.zoomable-image {
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 3px solid transparent;
+  position: relative;
+}
+
+.zoomable-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
+  z-index: 1;
+  pointer-events: none;
+  animation: borderPulse 3s infinite alternate;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.zoomable-image:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.zoomable-image:hover::before {
+  opacity: 1;
 }
 
 .image-caption {
@@ -414,8 +594,11 @@ export default {
 
 .dimension-image {
   width: 100%;
-  height: 120px;
+  height: 150px;
   object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
 .dimension-info {
@@ -498,8 +681,10 @@ export default {
 
 .rules-image {
   width: 100%;
+  max-width: 450px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
 /* Footer */
@@ -551,6 +736,19 @@ a:hover {
     padding: 30px;
   }
 
+  .hero-section {
+    height: 300px;
+  }
+
+  .hero-image {
+    background-attachment: scroll; /* Fixed attachment can cause issues on mobile */
+  }
+
+  .zoomed-image {
+    width: 95%;
+    height: 80%;
+  }
+
   .content-grid,
   .rules-content {
     grid-template-columns: 1fr;
@@ -565,6 +763,19 @@ a:hover {
     font-size: 20px;
   }
 
+  .section-image,
+  .rules-image {
+    max-width: 100%;
+  }
+
+  .dimension-image {
+    height: 130px;
+  }
+
+  .zoomable-image::before {
+    border-width: 1px;
+  }
+
   .action-grid,
   .notes-grid,
   .dimensions-grid {
@@ -577,6 +788,15 @@ a:hover {
     padding: 20px;
   }
 
+  .hero-section {
+    height: 250px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-section::before {
+    border-width: 1px;
+  }
+
   .subtitle {
     font-size: 1rem;
   }
@@ -587,6 +807,19 @@ a:hover {
 
   .section-title {
     font-size: 18px;
+  }
+
+  .dimension-image {
+    height: 110px;
+  }
+
+  .zoomable-image:hover {
+    transform: scale(1.02);
+  }
+
+  .zoomed-image {
+    width: 98%;
+    height: 70%;
   }
 
   .step-list li {
