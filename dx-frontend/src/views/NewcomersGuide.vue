@@ -1,13 +1,9 @@
 <template>
-  <div>
+  <div class="page-container">
+    <div class="hero-background" @click="toggleZoom($event)"></div>
     <main class="newcomers-guide">
       <TitleComponent>Newcomer's Guide</TitleComponent>
       <p class="subtitle">Welcome to a world where magic and technology collide</p>
-
-      <!-- Hero Image -->
-      <section class="hero-section">
-        <div class="hero-image" aria-label="Dimension-X world overview showing magical and technological elements" @click="toggleZoom($event)"></div>
-      </section>
 
       <!-- Zoom Modal -->
       <div v-if="isZoomed" class="zoom-modal" @click="closeZoom">
@@ -258,8 +254,8 @@ export default {
       if (imgElement) {
         // Use the actual resolved src from the DOM
         this.currentZoomedImage = imgElement.src;
-      } else if (event.target.classList.contains('hero-image')) {
-        // Special case for hero image which is a background image
+      } else if (event.target.classList.contains('hero-background')) {
+        // Special case for hero background which is a fixed background
         // Get computed style to extract the actual URL
         const style = getComputedStyle(event.target);
         const bgImage = style.backgroundImage;
@@ -283,6 +279,11 @@ export default {
 .newcomers-guide {
   padding: 60px;
   color: white;
+  position: relative;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1px);
+  margin-top: 60px;
 }
 
 .subtitle {
@@ -292,54 +293,33 @@ export default {
   text-align: center;
   margin-bottom: 2rem;
 }
-/* Hero Section */
-.hero-section {
-  margin-bottom: 3rem;
-  margin-top: 2rem;
-  text-align: center;
-  height: 500px;
+/* Hero Background */
+.page-container {
   position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-  transition: box-shadow 0.3s ease;
+  min-height: 100vh;
 }
 
-.hero-section::before {
-  content: '';
-  position: absolute;
+.hero-background {
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-  z-index: 1;
-  pointer-events: none;
-  animation: borderPulse 3s infinite alternate;
-}
-
-.hero-image {
   width: 100%;
   height: 100%;
   background-image: url('@/assets/images/faq/faq-hero-section.png');
   background-size: cover;
   background-position: center 10%;
   background-attachment: fixed;
-  border-radius: 10px;
-  position: relative;
+  z-index: -1;
 }
 
-.hero-image::after {
+.hero-background::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.4));
-  border-radius: 10px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
 /* Zoom Modal */
@@ -734,13 +714,10 @@ a:hover {
 @media (max-width: 768px) {
   .newcomers-guide {
     padding: 30px;
+    margin-top: 40px;
   }
 
-  .hero-section {
-    height: 300px;
-  }
-
-  .hero-image {
+  .hero-background {
     background-attachment: scroll; /* Fixed attachment can cause issues on mobile */
   }
 
@@ -786,15 +763,7 @@ a:hover {
 @media (max-width: 480px) {
   .newcomers-guide {
     padding: 20px;
-  }
-
-  .hero-section {
-    height: 250px;
-    margin-bottom: 2rem;
-  }
-
-  .hero-section::before {
-    border-width: 1px;
+    margin-top: 30px;
   }
 
   .subtitle {
