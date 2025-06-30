@@ -9,6 +9,7 @@ import Support from '@/views/Support.vue';
 import FAQ from '@/views/FAQ.vue';
 import ArtGallery from "@/views/ArtGallery.vue";
 import NewcomersGuide from "@/views/NewcomersGuide.vue";
+import PlayerCheatSheet from "@/views/PlayerCheatSheet.vue";
 import store from "@/store/index.js";
 import Login from "@/views/Login.vue";
 import CharacterSubmit from "@/views/Player/CharacterSubmit.vue";
@@ -36,6 +37,7 @@ const routes = [
     {path: '/faq', name: 'FAQ', component: FAQ, meta: {requiresAuth: false}},
     {path: '/art-gallery', name: 'ArtGallery', component: ArtGallery, meta: {requiresAuth: false}},
     {path: '/newcomers-guide', name: 'NewcomersGuide', component: NewcomersGuide, meta: {requiresAuth: false}},
+    {path: '/player-cheatsheet', name: 'PlayerCheatSheet', component: PlayerCheatSheet, meta: {requiresAuth: false}},
 
     // Authentication routes
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},

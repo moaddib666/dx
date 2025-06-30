@@ -18,11 +18,11 @@ export default {
         },
         {
           "question": "How do I start playing?",
-          "answer": "The game is not yet ready for play. However, you can check our <a href='/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on how to get started once the game launches. You can also interact with a well-trained AI or contact the creator for further communication."
+          "answer": "The game is now public with limited functionality! To play your first campaign, register on the site and reach out to a game master through our Discord. Check our <a href='/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on getting started and our <a href='/player-cheatsheet' class='guide-link'>Player Cheat Sheet</a> for quick reference during gameplay. You can also interact with our AI assistant or contact the creator directly for help."
         },
         {
           "question": "Can I switch dimensions?",
-          "answer": "Dimension switching will be a feature in the game, allowing players to explore different dimensions once the game is launched."
+          "answer": "Yes! Dimension switching is a core feature of the game, allowing players to explore different dimensions with varying effects on gameplay. Each dimension has unique properties that affect your character's abilities and resources."
         },
         {
           "question": "Who is developing Dimension-X?",
@@ -30,7 +30,7 @@ export default {
         },
         {
           "question": "When will Dimension-X be available?",
-          "answer": "The release date is not yet set. Stay tuned for updates by subscribing to our newsletter or following us on social media."
+          "answer": "Dimension-X is now available with limited functionality! We're in an early access phase where players can join campaigns led by game masters. We're continuously adding new features and expanding the game. Stay updated on our progress by subscribing to our newsletter or following us on social media."
         },
         {
           "question": "Can I provide feedback or suggestions?",
@@ -41,16 +41,16 @@ export default {
           "answer": "Absolutely! You can subscribe to our newsletter or follow us on social media for the latest updates and news about Dimension-X."
         },
         {
-          "question": "Will there be a beta testing phase?",
-          "answer": "Yes, there will be a beta testing phase. Sign up on our website to be considered for early access."
+          "question": "Is the game in beta testing?",
+          "answer": "Yes, we're currently in an early access phase! Players can already join campaigns and experience the core gameplay. This phase helps us gather feedback and improve the game. If you're playing now, you're already part of our testing community - thank you for your support!"
         },
         {
-          "question": "What platforms will Dimension-X be available on?",
-          "answer": "Dimension-X is being developed with plans to be available on PC initially, with potential expansions to other platforms in the future."
+          "question": "What platforms is Dimension-X available on?",
+          "answer": "Dimension-X is currently available on PC through our web platform. We're focusing on providing the best experience on this platform before considering expansions to other platforms in the future."
         },
         {
           "question": "How can I support the development of Dimension-X?",
-          "answer": "You can support the development by sharing our website with your friends, following us on social media, and providing feedback. Future crowdfunding opportunities may also be available."
+          "answer": "The best way to support us now is by playing the game, providing feedback on your experience, and reporting any issues you encounter. You can also help by inviting friends to join campaigns, sharing your gameplay experiences on social media, and engaging with our community on Discord. Your participation during this early access phase is invaluable to our development process!"
         }
       ]
     }
