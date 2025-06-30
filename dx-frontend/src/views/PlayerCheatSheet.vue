@@ -203,7 +203,7 @@
           Join Our Discord
         </a>
         <div class="additional-links">
-          <router-link to="/newcomers-guide" class="additional-link">Newcomer's Guide</router-link>
+          <router-link to="/faq/newcomers-guide" class="additional-link">Newcomer's Guide</router-link>
         </div>
       </div>
     </main>

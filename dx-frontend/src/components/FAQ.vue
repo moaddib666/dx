@@ -18,7 +18,7 @@ export default {
         },
         {
           "question": "How do I start playing?",
-          "answer": "The game is now public with limited functionality! To play your first campaign, register on the site and reach out to a game master through our Discord. Check our <a href='/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on getting started and our <a href='/player-cheatsheet' class='guide-link'>Player Cheat Sheet</a> for quick reference during gameplay. You can also interact with our AI assistant or contact the creator directly for help."
+          "answer": "The game is now public with limited functionality! To play your first campaign, register on the site and reach out to a game master through our Discord. Check our <a href='/faq/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on getting started and our <a href='/faq/player-cheatsheet' class='guide-link'>Player Cheat Sheet</a> for quick reference during gameplay. You can also interact with our AI assistant or contact the creator directly for help."
         },
         {
           "question": "Can I switch dimensions?",

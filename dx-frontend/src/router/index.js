@@ -36,8 +36,8 @@ const routes = [
     {path: '/support', name: 'Support', component: Support, meta: {requiresAuth: false}},
     {path: '/faq', name: 'FAQ', component: FAQ, meta: {requiresAuth: false}},
     {path: '/art-gallery', name: 'ArtGallery', component: ArtGallery, meta: {requiresAuth: false}},
-    {path: '/newcomers-guide', name: 'NewcomersGuide', component: NewcomersGuide, meta: {requiresAuth: false}},
-    {path: '/player-cheatsheet', name: 'PlayerCheatSheet', component: PlayerCheatSheet, meta: {requiresAuth: false}},
+    {path: '/faq/newcomers-guide', name: 'NewcomersGuide', component: NewcomersGuide, meta: {requiresAuth: false}},
+    {path: '/faq/player-cheatsheet', name: 'PlayerCheatSheet', component: PlayerCheatSheet, meta: {requiresAuth: false}},
 
     // Authentication routes
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},

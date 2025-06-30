@@ -221,7 +221,7 @@
           Join Our Discord
         </a>
         <div class="additional-links">
-          <router-link to="/player-cheatsheet" class="additional-link">Player Cheat Sheet</router-link>
+          <router-link to="/faq/player-cheatsheet" class="additional-link">Player Cheat Sheet</router-link>
         </div>
       </div>
     </main>
