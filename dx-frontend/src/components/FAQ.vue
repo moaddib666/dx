@@ -2,7 +2,7 @@
   <section class="faq container">
     <div v-for="faq in faqs" :key="faq.question" class="faq-item">
       <h3>{{ faq.question }}</h3>
-      <p>{{ faq.answer }}</p>
+      <p v-html="faq.answer"></p>
     </div>
   </section>
 </template>
@@ -18,7 +18,7 @@ export default {
         },
         {
           "question": "How do I start playing?",
-          "answer": "The game is not yet ready for play. However, you can interact with a well-trained AI or contact the creator for further communication."
+          "answer": "The game is not yet ready for play. However, you can check our <a href='/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on how to get started once the game launches. You can also interact with a well-trained AI or contact the creator for further communication."
         },
         {
           "question": "Can I switch dimensions?",
@@ -76,5 +76,16 @@ export default {
 .faq-item p {
   font-size: 16px;
   color: var(--light-steel-blue);
+}
+
+.guide-link {
+  color: var(--cyber-yellow);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.guide-link:hover {
+  color: white;
+  text-decoration: underline;
 }
 </style>
