@@ -139,21 +139,16 @@ export default {
   background-repeat: no-repeat;
   background-color: #0a0a0a;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(64, 169, 255, 0.2);
-  box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
 }
 
 .character-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: rgba(64, 169, 255, 0.5);
-  box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.6),
-      0 0 32px rgba(64, 169, 255, 0.3),
-      0 0 0 1px rgba(64, 169, 255, 0.4);
+  transform: translateY(-2px);
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
 /* Enhanced backdrop for better text readability */
@@ -187,9 +182,9 @@ export default {
   border-radius: 12px;
   background: linear-gradient(45deg,
   transparent,
-  rgba(64, 169, 255, 0.1),
+  rgba(255, 215, 0, 0.1),
   transparent,
-  rgba(138, 43, 226, 0.1),
+  rgba(255, 215, 0, 0.1),
   transparent
   );
   background-size: 300% 300%;
@@ -251,7 +246,7 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(64, 169, 255, 0.2), rgba(138, 43, 226, 0.2));
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.3));
   padding: 2px;
   display: flex;
   align-items: center;
@@ -267,7 +262,7 @@ export default {
 }
 
 .path-name {
-  color: #40a9ff;
+  color: var(--cyber-yellow, #ffd700);
   font-size: 0.8rem;
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
@@ -323,9 +318,9 @@ export default {
   border-radius: 3px;
   font-size: 0.6rem;
   font-weight: 500;
-  background: rgba(64, 169, 255, 0.15);
-  color: #87ceeb;
-  border: 1px solid rgba(64, 169, 255, 0.3);
+  background: rgba(255, 215, 0, 0.15);
+  color: var(--light-steel-blue, #b0c4de);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.2px;
   transition: all 0.2s ease;
@@ -338,26 +333,26 @@ export default {
 }
 
 .tag-badge:hover {
-  background: rgba(64, 169, 255, 0.25);
-  border-color: rgba(64, 169, 255, 0.5);
+  background: rgba(255, 215, 0, 0.25);
+  border-color: rgba(255, 215, 0, 0.5);
   transform: translateY(-1px);
 }
 
 .tag-more {
-  background: rgba(138, 43, 226, 0.15);
-  color: #da70d6;
-  border-color: rgba(138, 43, 226, 0.3);
+  background: rgba(255, 215, 0, 0.1);
+  color: var(--cyber-yellow, #ffd700);
+  border-color: rgba(255, 215, 0, 0.2);
 }
 
 .rank-badge {
   padding: 3px 6px;
   border-radius: 4px;
   background: linear-gradient(135deg,
-  rgba(138, 43, 226, 0.3),
-  rgba(186, 85, 211, 0.3)
+  rgba(255, 215, 0, 0.2),
+  rgba(255, 215, 0, 0.3)
   );
-  border: 1px solid rgba(138, 43, 226, 0.5);
-  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(1px);
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
@@ -407,9 +402,9 @@ export default {
   bottom: -2px;
   border-radius: 14px;
   background: linear-gradient(45deg,
-  rgba(64, 169, 255, 0.3),
-  rgba(138, 43, 226, 0.3),
-  rgba(64, 169, 255, 0.3)
+  rgba(255, 215, 0, 0.3),
+  rgba(255, 215, 0, 0.2),
+  rgba(255, 215, 0, 0.3)
   );
   background-size: 300% 300%;
   opacity: 0;

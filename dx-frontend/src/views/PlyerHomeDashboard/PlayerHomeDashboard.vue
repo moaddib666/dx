@@ -293,7 +293,6 @@ export default {
 /* Page Container and Background */
 .page-container {
   position: relative;
-  min-height: 100vh;
 }
 
 .hero-background {
@@ -302,7 +301,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('@/assets/images/dashbaord/dashboard.png');
+  background-image: url('@/assets/images/dashbaord/dashboard-2.png');
   background-size: cover;
   background-position: center 10%;
   background-attachment: fixed;
@@ -323,7 +322,7 @@ export default {
   width: 100%;
   max-width: 90vw;
   margin: 0 auto;
-  padding: 20px;
+  padding: 60px;
   max-height: 80vh;
   min-height: 600px;
   position: relative;
@@ -342,13 +341,13 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
 }
 
 .loading-spinner {
@@ -445,13 +444,18 @@ export default {
 
 /* Top section: Campaign selector */
 .campaign-selector-section {
-  margin-left: 2rem;
-  margin-right: 2rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .section-title {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 1.3rem;
+  color: var(--cyber-yellow, #ffd700);
+  margin-bottom: 0.75rem;
+  text-align: center;
   font-weight: 600;
 }
 
@@ -459,6 +463,11 @@ export default {
 .characters-section {
   width: 100%;
   overflow-x: hidden;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .characters-container {
@@ -482,8 +491,8 @@ export default {
 .characters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
   max-height: 600px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -496,16 +505,16 @@ export default {
 }
 
 .characters-grid::-webkit-scrollbar-track {
-  background: #2d2d2d;
+  background: rgba(45, 45, 45, 0.3);
 }
 
 .characters-grid::-webkit-scrollbar-thumb {
-  background: #555;
+  background: rgba(85, 85, 85, 0.5);
   border-radius: 3px;
 }
 
 .characters-grid::-webkit-scrollbar-thumb:hover {
-  background: #666;
+  background: rgba(102, 102, 102, 0.7);
 }
 
 /* Apply same scrollbar styling to the dashboard */
@@ -514,16 +523,16 @@ export default {
 }
 
 .player-home-dashboard::-webkit-scrollbar-track {
-  background: #2d2d2d;
+  background: rgba(45, 45, 45, 0.3);
 }
 
 .player-home-dashboard::-webkit-scrollbar-thumb {
-  background: #555;
+  background: rgba(85, 85, 85, 0.5);
   border-radius: 3px;
 }
 
 .player-home-dashboard::-webkit-scrollbar-thumb:hover {
-  background: #666;
+  background: rgba(102, 102, 102, 0.7);
 }
 
 /* No Campaigns Overlay Styles */
@@ -533,21 +542,19 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
 }
 
 .no-campaigns-content {
   max-width: 600px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 40px;
+  padding: 2.5rem;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 215, 0, 0.2);
   animation: fadeIn 0.5s ease-out;
 }
@@ -665,25 +672,20 @@ export default {
 .add-character-placeholder {
   width: 320px;
   height: 200px;
+  padding: 0.75rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
   border-radius: 12px;
-  background-color: rgba(10, 10, 10, 0.7);
-  border: 1px solid rgba(64, 169, 255, 0.2);
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
 .add-character-placeholder:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: rgba(64, 169, 255, 0.5);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 32px rgba(64, 169, 255, 0.3),
-    0 0 0 1px rgba(64, 169, 255, 0.4);
+  background: rgba(255, 215, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .add-character-content {
@@ -699,7 +701,7 @@ export default {
 
 .add-icon {
   font-size: 3rem;
-  color: rgba(64, 169, 255, 0.7);
+  color: var(--cyber-yellow, #ffd700);
   margin-bottom: 10px;
   transition: all 0.3s ease;
 }
@@ -707,12 +709,10 @@ export default {
 .add-text {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  color: white;
 }
 
 .add-character-placeholder:hover .add-icon {
-  color: rgba(64, 169, 255, 1);
   transform: scale(1.1);
 }
 
@@ -726,9 +726,9 @@ export default {
   border-radius: 12px;
   background: linear-gradient(45deg,
     transparent,
-    rgba(64, 169, 255, 0.1),
+    rgba(255, 215, 0, 0.1),
     transparent,
-    rgba(138, 43, 226, 0.1),
+    rgba(255, 215, 0, 0.1),
     transparent
   );
   background-size: 300% 300%;
@@ -756,9 +756,9 @@ export default {
   bottom: -2px;
   border-radius: 14px;
   background: linear-gradient(45deg,
-    rgba(64, 169, 255, 0.3),
-    rgba(138, 43, 226, 0.3),
-    rgba(64, 169, 255, 0.3)
+    rgba(255, 215, 0, 0.3),
+    rgba(255, 215, 0, 0.2),
+    rgba(255, 215, 0, 0.3)
   );
   background-size: 300% 300%;
   opacity: 0;
@@ -791,15 +791,14 @@ export default {
 
 .debug-message {
   grid-column: 1 / -1; /* Span all columns */
-  padding: 12px;
-  margin-bottom: 15px;
-  background-color: #2d2d2d;
-  color: #e0e0e0;
-  border: 1px solid #444;
-  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--light-steel-blue, #b0c4de);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
   font-weight: 500;
   font-size: 0.9rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 

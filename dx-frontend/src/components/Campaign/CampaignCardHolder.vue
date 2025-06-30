@@ -121,8 +121,9 @@ export default {
   position: relative;
   width: 100%;
   padding: 1rem 0;
-  background-color: #1e1e1e; /* Primary Background */
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .cards-container {
@@ -156,29 +157,28 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #444; /* Element Background */
-  border: 1px solid #555; /* Border Color */
-  color: #ffffff; /* Primary Text */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffffff;
   font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .nav-arrow:hover:not(:disabled) {
-  background-color: #555;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  color: #1E90FF; /* Accent Color */
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--cyber-yellow, #ffd700);
+  transform: translateY(-2px);
 }
 
 .nav-arrow:disabled {
-  background-color: #333;
-  color: #666;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
-  border-color: #444;
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .left-arrow {
