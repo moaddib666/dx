@@ -199,9 +199,12 @@
       <!-- Footer -->
       <div class="footer-section">
         <p>Ready to begin your adventure in Dimension-X?</p>
-        <a href="https://discord.gg/your-discord-link" target="_blank" class="discord-link">
+        <a href="https://discord.gg/32dwT8EP" target="_blank" class="discord-link">
           Join Our Discord
         </a>
+        <div class="additional-links">
+          <router-link to="/newcomers-guide" class="additional-link">Newcomer's Guide</router-link>
+        </div>
       </div>
     </main>
   </div>
@@ -746,6 +749,33 @@ export default {
 .discord-link:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Additional Links */
+.additional-links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.additional-link {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--cyber-yellow, #ffd700);
+  text-decoration: none;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.additional-link:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+  color: white;
+  text-decoration: none;
 }
 
 /* Responsive Design */
