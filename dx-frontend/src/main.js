@@ -2,6 +2,7 @@ import {createApp} from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import i18n from './i18n';
 import './assets/styles/global.css';
 import './assets/styles/colors.css';
 import './assets/styles/typography.css';
@@ -24,6 +25,7 @@ async function bootstrap() {
         createApp(App)
             .use(store)
             .use(router)
+            .use(i18n)
             // .use(WebSocketPlugin, {url: import.meta.env.VITE_WS_BASE_URL})
             .mount('#app');
     } catch (error) {

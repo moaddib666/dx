@@ -1,6 +1,6 @@
 <template>
   <section class="faq container">
-    <div v-for="faq in faqs" :key="faq.question" class="faq-item">
+    <div v-for="(faq, key) in faqItems" :key="key" class="faq-item">
       <h3>{{ faq.question }}</h3>
       <p v-html="faq.answer"></p>
     </div>
@@ -8,53 +8,59 @@
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
-  data() {
-    return {
-      "faqs": [
-        {
-          "question": "What is Dimension-X?",
-          "answer": "Dimension-X is a game where magic and technology collide, offering players a unique multiverse experience."
+  setup() {
+    const { t } = useI18n();
+
+    return { t };
+  },
+  computed: {
+    faqItems() {
+      return {
+        whatIsDimensionX: {
+          question: this.t('faq.questions.whatIsDimensionX.question'),
+          answer: this.t('faq.questions.whatIsDimensionX.answer')
         },
-        {
-          "question": "How do I start playing?",
-          "answer": "The game is now public with limited functionality! To play your first campaign, register on the site and reach out to a game master through our Discord. Check our <a href='/faq/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on getting started and our <a href='/faq/player-cheatsheet' class='guide-link'>Player Cheat Sheet</a> for quick reference during gameplay. You can also interact with our AI assistant or contact the creator directly for help."
+        howToStart: {
+          question: this.t('faq.questions.howToStart.question'),
+          answer: this.t('faq.questions.howToStart.answer')
         },
-        {
-          "question": "Can I switch dimensions?",
-          "answer": "Yes! Dimension switching is a core feature of the game, allowing players to explore different dimensions with varying effects on gameplay. Each dimension has unique properties that affect your character's abilities and resources."
+        canSwitchDimensions: {
+          question: this.t('faq.questions.canSwitchDimensions.question'),
+          answer: this.t('faq.questions.canSwitchDimensions.answer')
         },
-        {
-          "question": "Who is developing Dimension-X?",
-          "answer": "Dimension-X is being developed by a single person who is passionate about creating immersive game experiences."
+        whoDeveloping: {
+          question: this.t('faq.questions.whoDeveloping.question'),
+          answer: this.t('faq.questions.whoDeveloping.answer')
         },
-        {
-          "question": "When will Dimension-X be available?",
-          "answer": "Dimension-X is now available with limited functionality! We're in an early access phase where players can join campaigns led by game masters. We're continuously adding new features and expanding the game. Stay updated on our progress by subscribing to our newsletter or following us on social media."
+        whenAvailable: {
+          question: this.t('faq.questions.whenAvailable.question'),
+          answer: this.t('faq.questions.whenAvailable.answer')
         },
-        {
-          "question": "Can I provide feedback or suggestions?",
-          "answer": "Yes, we welcome your feedback and suggestions. Please use the contact form on our website to reach out to the creator."
+        provideFeedback: {
+          question: this.t('faq.questions.provideFeedback.question'),
+          answer: this.t('faq.questions.provideFeedback.answer')
         },
-        {
-          "question": "Is there a way to stay updated on the game's progress?",
-          "answer": "Absolutely! You can subscribe to our newsletter or follow us on social media for the latest updates and news about Dimension-X."
+        stayUpdated: {
+          question: this.t('faq.questions.stayUpdated.question'),
+          answer: this.t('faq.questions.stayUpdated.answer')
         },
-        {
-          "question": "Is the game in beta testing?",
-          "answer": "Yes, we're currently in an early access phase! Players can already join campaigns and experience the core gameplay. This phase helps us gather feedback and improve the game. If you're playing now, you're already part of our testing community - thank you for your support!"
+        betaTesting: {
+          question: this.t('faq.questions.betaTesting.question'),
+          answer: this.t('faq.questions.betaTesting.answer')
         },
-        {
-          "question": "What platforms is Dimension-X available on?",
-          "answer": "Dimension-X is currently available on PC through our web platform. We're focusing on providing the best experience on this platform before considering expansions to other platforms in the future."
+        platforms: {
+          question: this.t('faq.questions.platforms.question'),
+          answer: this.t('faq.questions.platforms.answer')
         },
-        {
-          "question": "How can I support the development of Dimension-X?",
-          "answer": "The best way to support us now is by playing the game, providing feedback on your experience, and reporting any issues you encounter. You can also help by inviting friends to join campaigns, sharing your gameplay experiences on social media, and engaging with our community on Discord. Your participation during this early access phase is invaluable to our development process!"
+        supportDevelopment: {
+          question: this.t('faq.questions.supportDevelopment.question'),
+          answer: this.t('faq.questions.supportDevelopment.answer')
         }
-      ]
+      };
     }
-        ;
   }
 };
 </script>

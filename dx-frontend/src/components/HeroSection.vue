@@ -9,9 +9,9 @@
     <div class="content">
       <TitleComponent>Dimension-X</TitleComponent>
       <LandingButtonGroup>
-        <LandingButton :action="signInAction">Register</LandingButton>
-        <LandingButton :action="logInAction">Log In</LandingButton>
-        <LandingButton :action="chatAction">Chat with AI</LandingButton>
+        <LandingButton :action="signInAction">{{ t('navigation.register') }}</LandingButton>
+        <LandingButton :action="logInAction">{{ t('navigation.login') }}</LandingButton>
+        <LandingButton :action="chatAction">{{ t('navigation.chatWithAI') }}</LandingButton>
       </LandingButtonGroup>
       <!--      <LoginForm :layer="currentLayer" />-->
     </div>
@@ -24,6 +24,7 @@ import TitleComponent from "@/components/TitleComponent.vue";
 import LandingButton from "@/components/btn/LandingButton.vue";
 import LandingButtonGroup from "@/components/btn/LandingButtonGroup.vue";
 import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 
 const opacity1 = ref(1);
 const opacity2 = ref(1);
@@ -31,6 +32,7 @@ const opacity3 = ref(1);
 const saturation4 = ref(100);
 const currentLayer = ref(0);
 const router = useRouter();
+const { t } = useI18n();
 const chatAction = () => {
   window.open('https://chatgpt.com/g/g-VIcO0L3rg-dimension-x-game-architect', '_blank');
 };

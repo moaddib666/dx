@@ -1,13 +1,19 @@
 <template>
   <footer>
-    <p>&copy; 2024 Dimension-X. All rights reserved. The creator <a href="mailto: moaddib666@gmail.com">moaddib</a></p>
+    <p><span v-html="t('footer.copyright')"></span> <a href="mailto: moaddib666@gmail.com">{{ t('footer.creator') }}</a></p>
   </footer>
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: 'Footer',
-};
+  setup() {
+    const {t} = useI18n();
+    return {t};
+  }
+}
 </script>
 
 <style scoped>

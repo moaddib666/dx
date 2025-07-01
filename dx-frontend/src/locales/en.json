@@ -1,0 +1,338 @@
+{
+  "common": {
+    "loading": "Loading, please wait...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "faq": "FAQ",
+    "chatWithAI": "Chat with AI",
+    "artGallery": "Art Gallery"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "logoutSuccess": "Logout successful",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "invalidCredentials": "Invalid email or password.",
+    "unexpectedError": "An unexpected error occurred. Please try again."
+  },
+  "dashboard": {
+    "welcome": "Welcome to your dashboard",
+    "recentActivity": "Recent Activity",
+    "statistics": "Statistics",
+    "noData": "No data available"
+  },
+  "playerDashboard": {
+    "loading": "Loading dashboard...",
+    "preparingAdventure": "Preparing your adventure",
+    "noCampaigns": "No Campaigns Available",
+    "noCampaignsMessage": "You don't have any campaigns available. Please contact a Game Master via Discord to be added to a campaign.",
+    "joinDiscord": "Join Discord",
+    "readFAQ": "Read FAQ",
+    "addCharacter": "Add Character",
+    "noCharacters": "No characters available. Please select a campaign.",
+    "charactersFound": "Found {count} characters for the selected campaign.",
+    "noCampaignSelected": "No Campaign Selected\n\nYou need to select a campaign before creating a character. Please contact a Game Master via Discord to be added to a campaign.\n\nClick OK to join our Discord server."
+  },
+  "faq": {
+    "title": "FAQ",
+    "description": "Find answers to the most frequently asked questions about Dimension-X.",
+    "questions": {
+      "whatIsDimensionX": {
+        "question": "What is Dimension-X?",
+        "answer": "Dimension-X is a game where magic and technology collide, offering players a unique multiverse experience."
+      },
+      "howToStart": {
+        "question": "How do I start playing?",
+        "answer": "The game is now public with limited functionality! To play your first campaign, register on the site and reach out to a game master through our Discord. Check our <a href='/faq/newcomers-guide' class='guide-link'>Newcomer's Guide</a> for detailed information on getting started and our <a href='/faq/player-cheatsheet' class='guide-link'>Player Cheat Sheet</a> for quick reference during gameplay. You can also interact with our AI assistant or contact the creator directly for help."
+      },
+      "canSwitchDimensions": {
+        "question": "Can I switch dimensions?",
+        "answer": "Yes! Dimension switching is a core feature of the game, allowing players to explore different dimensions with varying effects on gameplay. Each dimension has unique properties that affect your character's abilities and resources."
+      },
+      "whoDeveloping": {
+        "question": "Who is developing Dimension-X?",
+        "answer": "Dimension-X is being developed by a single person who is passionate about creating immersive game experiences."
+      },
+      "whenAvailable": {
+        "question": "When will Dimension-X be available?",
+        "answer": "Dimension-X is now available with limited functionality! We're in an early access phase where players can join campaigns led by game masters. We're continuously adding new features and expanding the game. Stay updated on our progress by subscribing to our newsletter or following us on social media."
+      },
+      "provideFeedback": {
+        "question": "Can I provide feedback or suggestions?",
+        "answer": "Yes, we welcome your feedback and suggestions. Please use the contact form on our website to reach out to the creator."
+      },
+      "stayUpdated": {
+        "question": "Is there a way to stay updated on the game's progress?",
+        "answer": "Absolutely! You can subscribe to our newsletter or follow us on social media for the latest updates and news about Dimension-X."
+      },
+      "betaTesting": {
+        "question": "Is the game in beta testing?",
+        "answer": "Yes, we're currently in an early access phase! Players can already join campaigns and experience the core gameplay. This phase helps us gather feedback and improve the game. If you're playing now, you're already part of our testing community - thank you for your support!"
+      },
+      "platforms": {
+        "question": "What platforms is Dimension-X available on?",
+        "answer": "Dimension-X is currently available on PC through our web platform. We're focusing on providing the best experience on this platform before considering expansions to other platforms in the future."
+      },
+      "supportDevelopment": {
+        "question": "How can I support the development of Dimension-X?",
+        "answer": "The best way to support us now is by playing the game, providing feedback on your experience, and reporting any issues you encounter. You can also help by inviting friends to join campaigns, sharing your gameplay experiences on social media, and engaging with our community on Discord. Your participation during this early access phase is invaluable to our development process!"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "&copy; 2024 Dimension-X. All rights reserved. The creator",
+    "creator": "moaddib"
+  },
+  "newcomersGuide": {
+    "title": "Newcomer's Guide",
+    "subtitle": "Welcome to a world where magic and technology collide",
+    "howToStart": {
+      "title": "How To Start",
+      "steps": {
+        "step1": "Register on <a href=\"https://dx.awesome.live/\" target=\"_blank\">https://dx.awesome.live/</a>",
+        "step2": "Connect our Discord and reach any of game masters so that add you to a campaign",
+        "step3": "When you added to a campaign you can see the campaign in the site and able to create a new character for it",
+        "step4": "When your character ready ping game master for validation",
+        "step5": "When all done you are good to go to join game session on selected date and time"
+      },
+      "imageCaption": "Character creation process"
+    },
+    "howToPlay": {
+      "title": "How To Play (For Player)",
+      "imageCaption": "Game interface overview",
+      "infoList": {
+        "item1": "Learn backstory (optional) - use Discord or chat with AI to understand lore and main game rules",
+        "item2": "The game is divided by cycles where each cycle is a turn",
+        "item3": "The character have characteristics and attributes",
+        "item4": "The characteristics influence any action and attributes of your character",
+        "item5": "On any action the dice been thrown and the result influenced by number of the dice result",
+        "item6": "To perform actions you spend ActionPoints and Flow or Stamina depends on your path",
+        "item7": "In general by the cycle you can make an action, use item, move, do dialog, act - acting and dialog is not taken the action points but moderated by GM",
+        "item8": "Please find the order of your character by check your speed - in case you have same speed with other characters it's best to roll the dice to find who is faster"
+      },
+      "actionTypes": {
+        "title": "Action Types",
+        "immediate": {
+          "title": "Immediate Actions",
+          "description": "Executed right after apply (gift, inspect)"
+        },
+        "scheduled": {
+          "title": "Scheduled Actions",
+          "description": "Ordered and executed on turn end (attack, defense)"
+        },
+        "finite": {
+          "title": "Finite Actions",
+          "description": "Complete instantly (move)"
+        }
+      },
+      "importantNotes": {
+        "title": "Important Notes",
+        "items": {
+          "itemsCartography": {
+            "title": "Items & Cartography:",
+            "description": "Some items give you great advantage like cartograph that allow you and your guild draw the map and use it. It's better to communicate with person who have cartograph and report to him your position as it will not automatically mapped."
+          },
+          "deathSystem": {
+            "title": "Death System:",
+            "description": "When you die you not actually died unless you don't have status death mark or through death, this is dimensional curse that would kill and wipe your character from the world. In other cases you would be respawned in safe place with penalties statuses coma."
+          },
+          "teamPlay": {
+            "title": "Team Play:",
+            "description": "The first status is knocked out and you can been rescued by your team mates in this status."
+          },
+          "npcs": {
+            "title": "NPCs:",
+            "description": "Not all NPC aggressive by default but you and your team mate could make guild aggressive against your guild so be cautious."
+          },
+          "rolePlaying": {
+            "title": "Role Playing:",
+            "description": "Don't forget to act when you performing something or want to participate in something - it's role play all in all."
+          },
+          "turnTime": {
+            "title": "Turn Time:",
+            "description": "Don't over act or make 5 minutes turns - you are not alone here!"
+          }
+        }
+      },
+      "dimensions": {
+        "title": "Dimensions",
+        "first": {
+          "title": "1st Dimension",
+          "description": "Safe real world, energy regenerates"
+        },
+        "second": {
+          "title": "2nd Dimension",
+          "description": "Faster time, energy drains slowly"
+        },
+        "third": {
+          "title": "3rd Dimension",
+          "description": "Dangerous shadows, heavy energy drain"
+        },
+        "fourth": {
+          "title": "4th Dimension",
+          "description": "Brutal storms, extreme energy cost"
+        }
+      }
+    },
+    "howToPlayGM": {
+      "title": "How To Play (For GameMaster)",
+      "comingSoon": "Come soon - not fully implemented due to permissions separations",
+      "imageCaption": "GM Dashboard (Coming Soon)"
+    },
+    "rules": {
+      "title": "Rules",
+      "rule1": "Make fun",
+      "rule2": "Do not blame each other or argue",
+      "rule3": "Respect each other",
+      "rule4": "Role play - be a character not yourself"
+    },
+    "footer": {
+      "readyToBegin": "Ready to begin your adventure in Dimension-X?",
+      "joinDiscord": "Join Our Discord",
+      "playerCheatSheet": "Player Cheat Sheet"
+    }
+  },
+  "playerCheatSheet": {
+    "title": "Player Cheat Sheet",
+    "subtitle": "Quick reference guide for Dimension-X gameplay",
+    "turnCycleFlow": {
+      "title": "Turn Cycle Flow",
+      "steps": {
+        "step1": {
+          "title": "Check Speed Order",
+          "description": "Players act in order of Speed stat. Roll dice for ties."
+        },
+        "step2": {
+          "title": "Spend Action Points",
+          "description": "Allocate your AP to different actions."
+        },
+        "step3": {
+          "title": "Perform Actions",
+          "description": "Execute your chosen actions in order."
+        },
+        "step4": {
+          "title": "GM Resolves",
+          "description": "GM determines outcomes of all actions."
+        },
+        "step5": {
+          "title": "End Turn",
+          "description": "Resolve any end-of-turn effects and prepare for next player."
+        }
+      }
+    },
+    "actionTypes": {
+      "title": "Action Types",
+      "immediate": {
+        "title": "IMMEDIATE",
+        "description": "Execute instantly",
+        "examples": ["Inspect", "Gift Item"]
+      },
+      "scheduled": {
+        "title": "SCHEDULED",
+        "description": "Execute at turn end",
+        "examples": ["Attack", "Defend", "Use Item"]
+      },
+      "finite": {
+        "title": "FINITE",
+        "description": "Complete instantly",
+        "examples": ["Move"]
+      }
+    },
+    "resourceManagement": {
+      "title": "Resource Management",
+      "actionPoints": {
+        "title": "Action Points (AP)",
+        "description": "Speed × Dimension Multiplier"
+      },
+      "energyFlow": {
+        "title": "Energy/Flow",
+        "description": "Required for special abilities"
+      },
+      "healthPoints": {
+        "title": "Health Points (HP)",
+        "description": "Shows is you or your opponent alive"
+      }
+    },
+    "playerGMInteraction": {
+      "title": "Player-GM Interaction",
+      "steps": {
+        "step1": {
+          "title": "Player declares action",
+          "description": "Describe what you want to do"
+        },
+        "step2": {
+          "title": "GM sets difficulty",
+          "description": "Based on action complexity"
+        },
+        "step3": {
+          "title": "Roll dice + modifiers",
+          "description": "Add relevant stat bonuses"
+        },
+        "step4": {
+          "title": "GM describes outcome",
+          "description": "Success or failure results"
+        }
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "actions": {
+        "move": "Move",
+        "attack": "Attack",
+        "defend": "Defend",
+        "castSpell": "Cast Spell",
+        "useItem": "Use Item",
+        "inspect": "Inspect",
+        "communicate": "Communicate",
+        "teleport": "Teleport to Safety"
+      }
+    },
+    "keyRules": {
+      "title": "Key Rules",
+      "rules": {
+        "rule1": "Speed determines turn order - roll dice for ties",
+        "rule2": "When HP ends => knocked out => Koma unless \"death mark\" status then - The End",
+        "rule3": "Role-play your character, not yourself",
+        "rule4": "Try keep your turns under 30 seconds - you're not alone!"
+      }
+    },
+    "footer": {
+      "readyToBegin": "Ready to begin your adventure in Dimension-X?",
+      "joinDiscord": "Join Our Discord",
+      "newcomersGuide": "Newcomer's Guide"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "notFound": "Not found",
+    "unauthorized": "Unauthorized access",
+    "validation": "Validation error",
+    "serverError": "Server error"
+  }
+}

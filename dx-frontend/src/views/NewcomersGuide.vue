@@ -2,8 +2,8 @@
   <div class="page-container">
     <div class="hero-background" @click="toggleZoom($event)"></div>
     <main class="newcomers-guide">
-      <TitleComponent>Newcomer's Guide</TitleComponent>
-      <p class="subtitle">Welcome to a world where magic and technology collide</p>
+      <TitleComponent>{{ t('newcomersGuide.title') }}</TitleComponent>
+      <p class="subtitle">{{ t('newcomersGuide.subtitle') }}</p>
 
       <!-- Zoom Modal -->
       <div v-if="isZoomed" class="zoom-modal" @click="closeZoom">
@@ -12,15 +12,15 @@
 
       <!-- How To Start -->
       <section class="content-section">
-        <h2 class="section-title">How To Start</h2>
+        <h2 class="section-title">{{ t('newcomersGuide.howToStart.title') }}</h2>
         <div class="content-grid">
           <div class="text-content">
             <ol class="step-list">
-              <li>Register on <a href="https://dx.awesome.live/" target="_blank">https://dx.awesome.live/</a></li>
-              <li>Connect our Discord and reach any of game masters so that add you to a campaign</li>
-              <li>When you added to a campaign you can see the campaign in the site and able to create a new character for it</li>
-              <li>When your character ready ping game master for validation</li>
-              <li>When all done you are good to go to join game session on selected date and time</li>
+              <li v-html="t('newcomersGuide.howToStart.steps.step1')"></li>
+              <li>{{ t('newcomersGuide.howToStart.steps.step2') }}</li>
+              <li>{{ t('newcomersGuide.howToStart.steps.step3') }}</li>
+              <li>{{ t('newcomersGuide.howToStart.steps.step4') }}</li>
+              <li>{{ t('newcomersGuide.howToStart.steps.step5') }}</li>
             </ol>
           </div>
           <div class="image-content">
@@ -30,14 +30,14 @@
                 class="section-image zoomable-image"
                 @click="toggleZoom($event)"
             />
-            <p class="image-caption">Character creation process</p>
+            <p class="image-caption">{{ t('newcomersGuide.howToStart.imageCaption') }}</p>
           </div>
         </div>
       </section>
 
       <!-- How To Play (For Player) -->
       <section class="content-section">
-        <h2 class="section-title">How To Play (For Player)</h2>
+        <h2 class="section-title">{{ t('newcomersGuide.howToPlay.title') }}</h2>
         <div class="content-grid">
           <div class="image-content">
             <img
@@ -46,69 +46,69 @@
                 class="section-image zoomable-image"
                 @click="toggleZoom($event)"
             />
-            <p class="image-caption">Game interface overview</p>
+            <p class="image-caption">{{ t('newcomersGuide.howToPlay.imageCaption') }}</p>
           </div>
           <div class="text-content">
             <ul class="info-list">
-              <li>Learn backstory (optional) - use Discord or chat with AI to understand lore and main game rules</li>
-              <li>The game is divided by cycles where each cycle is a turn</li>
-              <li>The character have characteristics and attributes</li>
-              <li>The characteristics influence any action and attributes of your character</li>
-              <li>On any action the dice been thrown and the result influenced by number of the dice result</li>
-              <li>To perform actions you spend ActionPoints and Flow or Stamina depends on your path</li>
-              <li>In general by the cycle you can make an action, use item, move, do dialog, act - acting and dialog is not taken the action points but moderated by GM</li>
-              <li>Please find the order of your character by check your speed - in case you have same speed with other characters it's best to roll the dice to find who is faster</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item1') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item2') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item3') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item4') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item5') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item6') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item7') }}</li>
+              <li>{{ t('newcomersGuide.howToPlay.infoList.item8') }}</li>
             </ul>
           </div>
         </div>
 
         <!-- Action Types -->
         <div class="subsection">
-          <h3 class="subsection-title">Action Types</h3>
+          <h3 class="subsection-title">{{ t('newcomersGuide.howToPlay.actionTypes.title') }}</h3>
           <div class="action-grid">
             <div class="action-card">
-              <h4>Immediate Actions</h4>
-              <p>Executed right after apply (gift, inspect)</p>
+              <h4>{{ t('newcomersGuide.howToPlay.actionTypes.immediate.title') }}</h4>
+              <p>{{ t('newcomersGuide.howToPlay.actionTypes.immediate.description') }}</p>
             </div>
             <div class="action-card">
-              <h4>Scheduled Actions</h4>
-              <p>Ordered and executed on turn end (attack, defense)</p>
+              <h4>{{ t('newcomersGuide.howToPlay.actionTypes.scheduled.title') }}</h4>
+              <p>{{ t('newcomersGuide.howToPlay.actionTypes.scheduled.description') }}</p>
             </div>
             <div class="action-card">
-              <h4>Finite Actions</h4>
-              <p>Complete instantly (move)</p>
+              <h4>{{ t('newcomersGuide.howToPlay.actionTypes.finite.title') }}</h4>
+              <p>{{ t('newcomersGuide.howToPlay.actionTypes.finite.description') }}</p>
             </div>
           </div>
         </div>
 
         <!-- Important Notes -->
         <div class="subsection">
-          <h3 class="subsection-title">Important Notes</h3>
+          <h3 class="subsection-title">{{ t('newcomersGuide.howToPlay.importantNotes.title') }}</h3>
           <div class="notes-grid">
             <div class="note-item">
-              <strong>Items & Cartography:</strong> Some items give you great advantage like cartograph that allow you and your guild draw the map and use it. It's better to communicate with person who have cartograph and report to him your position as it will not automatically mapped.
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.itemsCartography.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.itemsCartography.description') }}
             </div>
             <div class="note-item">
-              <strong>Death System:</strong> When you die you not actually died unless you don't have status death mark or through death, this is dimensional curse that would kill and wipe your character from the world. In other cases you would be respawned in safe place with penalties statuses coma.
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.deathSystem.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.deathSystem.description') }}
             </div>
             <div class="note-item">
-              <strong>Team Play:</strong> The first status is knocked out and you can been rescued by your team mates in this status.
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.teamPlay.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.teamPlay.description') }}
             </div>
             <div class="note-item">
-              <strong>NPCs:</strong> Not all NPC aggressive by default but you and your team mate could make guild aggressive against your guild so be cautious.
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.npcs.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.npcs.description') }}
             </div>
             <div class="note-item">
-              <strong>Role Playing:</strong> Don't forget to act when you performing something or want to participate in something - it's role play all in all.
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.rolePlaying.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.rolePlaying.description') }}
             </div>
             <div class="note-item">
-              <strong>Turn Time:</strong> Don't over act or make 5 minutes turns - you are not alone here!
+              <strong>{{ t('newcomersGuide.howToPlay.importantNotes.items.turnTime.title') }}</strong> {{ t('newcomersGuide.howToPlay.importantNotes.items.turnTime.description') }}
             </div>
           </div>
         </div>
 
         <!-- Dimensions -->
         <div class="subsection">
-          <h3 class="subsection-title">Dimensions</h3>
+          <h3 class="subsection-title">{{ t('newcomersGuide.howToPlay.dimensions.title') }}</h3>
           <div class="dimensions-grid">
             <div class="dimension-item">
               <img
@@ -118,8 +118,8 @@
                 @click="toggleZoom($event)"
               />
               <div class="dimension-info">
-                <h4>1st Dimension</h4>
-                <p>Safe real world, energy regenerates</p>
+                <h4>{{ t('newcomersGuide.howToPlay.dimensions.first.title') }}</h4>
+                <p>{{ t('newcomersGuide.howToPlay.dimensions.first.description') }}</p>
               </div>
             </div>
             <div class="dimension-item">
@@ -130,8 +130,8 @@
                 @click="toggleZoom($event)"
               />
               <div class="dimension-info">
-                <h4>2nd Dimension</h4>
-                <p>Faster time, energy drains slowly</p>
+                <h4>{{ t('newcomersGuide.howToPlay.dimensions.second.title') }}</h4>
+                <p>{{ t('newcomersGuide.howToPlay.dimensions.second.description') }}</p>
               </div>
             </div>
             <div class="dimension-item">
@@ -142,8 +142,8 @@
                 @click="toggleZoom($event)"
               />
               <div class="dimension-info">
-                <h4>3rd Dimension</h4>
-                <p>Dangerous shadows, heavy energy drain</p>
+                <h4>{{ t('newcomersGuide.howToPlay.dimensions.third.title') }}</h4>
+                <p>{{ t('newcomersGuide.howToPlay.dimensions.third.description') }}</p>
               </div>
             </div>
             <div class="dimension-item">
@@ -154,8 +154,8 @@
                 @click="toggleZoom($event)"
               />
               <div class="dimension-info">
-                <h4>4th Dimension</h4>
-                <p>Brutal storms, extreme energy cost</p>
+                <h4>{{ t('newcomersGuide.howToPlay.dimensions.fourth.title') }}</h4>
+                <p>{{ t('newcomersGuide.howToPlay.dimensions.fourth.description') }}</p>
               </div>
             </div>
           </div>
@@ -164,11 +164,11 @@
 
       <!-- How To Play (For GameMaster) -->
       <section class="content-section">
-        <h2 class="section-title">How To Play (For GameMaster)</h2>
+        <h2 class="section-title">{{ t('newcomersGuide.howToPlayGM.title') }}</h2>
         <div class="content-grid">
           <div class="text-content">
             <div class="coming-soon">
-              <p>Come soon - not fully implemented due to permissions separations</p>
+              <p>{{ t('newcomersGuide.howToPlayGM.comingSoon') }}</p>
             </div>
           </div>
           <div class="image-content">
@@ -178,31 +178,31 @@
                 class="section-image zoomable-image"
                 @click="toggleZoom($event)"
             />
-            <p class="image-caption">GM Dashboard (Coming Soon)</p>
+            <p class="image-caption">{{ t('newcomersGuide.howToPlayGM.imageCaption') }}</p>
           </div>
         </div>
       </section>
 
       <!-- Rules -->
       <section class="content-section rules-section">
-        <h2 class="section-title">Rules</h2>
+        <h2 class="section-title">{{ t('newcomersGuide.rules.title') }}</h2>
         <div class="rules-content">
           <div class="rules-list">
             <div class="rule-item">
               <span class="rule-number">1</span>
-              <span class="rule-text">Make fun</span>
+              <span class="rule-text">{{ t('newcomersGuide.rules.rule1') }}</span>
             </div>
             <div class="rule-item">
               <span class="rule-number">2</span>
-              <span class="rule-text">Do not blame each other or argue</span>
+              <span class="rule-text">{{ t('newcomersGuide.rules.rule2') }}</span>
             </div>
             <div class="rule-item">
               <span class="rule-number">3</span>
-              <span class="rule-text">Respect each other</span>
+              <span class="rule-text">{{ t('newcomersGuide.rules.rule3') }}</span>
             </div>
             <div class="rule-item">
               <span class="rule-number">4</span>
-              <span class="rule-text">Role play - be a character not yourself</span>
+              <span class="rule-text">{{ t('newcomersGuide.rules.rule4') }}</span>
             </div>
           </div>
           <img
@@ -216,12 +216,12 @@
 
       <!-- Footer -->
       <div class="footer-section">
-        <p>Ready to begin your adventure in Dimension-X?</p>
+        <p>{{ t('newcomersGuide.footer.readyToBegin') }}</p>
         <a href="https://discord.gg/32dwT8EP" target="_blank" class="discord-link">
-          Join Our Discord
+          {{ t('newcomersGuide.footer.joinDiscord') }}
         </a>
         <div class="additional-links">
-          <router-link to="/faq/player-cheatsheet" class="additional-link">Player Cheat Sheet</router-link>
+          <router-link to="/faq/player-cheatsheet" class="additional-link">{{ t('newcomersGuide.footer.playerCheatSheet') }}</router-link>
         </div>
       </div>
     </main>
@@ -230,11 +230,16 @@
 
 <script>
 import TitleComponent from '@/components/TitleComponent.vue';
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'NewcomersGuide',
   components: {
     TitleComponent
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {

@@ -1,8 +1,8 @@
 <template>
   <div>
     <main class="faq">
-      <TitleComponent>FAQ.</TitleComponent>
-      <p>Find answers to the most frequently asked questions about Dimension-X.</p>
+      <TitleComponent>{{ t('faq.title') }}</TitleComponent>
+      <p>{{ t('faq.description') }}</p>
       <f-a-q></f-a-q>
     </main>
   </div>
@@ -11,11 +11,16 @@
 <script>
 import TitleComponent from '@/components/TitleComponent.vue';
 import FAQ from '@/components/FAQ.vue';
-export default {
+import { useI18n } from 'vue-i18n';
 
+export default {
   components: {
     FAQ,
     TitleComponent
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   }
 };
 </script>

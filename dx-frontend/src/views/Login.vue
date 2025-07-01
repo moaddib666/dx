@@ -4,17 +4,17 @@
       <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
       <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" v-model="email" placeholder="Enter your email" type="email" required />
+        <label for="email">{{ t('auth.email') }}</label>
+        <input id="email" v-model="email" :placeholder="t('auth.enterEmail')" type="email" required />
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
-        <input id="password" v-model="password" type="password" placeholder="Enter your password" required />
+        <label for="password">{{ t('auth.password') }}</label>
+        <input id="password" v-model="password" type="password" :placeholder="t('auth.enterPassword')" required />
       </div>
 
       <div class="form-actions">
-        <button type="submit">Login</button>
+        <button type="submit">{{ t('auth.login') }}</button>
       </div>
 
     </form>
@@ -23,9 +23,14 @@
 
 <script>
 import axios from "axios";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "Login",
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       email: "",
@@ -47,9 +52,9 @@ export default {
         this.$router.push({ name: "PlayerHomeDashboard" });
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          this.errorMessage = "Invalid email or password.";
+          this.errorMessage = this.t('auth.invalidCredentials');
         } else {
-          this.errorMessage = "An unexpected error occurred. Please try again.";
+          this.errorMessage = this.t('auth.unexpectedError');
         }
       }
     },

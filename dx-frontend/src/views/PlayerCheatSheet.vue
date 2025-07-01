@@ -2,8 +2,8 @@
   <div class="page-container">
     <div class="hero-background" @click="toggleZoom($event)"></div>
     <main class="cheatsheet">
-      <TitleComponent>Player Cheat Sheet</TitleComponent>
-      <p class="subtitle">Quick reference guide for Dimension-X gameplay </p>
+      <TitleComponent>{{ t('playerCheatSheet.title') }}</TitleComponent>
+      <p class="subtitle">{{ t('playerCheatSheet.subtitle') }}</p>
 
       <!-- Zoom Modal -->
       <div v-if="isZoomed" class="zoom-modal" @click="closeZoom">
@@ -14,41 +14,41 @@
       <div class="content-grid">
         <!-- Turn Cycle Flow -->
         <section class="content-section">
-          <h2 class="section-title">Turn Cycle Flow</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.turnCycleFlow.title') }}</h2>
           <div class="turn-cycle">
             <div class="step-item">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h3>Check Speed Order</h3>
-                <p>Players act in order of Speed stat. Roll dice for ties.</p>
+                <h3>{{ t('playerCheatSheet.turnCycleFlow.steps.step1.title') }}</h3>
+                <p>{{ t('playerCheatSheet.turnCycleFlow.steps.step1.description') }}</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h3>Spend Action Points</h3>
-                <p>Allocate your AP to different actions.</p>
+                <h3>{{ t('playerCheatSheet.turnCycleFlow.steps.step2.title') }}</h3>
+                <p>{{ t('playerCheatSheet.turnCycleFlow.steps.step2.description') }}</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h3>Perform Actions</h3>
-                <p>Execute your chosen actions in order.</p>
+                <h3>{{ t('playerCheatSheet.turnCycleFlow.steps.step3.title') }}</h3>
+                <p>{{ t('playerCheatSheet.turnCycleFlow.steps.step3.description') }}</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-number">4</div>
               <div class="step-content">
-                <h3>GM Resolves</h3>
-                <p>GM determines outcomes of all actions.</p>
+                <h3>{{ t('playerCheatSheet.turnCycleFlow.steps.step4.title') }}</h3>
+                <p>{{ t('playerCheatSheet.turnCycleFlow.steps.step4.description') }}</p>
               </div>
             </div>
             <div class="step-item">
               <div class="step-number">5</div>
               <div class="step-content">
-                <h3>End Turn</h3>
-                <p>Resolve any end-of-turn effects and prepare for next player.</p>
+                <h3>{{ t('playerCheatSheet.turnCycleFlow.steps.step5.title') }}</h3>
+                <p>{{ t('playerCheatSheet.turnCycleFlow.steps.step5.description') }}</p>
               </div>
             </div>
           </div>
@@ -56,30 +56,27 @@
 
         <!-- Action Types -->
         <section class="content-section">
-          <h2 class="section-title">Action Types</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.actionTypes.title') }}</h2>
           <div class="action-types">
             <div class="action-card immediate">
-              <h3>IMMEDIATE</h3>
-              <p>Execute instantly</p>
+              <h3>{{ t('playerCheatSheet.actionTypes.immediate.title') }}</h3>
+              <p>{{ t('playerCheatSheet.actionTypes.immediate.description') }}</p>
               <div class="action-examples">
-                <span class="action-pill">Inspect</span>
-                <span class="action-pill">Gift Item</span>
+                <span v-for="(example, index) in immediateExamples" :key="index" class="action-pill">{{ example }}</span>
               </div>
             </div>
             <div class="action-card scheduled">
-              <h3>SCHEDULED</h3>
-              <p>Execute at turn end</p>
+              <h3>{{ t('playerCheatSheet.actionTypes.scheduled.title') }}</h3>
+              <p>{{ t('playerCheatSheet.actionTypes.scheduled.description') }}</p>
               <div class="action-examples">
-                <span class="action-pill">Attack</span>
-                <span class="action-pill">Defend</span>
-                <span class="action-pill">Use Item</span>
+                <span v-for="(example, index) in scheduledExamples" :key="index" class="action-pill">{{ example }}</span>
               </div>
             </div>
             <div class="action-card finite">
-              <h3>FINITE</h3>
-              <p>Complete instantly</p>
+              <h3>{{ t('playerCheatSheet.actionTypes.finite.title') }}</h3>
+              <p>{{ t('playerCheatSheet.actionTypes.finite.description') }}</p>
               <div class="action-examples">
-                <span class="action-pill">Move</span>
+                <span v-for="(example, index) in finiteExamples" :key="index" class="action-pill">{{ example }}</span>
               </div>
             </div>
           </div>
@@ -87,71 +84,71 @@
 
         <!-- Resource Management -->
         <section class="content-section">
-          <h2 class="section-title">Resource Management</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.resourceManagement.title') }}</h2>
           <div class="resources">
             <div class="resource-item">
-              <h3>Action Points (AP)</h3>
+              <h3>{{ t('playerCheatSheet.resourceManagement.actionPoints.title') }}</h3>
               <div class="progress-container">
                 <div class="progress-bar ap-bar">
                   <div class="progress-fill" style="width: 70%"></div>
                 </div>
               </div>
-              <p class="resource-formula">Speed × Dimension Multiplier</p>
+              <p class="resource-formula">{{ t('playerCheatSheet.resourceManagement.actionPoints.description') }}</p>
             </div>
             <div class="resource-item">
-              <h3>Energy/Flow</h3>
+              <h3>{{ t('playerCheatSheet.resourceManagement.energyFlow.title') }}</h3>
               <div class="progress-container">
                 <div class="progress-bar energy-bar">
                   <div class="progress-fill" style="width: 50%"></div>
                 </div>
               </div>
-              <p class="resource-formula">Required for special abilities</p>
+              <p class="resource-formula">{{ t('playerCheatSheet.resourceManagement.energyFlow.description') }}</p>
             </div>
             <div class="resource-item">
-              <h3>Health Points (HP)</h3>
+              <h3>{{ t('playerCheatSheet.resourceManagement.healthPoints.title') }}</h3>
               <div class="progress-container">
                 <div class="progress-bar hp-bar">
                   <div class="progress-fill" style="width: 85%"></div>
                 </div>
               </div>
-              <p class="resource-formula">Shows is you or your opponent alive</p>
+              <p class="resource-formula">{{ t('playerCheatSheet.resourceManagement.healthPoints.description') }}</p>
             </div>
           </div>
         </section>
 
         <!-- Player-GM Interaction -->
         <section class="content-section">
-          <h2 class="section-title">Player-GM Interaction</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.playerGMInteraction.title') }}</h2>
           <div class="interaction-flow">
             <div class="interaction-step">
               <div class="interaction-number">1</div>
               <div class="interaction-content">
-                <h3>Player declares action</h3>
-                <p>Describe what you want to do</p>
+                <h3>{{ t('playerCheatSheet.playerGMInteraction.steps.step1.title') }}</h3>
+                <p>{{ t('playerCheatSheet.playerGMInteraction.steps.step1.description') }}</p>
               </div>
             </div>
             <div class="interaction-arrow">→</div>
             <div class="interaction-step">
               <div class="interaction-number">2</div>
               <div class="interaction-content">
-                <h3>GM sets difficulty</h3>
-                <p>Based on action complexity</p>
+                <h3>{{ t('playerCheatSheet.playerGMInteraction.steps.step2.title') }}</h3>
+                <p>{{ t('playerCheatSheet.playerGMInteraction.steps.step2.description') }}</p>
               </div>
             </div>
             <div class="interaction-arrow">→</div>
             <div class="interaction-step">
               <div class="interaction-number">3</div>
               <div class="interaction-content">
-                <h3>Roll dice + modifiers</h3>
-                <p>Add relevant stat bonuses</p>
+                <h3>{{ t('playerCheatSheet.playerGMInteraction.steps.step3.title') }}</h3>
+                <p>{{ t('playerCheatSheet.playerGMInteraction.steps.step3.description') }}</p>
               </div>
             </div>
             <div class="interaction-arrow">→</div>
             <div class="interaction-step">
               <div class="interaction-number">4</div>
               <div class="interaction-content">
-                <h3>GM describes outcome</h3>
-                <p>Success or failure results</p>
+                <h3>{{ t('playerCheatSheet.playerGMInteraction.steps.step4.title') }}</h3>
+                <p>{{ t('playerCheatSheet.playerGMInteraction.steps.step4.description') }}</p>
               </div>
             </div>
           </div>
@@ -159,38 +156,38 @@
 
         <!-- Quick Actions -->
         <section class="content-section">
-          <h2 class="section-title">Quick Actions</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.quickActions.title') }}</h2>
           <div class="quick-actions-grid">
-            <div class="quick-action">Move</div>
-            <div class="quick-action">Attack</div>
-            <div class="quick-action">Defend</div>
-            <div class="quick-action">Cast Spell</div>
-            <div class="quick-action">Use Item</div>
-            <div class="quick-action">Inspect</div>
-            <div class="quick-action">Communicate</div>
-            <div class="quick-action">Teleport to Safety</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.move') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.attack') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.defend') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.castSpell') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.useItem') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.inspect') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.communicate') }}</div>
+            <div class="quick-action">{{ t('playerCheatSheet.quickActions.actions.teleport') }}</div>
           </div>
         </section>
 
         <!-- Key Rules -->
         <section class="content-section">
-          <h2 class="section-title">Key Rules</h2>
+          <h2 class="section-title">{{ t('playerCheatSheet.keyRules.title') }}</h2>
           <div class="key-rules">
             <div class="rule-item">
               <div class="rule-marker"></div>
-              <p>Speed determines turn order - roll dice for ties</p>
+              <p>{{ t('playerCheatSheet.keyRules.rules.rule1') }}</p>
             </div>
             <div class="rule-item">
               <div class="rule-marker"></div>
-              <p>When HP ends => knocked out => Koma unless "death mark" status then - The End</p>
+              <p>{{ t('playerCheatSheet.keyRules.rules.rule2') }}</p>
             </div>
             <div class="rule-item">
               <div class="rule-marker"></div>
-              <p>Role-play your character, not yourself</p>
+              <p>{{ t('playerCheatSheet.keyRules.rules.rule3') }}</p>
             </div>
             <div class="rule-item">
               <div class="rule-marker"></div>
-              <p>Try keep your turns under 30 seconds - you're not alone!</p>
+              <p>{{ t('playerCheatSheet.keyRules.rules.rule4') }}</p>
             </div>
           </div>
         </section>
@@ -198,12 +195,12 @@
 
       <!-- Footer -->
       <div class="footer-section">
-        <p>Ready to begin your adventure in Dimension-X?</p>
+        <p>{{ t('playerCheatSheet.footer.readyToBegin') }}</p>
         <a href="https://discord.gg/32dwT8EP" target="_blank" class="discord-link">
-          Join Our Discord
+          {{ t('playerCheatSheet.footer.joinDiscord') }}
         </a>
         <div class="additional-links">
-          <router-link to="/faq/newcomers-guide" class="additional-link">Newcomer's Guide</router-link>
+          <router-link to="/faq/newcomers-guide" class="additional-link">{{ t('playerCheatSheet.footer.newcomersGuide') }}</router-link>
         </div>
       </div>
     </main>
@@ -212,11 +209,16 @@
 
 <script>
 import TitleComponent from '@/components/TitleComponent.vue';
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'PlayerCheatSheet',
   components: {
     TitleComponent
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {
@@ -229,6 +231,15 @@ export default {
       return {
         backgroundImage: `url(${this.currentZoomedImage})`
       };
+    },
+    immediateExamples() {
+      return [this.t('playerCheatSheet.actionTypes.immediate.examples.0'), this.t('playerCheatSheet.actionTypes.immediate.examples.1')];
+    },
+    scheduledExamples() {
+      return [this.t('playerCheatSheet.actionTypes.scheduled.examples.0'), this.t('playerCheatSheet.actionTypes.scheduled.examples.1'), this.t('playerCheatSheet.actionTypes.scheduled.examples.2')];
+    },
+    finiteExamples() {
+      return [this.t('playerCheatSheet.actionTypes.finite.examples.0')];
     }
   },
   methods: {
