@@ -15,7 +15,7 @@ export default {
   name: 'LanguageSwitcher',
   setup() {
     const { locale } = useI18n();
-    const currentLocale = ref(locale.value);
+    const currentLocale = ref(locale.value || 'en');
 
     const changeLocale = () => {
       locale.value = currentLocale.value;
@@ -27,6 +27,11 @@ export default {
       if (savedLocale) {
         currentLocale.value = savedLocale;
         locale.value = savedLocale;
+      } else {
+        // Ensure English is selected by default
+        currentLocale.value = 'en';
+        locale.value = 'en';
+        localStorage.setItem('locale', 'en');
       }
     });
 
@@ -44,11 +49,12 @@ export default {
 }
 
 select {
-  padding: 5px 10px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #444;
   border-radius: 4px;
   background-color: #333;
-  color: white;
-  border: 1px solid #555;
+  color: #fff;
   cursor: pointer;
 }
 
