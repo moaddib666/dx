@@ -19,7 +19,7 @@
         </div>
         <div class="character-info">
           <h2 class="character-name">{{ character.name }}</h2>
-          <p class="rank">Rank: {{ rank }}</p>
+          <p class="rank">{{ t('playerComponents.characterReview.rank') }}{{ rank }}</p>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
         <div class="details-wrapper">
           <!-- Modificators -->
           <div class="modificators-section">
-            <h3>Modificators</h3>
+            <h3>{{ t('playerComponents.characterReview.modificators') }}</h3>
             <ul>
               <li v-for="mod in selectedModificators" :key="mod.id">{{ mod.name }}</li>
             </ul>
@@ -46,7 +46,7 @@
 
           <!-- Spells -->
           <div class="spells-section">
-            <h3>Spells</h3>
+            <h3>{{ t('playerComponents.characterReview.spells') }}</h3>
             <ul>
               <li v-for="spell in selectedSpells" :key="spell.id">{{ spell.name }}</li>
             </ul>
@@ -58,12 +58,12 @@
     <!-- Validation Error -->
     <div v-else class="error-message">
       <div class="error-container">
-        <h2>Character Data Incomplete</h2>
-        <p>The following required data is missing or incomplete:</p>
+        <h2>{{ t('playerComponents.characterReview.errorTitle') }}</h2>
+        <p>{{ t('playerComponents.characterReview.errorDescription') }}</p>
         <ul>
           <li v-for="error in validationErrors" :key="error">{{ error }}</li>
         </ul>
-        <p>Please complete the character creation process to view the review.</p>
+        <p>{{ t('playerComponents.characterReview.errorAction') }}</p>
       </div>
     </div>
   </div>
@@ -71,6 +71,8 @@
 
 <script>
 import avatarPlaceholderPath from "@/assets/images/avatar/placeholder.webp";
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: "CharacterReview",
   props: {
@@ -99,6 +101,10 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   data() {
     return {
       validationErrors: [],
@@ -107,22 +113,22 @@ export default {
   computed: {
     isCharacterValid() {
       this.validationErrors = [];
-      if (!this.character) this.validationErrors.push("Character data is missing.");
+      if (!this.character) this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingCharacter'));
       else {
-        if (!this.character.name) this.validationErrors.push("Character name is missing.");
+        if (!this.character.name) this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingName'));
         if (!this.character.bio || !this.character.bio.age)
-          this.validationErrors.push("Character age is missing.");
+          this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingAge'));
         if (!this.character.bio || !this.character.bio.gender)
-          this.validationErrors.push("Character gender is missing.");
+          this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingGender'));
         if (!this.character.path)
-          this.validationErrors.push("Character path is not selected.");
-        if (this.character.rank === undefined) this.validationErrors.push("Character rank is missing.");
+          this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingPath'));
+        if (this.character.rank === undefined) this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingRank'));
         // if (!this.character.modificators || this.character.modificators.length === 0)
         //   this.validationErrors.push("No modificators selected.");
         if (!this.character.stats || this.character.stats.length === 0)
-          this.validationErrors.push("No stats allocated.");
+          this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingStats'));
         if (!this.character.spells || this.character.spells.length === 0)
-          this.validationErrors.push("No spells selected.");
+          this.validationErrors.push(this.t('playerComponents.characterReview.validationErrors.missingSpells'));
       }
       return this.validationErrors.length === 0;
     },
@@ -139,7 +145,7 @@ export default {
       return this.pathRegistry.find((path) => path.id === this.character.path) || {};
     },
     rank() {
-      return this.character.rank || "Unranked";
+      return this.character.rank || this.t('playerComponents.characterReview.unranked');
     },
     selectedModificators() {
       return this.character.modificators.map((id) =>

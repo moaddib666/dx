@@ -3,12 +3,14 @@
     <p class="bio-text">
       {{ shortBio }}
       <span v-if="showFullBio"> {{ bio.background }}</span>
-      <button v-if="!showFullBio" @click="toggleBio" class="toggle-btn">More</button>
+      <button v-if="!showFullBio" @click="toggleBio" class="toggle-btn">{{ t('playerComponents.bioComponent.more') }}</button>
     </p>
   </div>
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: "BioComponent",
   props: {
@@ -16,6 +18,10 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {

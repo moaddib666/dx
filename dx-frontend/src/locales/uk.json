@@ -334,5 +334,67 @@
     "unauthorized": "Неавторизований доступ",
     "validation": "Помилка валідації",
     "serverError": "Помилка сервера"
+  },
+  "playerComponents": {
+    "bio": {
+      "title": "Біографія персонажа",
+      "name": "Ім'я",
+      "namePlaceholder": "Введіть ім'я персонажа",
+      "age": "Вік",
+      "agePlaceholder": "Введіть вік персонажа",
+      "gender": "Стать",
+      "genderSelect": "Виберіть стать",
+      "male": "Чоловіча",
+      "female": "Жіноча",
+      "other": "Інша",
+      "appearance": "Зовнішність",
+      "appearancePlaceholder": "Опишіть зовнішність персонажа",
+      "background": "Передісторія",
+      "backgroundPlaceholder": "Надайте передісторію персонажа"
+    },
+    "bioComponent": {
+      "more": "Більше"
+    },
+    "actionPoints": {
+      "title": "Розподіліть очки характеристик",
+      "description": "Розподіліть ваші очки між доступними характеристиками.",
+      "reset": "Скинути",
+      "autoAllocate": "Авторозподіл",
+      "remainingPoints": "Залишилось очок: "
+    },
+    "attributesAllocator": {
+      "title": "Розподіліть ваші атрибути",
+      "availablePoints": "Доступні очки: ",
+      "submitAllocation": "Підтвердити розподіл"
+    },
+    "characterReview": {
+      "rank": "Ранг: ",
+      "unranked": "Без рангу",
+      "modificators": "Модифікатори",
+      "spells": "Заклинання",
+      "errorTitle": "Дані персонажа неповні",
+      "errorDescription": "Наступні необхідні дані відсутні або неповні:",
+      "errorAction": "Будь ласка, завершіть процес створення персонажа, щоб переглянути огляд.",
+      "validationErrors": {
+        "missingCharacter": "Дані персонажа відсутні.",
+        "missingName": "Ім'я персонажа відсутнє.",
+        "missingAge": "Вік персонажа відсутній.",
+        "missingGender": "Стать персонажа не вказана.",
+        "missingPath": "Шлях персонажа не вибрано.",
+        "missingRank": "Ранг персонажа відсутній.",
+        "missingStats": "Характеристики не розподілені.",
+        "missingSpells": "Заклинання не вибрані."
+      }
+    },
+    "featureSelector": {
+      "title": "Виберіть особливості",
+      "description": "Виберіть до двох особливостей, які найкраще підходять вашому персонажу."
+    },
+    "schoolAndSpellSelector": {
+      "schools": "Школи",
+      "selectPath": "Виберіть шлях, щоб переглянути школи та заклинання.",
+      "spells": "Заклинання",
+      "spellLimitWarning": "Можна вибрати лише {maxSpells} активних заклинань."
+    }
   }
 }

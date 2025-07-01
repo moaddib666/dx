@@ -11,7 +11,7 @@
 
     <!-- School List -->
     <div class="school-list" v-if="chosenPath">
-      <h2>Schools</h2>
+      <h2>{{ t('playerComponents.schoolAndSpellSelector.schools') }}</h2>
       <div
           v-for="school in filteredSchools"
           :key="school.id"
@@ -28,12 +28,12 @@
       </div>
     </div>
     <div v-else class="placeholder">
-      <p>Select a path to view schools and spells.</p>
+      <p>{{ t('playerComponents.schoolAndSpellSelector.selectPath') }}</p>
     </div>
 
     <!-- Spell List -->
     <div v-if="selectedSchools.length > 0" class="spell-list">
-      <h2>Spells</h2>
+      <h2>{{ t('playerComponents.schoolAndSpellSelector.spells') }}</h2>
       <div
           v-for="school in selectedSchoolsDetails"
           :key="school.id"
@@ -65,7 +65,7 @@
         </div>
       </div>
       <p v-if="selectedSpells.length >= maxSpells" class="spell-limit-warning">
-        Only {{maxSpells}} active spells can be selected.
+        {{ t('playerComponents.schoolAndSpellSelector.spellLimitWarning', { maxSpells: maxSpells }) }}
       </p>
     </div>
   </div>
@@ -74,10 +74,15 @@
 
 <script>
 import SkillIcon from "@/components/Action/ActionIcon.vue";
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: "SchoolAndSpellSelector",
   components: {SkillIcon},
+  setup() {
+    const { t } = useI18n();
+    return { t };
+  },
   props: {
     maxSpells: {
       type: Number,

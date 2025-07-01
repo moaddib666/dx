@@ -334,5 +334,67 @@
     "unauthorized": "Unauthorized access",
     "validation": "Validation error",
     "serverError": "Server error"
+  },
+  "playerComponents": {
+    "bio": {
+      "title": "Character Bio",
+      "name": "Name",
+      "namePlaceholder": "Enter character name",
+      "age": "Age",
+      "agePlaceholder": "Enter character age",
+      "gender": "Gender",
+      "genderSelect": "Select gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other",
+      "appearance": "Appearance",
+      "appearancePlaceholder": "Describe the character's appearance",
+      "background": "Background",
+      "backgroundPlaceholder": "Provide the character's background"
+    },
+    "bioComponent": {
+      "more": "More"
+    },
+    "actionPoints": {
+      "title": "Allocate Stat Points",
+      "description": "Distribute your points across the available characteristics.",
+      "reset": "Reset",
+      "autoAllocate": "Auto Allocate",
+      "remainingPoints": "Remaining Points: "
+    },
+    "attributesAllocator": {
+      "title": "Allocate Your Attributes",
+      "availablePoints": "Available Points: ",
+      "submitAllocation": "Submit Allocation"
+    },
+    "characterReview": {
+      "rank": "Rank: ",
+      "unranked": "Unranked",
+      "modificators": "Modificators",
+      "spells": "Spells",
+      "errorTitle": "Character Data Incomplete",
+      "errorDescription": "The following required data is missing or incomplete:",
+      "errorAction": "Please complete the character creation process to view the review.",
+      "validationErrors": {
+        "missingCharacter": "Character data is missing.",
+        "missingName": "Character name is missing.",
+        "missingAge": "Character age is missing.",
+        "missingGender": "Character gender is missing.",
+        "missingPath": "Character path is not selected.",
+        "missingRank": "Character rank is missing.",
+        "missingStats": "No stats allocated.",
+        "missingSpells": "No spells selected."
+      }
+    },
+    "featureSelector": {
+      "title": "Select Features",
+      "description": "Select up to two features that suit your character best."
+    },
+    "schoolAndSpellSelector": {
+      "schools": "Schools",
+      "selectPath": "Select a path to view schools and spells.",
+      "spells": "Spells",
+      "spellLimitWarning": "Only {maxSpells} active spells can be selected."
+    }
   }
 }

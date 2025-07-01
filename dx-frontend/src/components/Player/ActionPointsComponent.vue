@@ -1,7 +1,7 @@
 <template>
   <div class="action-points-component">
-    <h2>Allocate Stat Points</h2>
-    <p>Distribute your points across the available characteristics.</p>
+    <h2>{{ t('playerComponents.actionPoints.title') }}</h2>
+    <p>{{ t('playerComponents.actionPoints.description') }}</p>
 
     <div class="characteristics-container">
       <div
@@ -44,20 +44,22 @@
 
     <!-- Footer Controls -->
     <div class="footer-controls">
-      <button class="reset-button" @click="resetPoints">Reset</button>
+      <button class="reset-button" @click="resetPoints">{{ t('playerComponents.actionPoints.reset') }}</button>
       <button
           :disabled="remainingPoints <= 0"
           class="auto-button"
           @click="autoAllocate"
       >
-        Auto Allocate
+        {{ t('playerComponents.actionPoints.autoAllocate') }}
       </button>
-      <p>Remaining Points: {{ remainingPoints }}</p>
+      <p>{{ t('playerComponents.actionPoints.remainingPoints') }}{{ remainingPoints }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: "ActionPointsComponent",
   props: {
@@ -81,6 +83,10 @@ export default {
       type: Number,
       default: 10, // Default base value for each stat
     },
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {

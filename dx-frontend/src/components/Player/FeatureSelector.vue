@@ -1,7 +1,7 @@
 <template>
   <div class="feature-selector">
-    <h2>Select Features</h2>
-    <p>Select up to two features that suit your character best.</p>
+    <h2>{{ t('playerComponents.featureSelector.title') }}</h2>
+    <p>{{ t('playerComponents.featureSelector.description') }}</p>
 
     <!-- Feature Cards Scrollable Container -->
     <div class="features-container">
@@ -19,6 +19,8 @@
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: "FeatureSelector",
   props: {
@@ -38,6 +40,10 @@ export default {
       type: Number,
       default: 0,
     },
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {

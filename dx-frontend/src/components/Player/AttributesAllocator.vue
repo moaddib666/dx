@@ -1,7 +1,7 @@
 <template>
   <div class="attributes-allocator">
-    <h2>Allocate Your Attributes</h2>
-    <p>Available Points: <span class="available-points">{{ remainingPoints }}</span></p>
+    <h2>{{ t('playerComponents.attributesAllocator.title') }}</h2>
+    <p>{{ t('playerComponents.attributesAllocator.availablePoints') }}<span class="available-points">{{ remainingPoints }}</span></p>
     <div class="attributes-list">
       <div
           v-for="(stat, key) in characteristics"
@@ -44,13 +44,14 @@
         class="submit-button"
         @click="submitAllocation"
     >
-      Submit Allocation
+      {{ t('playerComponents.attributesAllocator.submitAllocation') }}
     </button>
   </div>
 </template>
 
 <script>
 import {computed, reactive} from "vue";
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: "AttributesAllocator",
@@ -65,6 +66,7 @@ export default {
     },
   },
   setup(props, {emit}) {
+    const { t } = useI18n();
     const allocatedPoints = reactive({});
     const maxPointsPerAttribute = 10;
 
@@ -97,6 +99,7 @@ export default {
     };
 
     return {
+      t,
       allocatedPoints,
       remainingPoints,
       increasePoints,

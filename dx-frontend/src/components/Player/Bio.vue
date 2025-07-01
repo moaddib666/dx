@@ -1,14 +1,14 @@
 <template>
   <div class="bio-component">
-    <h2>Character Bio</h2>
+    <h2>{{ t('playerComponents.bio.title') }}</h2>
     <form @submit.prevent="submitBio">
       <!-- Name -->
       <div class="form-group">
-        <label for="name">Name</label>
+        <label for="name">{{ t('playerComponents.bio.name') }}</label>
         <input
             id="name"
             v-model="bio.name"
-            placeholder="Enter character name"
+            :placeholder="t('playerComponents.bio.namePlaceholder')"
             required
             type="text"
         />
@@ -16,12 +16,12 @@
 
       <!-- Age -->
       <div class="form-group">
-        <label for="age">Age</label>
+        <label for="age">{{ t('playerComponents.bio.age') }}</label>
         <input
             id="age"
             v-model.number="bio.age"
             min="1"
-            placeholder="Enter character age"
+            :placeholder="t('playerComponents.bio.agePlaceholder')"
             required
             type="number"
         />
@@ -29,32 +29,32 @@
 
       <!-- Gender -->
       <div class="form-group">
-        <label for="gender">Gender</label>
+        <label for="gender">{{ t('playerComponents.bio.gender') }}</label>
         <select id="gender" v-model="bio.gender" required>
-          <option disabled value="">Select gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
+          <option disabled value="">{{ t('playerComponents.bio.genderSelect') }}</option>
+          <option value="Male">{{ t('playerComponents.bio.male') }}</option>
+          <option value="Female">{{ t('playerComponents.bio.female') }}</option>
+          <option value="Other">{{ t('playerComponents.bio.other') }}</option>
         </select>
       </div>
 
       <!-- Appearance -->
       <div class="form-group">
-        <label for="appearance">Appearance</label>
+        <label for="appearance">{{ t('playerComponents.bio.appearance') }}</label>
         <textarea
             id="appearance"
             v-model="bio.appearance"
-            placeholder="Describe the character's appearance"
+            :placeholder="t('playerComponents.bio.appearancePlaceholder')"
         ></textarea>
       </div>
 
       <!-- Background -->
       <div class="form-group">
-        <label for="background">Background</label>
+        <label for="background">{{ t('playerComponents.bio.background') }}</label>
         <textarea
             id="background"
             v-model="bio.background"
-            placeholder="Provide the character's background"
+            :placeholder="t('playerComponents.bio.backgroundPlaceholder')"
         ></textarea>
       </div>
     </form>
@@ -63,6 +63,8 @@
 
 
 <script>
+import { useI18n } from 'vue-i18n';
+
 export default {
   name: "BioComponent",
   props: {
@@ -106,6 +108,10 @@ export default {
       type: Function,
       required: true,
     },
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {
