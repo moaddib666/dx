@@ -306,3 +306,8 @@ try:
     from .settings_local import *
 except ImportError:
     pass
+
+try:
+    from .sentry import *
+except ImportError:
+    pass

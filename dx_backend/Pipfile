@@ -29,5 +29,6 @@ psycopg2-binary = "*"
 django-filter = "*"
 ipython = "*"
 django-polymorphic = "*"
+sentry-sdk = "*"
 
 [dev-packages]
