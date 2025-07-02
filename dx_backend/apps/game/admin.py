@@ -34,7 +34,7 @@ class CampaignAdmin(admin.ModelAdmin):
             'fields': ('name', 'description', 'background_image')
         }),
         ('Status', {
-            'fields': ('is_active', 'is_completed', "default")
+            'fields': ('is_active', 'is_completed', "default", "auto_play")
         }),
         ('Participants', {
             'fields': ('masters', 'players')
