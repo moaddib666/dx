@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 )
 
     def loop(self):
-        interval_seconds = 90  # 1.30 minutes = 90 seconds
+        interval_seconds = 45
 
         while True:
             start_time = timezone.now()
