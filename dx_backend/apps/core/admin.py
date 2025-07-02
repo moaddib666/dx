@@ -90,7 +90,9 @@ class BaseModelAdmin(PolymorphicParentModelAdmin):
 
     def get_child_models(self):
         Character = apps.get_model('character.Character')
-        return (Character,)
+        DimensionAnomaly = apps.get_model('world.DimensionAnomaly')
+        WorldItem = apps.get_model('items.WorldItem')
+        return (Character, DimensionAnomaly, WorldItem)
 
 
 @admin.register(StatObject)
