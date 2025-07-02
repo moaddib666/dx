@@ -73,7 +73,7 @@ class CharacterItemsService:
         """
         Check if the character has the specified item.
         """
-        has_item = self.character.equipped_items.filter(world_item=item).exists()
+        has_item = self.character.equipped_items.filter(world_item__item=item).exists()
         self.logger.debug(
             f"Character {self.character.id} has item {item.id}: {has_item}"
         )

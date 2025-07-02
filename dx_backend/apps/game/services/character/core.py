@@ -360,4 +360,4 @@ class CharacterService:
         return can(self, skill_type)
 
     def has_item(self, item_id: uuid.UUID) -> bool:
-        raise has_item(self.character, item=Item(id=item_id))
+        return has_item(self.character, item=Item(id=item_id))

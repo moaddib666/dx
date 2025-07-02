@@ -1,9 +1,9 @@
 import typing as t
 
 from apps.character.models import Character
+from apps.core.models import PositionConnectionRequirement, PositionConnectionConfig
 
 if t.TYPE_CHECKING:
-    from apps.core.models import PositionConnectionRequirement, PositionConnectionConfig
     from apps.world.models import PositionConnection
     from apps.game.services.character.core import CharacterService
 
