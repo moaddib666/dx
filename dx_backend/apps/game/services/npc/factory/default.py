@@ -57,6 +57,7 @@ class NPCFactory(NPCFactoryProtocol):
             dimension=npc.dimension if hasattr(npc, 'dimension') else None,
             stats_template=stats_template,
             biography_template=biography_template,
+            campaign=npc.campaign,
         )
 
         # Create school templates
