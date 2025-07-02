@@ -10,6 +10,7 @@ from .inlines import (
     LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ActiveShieldsInline
 )
 from ..models import Character, CharacterBiography
+from ...core.models import GameObject
 
 
 @admin.register(Character)
@@ -18,7 +19,7 @@ class CharacterAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
     Admin interface for Character with integrated CharacterBiography.
     """
     show_in_index = True
-    base_model = Character
+    base_model = GameObject
     list_display = (
         'name', 'pictogram', 'position', 'get_age', 'get_gender', 'rank',
         'current_health_points', 'current_energy_points', "current_active_points",

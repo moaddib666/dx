@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from polymorphic.admin import PolymorphicChildModelAdmin
 from apps.core.admin.mixins import CampaignAdminMixin
 from apps.core.admin import CampaignModelAdmin
+from apps.core.models import GameObject
 
 from .models import Item, CharacterItem, WorldItem
 
@@ -78,7 +79,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(WorldItem)
 class WorldItemAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
-    base_model = WorldItem
+    base_model = GameObject
     show_in_index = True
     list_display = ('item', 'position', 'icon_preview', 'campaign')
     list_filter = ('item__type', 'campaign')
