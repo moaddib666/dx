@@ -106,21 +106,12 @@ class CharacterAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
 
     @admin.action(description='Duplicate selected character(s)')
     def duplicate_character(self, request, queryset):
-        for character in queryset:
-            new_character = Character.objects.get(pk=character.pk)
-            new_character.pk = None  # Reset primary key to create a new instance
-            new_character.name = f"Copy: {character.name}"  # Rename duplicated character
-            new_character.save()
+        from apps.game.services.character.character_clone import CharacterCloner
 
-            if character.biography:
-                CharacterBiography.objects.create(
-                    character=new_character,
-                    age=character.biography.age,
-                    gender=character.biography.gender,
-                    background=character.biography.background,
-                    appearance=character.biography.appearance,
-                    avatar=character.biography.avatar
-                )
+        for character in queryset:
+            cloner = CharacterCloner(character)
+            cloner.clone(count=1, template="Copy: {base_name}")
+
         self.message_user(request, f"{queryset.count()} character(s) duplicated successfully.")
 
     @admin.action(description='Create template from selected NPC(s)')
