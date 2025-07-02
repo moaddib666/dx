@@ -90,7 +90,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
             self.notify.action_failed(action, e)
 
     def apply_effects(self):
-        qs = Character.objects.filter(is_active=True)
+        qs = Character.objects.filter(is_active=True, campaign=self.cycle.campaign)
         for char in qs:
             for effect in char.effects.all():
                 svc = self.effects_apply_factory.from_active_effect(effect)
@@ -126,7 +126,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         """
         Retrutn sub locaton where at least one non npc character is active
         """
-        return Character.objects.filter(is_active=True, npc=False).values_list("position__sub_location",
+        return Character.objects.filter(is_active=True, npc=False, campaign=self.cycle.campaign).values_list(
+            "position__sub_location",
                                                                                flat=True).distinct()
 
     def _get_suitable_characters(self) -> ["CharacterService"]:
@@ -139,8 +140,8 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         # 2. active npc characters that has characters in current or current + 3 positions
 
         filtered = (
-                Character.objects.filter(is_active=True, npc=False) |
-                Character.objects.filter(is_active=True, npc=True,
+                Character.objects.filter(is_active=True, npc=False, campaign=self.cycle.campaign) |
+                Character.objects.filter(is_active=True, npc=True, campaign=self.cycle.campaign,
                                          position__sub_location__in=self._active_sub_loactions())
         )
 
