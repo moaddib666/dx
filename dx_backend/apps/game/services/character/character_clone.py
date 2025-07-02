@@ -30,7 +30,6 @@ class CharacterCloner:
                     current_energy_points=self.char.current_energy_points,
                     current_active_points=self.char.current_active_points,
                     place_of_birth=self.char.place_of_birth,
-                    fight=self.char.fight,
                     school_slots=self.char.school_slots,
                     npc=self.char.npc,
                     behavior=self.char.behavior,
