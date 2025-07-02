@@ -44,7 +44,7 @@ class CharacterCreator:
             rank_id='c9a67bf5-76e0-4f89-b06b-2ab1d9aa4a3f',
             path_id=dto.path,
             tags=dto.tags,
-            is_active=False,
+            is_active=True,
             campaign=self.client.current_campaign,
         )
         character.position = position
