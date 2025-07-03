@@ -186,8 +186,7 @@ export default {
   flex: 1;
   scroll-behavior: smooth;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+  /* Scrollbar styling is now handled globally in global.css */
   max-height: 100%;
   min-width: 30rem;
 }
@@ -196,8 +195,7 @@ export default {
   flex: 2;
   scroll-behavior: smooth;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+  /* Scrollbar styling is now handled globally in global.css */
   max-height: 100%;
   gap: 1rem;
 }

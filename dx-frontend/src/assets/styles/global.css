@@ -9,6 +9,11 @@
     --lime-dark-green: #228B22;
     --crimson-red: #DC143C;
     --glowing-white: #F8F8FF;
+
+    /* Scrollbar Colors */
+    --scrollbar-track-color: rgba(45, 45, 45, 0.3);
+    --scrollbar-thumb-color: rgba(85, 85, 85, 0.5);
+    --scrollbar-thumb-hover-color: rgba(102, 102, 102, 0.7);
 }
 
 a {
@@ -75,4 +80,29 @@ button {
 
 .secondary-btn:hover {
     background-color: #EE1289;
+}
+
+/* Global Scrollbar Styling */
+/* For webkit browsers (Chrome, Safari, newer versions of Opera) */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-color);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover-color);
+}
+
+/* For Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
 }

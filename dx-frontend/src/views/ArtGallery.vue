@@ -23,6 +23,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 90%;
+  width: 90%;
+}
+.main-content {
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 </style>

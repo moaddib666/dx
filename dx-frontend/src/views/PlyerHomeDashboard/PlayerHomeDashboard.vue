@@ -407,41 +407,7 @@ export default {
   padding-right: 10px;
 }
 
-/* Scrollbar Styling */
-.characters-grid::-webkit-scrollbar {
-  width: 6px;
-}
-
-.characters-grid::-webkit-scrollbar-track {
-  background: rgba(45, 45, 45, 0.3);
-}
-
-.characters-grid::-webkit-scrollbar-thumb {
-  background: rgba(85, 85, 85, 0.5);
-  border-radius: 3px;
-}
-
-.characters-grid::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.7);
-}
-
-/* Apply same scrollbar styling to the dashboard */
-.player-home-dashboard::-webkit-scrollbar {
-  width: 6px;
-}
-
-.player-home-dashboard::-webkit-scrollbar-track {
-  background: rgba(45, 45, 45, 0.3);
-}
-
-.player-home-dashboard::-webkit-scrollbar-thumb {
-  background: rgba(85, 85, 85, 0.5);
-  border-radius: 3px;
-}
-
-.player-home-dashboard::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 102, 102, 0.7);
-}
+/* Scrollbar styling is now handled globally in global.css */
 
 /* No Campaigns Overlay Styles */
 .no-campaigns-overlay {

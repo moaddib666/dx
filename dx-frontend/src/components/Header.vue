@@ -34,7 +34,7 @@ export default {
         // { id: 'shop', url: '/shop' },
         // { id: 'support', url: '/support' },
         { id: 'faq', url: '/faq' },
-        { id: 'artGallery', url: '/art/' }
+        { id: 'artGallery', url: '/art-gallery/' }
       ]
     };
   }
