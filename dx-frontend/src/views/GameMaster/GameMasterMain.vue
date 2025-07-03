@@ -1,9 +1,7 @@
 <template>
   <div class="dashboard">
     <!-- Left Full Height Section -->
-    <div class="left-section">
-      <ActionLog :actions="actions" :gmMode="true" @refresh="refreshActions"/>
-    </div>
+    <ActionLog class="left-section" :actions="actions" :gmMode="true" @refresh="refreshActions"/>
     <!-- Center Full Height Section -->
     <div class="center-section">
       <!-- Top Bar -->
@@ -47,7 +45,8 @@
       <GameObjectRawSelector @gameObjectSelected="selectCharacter" item-name="Character"
                              placeholder="Enter Character UUID"/>
 
-      <VerticalPlayerList :game-objects="activePlayersCharacters" @item-selected="selectCharacter" class="characters-vertical"/>
+      <VerticalPlayerList :game-objects="activePlayersCharacters" @item-selected="selectCharacter"
+                          class="characters-vertical"/>
     </div>
 
     <CurrentTurnComponent :current-turn="currentCycleNumber" class="current-turn"/>
@@ -249,6 +248,9 @@ export default {
   gap: 0.3rem;
   box-sizing: border-box;
   max-height: 85vh;
+  width: 100%;
+  flex: 1;
+  flex-direction: row;
 }
 
 /* Left Full Height Section */
