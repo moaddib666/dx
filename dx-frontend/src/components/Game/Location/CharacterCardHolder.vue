@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import CharacterCard from './CharacterCard.vue';
+import CharacterCard from '@/components/CharacterCard/CharacterCard.vue';
 
 export default {
   name: "CharacterCardHolder",
