@@ -111,11 +111,13 @@ export default {
 .compass-container {
   width: 280px;
   height: 280px;
-  background: #0a0f1c;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
   position: relative;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  backdrop-filter: blur(1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .direction-grid {
@@ -146,28 +148,30 @@ export default {
 .direction-btn {
   width: 100%;
   height: 100%;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  color: #94a3b8;
+  transition: all 0.3s ease;
+  color: white;
 }
 
 .direction-btn:hover:not(:disabled) {
-  background: #2d3d52;
-  border-color: #475569;
+  background: rgba(255, 215, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .direction-arrow {
   font-size: 20px;
   font-weight: 600;
   line-height: 1;
+  color: var(--cyber-yellow, #ffd700);
 }
 
 .direction-label {
@@ -177,14 +181,16 @@ export default {
 }
 
 .btn-active {
-  background: #1e40af !important;
-  border-color: #2563eb !important;
-  color: #dbeafe !important;
+  background: rgba(255, 215, 0, 0.2) !important;
+  border-color: var(--cyber-yellow, #ffd700) !important;
+  color: white !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .btn-active:hover {
-  background: #1d4ed8 !important;
-  border-color: #3b82f6 !important;
+  background: rgba(255, 215, 0, 0.3) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4) !important;
 }
 
 .btn-disabled {
@@ -193,8 +199,8 @@ export default {
 }
 
 .btn-locked {
-  background: #7f1d1d !important;
-  border-color: #991b1b !important;
+  background: rgba(244, 67, 54, 0.2) !important;
+  border-color: #F44336 !important;
   color: #fecaca !important;
   cursor: not-allowed;
 }
@@ -211,42 +217,45 @@ export default {
 }
 
 .center-display {
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
   padding: 6px 12px;
 }
 
 .current-location {
   font-size: 12px;
   font-weight: 600;
-  color: #fbbf24;
+  color: var(--cyber-yellow, #ffd700);
   letter-spacing: 1px;
 }
 
 .dimensional-btn {
-  background: #059669;
-  border: 1px solid #10b981;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
   padding: 8px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  color: #d1fae5;
+  transition: all 0.3s ease;
+  color: white;
   min-width: 60px;
+  font-weight: bold;
 }
 
 .dimensional-btn:hover:not(:disabled) {
-  background: #047857;
-  border-color: #059669;
+  background: rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
 }
 
 .dim-arrow {
   font-size: 16px;
   font-weight: bold;
+  color: var(--cyber-yellow, #ffd700);
 }
 
 .dim-label {
@@ -256,9 +265,15 @@ export default {
   letter-spacing: 0.5px;
 }
 
+.dim-active {
+  background: rgba(255, 215, 0, 0.2) !important;
+  border-color: var(--cyber-yellow, #ffd700) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
 .dim-locked {
-  background: #7f1d1d !important;
-  border-color: #991b1b !important;
+  background: rgba(244, 67, 54, 0.2) !important;
+  border-color: #F44336 !important;
   color: #fecaca !important;
   cursor: not-allowed;
 }
