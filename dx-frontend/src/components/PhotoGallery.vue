@@ -123,9 +123,6 @@ export default {
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
-  overflow-x: hidden;
   padding-right: 10px;
 }
 

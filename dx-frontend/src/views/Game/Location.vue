@@ -719,6 +719,7 @@ export default {
   flex-direction: column;
   position: relative;
   height: 85vh;
+  width: 100%;
   overflow: hidden;
   gap: 1rem;
 }
