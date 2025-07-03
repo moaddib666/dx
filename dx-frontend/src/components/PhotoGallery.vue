@@ -100,6 +100,9 @@ export default {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  max-width: 100vw;
+  padding: 0;
+  margin: 0;
 }
 
 .gallery-header {
@@ -116,14 +119,16 @@ export default {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgba(255, 215, 0, 0.2);
+  max-width: 100%;
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
   padding-right: 10px;
+  width: 100%;
 }
 
 /* Scrollbar styling is now handled globally in global.css */
@@ -239,6 +244,18 @@ export default {
 
   .photo-card {
     height: 180px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
 </style>
