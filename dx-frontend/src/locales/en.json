@@ -22,6 +22,8 @@
     "login": "Login",
     "register": "Register",
     "faq": "FAQ",
+    "newcomersGuide": "Newcomer's Guide",
+    "playerCheatSheet": "Player Cheat Sheet",
     "chatWithAI": "Chat with AI",
     "artGallery": "Art Gallery"
   },

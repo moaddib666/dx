@@ -1,22 +1,53 @@
 <template>
   <div class="compass-container">
-    <div
-        v-for="direction in computedCompassDirections"
-        :key="direction.name"
-        :class="['compass-block', direction.position]"
-    >
+    <!-- Directional grid -->
+    <div class="direction-grid">
       <div
-          class="compass-arrow"
-          :class="{
-          active: isInteractive(direction),
-          disabled: !isInteractive(direction) && !direction.locked,
-          locked: direction.locked,
-          center: direction.name === 'Up' || direction.name === 'Down',
-        }"
-          @click="handleClick(direction)"
+          v-for="direction in computedCompassDirections"
+          :key="direction.name"
+          :class="['direction-cell', direction.position]"
       >
-        {{ direction.label }}
+        <button
+            :class="[
+            'direction-btn',
+            {
+              'btn-active': isInteractive(direction),
+              'btn-disabled': !isInteractive(direction) && !direction.locked,
+              'btn-locked': direction.locked,
+            }
+          ]"
+            @click="handleClick(direction)"
+            :disabled="!isInteractive(direction)"
+        >
+          <span class="direction-arrow">{{ direction.label }}</span>
+          <span class="direction-label">{{ direction.displayName }}</span>
+        </button>
       </div>
+    </div>
+
+    <!-- Center control -->
+    <div class="center-control">
+      <div class="center-display">
+        <div class="current-location">{{ currentDimension || 'DIM-1' }}</div>
+      </div>
+
+      <button
+          v-if="centerConnection"
+          :class="[
+          'dimensional-btn',
+          {
+            'dim-active': isInteractive(centerConnection),
+            'dim-locked': centerConnection.locked,
+          }
+        ]"
+          @click="handleClick(centerConnection)"
+          :disabled="!isInteractive(centerConnection)"
+      >
+        <span class="dim-arrow">
+          {{ centerConnection.direction === 'Up' ? '▲' : '▼' }}
+        </span>
+        <span class="dim-label">{{ centerConnection.direction }}</span>
+      </button>
     </div>
   </div>
 </template>
@@ -26,26 +57,28 @@ export default {
   name: "CompassComponent",
   props: {
     connections: {
-      type: Array, // Array of objects with {direction, is_active, locked}
+      type: Array,
       required: true,
     },
+    currentDimension: {
+      type: [String, Number],
+      default: 1
+    }
   },
   computed: {
     computedCompassDirections() {
-      // Define base directions
       const baseDirections = [
-        {name: "North-West", label: "↖", position: "top-left", locked: false},
-        {name: "North", label: "↑", position: "top-center", locked: false},
-        {name: "North-East", label: "↗", position: "top-right", locked: false},
-        {name: "West", label: "←", position: "middle-left", locked: false},
-        {name: "East", label: "→", position: "middle-right", locked: false},
-        {name: "South-West", label: "↙", position: "bottom-left", locked: false},
-        {name: "South", label: "↓", position: "bottom-center", locked: false},
-        {name: "South-East", label: "↘", position: "bottom-right", locked: false},
+        {name: "North-West", displayName: "NW", label: "↖", position: "nw"},
+        {name: "North", displayName: "N", label: "↑", position: "n"},
+        {name: "North-East", displayName: "NE", label: "↗", position: "ne"},
+        {name: "West", displayName: "W", label: "←", position: "w"},
+        {name: "East", displayName: "E", label: "→", position: "e"},
+        {name: "South-West", displayName: "SW", label: "↙", position: "sw"},
+        {name: "South", displayName: "S", label: "↓", position: "s"},
+        {name: "South-East", displayName: "SE", label: "↘", position: "se"},
       ];
 
-      // Find connections and add locking/active states
-      const directionsWithStates = baseDirections.map((direction) => {
+      return baseDirections.map((direction) => {
         const connection = this.connections.find((conn) => conn.direction === direction.name);
         return {
           ...direction,
@@ -53,21 +86,13 @@ export default {
           is_active: connection?.is_active || false,
         };
       });
+    },
 
-      // Handle center connection (Up/Down)
-      const centerConnection = this.connections.find(
+    centerConnection() {
+      return this.connections.find(
           (conn) => conn.direction === "Up" || conn.direction === "Down"
       );
-      const center = {
-        name: centerConnection?.direction || "Center",
-        label: centerConnection?.direction === "Up" ? "↑" : centerConnection?.direction === "Down" ? "↓" : "",
-        position: "middle-center",
-        locked: centerConnection?.is_locked || false,
-        is_active: centerConnection?.is_active || false,
-      };
-
-      return [...directionsWithStates, center];
-    },
+    }
   },
   methods: {
     isInteractive(direction) {
@@ -75,151 +100,187 @@ export default {
     },
     handleClick(direction) {
       if (this.isInteractive(direction)) {
-        this.$emit("move", direction.name);
+        this.$emit("move", direction.name || direction.direction);
       }
-    },
+    }
   },
 };
 </script>
 
 <style scoped>
-/* Compass Container */
 .compass-container {
+  width: 280px;
+  height: 280px;
+  background: #0a0f1c;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  position: relative;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.direction-grid {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
   display: grid;
   grid-template-areas:
-    "NW N NE"
-    "W  C  E"
-    "SW S SE";
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  width: 180px;
-  height: 180px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
+    "nw  n  ne"
+    "w   c  e"
+    "sw  s  se";
+  grid-template-columns: 72px 1fr 72px;
+  grid-template-rows: 72px 1fr 72px;
+  gap: 8px;
 }
 
-/* Compass Blocks */
-.compass-block {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.direction-cell.nw { grid-area: nw; }
+.direction-cell.n { grid-area: n; }
+.direction-cell.ne { grid-area: ne; }
+.direction-cell.w { grid-area: w; }
+.direction-cell.e { grid-area: e; }
+.direction-cell.sw { grid-area: sw; }
+.direction-cell.s { grid-area: s; }
+.direction-cell.se { grid-area: se; }
+
+.direction-btn {
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
-  position: relative;
-}
-
-.compass-block.top-left {
-  grid-area: NW;
-}
-
-.compass-block.top-center {
-  grid-area: N;
-}
-
-.compass-block.top-right {
-  grid-area: NE;
-}
-
-.compass-block.middle-left {
-  grid-area: W;
-}
-
-.compass-block.middle-center {
-  grid-area: C;
-}
-
-.compass-block.middle-right {
-  grid-area: E;
-}
-
-.compass-block.bottom-left {
-  grid-area: SW;
-}
-
-.compass-block.bottom-center {
-  grid-area: S;
-}
-
-.compass-block.bottom-right {
-  grid-area: SE;
-}
-
-/* Arrow Styles */
-.compass-arrow {
-  width: 45px;
-  height: 45px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  border-radius: 50%;
-  font-size: 18px;
-  font-weight: bold;
-  user-select: none;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.7);
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Active Arrow */
-.compass-arrow.active {
-  background-color: rgba(10, 168, 184, 0.9);
-  color: white;
+  justify-content: center;
+  gap: 4px;
   cursor: pointer;
-  transform: scale(1.1);
-  box-shadow: 0 4px 6px rgba(10, 168, 184, 0.4);
+  transition: all 0.15s ease;
+  color: #94a3b8;
 }
 
-.compass-arrow.active:hover {
-  transform: scale(1.3);
-  background-color: rgba(10, 168, 184, 1);
+.direction-btn:hover:not(:disabled) {
+  background: #2d3d52;
+  border-color: #475569;
 }
 
-/* Disabled Arrow */
-.compass-arrow.disabled {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.4);
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-/* Locked Arrow */
-.compass-arrow.locked {
-  background-color: rgba(255, 69, 58, 0.2);
-  color: rgba(255, 69, 58, 0.9);
-  cursor: not-allowed;
-}
-
-/* Center Arrow */
-.compass-arrow.center {
-  background-color: rgba(255, 195, 0, 0.9);
-  color: white;
+.direction-arrow {
   font-size: 20px;
-  font-weight: bold;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 8px rgba(255, 195, 0, 0.4);
-  transform: scale(1.2);
+  font-weight: 600;
+  line-height: 1;
 }
 
-.compass-arrow.center.locked {
-  background-color: rgba(255, 69, 58, 0.2);
-  color: rgba(255, 69, 58, 0.9);
+.direction-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-.compass-arrow.center.locked:hover {
+.btn-active {
+  background: #1e40af !important;
+  border-color: #2563eb !important;
+  color: #dbeafe !important;
+}
+
+.btn-active:hover {
+  background: #1d4ed8 !important;
+  border-color: #3b82f6 !important;
+}
+
+.btn-disabled {
+  opacity: 0.3;
   cursor: not-allowed;
-  transform: scale(1.2);
-  background-color: rgba(255, 69, 58, 0.2);
 }
 
+.btn-locked {
+  background: #7f1d1d !important;
+  border-color: #991b1b !important;
+  color: #fecaca !important;
+  cursor: not-allowed;
+}
 
-.compass-arrow.center:hover {
-  transform: scale(1.4);
-  background-color: rgba(255, 195, 0, 1);
+.center-control {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.center-display {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.current-location {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fbbf24;
+  letter-spacing: 1px;
+}
+
+.dimensional-btn {
+  background: #059669;
+  border: 1px solid #10b981;
+  border-radius: 6px;
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #d1fae5;
+  min-width: 60px;
+}
+
+.dimensional-btn:hover:not(:disabled) {
+  background: #047857;
+  border-color: #059669;
+}
+
+.dim-arrow {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dim-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dim-locked {
+  background: #7f1d1d !important;
+  border-color: #991b1b !important;
+  color: #fecaca !important;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .compass-container {
+    width: 240px;
+    height: 240px;
+  }
+
+  .direction-grid {
+    grid-template-columns: 60px 1fr 60px;
+    grid-template-rows: 60px 1fr 60px;
+  }
+
+  .direction-arrow {
+    font-size: 18px;
+  }
+
+  .direction-label {
+    font-size: 10px;
+  }
 }
 </style>
