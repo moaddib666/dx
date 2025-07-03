@@ -849,8 +849,10 @@ export default {
 <style scoped>
 .world-editor {
   display: flex;
+  flex: 1;
+  width: 100%;
   flex-direction: column;
-  height: 100vh;
+  max-height: 100vh;
   background: #1e1e1e;
   color: #ffffff;
   font-family: 'Roboto', sans-serif;
