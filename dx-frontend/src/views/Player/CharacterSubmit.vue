@@ -369,4 +369,10 @@ button {
 .next-button:hover, .finish-button:hover {
   background-color: #1976d2;
 }
+.character-creation {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 </style>
