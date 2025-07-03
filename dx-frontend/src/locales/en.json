@@ -22,6 +22,7 @@
     "login": "Login",
     "register": "Register",
     "faq": "FAQ",
+    "whatIsIt": "What Is It?",
     "newcomersGuide": "Newcomer's Guide",
     "playerCheatSheet": "Player Cheat Sheet",
     "chatWithAI": "Chat with AI",
@@ -217,6 +218,137 @@
     "footer": {
       "readyToBegin": "Ready to begin your adventure in Dimension-X?",
       "joinDiscord": "Join Our Discord",
+      "playerCheatSheet": "Player Cheat Sheet"
+    }
+  },
+  "whatIsIt": {
+    "title": "What Is Dimension-X (DX)?",
+    "subtitle": "A modern take on tabletop roleplaying, powered by digital tools",
+    "introduction": {
+      "title": "What is Tabletop Roleplay?",
+      "subtitle": "Never Played D&D or Roleplaying Games?",
+      "description": "Dimension-X is like a collective video game, but instead of a computer telling the story, a real person does, and you play as the main character.<br><br>Imagine...<br>• Like a movie where you're the director — you decide what your character does<br>• Like a book you write together — everyone plays their own hero<br>• Like a video game, but without limitations — you can try to do anything<br>",
+      "targetAudience": "Whether you're a complete beginner to roleplaying games or an experienced player, Dimension-X offers an accessible yet deep gaming experience.",
+      "benefits": "Roleplaying games help develop creativity, problem-solving skills, teamwork, and storytelling abilities - all while having fun with friends!",
+      "imageCaption": "Game interface showing player actions and environment"
+    },
+    "roles": {
+      "title": "Choose Your Role",
+      "player": {
+        "title": "Player",
+        "description": "As a player, you control a single character in the Dimension-X universe.",
+        "responsibilities": "Create your character, make decisions for them, and work with your team to overcome challenges.",
+        "characterCreation": {
+          "title": "Character Creation",
+          "paths": {
+            "title": "Choose Your Path",
+            "json": "Way of JSon: Tech-focused cybernetic enhancements",
+            "john": "Way of John: Magic and mystical abilities",
+            "human": "Stay Human: Balance of natural abilities"
+          }
+        },
+        "timeCommitment": "2-4 hours per session, minimal preparation between games",
+        "gameplay": "During gameplay, you'll explore, fight, solve puzzles, and roleplay conversations - all through your character's perspective.",
+        "progression": "Characters gain experience and abilities over time, becoming more powerful with each session."
+      },
+      "gameMaster": {
+        "title": "Game Master",
+        "description": "As a Game Master (GM), you control the world and story of Dimension-X.",
+        "responsibilities": "Create adventures, control non-player characters, describe environments, and adjudicate rules.",
+        "digitalTools": {
+          "title": "Digital Tools",
+          "worldEditor": "World Editor: Create and modify game environments",
+          "characterManagement": "Character Management: Track player and NPC stats",
+          "battleSystem": "Battle System: Run exciting combat encounters"
+        },
+        "skillsDeveloped": "GMs develop storytelling, improvisation, organization, and leadership skills.",
+        "timeCommitment": "2-4 hours per session, plus 1-2 hours preparation",
+        "uniqueAspects": "Dimension-X's digital tools make GMing easier than traditional tabletop games."
+      }
+    },
+    "summary": {
+      "title": "Ready to Start Your Adventure?",
+      "keyFeatures": {
+        "title": "What Makes Dimension-X Special",
+        "digitalTools": "Digital interface eliminates paperwork and math",
+        "accessibleRules": "Streamlined rules that are easy to learn",
+        "uniqueSetting": "Unique sci-fi/fantasy fusion setting",
+        "communitySupport": "Helpful community of players and GMs"
+      },
+      "gettingStarted": {
+        "title": "Getting Started in 3 Steps",
+        "step1": "Register an account on Dimension-X",
+        "step2": "Join our Discord community",
+        "step3": "Find a Game Master or join an existing campaign"
+      },
+      "requirements": {
+        "title": "What You'll Need",
+        "technical": {
+          "title": "Technical Requirements",
+          "computer": "Computer or tablet with internet connection",
+          "browser": "Modern web browser (Chrome, Firefox, Safari, Edge)",
+          "discord": "Discord account for voice communication"
+        },
+        "personal": {
+          "title": "Personal Requirements",
+          "time": "2-4 hours for a game session",
+          "friends": "3-6 friends (or find new ones in our community)",
+          "imagination": "Willingness to use your imagination"
+        }
+      },
+      "worldOverview": {
+        "title": "Welcome to the Year 3000 HE",
+        "description": "Welcome to the year 3000 HE, where humanity has evolved beyond recognition. In Dimension-X, mystical energy called the Flow permeates everything, powering both ancient magic and cutting-edge technology. Ten parallel dimensions exist, each with unique dangers and time flows, accessible to those brave or foolish enough to venture beyond the safety of the 1st dimension.",
+        "conflict": {
+          "title": "The Eternal Conflict",
+          "description": "Centuries ago, two visionaries sparked a war that still defines the world:",
+          "paths": [
+            {
+              "title": "JSon",
+              "description": "A legendary mage who could bend reality with pure Flow manipulation"
+            },
+            {
+              "title": "John Casey",
+              "description": "A brilliant inventor who created technology to give everyone dimensional powers"
+            }
+          ]
+        },
+        "keyPlayers": {
+          "title": "Key Players",
+          "players": [
+            {
+              "name": "Aria Starveil",
+              "description": "The most powerful mage of her generation, mysteriously vanished after venturing into the 5th dimension. Her reserved table at Misfits Bar still waits for her return."
+            },
+            {
+              "name": "Eva Chan",
+              "description": "Once a legendary tech warrior, she descended into madness and slaughtered an entire mercenary base before disappearing into the dimensions. Some say her blue glow can still be seen."
+            },
+            {
+              "name": "The Jeck",
+              "description": "A cybernetic samurai who leads the DzenDojo Clan, perfectly balancing martial arts with technological enhancement."
+            },
+            {
+              "name": "Dig Collins",
+              "description": "Founder of the Era Clan, a tech genius whose \"Big Bang Incident\" disabled every machine in a kilometer radius during a bank heist."
+            }
+          ]
+        },
+        "worldToday": {
+          "title": "The World Today",
+          "description": "City of Memories serves as the starting point for all newcomers, centered around the Memorial where JSon and John first fought. Here at Misfits Bar, mercenaries, mages, and tech warriors drink at the same tables (mostly without killing each other). FlowGuards maintain brutal order across dimensions, while MediServ offers healing to those who can afford it. Countless mercenary clans hunt artifacts in the dangerous upper dimensions, where time flows differently and shadow creatures with glowing blue eyes lurk in the storms."
+        },
+        "yourChoice": {
+          "title": "Your Choice",
+          "description": "Touch the Memorial, feel the Flow awaken within you, and choose your path: Embrace pure magic and wield reality-bending spells, augment yourself with cybernetics and high-tech weaponry, or remain human and rely on skill, luck, and the right gear. In Dimension-X, power comes in many forms, but survival depends on how well you use it."
+        },
+        "conclusion": "The shadows are watching. The Flow is calling. What will you become?"
+      }
+    },
+    "footer": {
+      "readyToBegin": "Ready to begin your adventure in Dimension-X?",
+      "joinDiscord": "Join Our Discord",
+      "newcomersGuide": "Newcomer's Guide",
       "playerCheatSheet": "Player Cheat Sheet"
     }
   },

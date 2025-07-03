@@ -34,6 +34,7 @@ export default {
         // { id: 'shop', url: '/shop' },
         // { id: 'support', url: '/support' },
         { id: 'faq', url: '/faq' },
+        { id: 'whatIsIt', url: '/faq/what-is-it' },
         { id: 'newcomersGuide', url: '/faq/newcomers-guide' },
         { id: 'playerCheatSheet', url: '/faq/player-cheatsheet' },
         { id: 'artGallery', url: '/art-gallery/' }
