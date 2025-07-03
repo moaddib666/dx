@@ -58,12 +58,11 @@
       <!-- Center Panel - Map -->
       <div class="center-panel">
         <!-- Map Loading Overlay -->
-        <div v-if="isMapLoading" class="map-loading-overlay">
-          <div class="loading-indicator">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Loading map data...</div>
-          </div>
-        </div>
+        <Loader
+          v-if="isMapLoading"
+          text="Loading map data..."
+          message="Please wait while we fetch the map"
+        />
 
         <WorldEditorMap
             :currentFloor="currentFloor"
@@ -184,6 +183,7 @@ import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
 import WorldEditorNPCTemplatesList from '@/components/WorldEditor/WorldEditorNPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
+import Loader from '@/components/Loader.vue';
 
 export default {
   name: 'WorldEditor',
@@ -196,7 +196,8 @@ export default {
     WorldEditorStats,
     WorldEditorItemsList,
     WorldEditorNPCTemplatesList,
-    GameMasterCharacterCard
+    GameMasterCharacterCard,
+    Loader
   },
   data() {
     return {
@@ -946,52 +947,6 @@ export default {
   overflow: hidden;
 }
 
-/* Map Loading Overlay */
-.map-loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: all;
-}
-
-.loading-indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgba(45, 45, 45, 0.9);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #1E90FF;
-  animation: spin 1s ease-in-out infinite;
-  margin-bottom: 1rem;
-}
-
-.loading-text {
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .right-panel {
   width: 300px;

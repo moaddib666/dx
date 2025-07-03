@@ -9,11 +9,15 @@ import './assets/styles/typography.css';
 import './assets/styles/layout.css';
 import './assets/styles/buttons.css';
 import skillService from '@/services/skillService';
+import { showLoader, showError } from '@/utils/loaderUtils';
 
 async function bootstrap() {
     try {
-        // Display a loading screen (optional)
-        document.getElementById("app").innerHTML = "Loading, please wait...";
+        // Display a loading screen
+        showLoader('app', {
+            text: 'Loading, please wait...',
+            message: 'Initializing application...'
+        });
 
         // Ensure the skill cache is updated before app initialization
         try {
@@ -30,7 +34,7 @@ async function bootstrap() {
             .mount('#app');
     } catch (error) {
         console.error("Failed to initialize the app:", error);
-        document.getElementById("app").innerHTML = "Failed to load application.";
+        showError('app', 'Failed to load application.');
     }
 }
 

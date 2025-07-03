@@ -9,12 +9,13 @@ import SchoolManagement from "@/components/Scool/SchoolManagement.vue";
 import ModificatorHolder from "@/components/Modificator/ModificatorHolder.vue";
 import {CharacterGameApi, ModificatorsGameApi, SchoolGameApi, SkillsGameApi} from "@/api/backendService.js";
 import LandingButton from "@/components/btn/LandingButton.vue";
+import Loader from "@/components/Loader.vue";
 
 export default {
   name: "CharacterInfo",
   components: {
     LandingButton,
-    ModificatorHolder, SchoolManagement, SchoolSelector, PlayerProfile, StatHolder, SkillDetails},
+    ModificatorHolder, SchoolManagement, SchoolSelector, PlayerProfile, StatHolder, SkillDetails, Loader},
   data() {
     return {
       modificatorData: null,
@@ -135,9 +136,11 @@ export default {
 <template>
   <div>
     <!-- Loading Indicator -->
-    <div v-if="loading" class="loading-indicator">
-      Loading character info...
-    </div>
+    <Loader
+      v-if="loading"
+      text="Loading character info..."
+      message="Please wait while we fetch your character data"
+    />
 
     <!-- Character Info Layout -->
     <div v-else-if="ready" class="layout">
@@ -199,11 +202,6 @@ export default {
   gap: 1rem;
 }
 
-.loading-indicator {
-  text-align: center;
-  font-size: 1rem;
-  color: gray;
-}
 
 .error-message {
   text-align: center;

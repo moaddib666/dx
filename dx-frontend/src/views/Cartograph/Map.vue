@@ -26,9 +26,11 @@
       <button @click="syncAdminMapData">Sync</button>
     </div>
 
-    <div id="loader" v-if="loading">
-      <h2>Loading...</h2>
-    </div>
+    <Loader
+      v-if="loading"
+      text="Loading..."
+      message="Please wait while we fetch the map data"
+    />
 
     <!-- Characters Panel -->
     <div id="character-panel" v-if="selectedCells.length === 1 && charactersInRoom.length > 0">
@@ -114,8 +116,12 @@
 <script>
 import MapData, {RoomLabel, RoomType} from "@/utils/mapData";
 import {WorldGameApi} from "@/api/backendService.js";
+import Loader from "@/components/Loader.vue";
 
 export default {
+  components: {
+    Loader
+  },
   data() {
     return {
       mapData: MapData,
@@ -845,15 +851,4 @@ canvas {
   background: #555;
 }
 
-#loader {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #222; /* Dark background */
-  color: white; /* White text */
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 </style>
