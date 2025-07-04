@@ -7,8 +7,8 @@
           @update:selectedId="updateSelectedGameObjectId"
       />
       <ActionPreview v-if="computedSelectedSkill !== null" :action="computedSelectedSkill"/>
-      <GlassButton @click="$emit('cancelAction')">Cancel</GlassButton>
-      <GlassButton v-if="selectedGameObjectId && computedSelectedSkill" @click="applyAction">Apply</GlassButton>
+      <CompactButton @click="$emit('cancelAction')">Cancel</CompactButton>
+      <CompactButton v-if="selectedGameObjectId && computedSelectedSkill" @click="applyAction">Apply</CompactButton>
     </div>
     <TabSwitcher :tabs="
       [
@@ -46,9 +46,9 @@
 <script>
 import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
-import GlassPlayButton from "@/components/btn/GlassPlayButton.vue";
+import CompactPlayButton from "@/components/btn/CompactPlayButton.vue";
 import SkillSelector from "@/components/Selectors/SkillSelector.vue";
-import GlassButton from "@/components/btn/Glass.vue";
+import CompactButton from "@/components/btn/CompactButton.vue";
 import ItemSelector from "@/components/Selectors/ItemSelector.vue";
 import TabSwitcher from "@/components/Tabs/TabSwitcher.vue";
 import SpecialSelector from "@/components/Selectors/SpecialSelector.vue";
@@ -59,10 +59,10 @@ export default {
     SpecialSelector,
     TabSwitcher,
     ItemSelector,
-    GlassButton,
+    CompactButton,
     GameObjectSelector,
     ActionPreview,
-    GlassPlayButton,
+    CompactPlayButton,
     SkillSelector,
   },
   computed: {
@@ -177,6 +177,7 @@ export default {
   background: rgba(0, 0, 0, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 1rem;
+  width: 39vw;
 }
 
 .action-constructor-holder {

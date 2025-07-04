@@ -133,7 +133,7 @@ import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
 import SkillSelector from "@/components/Selectors/SkillSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
-import GlassPlayButton from "@/components/btn/GlassPlayButton.vue";
+import CompactPlayButton from "@/components/btn/CompactPlayButton.vue";
 import ActionConstructor from "@/components/Action/ActionConstructor.vue";
 import ActionButton from "@/components/Action/ActionButton.vue";
 import DiceVisualizer from "@/components/Dice/DiceVisualizer.vue";
@@ -171,7 +171,7 @@ export default {
     DiceVisualizer,
     ActionButton,
     ActionConstructor,
-    GlassPlayButton,
+    CompactPlayButton,
     ActionPicker: ActionPreview,
     ActionSelector: SkillSelector,
     GameObjectSelector,

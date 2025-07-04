@@ -2,15 +2,15 @@
   <div class="character-tool">
     <!-- Buttons -->
     <div class="button-group">
-      <GlassButton @click="triggerImport" buttonType="default">
+      <CompactButton @click="triggerImport" buttonType="default">
         Import
-      </GlassButton>
-      <GlassButton @click="openEditor" buttonType="default">
+      </CompactButton>
+      <CompactButton @click="openEditor" buttonType="default">
         Edit
-      </GlassButton>
-      <GlassButton @click="exportCharacter" buttonType="default">
+      </CompactButton>
+      <CompactButton @click="exportCharacter" buttonType="default">
         Export
-      </GlassButton>
+      </CompactButton>
 
     </div>
 
@@ -41,11 +41,11 @@
 </template>
 
 <script>
-import GlassButton from "@/components/btn/Glass.vue";
+import CompactButton from "@/components/btn/CompactButton.vue";
 
 export default {
   name: "CharacterTool",
-  components: {GlassButton},
+  components: {CompactButton},
   props: {
     character: {
       type: Object,

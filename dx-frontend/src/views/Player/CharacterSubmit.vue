@@ -25,28 +25,28 @@
 
     <!-- Navigation Buttons -->
     <div class="navigation-buttons">
-      <GlassButton
+      <CompactButton
           v-if="currentStep > 0"
           buttonType="default"
           @click="goToPreviousStep"
       >
         Back
-      </GlassButton>
+      </CompactButton>
       <CharacterTool :character="playerData.data" @import="updatePlayerData" />
-      <GlassButton
+      <CompactButton
           v-if="currentStep < steps.length - 1"
           buttonType="default"
           @click="goToNextStep"
       >
         Next
-      </GlassButton>
-      <GlassButton
+      </CompactButton>
+      <CompactButton
           v-if="currentStep === steps.length - 1"
           buttonType="default"
           @click="finishCreation"
       >
         Finish
-      </GlassButton>
+      </CompactButton>
     </div>
   </div>
 </template>
@@ -60,11 +60,11 @@ import SchoolAndSpellSelector from "@/components/Player/SchoolAndSpellSelector.v
 import {CharacterGameApi, CoreGameApi, ModificatorsGameApi, SchoolGameApi} from "@/api/backendService.js";
 import CharacterReview from "@/components/Player/CharacterReview.vue";
 import CharacterTool from "@/components/Player/Transfer.vue";
-import GlassButton from "@/components/btn/Glass.vue";
+import CompactButton from "@/components/btn/CompactButton.vue";
 
 export default {
   name: "CharacterCreation",
-  components: {GlassButton, CharacterTool},
+  components: {CompactButton, CharacterTool},
   computed: {
     loaded() {
       return this.playerData !== null && this.availablePaths !== null && this.availiableModificators !== null && this.availableStats !== null

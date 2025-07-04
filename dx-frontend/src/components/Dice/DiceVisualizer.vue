@@ -16,16 +16,16 @@
         {{ displayResult }}
       </div>
     </div>
-    <GlassButton @click="$emit('close')">Done</GlassButton>
+    <CompactButton @click="$emit('close')">Done</CompactButton>
   </div>
 </template>
 
 <script>
-import GlassButton from "@/components/btn/Glass.vue";
+import CompactButton from "@/components/btn/CompactButton.vue";
 
 export default {
   name: "DiceVisualizer",
-  components: {GlassButton},
+  components: {CompactButton},
   props: {
     diceSet: {
       type: Array,
