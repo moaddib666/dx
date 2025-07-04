@@ -289,13 +289,15 @@ export default {
 
         if (this.numberOfEdges === 6) {
           // For cubes (d6), create a different material for each face
+          // The order of materials must match the face detection logic in checkResults
+          // +X (right), -X (left), +Y (top), -Y (bottom), +Z (front), -Z (back)
           const materials = [
-            this.createDiceMaterial(1), // right face
-            this.createDiceMaterial(2), // left face
-            this.createDiceMaterial(3), // top face
-            this.createDiceMaterial(4), // bottom face
-            this.createDiceMaterial(5), // front face
-            this.createDiceMaterial(6)  // back face
+            this.createDiceMaterial(2), // +X (right) face
+            this.createDiceMaterial(5), // -X (left) face
+            this.createDiceMaterial(6), // +Y (top) face
+            this.createDiceMaterial(1), // -Y (bottom) face
+            this.createDiceMaterial(3), // +Z (front) face
+            this.createDiceMaterial(4)  // -Z (back) face
           ]
 
           const geometry = this.createDiceGeometry(this.numberOfEdges)
@@ -441,17 +443,18 @@ export default {
       if (this.numberOfEdges === 6) {
         // Set rotation to make the target face likely to end up on top
         // The rotation values are aligned with the checkResults method's face detection
+        // For a standard six-sided die, opposite faces sum to 7
         switch(targetResult) {
-          case 1: // 1 should be on top (positive Y)
-            die.rotation.set(0, 0, 0);
+          case 1: // 1 should be on top (negative Y)
+            die.rotation.set(0, 0, 0); // Inverted from case 6
             die.angularVelocity.set(
               -0.05 + Math.random() * 0.1, // Reduced randomness for more predictable results
               Math.random() * 0.1,
               -0.05 + Math.random() * 0.1
             );
             break;
-          case 6: // 6 should be on top (negative Y)
-            die.rotation.set(Math.PI, 0, 0);
+          case 6: // 6 should be on top (positive Y)
+            die.rotation.set(Math.PI, 0, 0); // Inverted from case 1
             die.angularVelocity.set(
               -0.05 + Math.random() * 0.1,
               Math.random() * 0.1,
@@ -459,7 +462,7 @@ export default {
             );
             break;
           case 2: // 2 should be on top (positive X)
-            die.rotation.set(0, 0, Math.PI/2);
+            die.rotation.set(0, 0, Math.PI/2); // Inverted from case 5
             die.angularVelocity.set(
               Math.random() * 0.1,
               Math.random() * 0.1,
@@ -467,7 +470,7 @@ export default {
             );
             break;
           case 5: // 5 should be on top (negative X)
-            die.rotation.set(0, 0, -Math.PI/2);
+            die.rotation.set(0, 0, -Math.PI/2); // Inverted from case 2
             die.angularVelocity.set(
               Math.random() * 0.1,
               Math.random() * 0.1,
@@ -475,7 +478,7 @@ export default {
             );
             break;
           case 3: // 3 should be on top (positive Z)
-            die.rotation.set(Math.PI/2, 0, 0);
+            die.rotation.set(-Math.PI/2, 0, 0); // Inverted from case 4
             die.angularVelocity.set(
               -0.05 + Math.random() * 0.1,
               Math.random() * 0.1,
@@ -483,7 +486,7 @@ export default {
             );
             break;
           case 4: // 4 should be on top (negative Z)
-            die.rotation.set(-Math.PI/2, 0, 0);
+            die.rotation.set(Math.PI/2, 0, 0); // Inverted from case 3
             die.angularVelocity.set(
               -0.05 + Math.random() * 0.1,
               Math.random() * 0.1,
@@ -703,8 +706,8 @@ export default {
         let result
         if (this.numberOfEdges === 6) {
           // Use more precise thresholds for better face detection
-          if (upVector.y > 0.7) result = 1
-          else if (upVector.y < -0.7) result = 6
+          if (upVector.y > 0.7) result = 6
+          else if (upVector.y < -0.7) result = 1
           else if (upVector.x > 0.7) result = 2
           else if (upVector.x < -0.7) result = 5
           else if (upVector.z > 0.7) result = 3
@@ -716,7 +719,7 @@ export default {
             const absZ = Math.abs(upVector.z);
 
             if (absY >= absX && absY >= absZ) {
-              result = upVector.y > 0 ? 1 : 6;
+              result = upVector.y > 0 ? 6 : 1;
             } else if (absX >= absY && absX >= absZ) {
               result = upVector.x > 0 ? 2 : 5;
             } else {
@@ -763,24 +766,25 @@ export default {
     adjustDieRotationToShowResult(die, targetResult) {
       if (this.numberOfEdges === 6) {
         // Set rotation to ensure the target face is on top
+        // For a standard six-sided die, opposite faces sum to 7
         switch(targetResult) {
-          case 1: // 1 on top (positive Y)
-            die.rotation.set(0, 0, 0);
+          case 1: // 1 on top (negative Y)
+            die.rotation.set(0, 0, 0); // Inverted from case 6
             break;
-          case 6: // 6 on top (negative Y)
-            die.rotation.set(Math.PI, 0, 0);
+          case 6: // 6 on top (positive Y)
+            die.rotation.set(Math.PI, 0, 0); // Inverted from case 1
             break;
           case 2: // 2 on top (positive X)
-            die.rotation.set(0, 0, Math.PI/2);
+            die.rotation.set(0, 0, Math.PI/2); // Inverted from case 5
             break;
           case 5: // 5 on top (negative X)
-            die.rotation.set(0, 0, -Math.PI/2);
+            die.rotation.set(0, 0, -Math.PI/2); // Inverted from case 2
             break;
           case 3: // 3 on top (positive Z)
-            die.rotation.set(Math.PI/2, 0, 0);
+            die.rotation.set(-Math.PI/2, 0, 0); // Inverted from case 4
             break;
           case 4: // 4 on top (negative Z)
-            die.rotation.set(-Math.PI/2, 0, 0);
+            die.rotation.set(Math.PI/2, 0, 0); // Inverted from case 3
             break;
         }
 
