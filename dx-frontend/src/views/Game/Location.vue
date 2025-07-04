@@ -717,7 +717,7 @@ export default {
 .location-view {
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: fixed;
   height: 85vh;
   width: 100%;
   overflow: hidden;
