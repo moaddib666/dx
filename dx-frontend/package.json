@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
+    "cannon": "^0.6.2",
     "centrifuge": "^5.2.1",
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "mitt": "^3.0.1",
+    "three": "^0.178.0",
     "uuid": "^10.0.0",
     "vue": "^3.4.21",
     "vue-i18n": "^9.14.4",
