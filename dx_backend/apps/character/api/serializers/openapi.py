@@ -114,10 +114,15 @@ class CharacterInfoSerializer(serializers.Serializer):
     duel_invitations = serializers.ListField(child=serializers.UUIDField())
 
 
-class StatSerializer(serializers.ModelSerializer):
+class StatModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stat
         exclude = ['created_at', 'updated_at', "character"]
+
+
+class StatSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    value = serializers.IntegerField()
 
 
 class CharacterStatsSerializer(serializers.ModelSerializer):
@@ -134,20 +139,12 @@ class CharacterPathSerializer(serializers.ModelSerializer):
         fields = ['path']
 
 
-from rest_framework import serializers
-
-
 class BioSerializer(serializers.Serializer):
     age = serializers.IntegerField()
     gender = serializers.ChoiceField(choices=["Male", "Female", "Other"])
     appearance = serializers.CharField()
     background = serializers.CharField()
-
-
-class StatSerializer(serializers.Serializer):
-    id = serializers.UUIDField()
-    name = serializers.CharField()
-    value = serializers.IntegerField()
+    avatar = serializers.ImageField(allow_null=True, required=False)
 
 
 class ModificatorSerializer(serializers.Serializer):
@@ -181,10 +178,10 @@ class CharacterTemplateSerializer(serializers.Serializer):
     rank = serializers.IntegerField()
     path = serializers.UUIDField(allow_null=True)
     stats = StatSerializer(many=True, default=[])
-    modificators = ModificatorSerializer(many=True, default=[])
-    items = ItemSerializer(many=True, default=[])
-    schools = SchoolSerializer(many=True, default=[])
-    spells = SpellSerializer(many=True, default=[])
+    modificators = serializers.ListField(child=serializers.UUIDField(), default=[])
+    items = serializers.ListField(child=serializers.UUIDField(), default=[])
+    schools = serializers.ListField(child=serializers.UUIDField(), default=[])
+    spells = serializers.ListField(child=serializers.UUIDField(), default=[])
 
 
 class CharacterTemplateValidationSerializer(serializers.Serializer):

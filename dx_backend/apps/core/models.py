@@ -316,6 +316,7 @@ class CharacterBio(BaseModel):
     gender: GenderEnum
     appearance: str
     background: str
+    avatar: Optional[str] = None
 
 
 class CharacterTemplateValidator(BaseModel):

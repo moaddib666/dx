@@ -102,8 +102,11 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
         Uses the template ID from the URL to export a specific template.
         """
         # Create the template using the exporter with the template ID
-        template_exporter = CharacterTemplateExporter(template_id=pk)
+        instance = self.get_object()
+        template_exporter = CharacterTemplateExporter(template=instance)
         template = template_exporter.export_template()
-
+        data = template.model_dump()
+        avatar = instance.biography_template.avatar
+        data['data']['bio']['avatar'] = avatar
         # Return the template data
-        return Response(template.model_dump())
+        return Response(CharacterTemplateFullSerializer(data, context=self.get_serializer_context()).data)

@@ -17,13 +17,9 @@ class CharacterTemplateExporter:
     rather than using hardcoded values.
     """
 
-    def __init__(self, template_id=None, rank: int = 0):
-        self.template_id = template_id
+    def __init__(self, template: "CharacterTemplate", rank: int = 0):
         self.rank = rank
-        self.template = None
-
-        if template_id:
-            self.template = get_object_or_404(DjangoCharacterTemplate, id=template_id)
+        self.template = template
 
     def export_template(self) -> CharacterTemplate:
         """
@@ -99,7 +95,8 @@ class CharacterTemplateExporter:
                 age=bio_template.age_min,  # Use age_min as a fixed value instead of generating
                 gender=bio_template.gender,  # Use the stored gender instead of generating
                 appearance=bio_template.appearance or "Placeholder for appearance...",
-                background=bio_template.background or "Placeholder for background..."
+                background=bio_template.background or "Placeholder for background...",
+                avatar=str(bio_template.avatar),
             )
         else:
             # Return default bio data
