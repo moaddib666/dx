@@ -590,6 +590,12 @@ export interface Bio {
      * @memberof Bio
      */
     'background': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Bio
+     */
+    'avatar'?: string | null;
 }
 
 
@@ -1478,28 +1484,28 @@ export interface CharacterTemplate {
     'stats'?: Array<Stat>;
     /**
      * 
-     * @type {Array<Modificator>}
+     * @type {Array<string>}
      * @memberof CharacterTemplate
      */
-    'modificators'?: Array<Modificator>;
+    'modificators'?: Array<string>;
     /**
      * 
-     * @type {Array<Item>}
+     * @type {Array<string>}
      * @memberof CharacterTemplate
      */
-    'items'?: Array<Item>;
+    'items'?: Array<string>;
     /**
      * 
-     * @type {Array<School>}
+     * @type {Array<string>}
      * @memberof CharacterTemplate
      */
-    'schools'?: Array<School>;
+    'schools'?: Array<string>;
     /**
      * 
-     * @type {Array<Spell>}
+     * @type {Array<string>}
      * @memberof CharacterTemplate
      */
-    'spells'?: Array<Spell>;
+    'spells'?: Array<string>;
 }
 /**
  * 
@@ -1865,13 +1871,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -3454,8 +3460,58 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'type': string;
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {Type496Enum}
+     * @memberof Item
+     */
+    'type'?: Type496Enum;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'charges'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'weight'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'visibility'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'base_price'?: number;
+    /**
+     * 
+     * @type {Nested}
+     * @memberof Item
+     */
+    'skill': Nested;
+    /**
+     * 
+     * @type {Nested}
+     * @memberof Item
+     */
+    'effect': Nested;
 }
+
+
 /**
  * 
  * @export
@@ -3862,6 +3918,24 @@ export interface Modificator {
      * @memberof Modificator
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Modificator
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Modificator
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Modificator
+     */
+    'stat_changes': string;
 }
 /**
  * 
@@ -6132,31 +6206,6 @@ export interface Scaling {
 /**
  * 
  * @export
- * @interface School
- */
-export interface School {
-    /**
-     * 
-     * @type {string}
-     * @memberof School
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof School
-     */
-    'name': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof School
-     */
-    'level': number;
-}
-/**
- * 
- * @export
  * @interface Shield
  */
 export interface Shield {
@@ -6333,37 +6382,6 @@ export type SpecialEnum = typeof SpecialEnum[keyof typeof SpecialEnum];
 /**
  * 
  * @export
- * @interface Spell
- */
-export interface Spell {
-    /**
-     * 
-     * @type {string}
-     * @memberof Spell
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Spell
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Spell
-     */
-    'school': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof Spell
-     */
-    'level': number;
-}
-/**
- * 
- * @export
  * @interface Stat
  */
 export interface Stat {
@@ -6372,34 +6390,14 @@ export interface Stat {
      * @type {string}
      * @memberof Stat
      */
-    'id': string;
-    /**
-     * 
-     * @type {StatEnum}
-     * @memberof Stat
-     */
-    'name'?: StatEnum;
+    'name': string;
     /**
      * 
      * @type {number}
      * @memberof Stat
      */
-    'additional_value'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Stat
-     */
-    'base_value'?: number;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof Stat
-     */
-    'dice_rolls': Array<string>;
+    'value': number;
 }
-
-
 /**
  * * `Physical Strength` - Physical Strength * `Mental Strength` - Mental Strength * `Flow Resonance` - Flow Resonance * `Concentration` - Concentration * `Flow Manipulation` - Flow Manipulation * `Flow Connection` - Flow Connection * `Knowledge` - Knowledge * `Speed` - Speed * `Luck` - Luck * `Charisma` - Charisma
  * @export
@@ -6420,6 +6418,33 @@ export const StatEnum = {
 } as const;
 
 export type StatEnum = typeof StatEnum[keyof typeof StatEnum];
+
+
+/**
+ * 
+ * @export
+ * @interface StatModificator
+ */
+export interface StatModificator {
+    /**
+     * 
+     * @type {string}
+     * @memberof StatModificator
+     */
+    'id': string;
+    /**
+     * 
+     * @type {StatEnum}
+     * @memberof StatModificator
+     */
+    'stat'?: StatEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof StatModificator
+     */
+    'value'?: number;
+}
 
 
 /**

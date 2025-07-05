@@ -48,7 +48,7 @@ export class CharacterTemplateEditorService {
             this.emit('loadingStarted', templateId);
 
             console.log(`Loading template ${templateId} from server...`);
-            const response = await GameMasterApi.gamemasterCharacterTemplatesRetrieve(templateId);
+            const response = await GameMasterApi.gamemasterCharacterTemplatesExportTemplateRetrieve(templateId);
 
             if (!response.data) {
                 console.warn('Template API response is empty');
@@ -77,44 +77,7 @@ export class CharacterTemplateEditorService {
      * @returns {Object} - The converted template
      */
     convertApiResponseToTemplate(apiResponse) {
-        // This is a placeholder implementation
-        // In a real implementation, you would map the API response to the CharacterTemplateFull format
-        const template = createEmptyCharacterTemplate();
-
-        // Map basic properties
-        if (apiResponse.name) template.data.name = apiResponse.name;
-        if (apiResponse.tags) template.data.tags = [...apiResponse.tags];
-        if (apiResponse.rank) template.data.rank = apiResponse.rank;
-        if (apiResponse.path) template.data.path = apiResponse.path;
-
-        // Map bio if available
-        if (apiResponse.bio) {
-            template.data.bio.age = apiResponse.bio.age || 30;
-            template.data.bio.gender = apiResponse.bio.gender || '';
-            template.data.bio.appearance = apiResponse.bio.appearance || '';
-            template.data.bio.background = apiResponse.bio.background || '';
-        }
-
-        // Map stats if available
-        if (apiResponse.stats && Array.isArray(apiResponse.stats)) {
-            template.data.stats = apiResponse.stats.map(stat => ({
-                name: stat.name,
-                value: stat.value
-            }));
-        }
-
-        // Map other arrays
-        if (apiResponse.modificators) template.data.modificators = [...apiResponse.modificators];
-        if (apiResponse.items) template.data.items = [...apiResponse.items];
-        if (apiResponse.schools) template.data.schools = [...apiResponse.schools];
-        if (apiResponse.spells) template.data.spells = [...apiResponse.spells];
-
-        // Map validation rules if available
-        if (apiResponse.validation) {
-            Object.assign(template.validation, apiResponse.validation);
-        }
-
-        return template;
+        return apiResponse || createEmptyCharacterTemplate();
     }
 
     /**
