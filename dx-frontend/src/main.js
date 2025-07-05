@@ -21,7 +21,7 @@ async function bootstrap() {
 
         // Ensure the skill cache is updated before app initialization
         try {
-            await skillService.updateCache();
+            await skillService.updateAllCaches();
         } catch (error) {
             console.error("Failed to update skill service cache:", error);
         }

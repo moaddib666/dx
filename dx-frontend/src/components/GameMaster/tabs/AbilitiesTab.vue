@@ -2,11 +2,11 @@
   <div class="abilities-tab">
     <h3>Schools & Spells Management</h3>
     
-    <div v-if="!allSchools || !allSpells" class="loading-placeholder">
+    <div v-if="isLoading" class="loading-placeholder">
       <p>Loading schools and spells data...</p>
     </div>
 
-    <div v-else class="abilities-management">
+    <div v-else-if="skillService.getAllSchools().length > 0 && skillService.getAllSkills().length > 0" class="abilities-management">
       <!-- Path Info -->
       <div class="path-info" v-if="characterPath">
         <h4>Character Path: {{ characterPath.name || template.data.path }}</h4>
@@ -15,7 +15,7 @@
 
       <!-- School Management -->
       <div class="school-management">
-        <h4>Schools ({{ nonBaseSchools.length }}/{{ template.validation.max_schools_count }} + {{ baseSchools.length }} base)</h4>
+        <h4>Schools ({{ nonBaseSchools.length }}/{{ template.validation.max_schools_count }}{{ baseSchools.length > 0 ? ' + ' + baseSchools.length + ' base' : '' }})</h4>
         
         <!-- Current Schools -->
         <div class="current-schools" v-if="template.data.schools.length > 0">
@@ -26,8 +26,8 @@
               class="current-school-item"
               @click="removeSchool(schoolId)"
               :class="{ 
-                'base-item': getSchoolById(schoolId)?.is_base || getSchoolById(schoolId)?.is_default,
-                'non-removable': getSchoolById(schoolId)?.is_base || getSchoolById(schoolId)?.is_default
+                'base-item': isBaseSchool(getSchoolById(schoolId)),
+                'non-removable': isBaseSchool(getSchoolById(schoolId))
               }"
             >
               <img 
@@ -37,7 +37,7 @@
                 class="school-icon"
               />
               <div class="school-name">{{ getSchoolById(schoolId)?.name || schoolId }}</div>
-              <div v-if="!(getSchoolById(schoolId)?.is_base || getSchoolById(schoolId)?.is_default)" class="remove-indicator">×</div>
+              <div v-if="!isBaseSchool(getSchoolById(schoolId))" class="remove-indicator">×</div>
               <div v-else class="base-indicator">BASE</div>
             </div>
           </div>
@@ -68,7 +68,7 @@
 
       <!-- Spell Management -->
       <div class="spell-management" v-if="template.data.schools.length > 0">
-        <h4>Spells ({{ nonBaseSpells.length }}/{{ template.validation.max_spells_count }} + {{ baseSkills.length }} base)</h4>
+        <h4>Spells ({{ nonBaseSpells.length }}/{{ template.validation.max_spells_count }}{{ baseSkillsCount > 0 ? ' + ' + baseSkillsCount + ' base' : '' }})</h4>
         
         <!-- Current Spells -->
         <div class="current-spells" v-if="template.data.spells.length > 0">
@@ -79,13 +79,13 @@
               class="current-spell-item"
               @click="removeSpell(spellId)"
               :class="{ 
-                'base-item': getSpellById(spellId)?.is_base || getSpellById(spellId)?.is_default,
-                'non-removable': getSpellById(spellId)?.is_base || getSpellById(spellId)?.is_default
+                'base-item': isBaseSpell(getSpellById(spellId)),
+                'non-removable': isBaseSpell(getSpellById(spellId))
               }"
             >
               <SkillIcon :skill="getSpellById(spellId)" v-if="getSpellById(spellId)" />
               <div class="spell-name">{{ getSpellById(spellId)?.name || spellId }}</div>
-              <div v-if="!(getSpellById(spellId)?.is_base || getSpellById(spellId)?.is_default)" class="remove-indicator">×</div>
+              <div v-if="!isBaseSpell(getSpellById(spellId))" class="remove-indicator">×</div>
               <div v-else class="base-indicator">BASE</div>
             </div>
           </div>
@@ -126,8 +126,12 @@
             <h4>Schools Summary</h4>
             <div class="summary-stats">
               <div class="stat-row">
-                <span>Current Schools:</span>
-                <span>{{ template.data.schools.length }}/{{ template.validation.max_schools_count }}</span>
+                <span>Non-base Schools:</span>
+                <span>{{ nonBaseSchools.length }}/{{ template.validation.max_schools_count }}</span>
+              </div>
+              <div class="stat-row">
+                <span>Base Schools:</span>
+                <span>{{ baseSchools.length }}</span>
               </div>
               <div class="stat-row">
                 <span>Available:</span>
@@ -140,8 +144,12 @@
             <h4>Spells Summary</h4>
             <div class="summary-stats">
               <div class="stat-row">
-                <span>Current Spells:</span>
-                <span>{{ template.data.spells.length }}/{{ template.validation.max_spells_count }}</span>
+                <span>Non-base Spells:</span>
+                <span>{{ nonBaseSpells.length }}/{{ template.validation.max_spells_count }}</span>
+              </div>
+              <div class="stat-row">
+                <span>Base Spells:</span>
+                <span>{{ baseSkillsCount }}</span>
               </div>
               <div class="stat-row">
                 <span>Character Rank:</span>
@@ -157,7 +165,7 @@
 
 <script>
 import SkillIcon from "@/components/Action/ActionIcon.vue";
-import { SchoolGameApi } from "@/api/backendService.js";
+import skillService from "@/services/skillService.js";
 
 export default {
   name: 'AbilitiesTab',
@@ -176,16 +184,14 @@ export default {
   },
   data() {
     return {
-      allSchools: null,
-      allSpells: null,
-      allPaths: null,
+      skillService: skillService,
       isLoading: false
     };
   },
   computed: {
     characterPath() {
-      if (!this.allPaths || !this.template.data.path) return null;
-      return this.allPaths.find(path => path.id === this.template.data.path);
+      if (!this.template.data.path) return null;
+      return this.skillService.getPath(this.template.data.path);
     },
     rankDescription() {
       const rank = this.template.data.rank;
@@ -196,40 +202,48 @@ export default {
       return "Beginner";
     },
     baseSchools() {
-      if (!this.allSchools) return [];
-      return this.allSchools.filter(school => school.is_base || school.is_default);
+      return this.skillService.getBaseSchools();
     },
     baseSkills() {
-      if (!this.allSpells) return [];
-      return this.allSpells.filter(spell => spell.is_base || spell.is_default);
+      return this.skillService.getBaseSkills();
+    },
+    baseSkillsCount() {
+      return this.skillService.getBaseSkillsCount(this.template.data.spells);
     },
     nonBaseSchools() {
-      return this.template.data.schools.filter(schoolId => {
-        const school = this.getSchoolById(schoolId);
-        return school && !school.is_base && !school.is_default;
-      });
+      return this.skillService.getNonBaseSchoolIds(this.template.data.schools);
     },
     nonBaseSpells() {
-      return this.template.data.spells.filter(spellId => {
-        const spell = this.getSpellById(spellId);
-        return spell && !spell.is_base && !spell.is_default;
-      });
+      return this.skillService.getNonBaseSpellIds(this.template.data.spells);
     },
     availableSchools() {
-      if (!this.allSchools || !this.template.data.path) return [];
-      
-      return this.allSchools.filter(school => {
-        // Only non-base schools from character's path and not already selected
-        const isFromPath = school.path && school.path.includes(this.template.data.path);
-        const notSelected = !this.template.data.schools.includes(school.id);
-        const notBase = !school.is_base && !school.is_default;
-        
-        return isFromPath && notSelected && notBase;
-      });
+      if (!this.template.data.path) return [];
+      return this.skillService.getAvailableSchoolsForPath(this.template.data.path, this.template.data.schools);
     }
   },
   async mounted() {
     await this.loadSchoolsAndSpells();
+  },
+  watch: {
+    // Watch for template changes (e.g., after import)
+    'template.data.spells': {
+      handler() {
+        // Force re-render when spells change to ensure proper display
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
+      },
+      deep: true
+    },
+    'template.data.schools': {
+      handler() {
+        // Force re-render when schools change
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
+      },
+      deep: true
+    }
   },
   methods: {
     async loadSchoolsAndSpells() {
@@ -238,23 +252,20 @@ export default {
       try {
         this.isLoading = true;
         
-        // Load schools, spells, and paths in parallel
-        const [schoolsResponse, spellsResponse, pathsResponse] = await Promise.all([
-          SchoolGameApi.schoolSchoolsGetAllSchoolsRetrieve(),
-          SchoolGameApi.schoolSchoolsGetAllSkillsRetrieve(),
-          SchoolGameApi.schoolPathsGetAllPathsRetrieve()
-        ]);
+        // Use the skill service to load and cache all data
+        await this.skillService.updateAllCaches();
         
-        this.allSchools = schoolsResponse.data || [];
-        this.allSpells = spellsResponse.data || [];
-        this.allPaths = pathsResponse.data || [];
-        
-        console.log('Loaded schools:', this.allSchools.length);
-        console.log('Loaded spells:', this.allSpells.length);
-        console.log('Loaded paths:', this.allPaths.length);
+        console.log('Loaded schools:', this.skillService.getAllSchools().length);
+        console.log('Loaded spells:', this.skillService.getAllSkills().length);
+        console.log('Loaded paths:', this.skillService.getAllPaths().length);
         
         // Auto-add base schools and skills if not already present
         await this.ensureBaseSchoolsAndSkills();
+        
+        // Trigger UI update to ensure spell data is properly displayed
+        this.$nextTick(() => {
+          this.$forceUpdate();
+        });
         
       } catch (error) {
         console.error('Failed to load schools and spells:', error);
@@ -270,7 +281,7 @@ export default {
       for (const school of this.baseSchools) {
         if (!this.template.data.schools.includes(school.id)) {
           console.log('Auto-adding base school:', school.name);
-          this.service.addSchool(school.id);
+          await this.service.addSchool(school.id);
           hasChanges = true;
         }
       }
@@ -279,7 +290,7 @@ export default {
       for (const skill of this.baseSkills) {
         if (!this.template.data.spells.includes(skill.id)) {
           console.log('Auto-adding base skill:', skill.name);
-          this.service.addSpell(skill.id);
+          await this.service.addSpell(skill.id);
           hasChanges = true;
         }
       }
@@ -290,24 +301,23 @@ export default {
     },
     
     getSchoolById(schoolId) {
-      if (!this.allSchools) return null;
-      return this.allSchools.find(school => school.id === schoolId);
+      return this.skillService.getSchool(schoolId);
     },
     
     getSpellById(spellId) {
-      if (!this.allSpells) return null;
-      return this.allSpells.find(spell => spell.id === spellId);
+      return this.skillService.getSkill(spellId);
+    },
+    
+    isBaseSchool(school) {
+      return this.skillService.isBaseSchool(school);
+    },
+    
+    isBaseSpell(spell) {
+      return this.skillService.isBaseSpell(spell);
     },
     
     getAvailableSpellsForSchool(schoolId) {
-      if (!this.allSpells) return [];
-      
-      return this.allSpells.filter(spell => {
-        const isFromSchool = spell.school === schoolId;
-        const notSelected = !this.template.data.spells.includes(spell.id);
-        
-        return isFromSchool && notSelected;
-      });
+      return this.skillService.getAvailableSpellsForSchool(schoolId, this.template.data.spells);
     },
     
     addSchool(schoolId) {
@@ -320,7 +330,7 @@ export default {
       }
       
       // Don't count base schools toward the limit
-      if (!school.is_base && !school.is_default) {
+      if (!this.skillService.isBaseSchool(school)) {
         // Check if we've reached the maximum for non-base schools
         if (this.nonBaseSchools.length >= this.template.validation.max_schools_count) {
           console.warn('Maximum non-base schools reached');
@@ -342,26 +352,28 @@ export default {
       const school = this.getSchoolById(schoolId);
       
       // Prevent removal of base schools
-      if (school && (school.is_base || school.is_default)) {
+      if (this.skillService.isBaseSchool(school)) {
         console.warn('Cannot remove base school:', school.name);
         return;
       }
       
-      this.service.removeSchool(schoolId);
-      
-      // Remove all spells from this school when school is removed (except base spells)
-      const spellsToRemove = this.allSpells
-        .filter(spell => 
-          spell.school === schoolId && 
-          this.template.data.spells.includes(spell.id) &&
-          !spell.is_base && 
-          !spell.is_default
-        )
-        .map(spell => spell.id);
-      
-      spellsToRemove.forEach(spellId => {
-        this.service.removeSpell(spellId);
+      // First remove all spells from this school
+      const spellsToRemove = this.template.data.spells.filter(spellId => {
+        const spell = this.getSpellById(spellId);
+        return spell && spell.school === schoolId;
       });
+      
+      // Remove spells first
+      spellsToRemove.forEach(spellId => {
+        const spell = this.getSpellById(spellId);
+        // Only remove non-base spells
+        if (spell && !this.skillService.isBaseSpell(spell)) {
+          this.service.removeSpell(spellId);
+        }
+      });
+      
+      // Then remove the school
+      this.service.removeSchool(schoolId);
       
       this.$emit('update');
     },
@@ -376,7 +388,7 @@ export default {
       }
       
       // Don't count base spells toward the limit
-      if (!spell.is_base && !spell.is_default) {
+      if (!this.skillService.isBaseSpell(spell)) {
         // Check if we've reached the maximum for non-base spells
         if (this.nonBaseSpells.length >= this.template.validation.max_spells_count) {
           console.warn('Maximum non-base spells reached');
@@ -404,7 +416,7 @@ export default {
       const spell = this.getSpellById(spellId);
       
       // Prevent removal of base spells
-      if (spell && (spell.is_base || spell.is_default)) {
+      if (this.skillService.isBaseSpell(spell)) {
         console.warn('Cannot remove base spell:', spell.name);
         return;
       }

@@ -1,6 +1,7 @@
 import { GameMasterApi } from '@/api/backendService.js';
 import { createEmptyCharacterTemplate } from '@/models/CharacterTemplateFull.js';
 import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
+import skillService from '@/services/skillService.js';
 
 /**
  * Character Template Editor Service
@@ -58,6 +59,9 @@ export class CharacterTemplateEditorService {
             // Convert the API response to our CharacterTemplateFull format
             this.template = this.convertApiResponseToTemplate(response.data);
             this.isDirty = false;
+
+            // Ensure base schools and skills are added
+            await this.ensureBaseSchoolsAndSkills();
 
             console.log(`Loaded template ${templateId}`);
             this.emit('templateLoaded', this.template);
@@ -374,14 +378,23 @@ export class CharacterTemplateEditorService {
     addSchool(schoolId) {
         if (!schoolId) return;
 
-        // Check if we've reached the maximum number of schools
-        if (this.template.data.schools.length >= this.template.validation.max_schools_count) {
-            console.warn(`Cannot add school: Maximum number of schools (${this.template.validation.max_schools_count}) reached`);
-            this.emit('validationError', {
-                type: 'schools',
-                message: `Maximum number of schools (${this.template.validation.max_schools_count}) reached`
-            });
+        const school = skillService.getSchool(schoolId);
+        if (!school) {
+            console.warn('School not found:', schoolId);
             return;
+        }
+
+        // Only check limits for non-base schools
+        if (!skillService.isBaseSchool(school)) {
+            const nonBaseSchools = skillService.getNonBaseSchoolIds(this.template.data.schools);
+            if (nonBaseSchools.length >= this.template.validation.max_schools_count) {
+                console.warn(`Cannot add school: Maximum number of non-base schools (${this.template.validation.max_schools_count}) reached`);
+                this.emit('validationError', {
+                    type: 'schools',
+                    message: `Maximum number of non-base schools (${this.template.validation.max_schools_count}) reached`
+                });
+                return;
+            }
         }
 
         // Check if the school already exists
@@ -397,6 +410,14 @@ export class CharacterTemplateEditorService {
      * @param {string} schoolId - The ID of the school to remove
      */
     removeSchool(schoolId) {
+        const school = skillService.getSchool(schoolId);
+        
+        // Prevent removal of base schools
+        if (skillService.isBaseSchool(school)) {
+            console.warn('Cannot remove base school:', school?.name);
+            return;
+        }
+        
         const index = this.template.data.schools.indexOf(schoolId);
         if (index !== -1) {
             this.template.data.schools.splice(index, 1);
@@ -430,14 +451,23 @@ export class CharacterTemplateEditorService {
     addSpell(spellId) {
         if (spellId === undefined || spellId === null) return;
 
-        // Check if we've reached the maximum number of spells
-        if (this.template.data.spells.length >= this.template.validation.max_spells_count) {
-            console.warn(`Cannot add spell: Maximum number of spells (${this.template.validation.max_spells_count}) reached`);
-            this.emit('validationError', {
-                type: 'spells',
-                message: `Maximum number of spells (${this.template.validation.max_spells_count}) reached`
-            });
+        const spell = skillService.getSkill(spellId);
+        if (!spell) {
+            console.warn('Spell not found:', spellId);
             return;
+        }
+
+        // Only check limits for non-base spells
+        if (!skillService.isBaseSpell(spell)) {
+            const nonBaseSpells = skillService.getNonBaseSpellIds(this.template.data.spells);
+            if (nonBaseSpells.length >= this.template.validation.max_spells_count) {
+                console.warn(`Cannot add spell: Maximum number of non-base spells (${this.template.validation.max_spells_count}) reached`);
+                this.emit('validationError', {
+                    type: 'spells',
+                    message: `Maximum number of non-base spells (${this.template.validation.max_spells_count}) reached`
+                });
+                return;
+            }
         }
 
         // Check if the spell already exists
@@ -453,6 +483,14 @@ export class CharacterTemplateEditorService {
      * @param {number} spellId - The ID of the spell to remove
      */
     removeSpell(spellId) {
+        const spell = skillService.getSkill(spellId);
+        
+        // Prevent removal of base spells
+        if (skillService.isBaseSpell(spell)) {
+            console.warn('Cannot remove base spell:', spell?.name);
+            return;
+        }
+        
         const index = this.template.data.spells.indexOf(spellId);
         if (index !== -1) {
             this.template.data.spells.splice(index, 1);
@@ -512,11 +550,12 @@ export class CharacterTemplateEditorService {
             });
         }
 
-        // Check spells count
-        if (this.template.data.spells.length > validation.max_spells_count) {
+        // Check spells count (only non-base spells)
+        const nonBaseSpells = skillService.getNonBaseSpellIds(this.template.data.spells);
+        if (nonBaseSpells.length > validation.max_spells_count) {
             errors.push({
                 type: 'spells',
-                message: `Spells count (${this.template.data.spells.length}) exceeds maximum (${validation.max_spells_count})`
+                message: `Non-base spells count (${nonBaseSpells.length}) exceeds maximum (${validation.max_spells_count})`
             });
         }
 
@@ -528,11 +567,12 @@ export class CharacterTemplateEditorService {
             });
         }
 
-        // Check schools count
-        if (this.template.data.schools.length > validation.max_schools_count) {
+        // Check schools count (only non-base schools)
+        const nonBaseSchools = skillService.getNonBaseSchoolIds(this.template.data.schools);
+        if (nonBaseSchools.length > validation.max_schools_count) {
             errors.push({
                 type: 'schools',
-                message: `Schools count (${this.template.data.schools.length}) exceeds maximum (${validation.max_schools_count})`
+                message: `Non-base schools count (${nonBaseSchools.length}) exceeds maximum (${validation.max_schools_count})`
             });
         }
 
@@ -548,6 +588,39 @@ export class CharacterTemplateEditorService {
             isValid: errors.length === 0,
             errors
         };
+    }
+
+    /**
+     * Ensure all base schools and skills are added to the template
+     * @returns {Promise<void>}
+     */
+    async ensureBaseSchoolsAndSkills() {
+        let hasChanges = false;
+        
+        // Add missing base schools
+        const baseSchools = skillService.getBaseSchools();
+        for (const school of baseSchools) {
+            if (!this.template.data.schools.includes(school.id)) {
+                console.log('Auto-adding base school:', school.name);
+                this.template.data.schools.push(school.id);
+                hasChanges = true;
+            }
+        }
+        
+        // Add missing base skills
+        const baseSkills = skillService.getBaseSkills();
+        for (const skill of baseSkills) {
+            if (!this.template.data.spells.includes(skill.id)) {
+                console.log('Auto-adding base skill:', skill.name);
+                this.template.data.spells.push(skill.id);
+                hasChanges = true;
+            }
+        }
+        
+        if (hasChanges) {
+            this.setDirty();
+            this.emit('templateUpdated', this.template);
+        }
     }
 
     /**
