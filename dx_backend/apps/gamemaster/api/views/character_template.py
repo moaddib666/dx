@@ -1,12 +1,16 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from rest_framework import viewsets, permissions, status, pagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.character.api.serializers.openapi import CharacterTemplateFullSerializer
 from apps.character.models.npc import CharacterTemplate
 from apps.core.utils.api import CampaignFilterMixin
+from apps.game.services.character.template_exporter import CharacterTemplateExporter
 from apps.game.services.npc.factory import NPCFactory
 from apps.game.services.npc.factory.interface import NPCFactoryConfig
 from apps.gamemaster.api.filters import CharacterTemplateFilter
@@ -35,23 +39,6 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterTemplateFilter
     pagination_class = StandardResultsSetPagination
-
-    def get_queryset(self):
-        """
-        Override to filter character templates by the current campaign if applicable.
-        """
-        queryset = super().get_queryset()
-        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
-            return queryset.filter(campaign=self.request.user.current_campaign)
-        return queryset
-
-    def get_serializer_context(self):
-        """
-        Extra context provided to the serializer class.
-        Ensures request is included for generating absolute URLs.
-        """
-        context = super().get_serializer_context()
-        return context
 
     @action(detail=False, methods=['post'], serializer_class=CreateNPCFromTemplateSerializer)
     @transaction.atomic
@@ -96,3 +83,27 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
         # Serialize the created NPC with all details including avatar
         serializer = GameMasterCharacterInfoSerializer(npc, context=self.get_serializer_context())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        summary="Export Character Template",
+        description="Export a character template as JSON. Game Master access only.",
+        responses={
+            200: CharacterTemplateFullSerializer,
+            403: "Game Master access required",
+            404: "Template not found",
+        }
+    )
+    @action(detail=True, methods=['get'])
+    def export_template(self, request, pk=None):
+        """
+        Export character template as JSON.
+        Game Master only endpoint.
+
+        Uses the template ID from the URL to export a specific template.
+        """
+        # Create the template using the exporter with the template ID
+        template_exporter = CharacterTemplateExporter(template_id=pk)
+        template = template_exporter.export_template()
+
+        # Return the template data
+        return Response(template.model_dump())
