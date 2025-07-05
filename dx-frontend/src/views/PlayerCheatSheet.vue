@@ -1,14 +1,14 @@
 <template>
   <div class="page-container">
+    <ZoomModal
+      :is-visible="isZoomed"
+      :image-url="currentZoomedImage"
+      @close="closeZoom"
+    />
     <div class="hero-background" @click="toggleZoom($event)"></div>
     <main class="cheatsheet">
       <TitleComponent>{{ t('playerCheatSheet.title') }}</TitleComponent>
       <p class="subtitle">{{ t('playerCheatSheet.subtitle') }}</p>
-
-      <!-- Zoom Modal -->
-      <div v-if="isZoomed" class="zoom-modal" @click="closeZoom">
-        <div class="zoomed-image" :style="zoomedImageStyle"></div>
-      </div>
 
       <!-- Main Content Grid -->
       <div class="content-grid">
@@ -210,11 +210,13 @@
 <script>
 import TitleComponent from '@/components/TitleComponent.vue';
 import { useI18n } from 'vue-i18n';
+import ZoomModal from '@/components/WhatIsIt/ZoomModal.vue';
 
 export default {
   name: 'PlayerCheatSheet',
   components: {
-    TitleComponent
+    TitleComponent,
+    ZoomModal
   },
   setup() {
     const { t } = useI18n();
@@ -326,31 +328,7 @@ export default {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
-/* Zoom Modal */
-.zoom-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: zoom-out;
-}
-
-.zoomed-image {
-  width: 90%;
-  height: 90%;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 8px;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-  animation: zoomIn 0.3s ease;
-}
+/* Animation Keyframes */
 
 @keyframes zoomIn {
   from {
