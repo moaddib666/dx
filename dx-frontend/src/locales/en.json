@@ -469,6 +469,10 @@
     "validation": "Validation error",
     "serverError": "Server error"
   },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "message": "Sorry, nothing interesting here was found. Perhaps sometime we'll add some information to this page, but for now only void here and your virtual friend Jonnie. So wish him luck and return on the path! See you, wanderer."
+  },
   "playerComponents": {
     "bio": {
       "title": "Character Bio",

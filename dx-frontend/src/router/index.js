@@ -10,7 +10,8 @@ import FAQ from '@/views/FAQ.vue';
 import ArtGallery from "@/views/ArtGallery.vue";
 import NewcomersGuide from "@/views/NewcomersGuide.vue";
 import PlayerCheatSheet from "@/views/PlayerCheatSheet.vue";
-import WhatIsIt from "@/views/WhatIsIt.vue";
+import WatIsIt from "@/views/WatIsIt.vue";
+import NotFound from "@/views/NotFound.vue";
 import store from "@/store/index.js";
 import Login from "@/views/Login.vue";
 import CharacterSubmit from "@/views/Player/CharacterSubmit.vue";
@@ -39,7 +40,7 @@ const routes = [
     {path: '/art-gallery', name: 'ArtGallery', component: ArtGallery, meta: {requiresAuth: false}},
     {path: '/faq/newcomers-guide', name: 'NewcomersGuide', component: NewcomersGuide, meta: {requiresAuth: false}},
     {path: '/faq/player-cheatsheet', name: 'PlayerCheatSheet', component: PlayerCheatSheet, meta: {requiresAuth: false}},
-    {path: '/faq/what-is-it', name: 'WhatIsIt', component: WhatIsIt, meta: {requiresAuth: false}},
+    {path: '/faq/what-is-it', name: 'WhatIsIt', component: WatIsIt, meta: {requiresAuth: false}},
 
     // Authentication routes
     {path: '/login', name: 'Login', component: Login, meta: {requiresAuth: false}},
@@ -66,6 +67,9 @@ const routes = [
     {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
     {path: '/game-master/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false, requiresGameMaster: true}},
     {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true}},
+
+    // 404 page - catch all route
+    {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},
 ];
 
 // access vue environment variables

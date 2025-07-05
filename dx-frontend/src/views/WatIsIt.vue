@@ -1,16 +1,17 @@
 <template>
   <div class="page-container">
+    <ZoomModal
+        :is-visible="isZoomed"
+        :image-url="currentZoomedImage"
+        @close="closeZoom"
+    />
     <HeroBackground @toggle-zoom="toggleZoom" />
 
     <main class="what-is-it">
       <TitleComponent>{{ t('whatIsIt.title') }}</TitleComponent>
       <p class="subtitle">{{ t('whatIsIt.subtitle') }}</p>
 
-      <ZoomModal
-        :is-visible="isZoomed"
-        :image-url="currentZoomedImage"
-        @close="closeZoom"
-      />
+
 
       <IntroductionSection
         :title="t('whatIsIt.introduction.title')"
@@ -91,6 +92,7 @@ export default {
     return {
       isZoomed: false,
       currentZoomedImage: '',
+      scrollPosition: 0,
       worldOverviewData: null,
 
       // Introduction section data
@@ -321,6 +323,10 @@ export default {
         // Use the actual resolved src from the DOM
         this.currentZoomedImage = imgElement.src;
         this.isZoomed = true;
+        // Store current scroll position
+        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        // Prevent body scrolling when modal is open
+        document.body.style.overflow = 'hidden';
       } else if (event.target.classList.contains('hero-background')) {
         // Special case for hero background which is a fixed background
         // Get computed style to extract the actual URL
@@ -330,10 +336,18 @@ export default {
         const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
         this.currentZoomedImage = url;
         this.isZoomed = true;
+        // Store current scroll position
+        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        // Prevent body scrolling when modal is open
+        document.body.style.overflow = 'hidden';
       }
     },
     closeZoom() {
       this.isZoomed = false;
+      // Re-enable body scrolling
+      document.body.style.overflow = '';
+      // Restore scroll position
+      window.scrollTo(0, this.scrollPosition);
     }
   }
 };
@@ -350,6 +364,8 @@ export default {
 .page-container {
   position: relative;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .what-is-it {
@@ -359,7 +375,7 @@ export default {
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(1px);
-  margin-top: 60px;
+  padding-top: 120px; /* Changed from margin-top to padding-top for better spacing */
 }
 
 .subtitle {
@@ -373,14 +389,14 @@ export default {
 @media (max-width: 768px) {
   .what-is-it {
     padding: 30px;
-    margin-top: 40px;
+    padding-top: 80px; /* Adjusted from margin-top to padding-top */
   }
 }
 
 @media (max-width: 480px) {
   .what-is-it {
     padding: 20px;
-    margin-top: 30px;
+    padding-top: 60px; /* Adjusted from margin-top to padding-top */
   }
 
   .subtitle {
