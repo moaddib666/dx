@@ -122,7 +122,7 @@
         />
 
         <!-- NPC Templates List -->
-        <WorldEditorNPCTemplatesList
+        <NPCTemplatesList
             v-if="showNPCTemplatesPanel"
             class="npc-templates-list"
             @template-selected="onTemplateSelected"
@@ -181,7 +181,7 @@ import WorldEditorMap from '@/components/WorldEditor/WorldEditorMap.vue';
 import WorldEditorEntitySpawner from '@/components/WorldEditor/WorldEditorEntitySpawner.vue';
 import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
-import WorldEditorNPCTemplatesList from '@/components/WorldEditor/WorldEditorNPCTemplatesList.vue';
+import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
 import Loader from '@/components/Loader.vue';
 
@@ -195,7 +195,7 @@ export default {
     WorldEditorEntitySpawner,
     WorldEditorStats,
     WorldEditorItemsList,
-    WorldEditorNPCTemplatesList,
+    NPCTemplatesList,
     GameMasterCharacterCard,
     Loader
   },
@@ -640,30 +640,6 @@ export default {
       this.setLastAction(this.showLayersPanel ? 'Layers panel opened' : 'Layers panel closed');
     },
 
-    onShowEntityDetails(details) {
-      // Handle showing entity details
-      // This could open a modal, update a sidebar, etc.
-      const entityTypeName = {
-        'players': 'Players',
-        'npcs': 'NPCs',
-        'objects': 'Objects',
-        'anomalies': 'Anomalies'
-      }[details.entityType] || 'Entities';
-
-      const count = details.entities.length;
-      this.setLastAction(`${entityTypeName} in room: ${count}`);
-
-      // Select the room
-      if (details.roomId) {
-        const room = this.editorState.rooms.get(details.roomId);
-        if (room) {
-          this.selectedRoom = room;
-          // Clear selection before selecting the new room (no shift key for entity details)
-          this.service.clearSelection();
-          this.service.toggleRoomSelection(room.id);
-        }
-      }
-    },
 
     /**
      * Handle item selection from the items list

@@ -38,18 +38,11 @@
         <div class="center-content">
           <!-- Left part (1) -->
           <div class="template-list">
-            <h3>Available Templates</h3>
-            <div
-              v-for="template in filteredTemplates"
-              :key="template.id"
-              class="template-item"
-              @click="selectTemplate(template)"
-            >
-              {{ template.name }}
-            </div>
-            <div v-if="filteredTemplates.length === 0" class="no-templates">
-              No templates available
-            </div>
+            <NPCTemplatesList
+              class="npc-templates-list"
+              title="Available Templates"
+              @template-selected="onNPCTemplateSelected"
+            />
           </div>
 
           <!-- Right part (8) -->
@@ -228,6 +221,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -245,9 +239,13 @@
 import { characterTemplateEditorService } from '@/services/CharacterTemplateEditorService.js';
 import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
 import { createSampleCharacterTemplate } from '@/models/CharacterTemplateFull.js';
+import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 
 export default {
   name: 'CharacterTemplateEditor',
+  components: {
+    NPCTemplatesList
+  },
   data() {
     return {
       service: characterTemplateEditorService,
@@ -398,6 +396,26 @@ export default {
 
     onDirtyStateChanged(isDirty) {
       this.isDirty = isDirty;
+    },
+
+    /**
+     * Handle NPC template selection from the NPCTemplatesList component
+     * @param {Object} template - The selected NPC template
+     */
+    onNPCTemplateSelected(template) {
+      console.log('NPC template selected:', template);
+
+      // If we already have a template loaded, ask for confirmation before replacing it
+      if (this.template && this.isDirty) {
+        if (!confirm('You have unsaved changes. Are you sure you want to load a new template?')) {
+          return;
+        }
+      }
+
+      // Import the template data
+      if (template && template.id) {
+        this.importFromTemplate(template.id);
+      }
     }
   }
 };
@@ -504,9 +522,8 @@ export default {
 
 /* Left part of center column - 1 part */
 .template-list {
-  width: 200px;
+  width: 20rem;
   border-right: 1px solid #444;
-  padding: 20px;
   overflow-y: auto;
   background: #2d2d2d;
 }
@@ -649,6 +666,23 @@ export default {
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.8rem;
+}
+
+/* NPC Templates Section */
+.npc-templates-section {
+  margin-top: 20px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.npc-templates-list {
+  flex: 1;
+  min-height: 300px;
+  max-height: 500px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 /* Bottom Row - 1 part of vertical layout */

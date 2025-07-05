@@ -68,7 +68,6 @@ html, body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow-x: hidden;
   position: relative;
   padding: 0;
   margin: 0 auto;
