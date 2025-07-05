@@ -59,14 +59,14 @@ const routes = [
 
     // Game and tools routes
     {path: '/dice', name: 'Dice', component: DiceTest, meta: {requiresAuth: false}},
-    {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true}},
+    {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
     // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
 
     // Game Master routes
-    {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true, requiresGameMaster: true}},
+    {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
     {path: '/game-master/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false, requiresGameMaster: true}},
-    {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true}},
+    {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
 
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},

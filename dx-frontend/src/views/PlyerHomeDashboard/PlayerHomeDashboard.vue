@@ -48,23 +48,17 @@
           <div class="characters-container">
             <!-- Left side (90%): Available characters -->
             <div class="available-characters">
+              <!-- Debug message -->
+              <div v-if="characters.length === 0" class="debug-message">
+                {{ t('playerDashboard.noCharacters') }}
+              </div>
+
+              <!-- Debug message showing character count -->
+              <div v-else class="debug-message">
+                {{ t('playerDashboard.charactersFound', { count: characters.length }) }}
+              </div>
               <div class="characters-grid">
-                <!-- Debug message -->
-                <div v-if="characters.length === 0" class="debug-message">
-                  {{ t('playerDashboard.noCharacters') }}
-                </div>
-
-                <!-- Debug message showing character count -->
-                <div v-else class="debug-message">
-                  {{ t('playerDashboard.charactersFound', { count: characters.length }) }}
-                </div>
-
-                <!-- Character cards -->
-                <div v-for="character in characters" :key="character.id" @click="selectCharacter(character.id)" class="character-card-wrapper">
-                  <CharacterPreviewCard :character="character" />
-                </div>
-
-                <!-- Placeholder for adding a new character -->
+                <!-- Placeholder for adding a new character (positioned first) -->
                 <div class="add-character-placeholder" @click="createCharacter">
                   <div class="add-character-content">
                     <div class="add-icon">+</div>
@@ -74,6 +68,11 @@
                   <div class="flow-border-add"></div>
                   <!-- Hover glow effect -->
                   <div class="hover-glow-add"></div>
+                </div>
+
+                <!-- Character cards -->
+                <div v-for="character in characters" :key="character.id" @click="selectCharacter(character.id)" class="character-card-wrapper">
+                  <CharacterPreviewCard :character="character" />
                 </div>
               </div>
             </div>
@@ -330,16 +329,11 @@ export default {
   max-width: 90vw;
   margin: 0 auto;
   padding: 60px;
-  max-height: 80vh;
-  min-height: 600px;
   position: relative;
-  overflow-y: hidden;
-  overflow-x: hidden;
   color: white;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(1px);
-  margin-top: 60px;
 }
 
 
@@ -376,6 +370,7 @@ export default {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgba(255, 215, 0, 0.2);
+  overflow-y: auto;
 }
 
 .characters-container {
@@ -398,13 +393,14 @@ export default {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
   margin-bottom: 1.5rem;
-  max-height: 600px;
-  overflow-y: auto;
+  width: 100%;
   overflow-x: hidden;
   padding-right: 10px;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
 }
 
 /* Scrollbar styling is now handled globally in global.css */
@@ -544,7 +540,7 @@ export default {
 }
 
 .add-character-placeholder {
-  width: 320px;
+  width: 100%;
   height: 200px;
   padding: 0.75rem 0.5rem;
   background: rgba(255, 255, 255, 0.05);
@@ -554,6 +550,10 @@ export default {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .add-character-placeholder:hover {
@@ -658,14 +658,16 @@ export default {
 
 .character-card-wrapper {
   width: 100%;
-  height: 100%;
+  height: 200px;
   cursor: pointer;
-  padding: 10px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .debug-message {
-  grid-column: 1 / -1; /* Span all columns */
-  padding: 0.75rem;
+  padding: 0.5rem;
   margin-bottom: 1rem;
   background: rgba(255, 255, 255, 0.05);
   color: var(--light-steel-blue, #b0c4de);
@@ -694,14 +696,20 @@ export default {
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .add-character-placeholder {
-    width: 300px;
+    height: 190px;
+  }
+
+  .character-card-wrapper {
     height: 190px;
   }
 }
 
 @media (max-width: 900px) {
   .add-character-placeholder {
-    width: 280px;
+    height: 180px;
+  }
+
+  .character-card-wrapper {
     height: 180px;
   }
 
@@ -726,12 +734,15 @@ export default {
   }
 
   .characters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    overflow-x: hidden;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
   }
 
   .add-character-placeholder {
-    width: 260px;
+    height: 170px;
+  }
+
+  .character-card-wrapper {
     height: 170px;
   }
 
@@ -746,6 +757,30 @@ export default {
   .add-icon {
     font-size: 2.5rem;
     margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .characters-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .add-character-placeholder {
+    height: 160px;
+  }
+
+  .character-card-wrapper {
+    height: 160px;
+  }
+
+  .add-icon {
+    font-size: 2rem;
+    margin-bottom: 6px;
+  }
+
+  .add-text {
+    font-size: 0.9rem;
   }
 }
 </style>

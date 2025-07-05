@@ -13,12 +13,16 @@ export default createStore({
     },
     setToken(state, token) {
       state.token = token;
-      Cookies.set('dx_backend_token', token);
+      // Set secure flag based on whether the connection is HTTPS
+      const isSecure = window.location.protocol === 'https:';
+      Cookies.set('dx_backend_token', token, { secure: isSecure });
     },
     clearAuth(state) {
       state.user = null;
       state.token = null;
-      Cookies.remove('dx_backend_token');
+      // Use the same secure setting when removing cookies
+      const isSecure = window.location.protocol === 'https:';
+      Cookies.remove('dx_backend_token', { secure: isSecure });
     },
   },
   actions: {

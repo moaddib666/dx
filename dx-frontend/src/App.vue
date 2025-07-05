@@ -1,22 +1,41 @@
 <template>
   <div id="app">
-    <Header />
+    <GameHeader v-if="isGameRoute" />
+    <Header v-else />
     <div class="main-content">
       <router-view />
     </div>
-    <Footer />
+    <GameFooter v-if="isGameRoute" />
+    <Footer v-else />
   </div>
 </template>
 
 <script>
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
+import GameHeader from './components/GameHeader.vue';
+import GameFooter from './components/GameFooter.vue';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'App',
   components: {
     Header,
     Footer,
+    GameHeader,
+    GameFooter,
+  },
+  setup() {
+    const route = useRoute();
+
+    const isGameRoute = computed(() => {
+      return route.meta.game === true;
+    });
+
+    return {
+      isGameRoute
+    };
   },
 };
 </script>
