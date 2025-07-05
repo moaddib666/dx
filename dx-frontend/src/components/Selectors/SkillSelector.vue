@@ -1,7 +1,7 @@
 <template>
   <div class="action-selector">
     <SkillIcon
-        v-for="action in actions"
+        v-for="action in filteredActions"
         :key="action.id"
         :skill="action"
         :fade="!canPerformAction(action)"
@@ -27,6 +27,23 @@ export default {
       type: Object,
       default: null,
     },
+    selectedTypes: {
+      type: Array,
+      default: () => []
+    },
+  },
+  computed: {
+    filteredActions() {
+      // If no types are selected, show all actions
+      if (this.selectedTypes.length === 0) {
+        return this.actions;
+      }
+
+      // Filter actions by selected types
+      return this.actions.filter(action =>
+        this.selectedTypes.includes(action.type || 'utility')
+      );
+    }
   },
   methods: {
     selectAction(action) {

@@ -20,26 +20,35 @@
                  @tab-switched="switchTab"
                  initialTabId="skillSelector"
     />
-    <div class="action-selector-holder" v-if="true">
-
+    <TypeFilter
+      :selectedTypes="selectedTypes"
+      @update:selectedTypes="selectedTypes = $event"
+    />
+    <div class="action-selector-holder">
       <SkillSelector
           v-if="currentTab === 'skillSelector'"
+          :key="'skillSelector-' + selectedTypes.join('-')"
           :actions="availableSkills"
           :preSelected="selectedGameObjectId"
           :playerService="playerService"
+          :selectedTypes="selectedTypes"
           @skill-selected="updateSelectedSkill"
       />
       <ItemSelector
           v-if="currentTab === 'itemSelector'"
+          :key="'itemSelector-' + selectedTypes.join('-')"
           :characterItems="availableItems"
           :playerService="playerService"
+          :selectedTypes="selectedTypes"
           @item-selected="updateSelectedItem"
       />
       <SpecialSelector
           v-if="currentTab === 'specialSelector'"
+          :key="'specialSelector-' + selectedTypes.join('-')"
           :isSafe="isSafe"
           :special-actions="availableSpecials"
           :playerService="playerService"
+          :selectedTypes="selectedTypes"
           @special-selected="updateSelectedSpecial"
       ></SpecialSelector>
     </div>
@@ -55,6 +64,7 @@ import CompactButton from "@/components/btn/CompactButton.vue";
 import ItemSelector from "@/components/Selectors/ItemSelector.vue";
 import TabSwitcher from "@/components/Tabs/TabSwitcher.vue";
 import SpecialSelector from "@/components/Selectors/SpecialSelector.vue";
+import TypeFilter from "@/components/Filters/TypeFilter.vue";
 
 export default {
   name: "ActionConstructor",
@@ -67,6 +77,7 @@ export default {
     ActionPreview,
     CompactPlayButton,
     SkillSelector,
+    TypeFilter,
   },
   computed: {
     computedSelectedSkill() {
@@ -135,6 +146,7 @@ export default {
       selectedItem: null,
       selectedSpecial: null,
       currentTab: "skillSelector",
+      selectedTypes: [], // Array to store selected types for filtering
     };
   },
   mounted() {
@@ -145,6 +157,7 @@ export default {
   methods: {
     switchTab(tabId) {
       this.currentTab = tabId;
+      this.selectedTypes = []; // Reset selected types when switching tabs
     },
     reset() {
       this.selectedSkill = null;

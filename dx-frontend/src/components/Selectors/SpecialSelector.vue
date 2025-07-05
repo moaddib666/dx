@@ -2,7 +2,7 @@
   <div class="special-selector">
     <!-- Render dynamically based on specialActions prop -->
     <SkillIcon
-        v-for="(special, index) in specialActions"
+        v-for="(special, index) in filteredSpecials"
         :key="special.action_type"
         :useSlotIcon="true"
         :fade="!canPerformSpecialAction(special)"
@@ -34,6 +34,10 @@ export default {
       type: Object,
       default: null,
     },
+    selectedTypes: {
+      type: Array,
+      default: () => []
+    },
     specialActions: {
       type: Array,
       required: true,
@@ -59,7 +63,7 @@ export default {
         {
           "action_type": "INSPECT",
           "name": "Inspect",
-          "description": "The Inspect action is a utility skill that allows players to gather detailed information about a target object or character. However, its effectiveness depends on the target’s level, protection mechanisms, and the player’s stats. While not all inspections yield useful results, a successful attempt can reveal critical details, providing a strategic edge.",
+          "description": "The Inspect action is a utility skill that allows players to gather detailed information about a target object or character. However, its effectiveness depends on the target's level, protection mechanisms, and the player's stats. While not all inspections yield useful results, a successful attempt can reveal critical details, providing a strategic edge.",
           "immediate": true,
           "final": false,
           "icon": "http://localhost:8000/media/icons/specialActions/inspect.webp",
@@ -90,6 +94,20 @@ export default {
         }
       ],
     },
+  },
+  computed: {
+    filteredSpecials() {
+      // If no types are selected, show all special actions
+      if (this.selectedTypes.length === 0) {
+        return this.specialActions;
+      }
+
+      // Filter special actions by selected types
+      return this.specialActions.filter(special => {
+        const formattedSkill = this.formatSkill(special);
+        return this.selectedTypes.includes(formattedSkill.type || 'special');
+      });
+    }
   },
   methods: {
     /**

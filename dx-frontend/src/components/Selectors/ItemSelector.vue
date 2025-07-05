@@ -1,7 +1,7 @@
 <template>
   <div class="item-selector">
     <SkillIcon
-        v-for="item in characterItems"
+        v-for="item in filteredItems"
         :key="item.id"
         :skill="item.item.skill"
         :fade="!canPerformItemAction(item)"
@@ -27,6 +27,23 @@ export default {
       type: Object,
       default: null,
     },
+    selectedTypes: {
+      type: Array,
+      default: () => []
+    },
+  },
+  computed: {
+    filteredItems() {
+      // If no types are selected, show all items
+      if (this.selectedTypes.length === 0) {
+        return this.characterItems;
+      }
+
+      // Filter items by selected types
+      return this.characterItems.filter(item =>
+        item.item && item.item.skill && this.selectedTypes.includes(item.item.skill.type || 'utility')
+      );
+    }
   },
   methods: {
     selectItem(item) {
