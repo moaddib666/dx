@@ -219,7 +219,7 @@ SPECTACULAR_SETTINGS = {
     # FIXME: comment the line before - to generation api clients
     # 'SCHEMA_PATH_PREFIX_TRIM': True,
     'SERVERS': [
-        {'url': '/api', 'description': 'API Server'},  # Set the base path for generated clients
+        {'url': '/', 'description': 'API Server'},  # Set the base path for generated clients
     ],
     # 'SERVERS': [
     #     {'url': 'http://localhost:8000'},
