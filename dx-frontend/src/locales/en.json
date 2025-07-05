@@ -42,7 +42,13 @@
     "enterEmail": "Enter your email",
     "enterPassword": "Enter your password",
     "invalidCredentials": "Invalid email or password.",
-    "unexpectedError": "An unexpected error occurred. Please try again."
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "firstName": "First Name (Optional)",
+    "lastName": "Last Name (Optional)",
+    "enterFirstName": "Enter your first name",
+    "enterLastName": "Enter your last name",
+    "needAccount": "Need an account? Register",
+    "haveAccount": "Already have an account? Login"
   },
   "dashboard": {
     "welcome": "Welcome to your dashboard",
@@ -118,7 +124,7 @@
     "howToStart": {
       "title": "How To Start",
       "steps": {
-        "step1": "Register on <a href=\"https://dx.awesome.live/\" target=\"_blank\">https://dx.awesome.live/</a>",
+        "step1": "Register on <a href=\"https://dimension-x.live/register\" target=\"_blank\">https://dimension-x.live/register</a>",
         "step2": "Connect our Discord and reach any of game masters so that add you to a campaign",
         "step3": "When you added to a campaign you can see the campaign in the site and able to create a new character for it",
         "step4": "When your character ready ping game master for validation",
