@@ -26,6 +26,7 @@ import CharacterInfo from "@/views/CharacterInfo.vue";
 import MiniMap from "@/views/Cartograph/MiniMap.vue";
 import UserMap from "@/views/Cartograph/UserMap.vue";
 import WorldEditor from "@/views/WorldEditor/WorldEditor.vue";
+import CharacterTemplateEditor from "@/views/GameMaster/CharacterTemplateEditor.vue";
 import PlayerHomeDashboard from "@/views/PlyerHomeDashboard/PlayerHomeDashboard.vue";
 
 const routes = [
@@ -67,6 +68,7 @@ const routes = [
     {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
     {path: '/game-master/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false, requiresGameMaster: true}},
     {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
+    {path: '/game-master/character-template-editor', name: 'CharacterTemplateEditor', component: CharacterTemplateEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
 
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},
