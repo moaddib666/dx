@@ -5,8 +5,10 @@
         v-for="(special, index) in specialActions"
         :key="special.action_type"
         :useSlotIcon="true"
-        @click="selectItem(formatSpecial(special))"
+        :fade="!canPerformSpecialAction(special)"
+        @click="selectItem(special)"
         :skill="formatSkill(special)"
+        :style="{ cursor: canPerformSpecialAction(special) ? 'pointer' : 'not-allowed' }"
     >
       <img
           :src="special.icon"
@@ -27,6 +29,10 @@ export default {
     isSafe: {
       type: Boolean,
       default: false,
+    },
+    playerService: {
+      type: Object,
+      default: null,
     },
     specialActions: {
       type: Array,
@@ -91,7 +97,34 @@ export default {
      * @param {Object} special
      */
     selectItem(special) {
-      this.$emit("special-selected", special);
+      // Only emit the event if the player has enough resources
+      if (this.canPerformSpecialAction(special)) {
+        this.$emit("special-selected", this.formatSpecial(special));
+      }
+    },
+
+    /**
+     * Check if the player has enough resources to perform the special action
+     * @param {Object} special - The special action to check
+     * @returns {boolean} - Whether the action can be performed
+     */
+    canPerformSpecialAction(special) {
+      // If playerService is not available, assume action can be performed
+      if (!this.playerService) return true;
+
+      // Check if the special action has costs
+      if (!special.cost || !Array.isArray(special.cost) || special.cost.length === 0) return true;
+
+      // Check each cost type
+      for (const cost of special.cost) {
+        const currentValue = this.playerService.getCurrentAttributeValue(cost.kind);
+        // If we can't get the current value or it's less than the cost, return false
+        if (currentValue === null || currentValue < cost.value) {
+          return false;
+        }
+      }
+
+      return true;
     },
 
     /**

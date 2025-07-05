@@ -4,7 +4,9 @@
         v-for="action in actions"
         :key="action.id"
         :skill="action"
+        :fade="!canPerformAction(action)"
         @click="selectAction(action)"
+        :style="{ cursor: canPerformAction(action) ? 'pointer' : 'not-allowed' }"
     />
   </div>
 </template>
@@ -21,10 +23,35 @@ export default {
       type: Array,
       required: true,
     },
+    playerService: {
+      type: Object,
+      default: null,
+    },
   },
   methods: {
     selectAction(action) {
-      this.$emit("skill-selected", action); // Emit event with selected action ID
+      // Only emit the event if the player has enough resources
+      if (this.canPerformAction(action)) {
+        this.$emit("skill-selected", action);
+      }
+    },
+    canPerformAction(action) {
+      // If playerService is not available, assume action can be performed
+      if (!this.playerService) return true;
+
+      // Check if the action has costs
+      if (!action.cost || !Array.isArray(action.cost) || action.cost.length === 0) return true;
+
+      // Check each cost type
+      for (const cost of action.cost) {
+        const currentValue = this.playerService.getCurrentAttributeValue(cost.kind);
+        // If we can't get the current value or it's less than the cost, return false
+        if (currentValue === null || currentValue < cost.value) {
+          return false;
+        }
+      }
+
+      return true;
     },
   },
 };

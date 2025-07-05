@@ -70,6 +70,7 @@
                            :availableItems="availableItems"
                            :availableGameObjects="availableGameObjects"
                            :preSelectedTarget="selectedGameObjectId"
+                           :playerService="playerService"
                            @applyAction="applyAction"
                            @cancelAction="closeActionConstructor"
                            class="action-constructor"

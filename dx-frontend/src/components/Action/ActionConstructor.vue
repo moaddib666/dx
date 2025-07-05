@@ -26,17 +26,20 @@
           v-if="currentTab === 'skillSelector'"
           :actions="availableSkills"
           :preSelected="selectedGameObjectId"
+          :playerService="playerService"
           @skill-selected="updateSelectedSkill"
       />
       <ItemSelector
           v-if="currentTab === 'itemSelector'"
           :characterItems="availableItems"
+          :playerService="playerService"
           @item-selected="updateSelectedItem"
       />
       <SpecialSelector
           v-if="currentTab === 'specialSelector'"
           :isSafe="isSafe"
           :special-actions="availableSpecials"
+          :playerService="playerService"
           @special-selected="updateSelectedSpecial"
       ></SpecialSelector>
     </div>
@@ -113,6 +116,10 @@ export default {
     },
     preSelectedTarget: {
       type: String,
+      default: null,
+    },
+    playerService: {
+      type: Object,
       default: null,
     },
   },

@@ -4,7 +4,9 @@
         v-for="item in characterItems"
         :key="item.id"
         :skill="item.item.skill"
+        :fade="!canPerformItemAction(item)"
         @click="selectItem(item)"
+        :style="{ cursor: canPerformItemAction(item) ? 'pointer' : 'not-allowed' }"
     />
   </div>
 </template>
@@ -21,10 +23,37 @@ export default {
       type: Array,
       required: true,
     },
+    playerService: {
+      type: Object,
+      default: null,
+    },
   },
   methods: {
     selectItem(item) {
-      this.$emit("item-selected", item); // Emit event with selected item ID
+      // Only emit the event if the player has enough resources
+      if (this.canPerformItemAction(item)) {
+        this.$emit("item-selected", item);
+      }
+    },
+    canPerformItemAction(item) {
+      // If playerService is not available or item has no skill, assume action can be performed
+      if (!this.playerService || !item.item || !item.item.skill) return true;
+
+      const skill = item.item.skill;
+
+      // Check if the skill has costs
+      if (!skill.cost || !Array.isArray(skill.cost) || skill.cost.length === 0) return true;
+
+      // Check each cost type
+      for (const cost of skill.cost) {
+        const currentValue = this.playerService.getCurrentAttributeValue(cost.kind);
+        // If we can't get the current value or it's less than the cost, return false
+        if (currentValue === null || currentValue < cost.value) {
+          return false;
+        }
+      }
+
+      return true;
     },
   },
 };
