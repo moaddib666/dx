@@ -47,155 +47,11 @@
 
           <!-- Right part (8) -->
           <div class="template-editor" v-if="template">
-            <h3>Template Details</h3>
-
-            <div class="form-group">
-              <label>Template Name</label>
-              <input
-                type="text"
-                placeholder="Enter template name"
-                :value="template.data.name"
-                @input="updateTemplateName"
-              />
-            </div>
-
-            <div class="form-group">
-              <label>Tags</label>
-              <div class="tags-container">
-                <span v-for="(tag, index) in template.data.tags" :key="index" class="tag">
-                  {{ tag }}
-                  <button class="tag-remove" @click="service.removeTag(tag)">×</button>
-                </span>
-                <input
-                  type="text"
-                  placeholder="Add tag"
-                  class="tag-input"
-                  @keydown.enter="$event.target.value && service.addTag($event.target.value) && ($event.target.value = '')"
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Rank</label>
-              <input
-                type="number"
-                :value="template.data.rank"
-                @input="e => service.setRank(parseInt(e.target.value, 10))"
-                min="1"
-                :max="template.validation.max_rank_grade"
-              />
-              <span class="input-hint">Max: {{ template.validation.max_rank_grade }}</span>
-            </div>
-
-            <div class="form-group">
-              <label>Base Stats ({{ totalStatsPoints }}/{{ maxStatsPoints }} points)</label>
-              <div class="stats-grid">
-                <div
-                  v-for="stat in template.data.stats"
-                  :key="stat.name"
-                  class="stat-item"
-                >
-                  <label>{{ stat.name }}</label>
-                  <input
-                    type="number"
-                    :value="stat.value"
-                    @input="e => updateStat(stat.name, e)"
-                    min="1"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Bio</label>
-              <div class="bio-section">
-                <div class="bio-field">
-                  <label>Age</label>
-                  <input
-                    type="number"
-                    :value="template.data.bio.age"
-                    @input="e => service.setBio({...template.data.bio, age: parseInt(e.target.value, 10)})"
-                    min="1"
-                  />
-                </div>
-                <div class="bio-field">
-                  <label>Gender</label>
-                  <input
-                    type="text"
-                    :value="template.data.bio.gender"
-                    @input="e => service.setBio({...template.data.bio, gender: e.target.value})"
-                  />
-                </div>
-              </div>
-              <div class="bio-field full-width">
-                <label>Appearance</label>
-                <textarea
-                  :value="template.data.bio.appearance"
-                  @input="e => service.setBio({...template.data.bio, appearance: e.target.value})"
-                  placeholder="Enter character appearance"
-                ></textarea>
-              </div>
-              <div class="bio-field full-width">
-                <label>Background</label>
-                <textarea
-                  :value="template.data.bio.background"
-                  @input="e => service.setBio({...template.data.bio, background: e.target.value})"
-                  placeholder="Enter character background"
-                  rows="5"
-                ></textarea>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Items ({{ template.data.items.length }}/{{ template.validation.max_items_count }})</label>
-              <div class="items-list">
-                <div v-for="(itemId, index) in template.data.items" :key="index" class="item">
-                  {{ itemId }}
-                  <button class="item-remove" @click="service.removeItem(itemId)">×</button>
-                </div>
-                <div v-if="template.data.items.length < template.validation.max_items_count" class="add-item">
-                  <input
-                    type="text"
-                    placeholder="Add item ID"
-                    @keydown.enter="$event.target.value && service.addItem($event.target.value) && ($event.target.value = '')"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Schools ({{ template.data.schools.length }}/{{ template.validation.max_schools_count }})</label>
-              <div class="schools-list">
-                <div v-for="(schoolId, index) in template.data.schools" :key="index" class="school">
-                  {{ schoolId }}
-                  <button class="school-remove" @click="service.removeSchool(schoolId)">×</button>
-                </div>
-                <div v-if="template.data.schools.length < template.validation.max_schools_count" class="add-school">
-                  <input
-                    type="text"
-                    placeholder="Add school ID"
-                    @keydown.enter="$event.target.value && service.addSchool($event.target.value) && ($event.target.value = '')"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Spells ({{ template.data.spells.length }}/{{ template.validation.max_spells_count }})</label>
-              <div class="spells-list">
-                <div v-for="(spellId, index) in template.data.spells" :key="index" class="spell">
-                  {{ spellId }}
-                  <button class="spell-remove" @click="service.removeSpell(spellId)">×</button>
-                </div>
-                <div v-if="template.data.spells.length < template.validation.max_spells_count" class="add-spell">
-                  <input
-                    type="number"
-                    placeholder="Add spell ID"
-                    @keydown.enter="$event.target.value && service.addSpell(parseInt($event.target.value, 10)) && ($event.target.value = '')"
-                  />
-                </div>
-              </div>
-            </div>
+            <CharacterTemplateDetail
+              :template="template"
+              :service="service"
+              @update="onTemplateUpdate"
+            />
           </div>
         </div>
       </div>
@@ -240,11 +96,13 @@ import { characterTemplateEditorService } from '@/services/CharacterTemplateEdit
 import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
 import { createSampleCharacterTemplate } from '@/models/CharacterTemplateFull.js';
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
+import CharacterTemplateDetail from '@/components/GameMaster/CharacterTemplateDetail.vue';
 
 export default {
   name: 'CharacterTemplateEditor',
   components: {
-    NPCTemplatesList
+    NPCTemplatesList,
+    CharacterTemplateDetail
   },
   data() {
     return {
@@ -396,6 +254,14 @@ export default {
 
     onDirtyStateChanged(isDirty) {
       this.isDirty = isDirty;
+    },
+
+    /**
+     * Handle template updates from the CharacterTemplateDetail component
+     */
+    onTemplateUpdate() {
+      // The template will be updated automatically through the service
+      // No additional action needed here as the service handles state management
     },
 
     /**
