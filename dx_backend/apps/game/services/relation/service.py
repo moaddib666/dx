@@ -65,6 +65,10 @@ class OrganizationRelationService:
         Returns:
             The relationship type (BehaviorModel)
         """
+        if target_organization is None or self.organization is None:
+            # TODO: Refine this could be bug if no organization is provided
+            return BehaviorModel.PASSIVE
+
         if self.organization.id == target_organization.id:
             return BehaviorModel.PASSIVE  # Organization can't have relation with itself
 
