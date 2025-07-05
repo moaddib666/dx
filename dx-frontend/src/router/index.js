@@ -50,7 +50,7 @@ const routes = [
     {path: '/player/dashboard', name: 'PlayerHomeDashboard', component: PlayerHomeDashboard, meta: {requiresAuth: true}},
     {path: '/player/characters', name: 'Characters', component: Characters, meta: {requiresAuth: false}},
     {path: '/player/characters/submit', name: 'CharacterSubmit', component: CharacterSubmit, meta: {requiresAuth: false}},
-    {path: '/player/characters/info', name: 'CharacterInfo', component: CharacterInfo, meta: {requiresAuth: true}},
+    {path: '/player/characters/info', name: 'CharacterInfo', component: CharacterInfo, meta: {requiresAuth: true, game: true}},
     {path: '/player/characters/skills', name: 'CharacterSkills', component: CharacterSkills, meta: {requiresAuth: false}},
 
     // Map and cartography routes
