@@ -1,5 +1,24 @@
 <template>
   <div class="dice-control-panel">
+    <!-- Dice Count Selection -->
+    <div class="input-group">
+      <label><strong>Dice Count:</strong></label>
+      <select v-model.number="diceCount" class="select-input">
+        <option value="1">1 Die</option>
+        <option value="2">2 Dice</option>
+      </select>
+    </div>
+
+    <!-- Result Calculation (only show for 2 dice) -->
+    <div v-if="diceCount === 2" class="input-group">
+      <label><strong>Result:</strong></label>
+      <select v-model="resultMode" class="select-input">
+        <option value="best">Best Roll</option>
+        <option value="worst">Worst Roll</option>
+        <option value="both">Both Rolls</option>
+      </select>
+    </div>
+
     <!-- Target Number Input -->
     <div class="input-group">
       <label><strong>Target Number:</strong></label>
@@ -163,13 +182,26 @@ export default {
     'camera-view',
     'texture-upload',
     'material-change',
-    'shader-change'
+    'shader-change',
+    'dice-count-change',
+    'result-mode-change'
   ],
 
   data() {
     return {
       targetNumber: 20,
-      presetNumbers: Array.from({ length: 20 }, (_, i) => i + 1)
+      presetNumbers: Array.from({ length: 20 }, (_, i) => i + 1),
+      diceCount: 1,
+      resultMode: 'best'
+    }
+  },
+
+  watch: {
+    diceCount(newCount) {
+      this.$emit('dice-count-change', newCount)
+    },
+    resultMode(newMode) {
+      this.$emit('result-mode-change', newMode)
     }
   },
 
@@ -271,6 +303,23 @@ export default {
 }
 
 .number-input:focus {
+  outline: none;
+  border-color: #ff6600;
+}
+
+.select-input {
+  background: #333;
+  color: #fff;
+  border: 2px solid #666;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
+  min-width: 120px;
+}
+
+.select-input:focus {
   outline: none;
   border-color: #ff6600;
 }

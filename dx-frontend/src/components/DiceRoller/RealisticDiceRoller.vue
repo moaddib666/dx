@@ -19,6 +19,8 @@
       @texture-upload="handleTextureUpload"
       @material-change="handleMaterialChange"
       @shader-change="handleShaderChange"
+      @dice-count-change="handleDiceCountChange"
+      @result-mode-change="handleResultModeChange"
       :is-rolling="isRolling"
       :current-number="currentDisplayNumber"
       :status="rollStatus"
@@ -165,7 +167,17 @@ export default {
       this.isRolling = false
       this.lastResult = result
       this.showResult = true
-      this.rollStatus = `Landed on ${result.number}`
+      
+      // Update status message based on result type
+      if (result.diceCount > 1) {
+        if (result.resultType === 'both') {
+          this.rollStatus = `Rolled ${result.numbers.join(' and ')}`
+        } else {
+          this.rollStatus = `${result.resultType === 'best' ? 'Best' : 'Worst'}: ${result.number} (${result.numbers.join(', ')})`
+        }
+      } else {
+        this.rollStatus = `Landed on ${result.number}`
+      }
 
       // Auto-hide result
       if (this.autoHideResult) {
@@ -229,6 +241,20 @@ export default {
         } else {
           this.rollStatus = 'Failed to change shader'
         }
+      }
+    },
+
+    handleDiceCountChange(diceCount) {
+      if (this.$refs.diceCanvas) {
+        this.$refs.diceCanvas.setDiceCount(diceCount)
+        this.rollStatus = `Using ${diceCount} ${diceCount === 1 ? 'die' : 'dice'}`
+      }
+    },
+
+    handleResultModeChange(resultMode) {
+      if (this.$refs.diceCanvas) {
+        this.$refs.diceCanvas.setResultMode(resultMode)
+        this.rollStatus = `Result mode: ${resultMode}`
       }
     },
 

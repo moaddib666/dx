@@ -8,6 +8,8 @@ export class D20Service {
         this.camera = null
         this.renderer = null
         this.dice = null
+        this.diceArray = [] // Array to hold multiple dice
+        this.diceCount = 1
         this.userTextureImg = null
         this.isInitialized = false
         this.materialService = markRaw(new D20MaterialService())
@@ -262,18 +264,69 @@ export class D20Service {
     }
 
     createDice(highlightFace = -1) {
+        // Clean up existing dice
+        this.clearAllDice()
+
+        if (this.diceCount === 1) {
+            // Single dice mode - original behavior
+            this.dice = this.buildD20Mesh(highlightFace)
+            this.dice.castShadow = this.dice.receiveShadow = true
+            this.dice.position.set(0, 1, 0)
+            this.scene.add(this.dice)
+            this.diceArray = [this.dice]
+        } else {
+            // Multiple dice mode
+            this.createMultipleDice(this.diceCount, highlightFace)
+        }
+
+        return this.diceArray
+    }
+
+    createMultipleDice(count, highlightFace = -1) {
+        this.diceCount = count
+        this.clearAllDice()
+
+        const spacing = 3.5 // Distance between dice
+        // Center the dice around origin point (0,0,0)
+        const totalWidth = (count - 1) * spacing
+        const startOffset = -totalWidth / 2
+
+        for (let i = 0; i < count; i++) {
+            const diceObject = this.buildD20Mesh(highlightFace)
+            diceObject.castShadow = diceObject.receiveShadow = true
+            
+            // Position dice centered around origin
+            const xOffset = startOffset + (i * spacing)
+            diceObject.position.set(xOffset, 1, 0)
+            
+            this.scene.add(diceObject)
+            this.diceArray.push(diceObject)
+        }
+
+        // Keep reference to first dice for backward compatibility
+        this.dice = this.diceArray[0]
+        
+        return this.diceArray
+    }
+
+    clearAllDice() {
+        // Clean up existing dice array
+        this.diceArray.forEach(diceObj => {
+            if (diceObj) {
+                this.scene.remove(diceObj)
+                diceObj.geometry.dispose()
+                diceObj.material.forEach((m) => m.dispose())
+            }
+        })
+        this.diceArray = []
+
+        // Clean up single dice reference
         if (this.dice) {
             this.scene.remove(this.dice)
             this.dice.geometry.dispose()
             this.dice.material.forEach((m) => m.dispose())
+            this.dice = null
         }
-
-        this.dice = this.buildD20Mesh(highlightFace)
-        this.dice.castShadow = this.dice.receiveShadow = true
-        this.dice.position.set(0, 1, 0)
-        this.scene.add(this.dice)
-
-        return this.dice
     }
 
     setCameraView(viewType) {
@@ -295,25 +348,82 @@ export class D20Service {
     }
 
     toggleWireframe() {
-        if (this.dice && this.dice.material) {
-            const isWireframe = this.dice.material[0].wireframe
-            this.dice.material.forEach((material) => {
-                material.wireframe = !isWireframe
+        if (this.diceArray.length > 0) {
+            const isWireframe = this.diceArray[0].material[0].wireframe
+            this.diceArray.forEach(diceObj => {
+                if (diceObj && diceObj.material) {
+                    diceObj.material.forEach((material) => {
+                        material.wireframe = !isWireframe
+                    })
+                }
             })
             return !isWireframe
         }
         return false
     }
 
-    updateDiceRotation(rotation) {
-        if (this.dice) {
+    updateDiceRotation(rotation, diceIndex = 0) {
+        if (this.diceArray[diceIndex]) {
+            this.diceArray[diceIndex].rotation.set(rotation.x, rotation.y, rotation.z)
+        }
+        // Update first dice for backward compatibility
+        if (diceIndex === 0 && this.dice) {
             this.dice.rotation.set(rotation.x, rotation.y, rotation.z)
         }
     }
 
-    updateDicePosition(position) {
-        if (this.dice) {
+    updateDicePosition(position, diceIndex = 0) {
+        if (this.diceArray[diceIndex]) {
+            if (this.diceCount === 1) {
+                // Single dice - allow full position animation
+                this.diceArray[diceIndex].position.copy(position)
+            } else {
+                // Multiple dice - keep dice at their fixed spawn positions, ignore animation position
+                // Do nothing - dice stay at their spawn positions
+            }
+        }
+        // Update first dice for backward compatibility
+        if (diceIndex === 0 && this.dice) {
             this.dice.position.copy(position)
+        }
+    }
+
+    getDiceOriginalPosition(diceIndex) {
+        if (this.diceCount === 1) {
+            return { x: 0, y: 1, z: 0 }
+        }
+        
+        const spacing = 3.5
+        const totalWidth = (this.diceCount - 1) * spacing
+        const startOffset = -totalWidth / 2
+        const xOffset = startOffset + (diceIndex * spacing)
+        
+        return { x: xOffset, y: 1, z: 0 }
+    }
+
+    updateAllDiceRotation(rotations) {
+        if (Array.isArray(rotations)) {
+            rotations.forEach((rotation, index) => {
+                this.updateDiceRotation(rotation, index)
+            })
+        } else {
+            // Single rotation for all dice
+            this.diceArray.forEach((diceObj, index) => {
+                this.updateDiceRotation(rotations, index)
+            })
+        }
+    }
+
+    updateAllDicePosition(positions) {
+        if (Array.isArray(positions)) {
+            positions.forEach((position, index) => {
+                this.updateDicePosition(position, index)
+            })
+        } else {
+            // Single position for all dice (not recommended but supported)
+            this.diceArray.forEach((diceObj, index) => {
+                this.updateDicePosition(positions, index)
+            })
         }
     }
 
@@ -333,15 +443,16 @@ export class D20Service {
         }
     }
 
-    findTopFace() {
-        if (!this.dice) return 1
+    findTopFace(diceIndex = 0) {
+        const targetDice = this.diceArray[diceIndex] || this.dice
+        if (!targetDice) return 1
 
         let bestIndex = 0
         let maxY = -Infinity
 
         this.faces.forEach((face, index) => {
             const normal = this.faceNormals[index].clone()
-            normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(this.dice.matrixWorld))
+            normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(targetDice.matrixWorld))
             if (normal.y > maxY) {
                 maxY = normal.y
                 bestIndex = index
@@ -349,6 +460,10 @@ export class D20Service {
         })
 
         return this.faceNumbers[bestIndex]
+    }
+
+    findAllTopFaces() {
+        return this.diceArray.map((diceObj, index) => this.findTopFace(index))
     }
 
     // Material and shader control methods
@@ -391,11 +506,8 @@ export class D20Service {
     }
 
     dispose() {
-        if (this.dice) {
-            this.scene.remove(this.dice)
-            this.dice.geometry.dispose()
-            this.dice.material.forEach((m) => m.dispose())
-        }
+        // Clean up all dice using the existing method
+        this.clearAllDice()
 
         if (this.renderer) {
             this.renderer.dispose()
@@ -405,6 +517,7 @@ export class D20Service {
         this.camera = null
         this.renderer = null
         this.dice = null
+        this.diceArray = []
         this.isInitialized = false
     }
 }

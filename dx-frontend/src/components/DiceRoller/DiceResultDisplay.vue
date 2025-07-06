@@ -1,12 +1,51 @@
 <template>
   <div class="dice-result-display" @click="handleClick">
     <div class="result-content">
-      <div class="result-number" :class="resultClass">
+      <!-- Single dice result -->
+      <div v-if="!isMultipleDice" class="result-number" :class="resultClass">
         {{ result.number }}
       </div>
       
+      <!-- Multiple dice results -->
+      <div v-else class="multiple-dice-results">
+        <div v-if="result.resultType === 'both'" class="both-results">
+          <div class="individual-results">
+            <div 
+              v-for="(num, index) in result.numbers" 
+              :key="index"
+              class="dice-result"
+              :class="getDiceResultClass(num)"
+            >
+              {{ num }}
+            </div>
+          </div>
+          <div class="result-label">Both Dice</div>
+        </div>
+        <div v-else class="single-result">
+          <div class="result-number" :class="resultClass">
+            {{ result.number }}
+          </div>
+          <div class="individual-results">
+            <span class="dice-breakdown">
+              ({{ result.numbers.join(', ') }})
+            </span>
+          </div>
+          <div class="result-label">
+            {{ result.resultType === 'best' ? 'Best Roll' : 'Worst Roll' }}
+          </div>
+        </div>
+      </div>
+      
       <div class="result-text">
-        You rolled {{ result.number }}!
+        <span v-if="!isMultipleDice">
+          You rolled {{ result.number }}!
+        </span>
+        <span v-else-if="result.resultType === 'both'">
+          You rolled {{ result.numbers.join(' and ') }}!
+        </span>
+        <span v-else>
+          {{ result.resultType === 'best' ? 'Best' : 'Worst' }} of {{ result.numbers.join(' and ') }}!
+        </span>
       </div>
       
       <div v-if="result.isDeterministic" class="result-type">
@@ -19,6 +58,7 @@
       <div class="result-details">
         <span>Roll Time: {{ formatTime(result.rollTime) }}</span>
         <span v-if="result.targetNumber">Target: {{ result.targetNumber }}</span>
+        <span v-if="result.diceCount">Dice: {{ result.diceCount }}</span>
       </div>
       
       <button class="close-btn" @click.stop="$emit('close')" aria-label="Close">
@@ -45,8 +85,12 @@ export default {
   emits: ['close'],
 
   computed: {
+    isMultipleDice() {
+      return this.result.diceCount > 1 || (this.result.numbers && this.result.numbers.length > 1)
+    },
+
     resultClass() {
-      const number = this.result.number
+      const number = Array.isArray(this.result.number) ? Math.max(...this.result.number) : this.result.number
       if (number === 1) {
         return 'critical-fail'
       } else if (number === 20) {
@@ -68,6 +112,19 @@ export default {
 
     formatTime(seconds) {
       return `${seconds.toFixed(1)}s`
+    },
+
+    getDiceResultClass(number) {
+      if (number === 1) {
+        return 'critical-fail'
+      } else if (number === 20) {
+        return 'critical-success'
+      } else if (number >= 15) {
+        return 'high-roll'
+      } else if (number <= 5) {
+        return 'low-roll'
+      }
+      return 'normal-roll'
     }
   }
 }
@@ -264,5 +321,110 @@ export default {
 .dice-result-display:has(.low-roll) {
   border-color: #ff8844;
   box-shadow: 0 8px 32px rgba(255, 136, 68, 0.3);
+}
+
+/* Multiple dice styles */
+.multiple-dice-results {
+  margin-bottom: 10px;
+}
+
+.both-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.individual-results {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dice-result {
+  font-size: 48px;
+  font-weight: bold;
+  text-shadow: 0 0 15px currentColor;
+  line-height: 1;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-result.critical-fail {
+  color: #ff0505;
+  animation: criticalFailPulse 2s infinite;
+}
+
+.dice-result.critical-success {
+  color: #ffff00;
+  animation: criticalSuccessPulse 2s infinite;
+}
+
+.dice-result.high-roll {
+  color: #00ff88;
+}
+
+.dice-result.low-roll {
+  color: #ff8844;
+}
+
+.dice-result.normal-roll {
+  color: #88ddff;
+}
+
+.single-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dice-breakdown {
+  font-size: 16px;
+  color: #aaa;
+  font-weight: normal;
+}
+
+.result-label {
+  font-size: 14px;
+  color: #00ffff;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Responsive adjustments for multiple dice */
+@media (max-width: 768px) {
+  .dice-result {
+    font-size: 36px;
+    min-width: 60px;
+    padding: 8px;
+  }
+  
+  .individual-results {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dice-result {
+    font-size: 30px;
+    min-width: 50px;
+    padding: 6px;
+  }
+  
+  .individual-results {
+    gap: 10px;
+  }
+  
+  .dice-breakdown {
+    font-size: 14px;
+  }
 }
 </style>
