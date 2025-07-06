@@ -207,12 +207,21 @@ export default {
       if (!this.isInitialized || this.isAnyDiceRolling()) {
         return null
       }
-      for (let i = 0; i < this.diceCount; i++) {
+
+      if (this.diceCount === 1) {
+        // Single dice random roll - use deterministic animation with random target
         const randomTarget = Math.floor(Math.random() * 20) + 1
-        new Promise((resolve) => {
+        return new Promise((resolve) => {
           this.pendingRollResolve = resolve
-          this.rollStateServices[i].startRoll(randomTarget, true)
+          this.rollStateServices[0].startRoll(randomTarget, true)
         })
+      } else {
+        // Multiple dice random roll - generate random targets for each dice
+        const randomTargets = []
+        for (let i = 0; i < this.diceCount; i++) {
+          randomTargets.push(Math.floor(Math.random() * 20) + 1)
+        }
+        return this.rollMultipleDice(randomTargets, true)
       }
     },
 

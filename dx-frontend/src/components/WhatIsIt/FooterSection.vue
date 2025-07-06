@@ -32,7 +32,7 @@ export default {
     discordLink: {
       type: String,
       required: true,
-      default: 'https://discord.gg/32dwT8EP'
+      default: 'https://discord.gg/vC3TvVzK'
     },
     additionalLinks: {
       type: Array,

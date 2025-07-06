@@ -217,7 +217,7 @@
       <!-- Footer -->
       <div class="footer-section">
         <p>{{ t('newcomersGuide.footer.readyToBegin') }}</p>
-        <a href="https://discord.gg/32dwT8EP" target="_blank" class="discord-link">
+        <a href="https://discord.gg/vC3TvVzK" target="_blank" class="discord-link">
           {{ t('newcomersGuide.footer.joinDiscord') }}
         </a>
         <div class="additional-links">

@@ -273,7 +273,7 @@ export default {
 
         if (goToDiscord) {
           // Open Discord link in a new tab
-          window.open('https://discord.gg/32dwT8EP', '_blank');
+          window.open('https://discord.gg/vC3TvVzK', '_blank');
         }
         return;
       }
@@ -284,7 +284,7 @@ export default {
 
     // Method to open Discord in a new tab
     openDiscord() {
-      window.open('https://discord.gg/32dwT8EP', '_blank');
+      window.open('https://discord.gg/vC3TvVzK', '_blank');
     },
 
     // Method to navigate to FAQ page

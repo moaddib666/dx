@@ -45,7 +45,7 @@
       <FooterSection
         :ready-text="t('whatIsIt.footer.readyToBegin')"
         :discord-text="t('whatIsIt.footer.joinDiscord')"
-        :discord-link="'https://discord.gg/32dwT8EP'"
+        :discord-link="'https://discord.gg/vC3TvVzK'"
         :additional-links="footerLinks"
       />
     </main>
