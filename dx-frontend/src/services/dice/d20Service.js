@@ -11,7 +11,7 @@ export class D20Service {
         this.userTextureImg = null
         this.isInitialized = false
         this.materialService = markRaw(new D20MaterialService())
-        
+
         // D20 geometry data
         this.t = (1 + Math.sqrt(5)) / 2
         this.vertices = [
@@ -19,14 +19,14 @@ export class D20Service {
             [0, -1, this.t], [0, 1, this.t], [0, -1, -this.t], [0, 1, -this.t],
             [this.t, 0, -1], [this.t, 0, 1], [-this.t, 0, -1], [-this.t, 0, 1]
         ]
-        
+
         this.faces = [
             [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
             [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
             [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
             [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]
         ]
-        
+
         this.faceNumbers = Array.from({ length: 20 }, (_, i) => i + 1)
         this.faceNormals = this.calculateFaceNormals()
     }
@@ -76,11 +76,11 @@ export class D20Service {
 
     setupLighting() {
         // Brighter ambient light
-        const ambientLight = new THREE.AmbientLight(0x606060, 0.6)
+        const ambientLight = new THREE.AmbientLight(0x606060, 0.3)
         this.scene.add(ambientLight)
 
         // Main directional light (stronger)
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.5)
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8)
         dirLight.position.set(5, 15, 5)
         dirLight.castShadow = true
         dirLight.shadow.mapSize.width = 2048
@@ -103,7 +103,7 @@ export class D20Service {
         this.scene.add(fillLight2)
 
         // Top light for better visibility from above
-        const topLight = new THREE.DirectionalLight(0xffffff, 0.4)
+        const topLight = new THREE.DirectionalLight(0xffffff, 0.1)
         topLight.position.set(0, 20, 0)
         this.scene.add(topLight)
     }
@@ -111,10 +111,10 @@ export class D20Service {
     createSurface() {
         const surface = new THREE.Mesh(
             new THREE.PlaneGeometry(20, 20),
-            new THREE.MeshPhongMaterial({ 
-                color: 0x444444, 
-                transparent: true, 
-                opacity: 0.8 
+            new THREE.MeshPhongMaterial({
+                color: 0x444444,
+                transparent: true,
+                opacity: 0.8
             })
         )
         surface.rotation.x = -Math.PI / 2
@@ -204,16 +204,16 @@ export class D20Service {
 
         this.faces.forEach((face, faceIndex) => {
             const [v1, v2, v3] = face.map((idx) => new THREE.Vector3(...this.vertices[idx]))
-            
+
             // Positions
             positions.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z)
-            
+
             // Normals
             const normal = new THREE.Vector3()
                 .crossVectors(v2.clone().sub(v1), v3.clone().sub(v1))
                 .normalize()
             normals.push(normal.x, normal.y, normal.z, normal.x, normal.y, normal.z, normal.x, normal.y, normal.z)
-            
+
             // UVs
             uvs.push(0.1, 0.2, 0.9, 0.2, 0.5, 0.85)
 
@@ -224,14 +224,14 @@ export class D20Service {
                 "#fff",
                 faceIndex === highlightFace
             )
-            
+
             // Use material service to create material
             const material = this.materialService.createMaterial(
                 this.materialService.getCurrentMaterialType(),
                 texture,
                 this.materialService.getCurrentShaderType()
             )
-            
+
             materials.push(material)
             groups.push({ start: faceIndex * 3, count: 3, materialIndex: faceIndex })
         })
@@ -264,7 +264,7 @@ export class D20Service {
         this.dice.castShadow = this.dice.receiveShadow = true
         this.dice.position.set(0, 1, 0)
         this.scene.add(this.dice)
-        
+
         return this.dice
     }
 
@@ -388,11 +388,11 @@ export class D20Service {
             this.dice.geometry.dispose()
             this.dice.material.forEach((m) => m.dispose())
         }
-        
+
         if (this.renderer) {
             this.renderer.dispose()
         }
-        
+
         this.scene = null
         this.camera = null
         this.renderer = null
