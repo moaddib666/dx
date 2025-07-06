@@ -114,7 +114,7 @@ export default {
         }
 
         // Render scene
-        this.d20Service.render()
+        this.d20Service.render(deltaTime)
 
         this.animationId = requestAnimationFrame(animate)
       }
@@ -179,6 +179,49 @@ export default {
         return this.d20Service.toggleWireframe()
       }
       return false
+    },
+
+    // Material and shader control methods
+    setMaterialType(materialType) {
+      if (this.d20Service) {
+        return this.d20Service.setMaterialType(materialType)
+      }
+      return false
+    },
+
+    setShaderType(shaderType) {
+      if (this.d20Service) {
+        return this.d20Service.setShaderType(shaderType)
+      }
+      return false
+    },
+
+    getMaterialTypes() {
+      if (this.d20Service) {
+        return this.d20Service.getMaterialTypes()
+      }
+      return []
+    },
+
+    getShaderTypes() {
+      if (this.d20Service) {
+        return this.d20Service.getShaderTypes()
+      }
+      return []
+    },
+
+    getCurrentMaterialType() {
+      if (this.d20Service) {
+        return this.d20Service.getCurrentMaterialType()
+      }
+      return 'plastic'
+    },
+
+    getCurrentShaderType() {
+      if (this.d20Service) {
+        return this.d20Service.getCurrentShaderType()
+      }
+      return 'none'
     },
 
     // Event handlers

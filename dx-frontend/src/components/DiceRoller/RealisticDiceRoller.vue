@@ -17,9 +17,15 @@
       @toggle-wireframe="handleToggleWireframe"
       @camera-view="handleCameraView"
       @texture-upload="handleTextureUpload"
+      @material-change="handleMaterialChange"
+      @shader-change="handleShaderChange"
       :is-rolling="isRolling"
       :current-number="currentDisplayNumber"
       :status="rollStatus"
+      :material-types="materialTypes"
+      :shader-types="shaderTypes"
+      :current-material="currentMaterial"
+      :current-shader="currentShader"
     />
     
     <DiceResultDisplay
@@ -73,7 +79,17 @@ export default {
       rollStatus: 'Ready to roll',
       showResult: false,
       lastResult: null,
-      resultTimeout: null
+      resultTimeout: null,
+      materialTypes: [],
+      shaderTypes: [],
+      currentMaterial: 'plastic',
+      currentShader: 'none'
+    }
+  },
+
+  computed: {
+    canvasReady() {
+      return this.isCanvasReady && this.$refs.diceCanvas
     }
   },
 
@@ -87,6 +103,15 @@ export default {
     onCanvasReady() {
       this.isCanvasReady = true
       this.rollStatus = 'Ready to roll'
+      
+      // Initialize material and shader options
+      if (this.$refs.diceCanvas) {
+        this.materialTypes = this.$refs.diceCanvas.getMaterialTypes()
+        this.shaderTypes = this.$refs.diceCanvas.getShaderTypes()
+        this.currentMaterial = this.$refs.diceCanvas.getCurrentMaterialType()
+        this.currentShader = this.$refs.diceCanvas.getCurrentShaderType()
+      }
+      
       this.$emit('ready')
     },
 
@@ -177,6 +202,32 @@ export default {
           this.rollStatus = 'Custom texture loaded'
         } else {
           this.rollStatus = 'Failed to load texture'
+        }
+      }
+    },
+
+    handleMaterialChange(materialType) {
+      if (this.$refs.diceCanvas) {
+        const success = this.$refs.diceCanvas.setMaterialType(materialType)
+        if (success) {
+          this.currentMaterial = materialType
+          this.rollStatus = `Material changed to ${materialType}`
+        } else {
+          this.rollStatus = 'Failed to change material'
+        }
+      }
+    },
+
+    handleShaderChange(shaderType) {
+      if (this.$refs.diceCanvas) {
+        const success = this.$refs.diceCanvas.setShaderType(shaderType)
+        if (success) {
+          this.currentShader = shaderType
+          this.rollStatus = shaderType === 'none' 
+            ? 'Shader effects disabled' 
+            : `Shader changed to ${shaderType}`
+        } else {
+          this.rollStatus = 'Failed to change shader'
         }
       }
     },

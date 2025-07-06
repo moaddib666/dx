@@ -96,6 +96,38 @@
         </button>
       </div>
     </div>
+
+    <!-- Material Selection -->
+    <div class="material-section">
+      <strong>Material Type:</strong>
+      <div class="material-buttons">
+        <button 
+          v-for="material in materialTypes" 
+          :key="material"
+          @click="setMaterial(material)"
+          class="material-btn"
+          :class="{ active: currentMaterial === material }"
+        >
+          {{ formatMaterialName(material) }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Shader Selection -->
+    <div class="shader-section">
+      <strong>Shader Effects:</strong>
+      <div class="shader-buttons">
+        <button 
+          v-for="shader in shaderTypes" 
+          :key="shader"
+          @click="setShader(shader)"
+          class="shader-btn"
+          :class="{ active: currentShader === shader }"
+        >
+          {{ formatShaderName(shader) }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -115,6 +147,22 @@ export default {
     status: {
       type: String,
       default: 'Ready to roll'
+    },
+    materialTypes: {
+      type: Array,
+      default: () => ['plastic', 'metal', 'glass', 'stone']
+    },
+    shaderTypes: {
+      type: Array,
+      default: () => ['none', 'bloom', 'fire', 'metallic']
+    },
+    currentMaterial: {
+      type: String,
+      default: 'plastic'
+    },
+    currentShader: {
+      type: String,
+      default: 'none'
     }
   },
 
@@ -124,7 +172,9 @@ export default {
     'reset-camera',
     'toggle-wireframe',
     'camera-view',
-    'texture-upload'
+    'texture-upload',
+    'material-change',
+    'shader-change'
   ],
 
   data() {
@@ -168,6 +218,23 @@ export default {
 
     setCameraView(viewType) {
       this.$emit('camera-view', viewType)
+    },
+
+    setMaterial(materialType) {
+      this.$emit('material-change', materialType)
+    },
+
+    setShader(shaderType) {
+      this.$emit('shader-change', shaderType)
+    },
+
+    formatMaterialName(material) {
+      return material.charAt(0).toUpperCase() + material.slice(1)
+    },
+
+    formatShaderName(shader) {
+      if (shader === 'none') return 'None'
+      return shader.charAt(0).toUpperCase() + shader.slice(1)
     }
   }
 }
@@ -385,6 +452,48 @@ export default {
 
 .view-btn:hover {
   background: #555;
+}
+
+/* Material and Shader sections */
+.material-section, .shader-section {
+  margin: 15px 0;
+}
+
+.material-section strong, .shader-section strong {
+  color: #00ffff;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.material-buttons, .shader-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.material-btn, .shader-btn {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.material-btn:hover, .shader-btn:hover {
+  background: #555;
+}
+
+.material-btn.active {
+  background: #ff6600;
+  color: #fff;
+}
+
+.shader-btn.active {
+  background: #0066cc;
+  color: #fff;
 }
 
 /* Responsive design */

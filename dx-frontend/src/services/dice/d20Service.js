@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { markRaw } from 'vue'
+import D20MaterialService from './d20MaterialService.js'
 
 export class D20Service {
     constructor() {
@@ -9,6 +10,7 @@ export class D20Service {
         this.dice = null
         this.userTextureImg = null
         this.isInitialized = false
+        this.materialService = markRaw(new D20MaterialService())
         
         // D20 geometry data
         this.t = (1 + Math.sqrt(5)) / 2
@@ -54,6 +56,9 @@ export class D20Service {
             this.renderer.setSize(width, height)
             this.renderer.shadowMap.enabled = true
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+            // Initialize material service shaders
+            this.materialService.initializeShaders()
 
             // Setup lighting
             this.setupLighting()
@@ -220,15 +225,14 @@ export class D20Service {
                 faceIndex === highlightFace
             )
             
-            materials.push(
-                new THREE.MeshPhongMaterial({ 
-                    map: texture, 
-                    transparent: true, 
-                    opacity: 0.95, 
-                    shininess: 100 
-                })
+            // Use material service to create material
+            const material = this.materialService.createMaterial(
+                this.materialService.getCurrentMaterialType(),
+                texture,
+                this.materialService.getCurrentShaderType()
             )
             
+            materials.push(material)
             groups.push({ start: faceIndex * 3, count: 3, materialIndex: faceIndex })
         })
 
@@ -305,8 +309,10 @@ export class D20Service {
         }
     }
 
-    render() {
+    render(deltaTime = 0) {
         if (this.renderer && this.scene && this.camera) {
+            // Update shader uniforms
+            this.materialService.updateShaderUniforms(deltaTime)
             this.renderer.render(this.scene, this.camera)
         }
     }
@@ -335,6 +341,45 @@ export class D20Service {
         })
 
         return this.faceNumbers[bestIndex]
+    }
+
+    // Material and shader control methods
+    setMaterialType(materialType) {
+        if (this.materialService.setMaterialType(materialType)) {
+            // Recreate dice with new material
+            if (this.dice) {
+                this.createDice()
+            }
+            return true
+        }
+        return false
+    }
+
+    setShaderType(shaderType) {
+        if (this.materialService.setShaderType(shaderType)) {
+            // Recreate dice with new shader
+            if (this.dice) {
+                this.createDice()
+            }
+            return true
+        }
+        return false
+    }
+
+    getMaterialTypes() {
+        return this.materialService.getMaterialTypes()
+    }
+
+    getShaderTypes() {
+        return this.materialService.getShaderTypes()
+    }
+
+    getCurrentMaterialType() {
+        return this.materialService.getCurrentMaterialType()
+    }
+
+    getCurrentShaderType() {
+        return this.materialService.getCurrentShaderType()
     }
 
     dispose() {
