@@ -19,8 +19,8 @@
       </select>
     </div>
 
-    <!-- Target Number Input -->
-    <div class="input-group">
+    <!-- Target Number Input(s) -->
+    <div v-if="diceCount === 1" class="input-group">
       <label><strong>Target Number:</strong></label>
       <input 
         type="number" 
@@ -29,6 +29,32 @@
         min="1" 
         max="20" 
       />
+    </div>
+
+    <div v-else class="input-group-vertical">
+      <label><strong>Target Numbers:</strong></label>
+      <div class="dice-targets">
+        <div class="dice-target">
+          <label>Dice 1:</label>
+          <input 
+            type="number" 
+            v-model.number="dice1Target" 
+            class="number-input" 
+            min="1" 
+            max="20" 
+          />
+        </div>
+        <div class="dice-target">
+          <label>Dice 2:</label>
+          <input 
+            type="number" 
+            v-model.number="dice2Target" 
+            class="number-input" 
+            min="1" 
+            max="20" 
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Main Action Buttons -->
@@ -190,6 +216,8 @@ export default {
   data() {
     return {
       targetNumber: 20,
+      dice1Target: 20,
+      dice2Target: 20,
       presetNumbers: Array.from({ length: 20 }, (_, i) => i + 1),
       diceCount: 1,
       resultMode: 'best'
@@ -207,11 +235,21 @@ export default {
 
   methods: {
     rollDice() {
-      if (this.targetNumber < 1 || this.targetNumber > 20) {
-        alert('Enter 1‑20')
-        return
+      if (this.diceCount === 1) {
+        if (this.targetNumber < 1 || this.targetNumber > 20) {
+          alert('Enter 1‑20')
+          return
+        }
+        this.$emit('roll-dice', this.targetNumber)
+      } else {
+        // Multiple dice - validate all targets and send array
+        if (this.dice1Target < 1 || this.dice1Target > 20 || 
+            this.dice2Target < 1 || this.dice2Target > 20) {
+          alert('Enter 1‑20 for each dice')
+          return
+        }
+        this.$emit('roll-dice', [this.dice1Target, this.dice2Target])
       }
-      this.$emit('roll-dice', this.targetNumber)
     },
 
     randomRoll() {
@@ -289,6 +327,35 @@ export default {
   color: #00ffff;
   font-size: 14px;
   min-width: 120px;
+}
+
+.input-group-vertical {
+  margin: 10px 0;
+}
+
+.input-group-vertical > label {
+  color: #00ffff;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dice-targets {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.dice-target {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dice-target label {
+  color: #fff;
+  font-size: 12px;
+  min-width: 50px;
 }
 
 .number-input {

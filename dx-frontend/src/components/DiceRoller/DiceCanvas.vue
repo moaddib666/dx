@@ -91,14 +91,20 @@ export default {
     },
 
     initializeRollStatePosition(rollStateService, diceIndex) {
-      // Calculate the correct starting position for this dice
+      // Calculate the correct starting position for this dice based on current dice count
       const spacing = 3.5
-      const totalWidth = (2 - 1) * spacing // Assuming max 2 dice
-      const startOffset = -totalWidth / 2
-      const xOffset = startOffset + (diceIndex * spacing)
+      const currentDiceCount = this.diceCount || 1
       
-      // Set the initial position for this roll state service
-      rollStateService.state.position.set(xOffset, 1, 0)
+      if (currentDiceCount === 1) {
+        // Single dice always at center
+        rollStateService.state.position.set(0, 1, 0)
+      } else {
+        // Multiple dice positioning
+        const totalWidth = (currentDiceCount - 1) * spacing
+        const startOffset = -totalWidth / 2
+        const xOffset = startOffset + (diceIndex * spacing)
+        rollStateService.state.position.set(xOffset, 1, 0)
+      }
     },
 
     async setupCanvas() {
@@ -169,9 +175,28 @@ export default {
           this.rollStateServices[0].startRoll(targetNumber, true)
         })
       } else {
-        // Multiple dice roll
-        return this.rollMultipleDice(targetNumber, true)
+        // Multiple dice roll - each dice gets the same target for now
+        // For different targets per dice, use rollToTargets() method
+        return this.rollMultipleDice([targetNumber, targetNumber], true)
       }
+    },
+
+    async rollToTargets(targetNumbers) {
+      if (!this.isInitialized || this.isAnyDiceRolling()) {
+        return null
+      }
+
+      if (!Array.isArray(targetNumbers)) {
+        return this.rollToTarget(targetNumbers)
+      }
+
+      // Ensure we have enough targets for all dice
+      const targets = [...targetNumbers]
+      while (targets.length < this.diceCount) {
+        targets.push(targets[targets.length - 1] || 20)
+      }
+
+      return this.rollMultipleDice(targets.slice(0, this.diceCount), true)
     },
 
     isAnyDiceRolling() {
@@ -196,14 +221,26 @@ export default {
       }
     },
 
-    async rollMultipleDice(targetNumber = null, deterministic = false) {
+    async rollMultipleDice(targetNumbers = null, deterministic = false) {
       return new Promise((resolve) => {
         this.pendingResults = []
         this.pendingRollResolve = resolve
         
         // Start all dice rolling simultaneously
         for (let i = 0; i < this.diceCount; i++) {
-          const diceTarget = targetNumber || (Math.floor(Math.random() * 20) + 1)
+          let diceTarget
+          
+          if (Array.isArray(targetNumbers)) {
+            // Individual targets for each dice
+            diceTarget = targetNumbers[i] || (Math.floor(Math.random() * 20) + 1)
+          } else if (targetNumbers !== null) {
+            // Same target for all dice
+            diceTarget = targetNumbers
+          } else {
+            // Random target for each dice
+            diceTarget = Math.floor(Math.random() * 20) + 1
+          }
+          
           this.rollStateServices[i].startRoll(diceTarget, deterministic)
         }
       })
@@ -329,12 +366,25 @@ export default {
     },
 
     updateDiceConfiguration() {
+      // Always update the dice count and recreate the scene
+      this.d20Service.diceCount = this.diceCount
+      
       if (this.diceCount === 1) {
         // Single dice mode - use original setup
         this.d20Service.createDice()
       } else if (this.diceCount === 2) {
         // Two dice mode - create two dice with appropriate positioning
         this.d20Service.createMultipleDice(2)
+      }
+      
+      // Update roll state services positions for new dice count
+      this.updateRollStatePositions()
+    },
+
+    updateRollStatePositions() {
+      // Recalculate and update positions for all roll state services
+      for (let i = 0; i < this.rollStateServices.length; i++) {
+        this.initializeRollStatePosition(this.rollStateServices[i], i)
       }
     },
 
@@ -369,8 +419,13 @@ export default {
           // Multiple dice - calculate final result
           const finalResult = this.calculateMultiDiceResult(this.pendingResults)
           
-          // Highlight dice based on result mode
-          this.highlightMultipleDice(this.pendingResults, finalResult)
+          // Highlight dice based on result mode - use ordered results by dice index
+          const orderedResults = new Array(this.diceCount)
+          this.pendingResults.forEach(res => {
+            orderedResults[res.diceIndex] = res
+          })
+          
+          this.highlightMultipleDice(orderedResults, finalResult)
           
           this.$emit('roll-complete', finalResult)
           
@@ -386,18 +441,11 @@ export default {
     },
 
     highlightMultipleDice(results, finalResult) {
-      if (this.resultMode === 'both') {
-        // Highlight all dice
-        this.d20Service.createDice(-1)
-      } else {
-        // Highlight the dice that contributed to the final result
-        const targetNumber = this.resultMode === 'best' 
-          ? Math.max(...results.map(r => r.number))
-          : Math.min(...results.map(r => r.number))
-        
-        const faceIndex = this.d20Service.faceNumbers.indexOf(targetNumber)
-        this.d20Service.createDice(faceIndex)
-      }
+      // Create highlight faces array with each dice's target number
+      const highlightFaces = results.map(result => result.number)
+      
+      // Use the new individual highlighting method
+      this.d20Service.createDiceWithIndividualHighlights(highlightFaces)
     },
 
     handleNumberChange(number, diceIndex) {

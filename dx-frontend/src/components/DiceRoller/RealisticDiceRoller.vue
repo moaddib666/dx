@@ -131,14 +131,22 @@ export default {
       this.isRolling = state.isRolling
     },
 
-    async handleRollDice(targetNumber) {
+    async handleRollDice(targetNumbers) {
       if (!this.isCanvasReady || this.isRolling) return
 
       try {
         this.isRolling = true
         this.showResult = false
 
-        const result = await this.$refs.diceCanvas.rollToTarget(targetNumber)
+        let result
+        if (Array.isArray(targetNumbers)) {
+          // Multiple dice with individual targets
+          result = await this.$refs.diceCanvas.rollToTargets(targetNumbers)
+        } else {
+          // Single dice or same target for all
+          result = await this.$refs.diceCanvas.rollToTarget(targetNumbers)
+        }
+        
         this.handleRollComplete(result)
       } catch (error) {
         console.error('Roll failed:', error)

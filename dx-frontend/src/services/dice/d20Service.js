@@ -282,6 +282,50 @@ export class D20Service {
         return this.diceArray
     }
 
+    createDiceWithIndividualHighlights(highlightFaces = [], preserveRotations = true) {
+        // Store current rotations before clearing dice
+        const currentRotations = []
+        if (preserveRotations && this.diceArray.length > 0) {
+            this.diceArray.forEach(dice => {
+                if (dice) {
+                    currentRotations.push({
+                        x: dice.rotation.x,
+                        y: dice.rotation.y,
+                        z: dice.rotation.z
+                    })
+                }
+            })
+        }
+
+        // Clean up existing dice
+        this.clearAllDice()
+
+        if (this.diceCount === 1) {
+            // Single dice mode - convert face number to face index
+            const highlight = Array.isArray(highlightFaces) ? highlightFaces[0] : highlightFaces
+            const faceIndex = (highlight !== undefined && highlight !== -1) 
+                ? this.faceNumbers.indexOf(highlight) 
+                : -1
+            this.dice = this.buildD20Mesh(faceIndex)
+            this.dice.castShadow = this.dice.receiveShadow = true
+            this.dice.position.set(0, 1, 0)
+            
+            // Restore rotation if available
+            if (currentRotations.length > 0) {
+                const rot = currentRotations[0]
+                this.dice.rotation.set(rot.x, rot.y, rot.z)
+            }
+            
+            this.scene.add(this.dice)
+            this.diceArray = [this.dice]
+        } else {
+            // Multiple dice mode with individual highlights
+            this.createMultipleDiceWithHighlights(this.diceCount, highlightFaces, currentRotations)
+        }
+
+        return this.diceArray
+    }
+
     createMultipleDice(count, highlightFace = -1) {
         this.diceCount = count
         this.clearAllDice()
@@ -298,6 +342,45 @@ export class D20Service {
             // Position dice centered around origin
             const xOffset = startOffset + (i * spacing)
             diceObject.position.set(xOffset, 1, 0)
+            
+            this.scene.add(diceObject)
+            this.diceArray.push(diceObject)
+        }
+
+        // Keep reference to first dice for backward compatibility
+        this.dice = this.diceArray[0]
+        
+        return this.diceArray
+    }
+
+    createMultipleDiceWithHighlights(count, highlightFaces = [], preservedRotations = []) {
+        this.diceCount = count
+        this.clearAllDice()
+
+        const spacing = 3.5 // Distance between dice
+        // Center the dice around origin point (0,0,0)
+        const totalWidth = (count - 1) * spacing
+        const startOffset = -totalWidth / 2
+
+        for (let i = 0; i < count; i++) {
+            // Get highlight face for this specific dice
+            const highlightFace = Array.isArray(highlightFaces) ? highlightFaces[i] : highlightFaces
+            const faceIndex = (highlightFace !== undefined && highlightFace !== -1) 
+                ? this.faceNumbers.indexOf(highlightFace) 
+                : -1
+            
+            const diceObject = this.buildD20Mesh(faceIndex)
+            diceObject.castShadow = diceObject.receiveShadow = true
+            
+            // Position dice centered around origin
+            const xOffset = startOffset + (i * spacing)
+            diceObject.position.set(xOffset, 1, 0)
+            
+            // Restore rotation if available
+            if (preservedRotations.length > i) {
+                const rot = preservedRotations[i]
+                diceObject.rotation.set(rot.x, rot.y, rot.z)
+            }
             
             this.scene.add(diceObject)
             this.diceArray.push(diceObject)
