@@ -1,6 +1,6 @@
 <template>
-  <canvas 
-    ref="canvas" 
+  <canvas
+    ref="canvas"
     class="dice-canvas"
     @mousedown="handleMouseDown"
     @mousemove="handleMouseMove"
@@ -29,13 +29,13 @@ export default {
       isInitialized: false,
       animationId: null,
       lastTime: 0,
-      
+
       // Multi-dice support
       diceCount: 1,
       resultMode: 'best',
       activeRolls: [], // Track active rolling states
       pendingResults: [], // Store results as they complete
-      
+
       // Mouse controls
       mouseDown: false,
       mouseX: 0,
@@ -64,7 +64,7 @@ export default {
       // Initialize services with markRaw to prevent Vue reactivity
       this.d20Service = markRaw(new D20Service())
       this.textureService = markRaw(new D20TextureService())
-      
+
       // Initialize roll state services for potential multiple dice
       this.createRollStateServices(2) // Initialize for up to 2 dice
     },
@@ -73,14 +73,14 @@ export default {
       // Clear existing services
       this.rollStateServices.forEach(service => service.dispose())
       this.rollStateServices = []
-      
+
       // Create roll state services for each potential dice
       for (let i = 0; i < maxDice; i++) {
         const rollStateService = markRaw(new RollStateService())
-        
+
         // Set initial position for this specific dice based on its index
         this.initializeRollStatePosition(rollStateService, i)
-        
+
         rollStateService.setCallbacks({
           onStateChange: (state) => this.handleStateChange(state, i),
           onRollComplete: (result) => this.handleRollComplete(result, i),
@@ -94,7 +94,7 @@ export default {
       // Calculate the correct starting position for this dice based on current dice count
       const spacing = 3.5
       const currentDiceCount = this.diceCount || 1
-      
+
       if (currentDiceCount === 1) {
         // Single dice always at center
         rollStateService.state.position.set(0, 1, 0)
@@ -110,11 +110,11 @@ export default {
     async setupCanvas() {
       const canvas = this.$refs.canvas
       const parent = canvas.parentElement
-      
+
       // Set canvas size
       const width = parent.clientWidth || 800
       const height = parent.clientHeight || 600
-      
+
       canvas.width = width
       canvas.height = height
       canvas.style.width = `${width}px`
@@ -207,17 +207,12 @@ export default {
       if (!this.isInitialized || this.isAnyDiceRolling()) {
         return null
       }
-
-      if (this.diceCount === 1) {
-        // Single dice random roll
+      for (let i = 0; i < this.diceCount; i++) {
         const randomTarget = Math.floor(Math.random() * 20) + 1
-        return new Promise((resolve) => {
+        new Promise((resolve) => {
           this.pendingRollResolve = resolve
-          this.rollStateServices[0].startRoll(randomTarget, false)
+          this.rollStateServices[i].startRoll(randomTarget, true)
         })
-      } else {
-        // Multiple dice random roll
-        return this.rollMultipleDice(null, false)
       }
     },
 
@@ -225,11 +220,11 @@ export default {
       return new Promise((resolve) => {
         this.pendingResults = []
         this.pendingRollResolve = resolve
-        
+
         // Start all dice rolling simultaneously
         for (let i = 0; i < this.diceCount; i++) {
           let diceTarget
-          
+
           if (Array.isArray(targetNumbers)) {
             // Individual targets for each dice
             diceTarget = targetNumbers[i] || (Math.floor(Math.random() * 20) + 1)
@@ -240,7 +235,7 @@ export default {
             // Random target for each dice
             diceTarget = Math.floor(Math.random() * 20) + 1
           }
-          
+
           this.rollStateServices[i].startRoll(diceTarget, deterministic)
         }
       })
@@ -250,7 +245,7 @@ export default {
       const numbers = results.map(r => r.number)
       let finalNumber
       let resultType = 'multiple'
-      
+
       switch (this.resultMode) {
         case 'best':
           finalNumber = Math.max(...numbers)
@@ -268,7 +263,7 @@ export default {
           finalNumber = Math.max(...numbers)
           resultType = 'best'
       }
-      
+
       return {
         number: finalNumber,
         numbers: numbers,
@@ -368,7 +363,7 @@ export default {
     updateDiceConfiguration() {
       // Always update the dice count and recreate the scene
       this.d20Service.diceCount = this.diceCount
-      
+
       if (this.diceCount === 1) {
         // Single dice mode - use original setup
         this.d20Service.createDice()
@@ -376,7 +371,7 @@ export default {
         // Two dice mode - create two dice with appropriate positioning
         this.d20Service.createMultipleDice(2)
       }
-      
+
       // Update roll state services positions for new dice count
       this.updateRollStatePositions()
     },
@@ -399,18 +394,18 @@ export default {
     handleRollComplete(result, diceIndex) {
       // Store result for this specific dice
       this.pendingResults[diceIndex] = { ...result, diceIndex }
-      
+
       // Check if all dice have completed
-      if (this.pendingResults.length === this.diceCount && 
+      if (this.pendingResults.length === this.diceCount &&
           this.pendingResults.every(r => r !== undefined)) {
-        
+
         if (this.diceCount === 1) {
           // Single dice - highlight and emit
           const faceIndex = this.d20Service.faceNumbers.indexOf(result.number)
           this.d20Service.createDice(faceIndex)
-          
+
           this.$emit('roll-complete', result)
-          
+
           if (this.pendingRollResolve) {
             this.pendingRollResolve(result)
             this.pendingRollResolve = null
@@ -418,23 +413,23 @@ export default {
         } else {
           // Multiple dice - calculate final result
           const finalResult = this.calculateMultiDiceResult(this.pendingResults)
-          
+
           // Highlight dice based on result mode - use ordered results by dice index
           const orderedResults = new Array(this.diceCount)
           this.pendingResults.forEach(res => {
             orderedResults[res.diceIndex] = res
           })
-          
+
           this.highlightMultipleDice(orderedResults, finalResult)
-          
+
           this.$emit('roll-complete', finalResult)
-          
+
           if (this.pendingRollResolve) {
             this.pendingRollResolve(finalResult)
             this.pendingRollResolve = null
           }
         }
-        
+
         // Clear pending results
         this.pendingResults = []
       }
@@ -443,7 +438,7 @@ export default {
     highlightMultipleDice(results, finalResult) {
       // Create highlight faces array with each dice's target number
       const highlightFaces = results.map(result => result.number)
-      
+
       // Use the new individual highlighting method
       this.d20Service.createDiceWithIndividualHighlights(highlightFaces)
     },
@@ -458,7 +453,7 @@ export default {
     // Mouse control handlers
     handleMouseDown(event) {
       if (event.button !== 0) return // Only left click
-      
+
       this.mouseDown = true
       this.mouseX = event.clientX
       this.mouseY = event.clientY
@@ -482,7 +477,7 @@ export default {
         spherical.theta -= deltaX * 0.01
         spherical.phi += deltaY * 0.01
         spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi))
-        
+
         camera.position.setFromSpherical(spherical)
         camera.lookAt(0, 1, 0)
       }
@@ -499,7 +494,7 @@ export default {
         const spherical = new THREE.Spherical().setFromVector3(camera.position)
         spherical.radius += event.deltaY * 0.01
         spherical.radius = Math.max(3, Math.min(20, spherical.radius))
-        
+
         camera.position.setFromSpherical(spherical)
         camera.lookAt(0, 1, 0)
       }
