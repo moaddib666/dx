@@ -141,11 +141,13 @@ export default {
         return null
       }
 
+      // Choose a random target but use deterministic mechanics for consistent behavior
       const randomTarget = Math.floor(Math.random() * 20) + 1
       
       return new Promise((resolve) => {
         this.pendingRollResolve = resolve
-        this.rollStateService.startRoll(randomTarget, false)
+        // Use deterministic=true for consistent animation, but with random target
+        this.rollStateService.startRoll(randomTarget, true)
       })
     },
 
