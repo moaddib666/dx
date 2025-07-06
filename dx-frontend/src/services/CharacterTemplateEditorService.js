@@ -14,6 +14,8 @@ export class CharacterTemplateEditorService {
         this.lastSaved = null;
         this.eventListeners = new Map();
         this.isDirty = false;
+        this.previewData = null;
+        this.isGeneratingPreview = false;
     }
 
     /**
@@ -411,13 +413,13 @@ export class CharacterTemplateEditorService {
      */
     removeSchool(schoolId) {
         const school = skillService.getSchool(schoolId);
-        
+
         // Prevent removal of base schools
         if (skillService.isBaseSchool(school)) {
             console.warn('Cannot remove base school:', school?.name);
             return;
         }
-        
+
         const index = this.template.data.schools.indexOf(schoolId);
         if (index !== -1) {
             this.template.data.schools.splice(index, 1);
@@ -484,13 +486,13 @@ export class CharacterTemplateEditorService {
      */
     removeSpell(spellId) {
         const spell = skillService.getSkill(spellId);
-        
+
         // Prevent removal of base spells
         if (skillService.isBaseSpell(spell)) {
             console.warn('Cannot remove base spell:', spell?.name);
             return;
         }
-        
+
         const index = this.template.data.spells.indexOf(spellId);
         if (index !== -1) {
             this.template.data.spells.splice(index, 1);
@@ -596,7 +598,7 @@ export class CharacterTemplateEditorService {
      */
     async ensureBaseSchoolsAndSkills() {
         let hasChanges = false;
-        
+
         // Add missing base schools
         const baseSchools = skillService.getBaseSchools();
         for (const school of baseSchools) {
@@ -606,7 +608,7 @@ export class CharacterTemplateEditorService {
                 hasChanges = true;
             }
         }
-        
+
         // Add missing base skills
         const baseSkills = skillService.getBaseSkills();
         for (const skill of baseSkills) {
@@ -616,7 +618,7 @@ export class CharacterTemplateEditorService {
                 hasChanges = true;
             }
         }
-        
+
         if (hasChanges) {
             this.setDirty();
             this.emit('templateUpdated', this.template);
@@ -649,8 +651,106 @@ export class CharacterTemplateEditorService {
         this.template = createEmptyCharacterTemplate();
         this.isDirty = false;
         this.lastSaved = null;
+        this.previewData = null;
         console.log('CharacterTemplateEditorService reset');
         this.emit('reset');
+    }
+
+    /**
+     * Generate a preview of the current template using the GameMaster API
+     * @returns {Promise<Object|null>} - The preview data (GameMasterCharacterInfo) or null if failed
+     */
+    async generatePreview() {
+        if (this.isGeneratingPreview) {
+            console.log('Preview already being generated, waiting for completion...');
+            return this.previewData;
+        }
+
+        try {
+            this.isGeneratingPreview = true;
+            this.emit('previewGenerationStarted');
+
+            console.log('Generating template preview...');
+
+            // First validate the template
+            const validation = this.validate();
+            if (!validation.isValid) {
+                console.warn('Template validation failed, cannot generate preview:', validation.errors);
+                this.emit('previewGenerationFailed', {
+                    error: 'Template validation failed',
+                    validationErrors: validation.errors
+                });
+                return null;
+            }
+
+            // Use the GameMaster API to generate preview
+            console.log('Generating template preview...', {template: this.template});
+            const response = await GameMasterApi.gamemasterCharacterTemplatesPreviewRetrieve(this.template.id);
+
+            if (!response.data) {
+                console.warn('Preview API response is empty');
+                this.emit('previewGenerationFailed', { error: 'Empty API response' });
+                return null;
+            }
+
+            // Store the preview data (GameMasterCharacterInfo)
+            this.previewData = response.data;
+            console.log('Template preview generated successfully');
+            this.emit('previewGenerated', this.previewData);
+
+            return this.previewData;
+
+        } catch (error) {
+            console.error('Failed to generate template preview:', error);
+            this.emit('previewGenerationFailed', { error: error.message || 'Unknown error' });
+            return null;
+        } finally {
+            this.isGeneratingPreview = false;
+        }
+    }
+
+    /**
+     * Get the current preview data
+     * @returns {Object|null} - The preview data (GameMasterCharacterInfo) or null if not available
+     */
+    getPreviewData() {
+        return this.previewData;
+    }
+
+    /**
+     * Check if preview is currently being generated
+     * @returns {boolean} - Whether preview generation is in progress
+     */
+    isPreviewGenerating() {
+        return this.isGeneratingPreview;
+    }
+
+    /**
+     * Clear the current preview data
+     */
+    clearPreview() {
+        this.previewData = null;
+        this.emit('previewCleared');
+    }
+
+    /**
+     * Auto-generate preview when template changes (debounced)
+     * @param {number} delay - Delay in milliseconds (default: 1000ms)
+     */
+    autoGeneratePreview(delay = 1000) {
+        // Clear existing timeout
+        if (this.previewTimeout) {
+            clearTimeout(this.previewTimeout);
+        }
+
+        // Set new timeout for preview generation
+        this.previewTimeout = setTimeout(async () => {
+            try {
+                await this.generatePreview();
+            } catch (error) {
+                console.error('Auto preview generation failed:', error);
+            }
+        }, delay);
     }
 
     /**
@@ -659,6 +759,9 @@ export class CharacterTemplateEditorService {
     setDirty() {
         this.isDirty = true;
         this.emit('dirtyStateChanged', this.isDirty);
+
+        // Auto-generate preview when template changes
+        this.autoGeneratePreview();
     }
 
     /**

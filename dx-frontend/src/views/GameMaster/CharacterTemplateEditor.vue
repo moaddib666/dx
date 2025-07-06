@@ -47,11 +47,38 @@
 
           <!-- Right part (8) -->
           <div class="template-editor" v-if="template">
-            <CharacterTemplateDetail
-              :template="template"
-              :service="service"
-              @update="onTemplateUpdate"
-            />
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+              <button 
+                :class="{ active: activeTab === 'template' }"
+                @click="activeTab = 'template'"
+                class="tab-button"
+              >
+                Template Details
+              </button>
+              <button 
+                :class="{ active: activeTab === 'limits' }"
+                @click="activeTab = 'limits'"
+                class="tab-button"
+              >
+                Validation Limits
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <CharacterTemplateDetail
+                v-if="activeTab === 'template'"
+                :template="template"
+                :service="service"
+                @update="onTemplateUpdate"
+              />
+              <TemplateLimitsEditor
+                v-if="activeTab === 'limits'"
+                :template="template"
+                :service="service"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -60,22 +87,7 @@
       <div class="right-column">
         <div class="sidebar-section">
           <h3>Preview</h3>
-          <div class="preview-card" v-if="template">
-            <h4>{{ template.data.name || 'Unnamed Template' }}</h4>
-            <div class="preview-image">
-              [Character Image Placeholder]
-            </div>
-            <div class="preview-stats">
-              <p v-for="stat in template.data.stats" :key="stat.name">
-                {{ stat.name.substring(0, 3).toUpperCase() }}: {{ stat.value }}
-              </p>
-            </div>
-            <div class="preview-tags" v-if="template.data.tags.length > 0">
-              <span v-for="(tag, index) in template.data.tags" :key="index" class="preview-tag">
-                {{ tag }}
-              </span>
-            </div>
-          </div>
+          <TemplatePreviewCard v-if="template" :template="template" :service="service" />
         </div>
 
       </div>
@@ -97,12 +109,16 @@ import { characterTemplatesService } from '@/services/CharacterTemplatesService.
 import { createSampleCharacterTemplate } from '@/models/CharacterTemplateFull.js';
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import CharacterTemplateDetail from '@/components/GameMaster/CharacterTemplateDetail.vue';
+import TemplatePreviewCard from '@/components/GameMaster/TemplatePreviewCard.vue';
+import TemplateLimitsEditor from '@/components/GameMaster/TemplateLimitsEditor.vue';
 
 export default {
   name: 'CharacterTemplateEditor',
   components: {
     NPCTemplatesList,
-    CharacterTemplateDetail
+    CharacterTemplateDetail,
+    TemplatePreviewCard,
+    TemplateLimitsEditor
   },
   data() {
     return {
@@ -114,7 +130,8 @@ export default {
       error: null,
       lastSaved: null,
       isDirty: false,
-      validationErrors: []
+      validationErrors: [],
+      activeTab: 'template'
     };
   },
   computed: {
@@ -137,6 +154,9 @@ export default {
     this.service.on('loadingFailed', this.onLoadingFailed);
     this.service.on('validationError', this.onValidationError);
     this.service.on('dirtyStateChanged', this.onDirtyStateChanged);
+    this.service.on('previewGenerationStarted', this.onPreviewGenerationStarted);
+    this.service.on('previewGenerated', this.onPreviewGenerated);
+    this.service.on('previewGenerationFailed', this.onPreviewGenerationFailed);
 
     // Initialize the service
     await this.service.initialize();
@@ -154,6 +174,9 @@ export default {
     this.service.off('loadingFailed', this.onLoadingFailed);
     this.service.off('validationError', this.onValidationError);
     this.service.off('dirtyStateChanged', this.onDirtyStateChanged);
+    this.service.off('previewGenerationStarted', this.onPreviewGenerationStarted);
+    this.service.off('previewGenerated', this.onPreviewGenerated);
+    this.service.off('previewGenerationFailed', this.onPreviewGenerationFailed);
   },
   methods: {
     async loadAvailableTemplates() {
@@ -282,6 +305,30 @@ export default {
       if (template && template.id) {
         this.importFromTemplate(template.id);
       }
+    },
+
+    /**
+     * Handle preview generation started event
+     */
+    onPreviewGenerationStarted() {
+      console.log('Preview generation started');
+    },
+
+    /**
+     * Handle preview generated event
+     * @param {Object} previewData - The generated preview data
+     */
+    onPreviewGenerated(previewData) {
+      console.log('Preview generated successfully:', previewData);
+    },
+
+    /**
+     * Handle preview generation failed event
+     * @param {Object} errorData - The error information
+     */
+    onPreviewGenerationFailed(errorData) {
+      console.warn('Preview generation failed:', errorData);
+      // Could show a toast or error message to the user if needed
     }
   }
 };
@@ -411,9 +458,58 @@ export default {
 /* Right part of center column - 8 parts */
 .template-editor {
   flex: 8;
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  background: #2d2d2d;
+  border-bottom: 2px solid #444;
+  margin-bottom: 0;
+}
+
+.tab-button {
+  background: transparent;
+  color: #ccc;
+  border: none;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  position: relative;
+}
+
+.tab-button:hover {
+  background: rgba(30, 144, 255, 0.1);
+  color: #fff;
+}
+
+.tab-button.active {
+  color: #1E90FF;
+  background: rgba(30, 144, 255, 0.15);
+  border-bottom-color: #1E90FF;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1E90FF;
+}
+
+/* Tab Content */
+.tab-content {
+  flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background: #1e1e1e;
 }
 
 .form-group {

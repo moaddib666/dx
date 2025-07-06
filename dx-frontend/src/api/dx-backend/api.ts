@@ -1871,13 +1871,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -15270,6 +15270,50 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * Allow to se what NPC will be created from the template.
+         * @summary Preview Character Template
+         * @param {string} id A UUID string identifying this Character Template.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharacterTemplatesPreviewRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterCharacterTemplatesPreviewRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/character-templates/{id}/preview/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {string} id A UUID string identifying this Character Template.
          * @param {*} [options] Override http request option.
@@ -16901,6 +16945,19 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Allow to se what NPC will be created from the template.
+         * @summary Preview Character Template
+         * @param {string} id A UUID string identifying this Character Template.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterCharacterTemplatesPreviewRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterCharacterInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharacterTemplatesPreviewRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharacterTemplatesPreviewRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {string} id A UUID string identifying this Character Template.
          * @param {*} [options] Override http request option.
@@ -17374,6 +17431,16 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
             return localVarFp.gamemasterCharacterTemplatesList(behavior, campaign, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(axios, basePath));
         },
         /**
+         * Allow to se what NPC will be created from the template.
+         * @summary Preview Character Template
+         * @param {string} id A UUID string identifying this Character Template.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterCharacterTemplatesPreviewRetrieve(id: string, options?: any): AxiosPromise<GameMasterCharacterInfo> {
+            return localVarFp.gamemasterCharacterTemplatesPreviewRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {string} id A UUID string identifying this Character Template.
          * @param {*} [options] Override http request option.
@@ -17748,6 +17815,18 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, campaign?: string, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterCharacterTemplatesList(behavior, campaign, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Allow to se what NPC will be created from the template.
+     * @summary Preview Character Template
+     * @param {string} id A UUID string identifying this Character Template.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterCharacterTemplatesPreviewRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharacterTemplatesPreviewRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
