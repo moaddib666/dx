@@ -152,9 +152,9 @@ export default {
     },
 
     async setUserTexture(file) {
-      if (!this.textureService) return false
+      if (!this.d20Service) return false
 
-      const success = await this.textureService.setUserTexture(file)
+      const success = await this.d20Service.setUserTexture(file)
       if (success && this.isInitialized) {
         // Rebuild dice with new texture
         this.d20Service.createDice()

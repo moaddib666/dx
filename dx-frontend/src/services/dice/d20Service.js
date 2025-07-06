@@ -120,17 +120,32 @@ export class D20Service {
 
     setUserTexture(imageFile) {
         return new Promise((resolve) => {
+            if (!imageFile) {
+                this.userTextureImg = null
+                resolve(true)
+                return
+            }
+
             const reader = new FileReader()
             reader.onload = (event) => {
                 const img = new Image()
                 img.onload = () => {
+                    console.log('Custom texture loaded successfully:', img.width, 'x', img.height)
                     this.userTextureImg = img
                     resolve(true)
                 }
-                img.onerror = () => resolve(false)
+                img.onerror = (error) => {
+                    console.error('Failed to load custom texture:', error)
+                    resolve(false)
+                }
+                // Set crossOrigin before src for CORS issues
+                img.crossOrigin = 'anonymous'
                 img.src = event.target.result
             }
-            reader.onerror = () => resolve(false)
+            reader.onerror = (error) => {
+                console.error('Failed to read file:', error)
+                resolve(false)
+            }
             reader.readAsDataURL(imageFile)
         })
     }
