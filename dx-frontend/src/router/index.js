@@ -28,6 +28,7 @@ import UserMap from "@/views/Cartograph/UserMap.vue";
 import WorldEditor from "@/views/WorldEditor/WorldEditor.vue";
 import CharacterTemplateEditor from "@/views/GameMaster/CharacterTemplateEditor.vue";
 import PlayerHomeDashboard from "@/views/PlyerHomeDashboard/PlayerHomeDashboard.vue";
+import DiceRollerView from "@/views/DiceRoller/DiceRoller.vue";
 
 const routes = [
     // Public pages
@@ -60,6 +61,7 @@ const routes = [
 
     // Game and tools routes
     {path: '/dice', name: 'Dice', component: DiceTest, meta: {requiresAuth: false}},
+    {path: '/dice/roller', name: 'DiceRoller', component: DiceRollerView, meta: {requiresAuth: false}},
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
     // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
 
