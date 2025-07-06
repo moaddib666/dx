@@ -194,6 +194,7 @@ class CharacterTemplateValidationSerializer(serializers.Serializer):
 
 
 class CharacterTemplateFullSerializer(serializers.Serializer):
+    id = serializers.UUIDField(allow_null=True, default=None)
     data = CharacterTemplateSerializer()
     validation = CharacterTemplateValidationSerializer()
 

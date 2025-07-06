@@ -1,8 +1,7 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, OpenApiParameter
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions, status, pagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -110,3 +109,33 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
         data['data']['bio']['avatar'] = avatar
         # Return the template data
         return Response(CharacterTemplateFullSerializer(data, context=self.get_serializer_context()).data)
+
+    @extend_schema(
+        summary="Preview Character Template",
+        description="Allow to se what NPC will be created from the template.",
+        responses={
+            201: GameMasterCharacterInfoSerializer,
+            404: "Template not found",
+        }
+    )
+    @action(detail=True, methods=['get'])
+    def preview(self, request, pk=None):
+        """
+        Accepts the template Id
+        """
+        data = {}
+        template = get_object_or_404(CharacterTemplate, id=pk)
+        with transaction.atomic():
+            config = NPCFactoryConfig(
+                template=template,
+                position=Position.objects.first(),
+                behavior=template.behavior,
+                campaign=self.request.user.current_campaign
+            )
+
+            factory = NPCFactory()
+            npc = factory.create_npc(config)
+            serializer = GameMasterCharacterInfoSerializer(npc, context=self.get_serializer_context())
+            data = serializer.data
+            transaction.set_rollback(True)
+        return Response(data, status=status.HTTP_201_CREATED)

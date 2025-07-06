@@ -447,6 +447,7 @@ class CharacterGenericData(BaseModel):
 class CharacterTemplate(BaseModel):
     data: CharacterGenericData
     validation: CharacterTemplateValidator
+    id: Optional[uuid.UUID] = None
 
 
 class Coordinate(BaseModel):

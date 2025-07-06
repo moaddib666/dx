@@ -31,7 +31,7 @@ class CharacterTemplateExporter:
         """
         data = self._create_template_data()
         validation = self._create_template_validation()
-        return CharacterTemplate(data=data, validation=validation)
+        return CharacterTemplate(id=self.template.id, data=data, validation=validation)
 
     def _create_template_data(self) -> CharacterGenericData:
         """
@@ -140,10 +140,10 @@ class CharacterTemplateExporter:
             rank = self.template.rank.grade
 
         return CharacterTemplateValidator(
-            max_stats_points_count=100,
+            max_stats_points_count=150,
             max_modificators_count=2,
-            max_items_count=1,
-            max_spells_count=1,
+            max_items_count=5,
+            max_spells_count=3,
             max_rank_grade=rank,
-            max_schools_count=1,
+            max_schools_count=2,
         )
