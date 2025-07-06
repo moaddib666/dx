@@ -107,23 +107,22 @@ export class D20Service {
         // topLight.position.set(0.1, 1, 0.1)
         // this.scene.add(topLight)
 
-        const rearLight = new THREE.SpotLight(0xffffff, 5.5)
-        rearLight.position.set(0, 3.0, 0)
+        const rearLight = new THREE.SpotLight(0xffffff, 105)
+        rearLight.position.set(0, 4.5, 0)
         rearLight.castShadow = false
-        rearLight.angle = 1.9
-        rearLight.penumbra = 0.1
+        rearLight.penumbra = 0.3
         this.scene.add(rearLight)
 
         // let a = "#ffcc00"
         const orange = 0xFFCC00
         const cyan = 0x00ffff
         // Background Right Orange Light
-        const rightLight = new THREE.DirectionalLight(orange, 5.5)
+        const rightLight = new THREE.DirectionalLight(orange, 15.5)
         rightLight.position.set(15, 1, -3)
         rightLight.castShadow = false
         this.scene.add(rightLight)
         // Background Left Cyan Light
-        const leftLight = new THREE.DirectionalLight(cyan, 5.5)
+        const leftLight = new THREE.DirectionalLight(cyan, 15.5)
         leftLight.position.set(-15, 1, 3)
         this.scene.add(leftLight)
 
@@ -303,19 +302,19 @@ export class D20Service {
         if (this.diceCount === 1) {
             // Single dice mode - convert face number to face index
             const highlight = Array.isArray(highlightFaces) ? highlightFaces[0] : highlightFaces
-            const faceIndex = (highlight !== undefined && highlight !== -1) 
-                ? this.faceNumbers.indexOf(highlight) 
+            const faceIndex = (highlight !== undefined && highlight !== -1)
+                ? this.faceNumbers.indexOf(highlight)
                 : -1
             this.dice = this.buildD20Mesh(faceIndex)
             this.dice.castShadow = this.dice.receiveShadow = true
             this.dice.position.set(0, 1, 0)
-            
+
             // Restore rotation if available
             if (currentRotations.length > 0) {
                 const rot = currentRotations[0]
                 this.dice.rotation.set(rot.x, rot.y, rot.z)
             }
-            
+
             this.scene.add(this.dice)
             this.diceArray = [this.dice]
         } else {
@@ -338,18 +337,18 @@ export class D20Service {
         for (let i = 0; i < count; i++) {
             const diceObject = this.buildD20Mesh(highlightFace)
             diceObject.castShadow = diceObject.receiveShadow = true
-            
+
             // Position dice centered around origin
             const xOffset = startOffset + (i * spacing)
             diceObject.position.set(xOffset, 1, 0)
-            
+
             this.scene.add(diceObject)
             this.diceArray.push(diceObject)
         }
 
         // Keep reference to first dice for backward compatibility
         this.dice = this.diceArray[0]
-        
+
         return this.diceArray
     }
 
@@ -365,30 +364,30 @@ export class D20Service {
         for (let i = 0; i < count; i++) {
             // Get highlight face for this specific dice
             const highlightFace = Array.isArray(highlightFaces) ? highlightFaces[i] : highlightFaces
-            const faceIndex = (highlightFace !== undefined && highlightFace !== -1) 
-                ? this.faceNumbers.indexOf(highlightFace) 
+            const faceIndex = (highlightFace !== undefined && highlightFace !== -1)
+                ? this.faceNumbers.indexOf(highlightFace)
                 : -1
-            
+
             const diceObject = this.buildD20Mesh(faceIndex)
             diceObject.castShadow = diceObject.receiveShadow = true
-            
+
             // Position dice centered around origin
             const xOffset = startOffset + (i * spacing)
             diceObject.position.set(xOffset, 1, 0)
-            
+
             // Restore rotation if available
             if (preservedRotations.length > i) {
                 const rot = preservedRotations[i]
                 diceObject.rotation.set(rot.x, rot.y, rot.z)
             }
-            
+
             this.scene.add(diceObject)
             this.diceArray.push(diceObject)
         }
 
         // Keep reference to first dice for backward compatibility
         this.dice = this.diceArray[0]
-        
+
         return this.diceArray
     }
 
@@ -475,12 +474,12 @@ export class D20Service {
         if (this.diceCount === 1) {
             return { x: 0, y: 1, z: 0 }
         }
-        
+
         const spacing = 3.5
         const totalWidth = (this.diceCount - 1) * spacing
         const startOffset = -totalWidth / 2
         const xOffset = startOffset + (diceIndex * spacing)
-        
+
         return { x: xOffset, y: 1, z: 0 }
     }
 
