@@ -51,11 +51,16 @@ export class D20Service {
             this.camera.position.set(0, 12, 0)
             this.camera.lookAt(0, 0, 0)
 
-            // Renderer setup
+            // Renderer setup - exact same as dice6.html
             this.renderer = markRaw(new THREE.WebGLRenderer({ canvas, antialias: true }))
             this.renderer.setSize(width, height)
             this.renderer.shadowMap.enabled = true
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+
+            // Ensure proper color output
+            this.renderer.outputColorSpace = THREE.SRGBColorSpace
+            this.renderer.toneMapping = THREE.LinearToneMapping
+            this.renderer.toneMappingExposure = 1.0
 
             // Initialize material service shaders
             this.materialService.initializeShaders()
@@ -75,37 +80,41 @@ export class D20Service {
     }
 
     setupLighting() {
-        // Brighter ambient light
-        const ambientLight = new THREE.AmbientLight(0x606060, 0.3)
-        this.scene.add(ambientLight)
 
-        // Main directional light (stronger)
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8)
-        dirLight.position.set(5, 15, 5)
-        dirLight.castShadow = true
-        dirLight.shadow.mapSize.width = 2048
-        dirLight.shadow.mapSize.height = 2048
-        dirLight.shadow.camera.near = 0.1
-        dirLight.shadow.camera.far = 50
-        dirLight.shadow.camera.left = -10
-        dirLight.shadow.camera.right = 10
-        dirLight.shadow.camera.top = 10
-        dirLight.shadow.camera.bottom = -10
-        this.scene.add(dirLight)
+        this.scene.add(new THREE.AmbientLight(0x404040, 2.7));
+        const additionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        additionalLight.position.set(0.5, 0.8, 0.6);
+        additionalLight.castShadow = false;
+        this.scene.add(additionalLight);
 
-        // Add fill lights for better visibility
-        const fillLight1 = new THREE.DirectionalLight(0xffffff, 0.3)
-        fillLight1.position.set(-5, 10, -5)
-        this.scene.add(fillLight1)
 
-        const fillLight2 = new THREE.DirectionalLight(0xffffff, 0.2)
-        fillLight2.position.set(0, 5, 10)
-        this.scene.add(fillLight2)
-
-        // Top light for better visibility from above
-        const topLight = new THREE.DirectionalLight(0xffffff, 0.1)
-        topLight.position.set(0, 20, 0)
-        this.scene.add(topLight)
+        // // Main directional light (stronger)
+        // const dirLight = new THREE.DirectionalLight(0xffffff, 0.8)
+        // dirLight.position.set(5, 15, 5)
+        // dirLight.castShadow = true
+        // dirLight.shadow.mapSize.width = 2048
+        // dirLight.shadow.mapSize.height = 2048
+        // dirLight.shadow.camera.near = 0.1
+        // dirLight.shadow.camera.far = 50
+        // dirLight.shadow.camera.left = -10
+        // dirLight.shadow.camera.right = 10
+        // dirLight.shadow.camera.top = 10
+        // dirLight.shadow.camera.bottom = -10
+        // this.scene.add(dirLight)
+        //
+        // // // Add fill lights for better visibility
+        // const fillLight1 = new THREE.DirectionalLight(0xffffff, 0.3)
+        // fillLight1.position.set(-5, 10, -5)
+        // this.scene.add(fillLight1)
+        //
+        // const fillLight2 = new THREE.DirectionalLight(0xffffff, 0.3)
+        // fillLight2.position.set(0, 5, 10)
+        // this.scene.add(fillLight2)
+        // //
+        // // // Top light for better visibility from above
+        // const topLight = new THREE.DirectionalLight(0xffffff, 0.2)
+        // topLight.position.set(0, 20, 0)
+        // this.scene.add(topLight)
     }
 
     createSurface() {
