@@ -82,7 +82,7 @@ export default {
       resultTimeout: null,
       materialTypes: [],
       shaderTypes: [],
-      currentMaterial: 'plastic',
+      currentMaterial: 'metal',
       currentShader: 'none'
     }
   },

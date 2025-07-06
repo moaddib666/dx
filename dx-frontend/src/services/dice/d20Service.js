@@ -44,7 +44,6 @@ export class D20Service {
         try {
             // Scene setup
             this.scene = markRaw(new THREE.Scene())
-            this.scene.background = new THREE.Color(0x1a1a1a)
 
             // Camera setup - start with top view
             this.camera = markRaw(new THREE.PerspectiveCamera(75, width / height, 0.1, 1000))
@@ -80,56 +79,42 @@ export class D20Service {
     }
 
     setupLighting() {
+        // Ambient light for basic illumination
+        this.scene.add(new THREE.AmbientLight(0x404040, 40.5))
 
-        this.scene.add(new THREE.AmbientLight(0x404040, 2.7));
-        const additionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        additionalLight.position.set(0.5, 0.8, 0.6);
-        additionalLight.castShadow = false;
-        this.scene.add(additionalLight);
-
-
-        // // Main directional light (stronger)
-        // const dirLight = new THREE.DirectionalLight(0xffffff, 0.8)
-        // dirLight.position.set(5, 15, 5)
+        // Main directional light for strong reflections
+        // const dirLight = new THREE.DirectionalLight(0xffffff, 0.2)
+        // dirLight.position.set(15, 20, 20)
         // dirLight.castShadow = true
         // dirLight.shadow.mapSize.width = 2048
         // dirLight.shadow.mapSize.height = 2048
-        // dirLight.shadow.camera.near = 0.1
-        // dirLight.shadow.camera.far = 50
-        // dirLight.shadow.camera.left = -10
-        // dirLight.shadow.camera.right = 10
-        // dirLight.shadow.camera.top = 10
-        // dirLight.shadow.camera.bottom = -10
         // this.scene.add(dirLight)
-        //
-        // // // Add fill lights for better visibility
-        // const fillLight1 = new THREE.DirectionalLight(0xffffff, 0.3)
-        // fillLight1.position.set(-5, 10, -5)
+
+        // // Additional lights for metallic reflections
+        // const fillLight1 = new THREE.DirectionalLight(0xffffff, 1.6)
+        // fillLight1.position.set(-10, 15, -10)
         // this.scene.add(fillLight1)
         //
-        // const fillLight2 = new THREE.DirectionalLight(0xffffff, 0.3)
-        // fillLight2.position.set(0, 5, 10)
+        // const fillLight2 = new THREE.DirectionalLight(0xffffff, 1.4)
+        // fillLight2.position.set(10, 8, 10)
         // this.scene.add(fillLight2)
-        // //
-        // // // Top light for better visibility from above
-        // const topLight = new THREE.DirectionalLight(0xffffff, 0.2)
-        // topLight.position.set(0, 20, 0)
-        // this.scene.add(topLight)
+
+        // Top light for better visibility
+        const topLight = new THREE.DirectionalLight(0xffffff, 1.3)
+        topLight.position.set(0.1, 1, 0.1)
+        this.scene.add(topLight)
+
+        const spotLight = new THREE.DirectionalLight(0xff0, 1.3)
+        topLight.position.set(0.1, 1, 0.1)
+        this.scene.add(spotLight)
+
+        const rearLight = new THREE.SpotLight(0xfffff, 12.5)
+        rearLight.position.set(0, 3.5, 0)
+        this.scene.add(rearLight)
     }
 
     createSurface() {
-        const surface = new THREE.Mesh(
-            new THREE.PlaneGeometry(20, 20),
-            new THREE.MeshPhongMaterial({
-                color: 0x444444,
-                transparent: true,
-                opacity: 0.8
-            })
-        )
-        surface.rotation.x = -Math.PI / 2
-        surface.position.y = -0.1
-        surface.receiveShadow = true
-        this.scene.add(surface)
+        // Non required, use transparent surface
     }
 
     setUserTexture(imageFile) {

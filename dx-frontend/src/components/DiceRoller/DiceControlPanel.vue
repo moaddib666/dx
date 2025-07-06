@@ -97,34 +97,23 @@
       </div>
     </div>
 
-    <!-- Material Selection -->
-    <div class="material-section">
-      <strong>Material Type:</strong>
-      <div class="material-buttons">
-        <button 
-          v-for="material in materialTypes" 
-          :key="material"
-          @click="setMaterial(material)"
-          class="material-btn"
-          :class="{ active: currentMaterial === material }"
-        >
-          {{ formatMaterialName(material) }}
-        </button>
-      </div>
-    </div>
-
     <!-- Shader Selection -->
     <div class="shader-section">
-      <strong>Shader Effects:</strong>
+      <strong>Bloom Effect:</strong>
       <div class="shader-buttons">
         <button 
-          v-for="shader in shaderTypes" 
-          :key="shader"
-          @click="setShader(shader)"
+          @click="setShader('none')"
           class="shader-btn"
-          :class="{ active: currentShader === shader }"
+          :class="{ active: currentShader === 'none' }"
         >
-          {{ formatShaderName(shader) }}
+          Off
+        </button>
+        <button 
+          @click="setShader('bloom')"
+          class="shader-btn"
+          :class="{ active: currentShader === 'bloom' }"
+        >
+          On
         </button>
       </div>
     </div>
