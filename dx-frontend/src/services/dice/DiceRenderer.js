@@ -32,10 +32,10 @@ class DiceRenderer {
 
     setupScene() {
         this.scene = new THREE.Scene()
-        this.scene.background = new THREE.Color(0x0f0f23)
+        this.scene.background = null
 
         // Add some atmospheric fog
-        this.scene.fog = new THREE.Fog(0x0f0f23, 10, 50)
+        // this.scene.fog = new THREE.Fog(0x0f0f23, 10, 50)
     }
 
     setupCamera() {
@@ -51,6 +51,8 @@ class DiceRenderer {
             antialias: true,
             alpha: true
         })
+        this.renderer.setClearColor(0x000000, 0);
+        this.renderer.autoClear = false;
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         this.renderer.shadowMap.enabled = true

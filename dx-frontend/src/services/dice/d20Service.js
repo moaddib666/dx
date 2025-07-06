@@ -51,7 +51,7 @@ export class D20Service {
             this.camera.lookAt(0, 0, 0)
 
             // Renderer setup - exact same as dice6.html
-            this.renderer = markRaw(new THREE.WebGLRenderer({ canvas, antialias: true }))
+            this.renderer = markRaw(new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }))
             this.renderer.setSize(width, height)
             this.renderer.shadowMap.enabled = true
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap

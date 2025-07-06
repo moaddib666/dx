@@ -1,6 +1,7 @@
 <template>
   <div class="dice-roller-view">
-    <RealisticDiceRoller 
+    <HeroBackground/>
+    <RealisticDiceRoller
       :width="windowWidth"
       :height="windowHeight"
       @ready="onReady"
@@ -12,11 +13,13 @@
 
 <script>
 import RealisticDiceRoller from '@/components/DiceRoller/RealisticDiceRoller.vue'
+import HeroBackground from "@/components/WhatIsIt/HeroBackground.vue";
 
 export default {
   name: 'DiceRollerView',
-  
+
   components: {
+    HeroBackground,
     RealisticDiceRoller
   },
 
@@ -61,6 +64,5 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #0a0a0a;
 }
 </style>

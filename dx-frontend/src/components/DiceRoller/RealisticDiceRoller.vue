@@ -1,15 +1,15 @@
 <template>
   <div class="realistic-dice-roller">
     <DiceInfoPanel />
-    
-    <DiceCanvas 
+
+    <DiceCanvas
       ref="diceCanvas"
       @ready="onCanvasReady"
       @error="onCanvasError"
       @number-change="onNumberChange"
       @state-change="onStateChange"
     />
-    
+
     <DiceControlPanel
       @roll-dice="handleRollDice"
       @random-roll="handleRandomRoll"
@@ -27,7 +27,7 @@
       :current-material="currentMaterial"
       :current-shader="currentShader"
     />
-    
+
     <DiceResultDisplay
       v-if="showResult"
       :result="lastResult"
@@ -44,7 +44,7 @@ import DiceResultDisplay from './DiceResultDisplay.vue'
 
 export default {
   name: 'RealisticDiceRoller',
-  
+
   components: {
     DiceInfoPanel,
     DiceControlPanel,
@@ -103,7 +103,7 @@ export default {
     onCanvasReady() {
       this.isCanvasReady = true
       this.rollStatus = 'Ready to roll'
-      
+
       // Initialize material and shader options
       if (this.$refs.diceCanvas) {
         this.materialTypes = this.$refs.diceCanvas.getMaterialTypes()
@@ -111,7 +111,7 @@ export default {
         this.currentMaterial = this.$refs.diceCanvas.getCurrentMaterialType()
         this.currentShader = this.$refs.diceCanvas.getCurrentShaderType()
       }
-      
+
       this.$emit('ready')
     },
 
@@ -135,7 +135,7 @@ export default {
       try {
         this.isRolling = true
         this.showResult = false
-        
+
         const result = await this.$refs.diceCanvas.rollToTarget(targetNumber)
         this.handleRollComplete(result)
       } catch (error) {
@@ -151,7 +151,7 @@ export default {
       try {
         this.isRolling = true
         this.showResult = false
-        
+
         const result = await this.$refs.diceCanvas.rollRandom()
         this.handleRollComplete(result)
       } catch (error) {
@@ -223,8 +223,8 @@ export default {
         const success = this.$refs.diceCanvas.setShaderType(shaderType)
         if (success) {
           this.currentShader = shaderType
-          this.rollStatus = shaderType === 'none' 
-            ? 'Shader effects disabled' 
+          this.rollStatus = shaderType === 'none'
+            ? 'Shader effects disabled'
             : `Shader changed to ${shaderType}`
         } else {
           this.rollStatus = 'Failed to change shader'
@@ -261,7 +261,6 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
   border-radius: 10px;
   overflow: hidden;
   font-family: Arial, sans-serif;
