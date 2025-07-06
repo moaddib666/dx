@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realistic Deterministic D20 Roll — Textured</title>
+    <style>
+        /* ===== GLOBAL STYLES (unchanged) ===== */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #222;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #info,
+        #controls {
+            position: absolute;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #info {
+            top: 10px;
+            left: 10px;
+            max-width: 300px;
+        }
+        #controls {
+            top: 10px;
+            right: 10px;
+        }
+        #result {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff0;
+            border: 2px solid #ff0;
+            display: none;
+        }
+        button {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #666;
+        }
+        button:disabled {
+            background: #333;
+            cursor: not-allowed;
+        }
+        .roll-btn {
+            background: #ff6600;
+            font-size: 18px;
+            padding: 15px 25px;
+        }
+        .roll-btn:hover {
+            background: #ff8833;
+        }
+        .number-input {
+            background: #333;
+            color: #fff;
+            border: 2px solid #666;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 60px;
+            text-align: center;
+        }
+        .number-input:focus {
+            outline: none;
+            border-color: #ff6600;
+        }
+        .input-group {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .preset-btn {
+            padding: 8px;
+            font-size: 14px;
+            background: #555;
+        }
+        .preset-btn:hover {
+            background: #777;
+        }
+        #currentNumber {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff0;
+            text-align: center;
+            margin: 10px 0;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+<!-- ===== INFO PANEL ===== -->
+<div id="info">
+    <h3>Realistic D20 Roll</h3>
+    <p>• Choose target number (1‑20)</p>
+    <p>• Load a texture to skin the dice</p>
+    <p>• Click «Roll Dice» for realistic roll</p>
+    <p>• Minimum 3.5 s roll with natural settling</p>
+    <p>• Guaranteed to land on your choice!</p>
+</div>
+
+<!-- ===== CONTROL PANEL ===== -->
+<div id="controls">
+    <div class="input-group">
+        <label><strong>Target Number:</strong></label>
+        <input type="number" id="targetNumber" class="number-input" value="20" min="1" max="20" />
+    </div>
+
+    <button class="roll-btn" id="rollBtn">🎲 Roll Dice</button>
+    <button id="randomBtn">🎲 Random Roll</button>
+
+    <div class="preset-buttons" id="presetContainer"></div>
+
+    <!-- ===== NEW: texture upload ===== -->
+    <div class="input-group">
+        <label><strong>Custom Texture:</strong></label>
+        <input type="file" id="textureInput" accept="image/*" />
+    </div>
+
+    <div id="currentNumber"></div>
+    <hr />
+    <button id="resetBtn">Reset Camera</button>
+    <button id="wireframeBtn">Toggle Wireframe</button>
+    <br /><br />
+    <strong>Dice Status:</strong><br />
+    <div id="status">Ready to roll</div>
+    <br />
+    <strong>Camera Controls:</strong><br />
+    <button id="camTop">Top View</button>
+    <button id="camSide">Side View</button>
+    <button id="camAngle">Angle View</button>
+</div>
+
+<!-- ===== RESULT BOX ===== -->
+<div id="result"><div id="resultText">You rolled 20!</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    /***********************************************************
+     * === THREE.JS BASICS ===
+     ***********************************************************/
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a1a);
+
+    const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    camera.position.set(8, 6, 8);
+    camera.lookAt(0, 0, 0);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+    /***********************************************************
+     * === ROLL STATE ===
+     ***********************************************************/
+    let rollState = {
+        position: new THREE.Vector3(0, 1, 0),
+        rotation: new THREE.Vector3(),
+        angularVelocity: new THREE.Vector3(),
+        isRolling: false,
+        rollTime: 0,
+        minRollTime: 3.5,
+        targetNumber: 20,
+        isDeterministic: true,
+        currentDisplayNumber: 1,
+        numberChangeInterval: 0.15,
+        lastNumberChange: 0,
+        topFaceIndex: -1,
+        baseSpeed: 1,
+        currentSpeed: 1,
+        canSettle: false,
+        isSettling: false,
+        settleStartTime: 0,
+    };
+
+    /***********************************************************
+     * === 20‑SIDED DATA ===
+     ***********************************************************/
+    const t = (1 + Math.sqrt(5)) / 2;
+    const vertices = [
+        [-1, t, 0],
+        [1, t, 0],
+        [-1, -t, 0],
+        [1, -t, 0],
+        [0, -1, t],
+        [0, 1, t],
+        [0, -1, -t],
+        [0, 1, -t],
+        [t, 0, -1],
+        [t, 0, 1],
+        [-t, 0, -1],
+        [-t, 0, 1],
+    ];
+    const faces = [
+        [0, 11, 5],
+        [0, 5, 1],
+        [0, 1, 7],
+        [0, 7, 10],
+        [0, 10, 11],
+        [1, 5, 9],
+        [5, 11, 4],
+        [11, 10, 2],
+        [10, 7, 6],
+        [7, 1, 8],
+        [3, 9, 4],
+        [3, 4, 2],
+        [3, 2, 6],
+        [3, 6, 8],
+        [3, 8, 9],
+        [4, 9, 5],
+        [2, 4, 11],
+        [6, 2, 10],
+        [8, 6, 7],
+        [9, 8, 1],
+    ];
+    const faceNumbers = Array.from({ length: 20 }, (_, i) => i + 1);
+
+    const faceNormals = faces.map((f) => {
+        const [a, b, c] = f.map((i) => new THREE.Vector3(...vertices[i]));
+        return new THREE.Vector3()
+            .crossVectors(b.clone().sub(a), c.clone().sub(a))
+            .normalize();
+    });
+
+    function calcTargetRotation(idx) {
+        const q = new THREE.Quaternion().setFromUnitVectors(
+            faceNormals[idx].clone(),
+            new THREE.Vector3(0, 1, 0)
+        );
+        const e = new THREE.Euler().setFromQuaternion(q);
+        return new THREE.Vector3(e.x, e.y, e.z);
+    }
+
+    /***********************************************************
+     * === TEXTURE HANDLING ===
+     ***********************************************************/
+    let userTextureImg = null;
+    const textureInput = document.getElementById("textureInput");
+    textureInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                userTextureImg = img;
+                rebuildDice(rollState.topFaceIndex);
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    function createNumberTexture(num, base = "#4444ff", text = "#fff", highlight = false) {
+        const c = document.createElement("canvas");
+        c.width = c.height = 512;
+        const ctx = c.getContext("2d");
+
+        if (userTextureImg) {
+            ctx.drawImage(userTextureImg, 0, 0, 512, 512);
+            ctx.fillStyle = "rgba(0,0,0,.25)";
+            ctx.fillRect(0, 0, 512, 512);
+        } else {
+            const g = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+            g.addColorStop(0, base);
+            g.addColorStop(1, "#333366");
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 512, 512);
+        }
+
+        ctx.shadowColor = "rgba(0,0,0,.7)";
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = ctx.shadowOffsetY = 3;
+        if (num <= 1) {
+            ctx.fillStyle = highlight ? "#ff0505" : text;
+        } else if (num < 20) {
+            ctx.fillStyle = highlight ? "#16eaff" : text;
+        } else {
+            ctx.fillStyle = highlight ? "#ff0" : text;
+        }
+
+
+        ctx.font = "bold 140px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(num.toString(), 256, 296);
+
+        return new THREE.CanvasTexture(c);
+    }
+
+    function buildD20Mesh(highlightFace = -1) {
+        const geometry = new THREE.BufferGeometry();
+        const pos = [];
+        const norms = [];
+        const uvs = [];
+        const groups = [];
+        const mats = [];
+
+        faces.forEach((face, fi) => {
+            const [v1, v2, v3] = face.map((idx) => new THREE.Vector3(...vertices[idx]));
+            pos.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z, v3.x, v3.y, v3.z);
+            const n = new THREE.Vector3()
+                .crossVectors(v2.clone().sub(v1), v3.clone().sub(v1))
+                .normalize();
+            norms.push(n.x, n.y, n.z, n.x, n.y, n.z, n.x, n.y, n.z);
+            uvs.push(0.1, 0.2, 0.9, 0.2, 0.5, 0.85);
+
+            const tex = createNumberTexture(
+                faceNumbers[fi],
+                "#4444ff",
+                "#fff",
+                fi === highlightFace
+            );
+            mats.push(
+                new THREE.MeshPhongMaterial({ map: tex, transparent: true, opacity: 0.95, shininess: 100 })
+            );
+            groups.push({ start: fi * 3, count: 3, materialIndex: fi });
+        });
+
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+        geometry.setAttribute("normal", new THREE.Float32BufferAttribute(norms, 3));
+        geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+        groups.forEach((g) => geometry.addGroup(g.start, g.count, g.materialIndex));
+
+        return new THREE.Mesh(geometry, mats);
+    }
+
+    /***********************************************************
+     * === INITIAL DICE & SURFACE ===
+     ***********************************************************/
+    let dice = buildD20Mesh();
+    dice.castShadow = dice.receiveShadow = true;
+    scene.add(dice);
+
+    const surface = new THREE.Mesh(
+        new THREE.PlaneGeometry(20, 20),
+        new THREE.MeshPhongMaterial({ color: 0x444444, transparent: true, opacity: 0.8 })
+    );
+    surface.rotation.x = -Math.PI / 2;
+    surface.position.y = -0.1;
+    surface.receiveShadow = true;
+    scene.add(surface);
+
+    scene.add(new THREE.AmbientLight(0x404040, 1.7));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(3, 30, 7);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
+
+    /***********************************************************
+     * === ROLL LOGIC ===
+     ***********************************************************/
+    function updateRoll(dt) {
+        if (!rollState.isRolling) return;
+        rollState.rollTime += dt;
+
+        // Phase 1: random visually exciting spin
+        if (rollState.rollTime < rollState.minRollTime) {
+            rollState.angularVelocity.set(
+                8,
+                10,
+                6
+            );
+
+            if (rollState.rollTime - rollState.lastNumberChange > rollState.numberChangeInterval) {
+                rollState.currentDisplayNumber = Math.floor(Math.random() * 20) + 1;
+                rollState.lastNumberChange = rollState.rollTime;
+                updateNumberDisplay();
+            }
+        } else {
+            // Phase 2: settling
+            if (!rollState.canSettle) {
+                rollState.canSettle = true;
+                rollState.settleStartTime = rollState.rollTime;
+            }
+
+            const settleTime = rollState.rollTime - rollState.settleStartTime;
+            const slowdown = Math.max(0.05, 1 - settleTime * 0.4);
+            rollState.currentSpeed = rollState.baseSpeed * slowdown;
+            rollState.angularVelocity.multiplyScalar(slowdown);
+
+            if (rollState.rollTime - rollState.lastNumberChange > rollState.numberChangeInterval) {
+                const targetProbability = Math.min(0.9, settleTime * 0.6);
+                rollState.currentDisplayNumber =
+                    Math.random() < targetProbability
+                        ? rollState.targetNumber
+                        : Math.floor(Math.random() * 20) + 1;
+                rollState.lastNumberChange = rollState.rollTime;
+                rollState.numberChangeInterval = 0.15 + settleTime * 0.1;
+                updateNumberDisplay();
+            }
+
+            if (rollState.isDeterministic && settleTime > 0.3) {
+                const tIdx = faceNumbers.indexOf(rollState.targetNumber);
+                const targetRot = calcTargetRotation(tIdx);
+                const k = Math.min(0.15, (settleTime - 0.3) * 0.08);
+                rollState.rotation.x += (targetRot.x - rollState.rotation.x) * k;
+                rollState.rotation.y += (targetRot.y - rollState.rotation.y) * k;
+                rollState.rotation.z += (targetRot.z - rollState.rotation.z) * k;
+            }
+
+            const slowEnough =
+                rollState.currentSpeed < 0.3 && rollState.angularVelocity.length() < 2;
+            const timeout = settleTime > 5;
+            if (slowEnough || timeout) {
+                rollState.isRolling = false;
+                rollState.angularVelocity.set(0, 0, 0);
+                finishRoll();
+                return;
+            }
+        }
+
+        // Integrate rotation
+        rollState.rotation.add(rollState.angularVelocity.clone().multiplyScalar(dt));
+        dice.position.copy(rollState.position);
+        dice.rotation.set(rollState.rotation.x, rollState.rotation.y, rollState.rotation.z);
+    }
+
+    function finishRoll() {
+        if (rollState.isDeterministic) {
+            const idx = faceNumbers.indexOf(rollState.targetNumber);
+            rollState.rotation.copy(calcTargetRotation(idx));
+            rollState.topFaceIndex = idx;
+            rollState.currentDisplayNumber = rollState.targetNumber;
+            rebuildDice(idx);
+            showResult(rollState.targetNumber);
+        } else {
+            findTopFace();
+        }
+        updateNumberDisplay();
+    }
+
+    /***********************************************************
+     * === UI HELPERS ===
+     ***********************************************************/
+    function updateNumberDisplay() {
+        const el = document.getElementById("currentNumber");
+        if (rollState.isRolling) {
+            el.textContent = rollState.currentDisplayNumber;
+        } else {
+            el.textContent = "";
+        }
+    }
+
+    function showResult(num) {
+        document.getElementById("resultText").textContent = `You rolled ${num}!`;
+        document.getElementById("result").style.display = "block";
+        document.getElementById("status").textContent = `Landed on ${num}`;
+    }
+
+    function findTopFace() {
+        let bestIdx = 0;
+        let maxY = -Infinity;
+        faces.forEach((face, idx) => {
+            const normal = faceNormals[idx].clone();
+            normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(dice.matrixWorld));
+            if (normal.y > maxY) {
+                maxY = normal.y;
+                bestIdx = idx;
+            }
+        });
+        rollState.topFaceIndex = bestIdx;
+        rollState.currentDisplayNumber = faceNumbers[bestIdx];
+        rebuildDice(bestIdx);
+        showResult(faceNumbers[bestIdx]);
+    }
+
+    /***********************************************************
+     * === ROLL ENTRY POINTS ===
+     ***********************************************************/
+    function startRoll(target, deterministic) {
+        rollState.targetNumber = target;
+        rollState.isDeterministic = deterministic;
+        rollState.rollTime = 0;
+        rollState.isRolling = true;
+        rollState.canSettle = false;
+        rollState.isSettling = false;
+        rollState.topFaceIndex = -1;
+        rollState.rotation.set(
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2
+        );
+        rollState.angularVelocity.set(8, 10, 6);
+        rollState.lastNumberChange = 0;
+        rollState.currentDisplayNumber = Math.floor(Math.random() * 20) + 1;
+        rollState.numberChangeInterval = 0.12;
+        document.getElementById("result").style.display = "none";
+        document.getElementById("status").textContent = deterministic
+            ? `Rolling for ${target}…`
+            : "Rolling randomly…";
+        updateNumberDisplay();
+    }
+
+    function rollToTarget() {
+        const n = Number(document.getElementById("targetNumber").value);
+        if (n < 1 || n > 20) return alert("Enter 1‑20");
+        startRoll(n, true);
+    }
+    function rollRandom() {
+        startRoll(Math.floor(Math.random() * 20) + 1, false);
+    }
+
+    /***********************************************************
+     * === DICE REBUILD (for highlight / texture changes) ===
+     ***********************************************************/
+    function rebuildDice(highlight = -1) {
+        scene.remove(dice);
+        dice.geometry.dispose();
+        dice.material.forEach((m) => m.dispose());
+        dice = buildD20Mesh(highlight);
+        dice.castShadow = dice.receiveShadow = true;
+        dice.position.copy(rollState.position);
+        dice.rotation.set(rollState.rotation.x, rollState.rotation.y, rollState.rotation.z);
+        scene.add(dice);
+    }
+
+    /***********************************************************
+     * === CAMERA & MISC CONTROLS ===
+     ***********************************************************/
+    function resetView() {
+        camera.position.set(8, 6, 8);
+        camera.lookAt(0, 0, 0);
+    }
+    function setCameraView(v) {
+        if (v === "top") {
+            camera.position.set(0, 12, 0);
+            camera.lookAt(0, 0, 0);
+        } else if (v === "side") {
+            camera.position.set(12, 2, 0);
+            camera.lookAt(0, 1, 0);
+        } else {
+            resetView();
+        }
+    }
+    function toggleWireframe() {
+        const wf = dice.material[0].wireframe;
+        dice.material.forEach((m) => (m.wireframe = !wf));
+        document.getElementById("wireframeBtn").textContent = wf
+            ? "Toggle Wireframe"
+            : "Hide Wireframe";
+    }
+
+    /***********************************************************
+     * === EVENT HANDLERS ===
+     ***********************************************************/
+    document.getElementById("rollBtn").addEventListener("click", rollToTarget);
+    document.getElementById("randomBtn").addEventListener("click", rollRandom);
+    document.getElementById("resetBtn").addEventListener("click", resetView);
+    document.getElementById("wireframeBtn").addEventListener("click", toggleWireframe);
+    document.getElementById("camTop").addEventListener("click", () => setCameraView("top"));
+    document.getElementById("camSide").addEventListener("click", () => setCameraView("side"));
+    document.getElementById("camAngle").addEventListener("click", () => setCameraView("angle"));
+
+    // Build preset buttons dynamically
+    const presetContainer = document.getElementById("presetContainer");
+    for (let i = 1; i <= 20; i++) {
+        const b = document.createElement("button");
+        b.className = "preset-btn";
+        b.textContent = i;
+        b.addEventListener("click", () => {
+            document.getElementById("targetNumber").value = i;
+        });
+        presetContainer.appendChild(b);
+    }
+
+    /***********************************************************
+     * === SIMPLE ORBIT-LIKE MOUSE DRAG ===
+     ***********************************************************/
+    let md = false, mx = 0, my = 0;
+    renderer.domElement.addEventListener("mousedown", (e) => {
+        if (e.button !== 0) return;
+        md = true;
+        mx = e.clientX;
+        my = e.clientY;
+        e.preventDefault();
+    });
+    renderer.domElement.addEventListener("mouseup", () => (md = false));
+    renderer.domElement.addEventListener("mousemove", (e) => {
+        if (!md) return;
+        const dx = e.clientX - mx;
+        const dy = e.clientY - my;
+        const sph = new THREE.Spherical().setFromVector3(camera.position);
+        sph.theta -= dx * 0.01;
+        sph.phi += dy * 0.01;
+        sph.phi = Math.max(0.1, Math.min(Math.PI - 0.1, sph.phi));
+        camera.position.setFromSpherical(sph);
+        camera.lookAt(0, 1, 0);
+        mx = e.clientX;
+        my = e.clientY;
+    });
+    renderer.domElement.addEventListener("wheel", (e) => {
+        const sph = new THREE.Spherical().setFromVector3(camera.position);
+        sph.radius += e.deltaY * 0.01;
+        sph.radius = Math.max(3, Math.min(20, sph.radius));
+        camera.position.setFromSpherical(sph);
+        camera.lookAt(0, 1, 0);
+        e.preventDefault();
+    });
+
+    /***********************************************************
+     * === ANIMATION LOOP ===
+     ***********************************************************/
+    let last = 0;
+    function animate(t) {
+        requestAnimationFrame(animate);
+        const dt = (t - last) / 1000;
+        last = t;
+        updateRoll(dt);
+        renderer.render(scene, camera);
+    }
+    animate(0);
+</script>
+</body>
+</html>
