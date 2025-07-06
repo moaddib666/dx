@@ -80,7 +80,8 @@ export class D20Service {
 
     setupLighting() {
         // Ambient light for basic illumination
-        this.scene.add(new THREE.AmbientLight(0x404040, 40.5))
+        // this.scene.add(new THREE.AmbientLight(0x404040, 40.5))
+        this.scene.add(new THREE.AmbientLight(0xffffff, 2.5))
 
         // Main directional light for strong reflections
         // const dirLight = new THREE.DirectionalLight(0xffffff, 0.2)
@@ -100,17 +101,30 @@ export class D20Service {
         // this.scene.add(fillLight2)
 
         // Top light for better visibility
-        const topLight = new THREE.DirectionalLight(0xffffff, 1.3)
-        topLight.position.set(0.1, 1, 0.1)
-        this.scene.add(topLight)
+        // const topLight = new THREE.DirectionalLight(0xffffff, 1.3)
+        // topLight.position.set(0.1, 1, 0.1)
+        // this.scene.add(topLight)
 
-        const spotLight = new THREE.DirectionalLight(0xff0, 1.3)
-        topLight.position.set(0.1, 1, 0.1)
-        this.scene.add(spotLight)
-
-        const rearLight = new THREE.SpotLight(0xfffff, 12.5)
-        rearLight.position.set(0, 3.5, 0)
+        const rearLight = new THREE.SpotLight(0xffffff, 5.5)
+        rearLight.position.set(0, 3.0, 0)
+        rearLight.castShadow = false
+        rearLight.angle = 1.9
+        rearLight.penumbra = 0.1
         this.scene.add(rearLight)
+
+        // let a = "#ffcc00"
+        const orange = 0xFFCC00
+        const cyan = 0x00ffff
+        // Background Right Orange Light
+        const rightLight = new THREE.DirectionalLight(orange, 5.5)
+        rightLight.position.set(15, 1, -3)
+        rightLight.castShadow = false
+        this.scene.add(rightLight)
+        // Background Left Cyan Light
+        const leftLight = new THREE.DirectionalLight(cyan, 5.5)
+        leftLight.position.set(-15, 1, 3)
+        this.scene.add(leftLight)
+
     }
 
     createSurface() {
