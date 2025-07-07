@@ -25,7 +25,6 @@
   background: url("@/assets/rpg_bars/rpg_avatar_border.png") no-repeat center;
   background-size: cover;
 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
