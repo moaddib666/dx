@@ -53,10 +53,12 @@
 <script>
 import AttributeBar from "./AttributeBar.vue";
 import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
+import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 
 export default {
   name: "PlayerComponent",
   components: {
+    CharacterRPGBars,
     CoordinatesDisplay,
     AttributeBar,
   },

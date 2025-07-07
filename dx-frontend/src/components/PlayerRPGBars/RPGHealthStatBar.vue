@@ -33,6 +33,7 @@ const percentage = computed(() => (props.current / props.max) * 100)
   background-size: contain;
   padding: 0;
   margin: 0;
+  pointer-events: none;
 }
 
 .rpg-stat-bar__wrapper {
@@ -52,6 +53,8 @@ const percentage = computed(() => (props.current / props.max) * 100)
   height: 100%;
   transition: width 0.3s ease;
   background-blend-mode: overlay;
+  box-shadow: inset 0 0 1.2rem rgb(255, 5, 5);
+  border-radius: 3rem;
 }
 .rpg-stat-bar__label {
   position: absolute;

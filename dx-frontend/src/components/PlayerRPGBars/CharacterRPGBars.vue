@@ -3,52 +3,91 @@ import RPGAvatar from './RPGAvatar.vue'
 import RpgHealthStatBar from './RPGHealthStatBar.vue'
 import RPGFlowStatBar from "@/components/PlayerRPGBars/RPGFlowStatBar.vue";
 import RPGActionPointsStatBar from "@/components/PlayerRPGBars/RPGActionPointsStatBar.vue";
-import RpgMiniHolder from "@/components/PlayerRPGBars/RPGMiniHolder.vue";
+import RpgEffectHolder from "@/components/PlayerRPGBars/RPGEffectHolder.vue";
+import {ActiveEffect, ActiveShield} from "@/api/dx-backend";
+import RPGShieldHolder from "@/components/PlayerRPGBars/RPGShieldHolder.vue";
+import {defineEmits} from 'vue';
+
+interface Character {
+  name: string;
+  level?: number;
+  health: number;
+  maxHealth: number;
+  flow: number;
+  maxFlow: number;
+  actionPoints: number;
+  maxActionPoints: number;
+  avatar?: string;
+}
+
+interface Props {
+  character: Character;
+  shields?: ActiveShield[];
+  effects?: ActiveEffect[];
+}
+
+
+const emits = defineEmits<{
+  (e: 'openInfo', character: Character): void;
+}>();
+
+const props = withDefaults(defineProps<Props>(), {});
 
 </script>
 
 <template>
-  <!-- Shields and Effects can be added here later -->
-  <div class="rpg-effects-holder">
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-    <RpgMiniHolder></RpgMiniHolder>
-  </div>
   <div class="rpg-bars-container">
     <!-- Character Avatar -->
-    <RPGAvatar/>
+    <RPGAvatar
+        :avatar-url="props.character.avatar"
+        @click="emits('openInfo', props.character)"
+    />
     <!-- Bars -->
     <div class="rpg-bars-holder">
-      <RpgHealthStatBar :current="7" :max="10"></RpgHealthStatBar>
-      <RPGFlowStatBar :current="10" :max="20"></RPGFlowStatBar>
-      <RPGActionPointsStatBar :current="9" :max="9"></RPGActionPointsStatBar>
-      <div class="rpg-shield-holder">
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
-        <RpgMiniHolder></RpgMiniHolder>
+      <RpgHealthStatBar
+          :current="props.character.health"
+          :max="props.character.maxHealth"
+      ></RpgHealthStatBar>
+      <RPGFlowStatBar
+          :current="props.character.flow"
+          :max="props.character.maxFlow"
+      ></RPGFlowStatBar>
+      <RPGActionPointsStatBar
+          :current="props.character.actionPoints"
+          :max="props.character.maxActionPoints"
+      ></RPGActionPointsStatBar>
+      <!-- Shields -->
+      <div class="rpg-shields-holder" v-if="props.shields && props.shields.length > 0">
+        <RPGShieldHolder
+            v-for="shield in props.shields"
+            :shield="shield"
+            :key="shield.shield.id"
+        />
       </div>
     </div>
+  </div>
+  <!-- Effects -->
+  <div class="rpg-effects-container" v-if="props.effects && props.effects.length > 0">
+    <RpgEffectHolder
+        v-for="effect in props.effects"
+        :key="effect.id"
+        :effect="effect"
+    ></RpgEffectHolder>
   </div>
 
 </template>
 
 <style scoped>
+.rpg-effects-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: -1.5rem;
+  margin-left: 6rem;
+}
+
 .rpg-bars-container {
   display: flex;
   align-items: center;
@@ -62,11 +101,13 @@ import RpgMiniHolder from "@/components/PlayerRPGBars/RPGMiniHolder.vue";
   margin-left: -2rem;
 }
 
-.rpg-shield-holder {
+.rpg-shields-holder {
   display: flex;
   flex-direction: row;
   justify-content: left;
   height: auto;
+  gap: 0.2rem;
+  margin-top: 0.5rem;
 }
 
 </style>

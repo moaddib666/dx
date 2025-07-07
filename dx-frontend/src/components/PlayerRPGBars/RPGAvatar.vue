@@ -1,11 +1,18 @@
 <script setup lang="ts">
+interface Props {
+  avatarUrl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  avatarUrl: 'https://images.squarespace-cdn.com/content/v1/605e90f9c17ee25104dba783/1684973142360-DGM2VVQ5D1356WLMWZQD/Screenshot+2023-05-24+170440.png?format=1500w'
+});
 </script>
 
 <template>
   <div class="rpg-avatar">
     <div class="rpg-avatar__wrapper">
       <img
-          src="https://images.squarespace-cdn.com/content/v1/605e90f9c17ee25104dba783/1684973142360-DGM2VVQ5D1356WLMWZQD/Screenshot+2023-05-24+170440.png?format=1500w"
+          :src="props.avatarUrl"
           alt="Character Avatar"
           class="rpg-avatar__image"
           sizes="content"
@@ -37,17 +44,20 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   background-size: cover;
   mask: url("@/assets/rpg_bars/rpg_avatar_border_mask_invented.png") no-repeat center;
   mask-size: cover;
 }
 
 .rpg-avatar__image {
-  width: 100%;
-  height: 100%;
+  width: 65%;
+  height: 60%;
   object-fit: cover;
   object-position: center;
+  position: absolute;
+  top: 10%;
+
 }
 
 </style>
