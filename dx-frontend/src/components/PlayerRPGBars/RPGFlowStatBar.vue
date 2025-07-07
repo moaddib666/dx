@@ -91,12 +91,12 @@ const percentage = computed(() => (props.current / props.max) * 100)
 .rpg-stat-bar__label {
   position: absolute;
   top: 52%;
-  left: 45%;
+  left: 42%;
   transform: translate(-50%, -50%);
   color: white;
   font-size: 0.7rem;
   font-weight: bold;
-
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 
 }
 </style>

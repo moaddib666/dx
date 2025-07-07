@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="rpg-avatar">
+  <div class="rpg-avatar" title="Character Info">
     <div class="rpg-avatar__wrapper">
       <img
           :src="props.avatarUrl"

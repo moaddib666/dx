@@ -32,21 +32,27 @@
     <!-- Compass Component (Centered) -->
     <div class="center-section">
       <div class="center-left">
-        <!-- Player Component (Left) -->
-        <PlayerComponent
-            :player="playerInfo"
-            :playerImage="playerGeneralInfo?.biography?.avatar"
-            @click="openInfo"
-            style="cursor: pointer"
-        />
-        <EffectsHolder :effects="activeEffects"/>
-        <ShieldHolder :shields="shields"/>
-        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>
+        <CharacterRPGBars
+            :character="{
+          name: playerInfo?.name || 'Unknown',
+          level: playerInfo?.rank_grade || 0,
+          health: playerInfo?.attributes.find(attr => attr.name === 'Health')?.current || 0,
+          maxHealth: playerInfo?.attributes.find(attr => attr.name === 'Health')?.max || 100,
+          flow: playerInfo?.attributes.find(attr => attr.name === 'Energy')?.current || 0,
+          maxFlow: playerInfo?.attributes.find(attr => attr.name === 'Energy')?.max || 100,
+          actionPoints: playerInfo?.attributes.find(attr => attr.name === 'Action Points')?.current || 0,
+          maxActionPoints: playerInfo?.attributes.find(attr => attr.name === 'Action Points')?.max || 10,
+          avatar: playerGeneralInfo?.biography?.avatar || '',
+        }"
+            :shields="shields"
+            :effects="activeEffects"
+            @openInfo="openInfo"
+        ></CharacterRPGBars>
       </div>
       <div class="center-center">
         <!-- Add more glitches with empty content for a more distributed cracked screen effect -->
         <BargainComponent :inventory="inventoryItems" v-if="isBargainVisible" @bargain-completed="toggleBargain"
-                          :bargain-id="currentBargainId" />
+                          :bargain-id="currentBargainId"/>
         <ItemHolder
             v-if="isInventoryVisible"
             :items="inventoryItems" @item-clicked="alert('itemClicked')" @close="toggleInventory">
@@ -64,6 +70,7 @@
             class="compass-component"
             @move="handleMove"
         />
+
         <ActionConstructor v-if="isActionConstructorVisible"
                            :availableSkills="availableActions"
                            :availableSpecials="playerSpecials"
@@ -80,6 +87,7 @@
 
       </div>
       <div class="center-right" v-if="centerAreaNotInteractive">
+        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>
         <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
         <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
       </div>
@@ -153,10 +161,12 @@ import BargainComponent from "@/components/bargain/BargainComponent.vue";
 import bargainService from "@/services/bargainService.js";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import DimensionalGlitch from "@/components/Glitch/DimensionalGlitch.vue";
+import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    CharacterRPGBars,
     DimensionalGlitch,
     BargainComponent,
     UserActionLog,
@@ -293,12 +303,12 @@ export default {
     } catch (error) {
       console.error("Error during component creation:", error);
       // Initialize with default values to prevent errors
-      this.position = { id: null, image: null, anomalies: [], connections: [], characters: [] };
+      this.position = {id: null, image: null, anomalies: [], connections: [], characters: []};
       this.connections = {};
       this.characters = [];
       this.npcCharacters = [];
-      this.playerInfo = { id: null, coordinates: null, attributes: [] };
-      this.playerGeneralInfo = { biography: { avatar: null } };
+      this.playerInfo = {id: null, coordinates: null, attributes: []};
+      this.playerGeneralInfo = {biography: {avatar: null}};
       this.playerSkills = [];
       this.activeEffects = [];
       this.shields = [];
@@ -645,7 +655,7 @@ export default {
       } catch (error) {
         console.error("Error getting current position info:", error);
         // Initialize with empty values to prevent errors
-        this.position = { id: null, image: null, anomalies: [], connections: [], characters: [] };
+        this.position = {id: null, image: null, anomalies: [], connections: [], characters: []};
         this.connections = {};
         this.characters = [];
         this.npcCharacters = [];
@@ -667,7 +677,7 @@ export default {
           attributes: [] // Add empty attributes array to prevent errors
         };
         if (this.playerGeneralInfo === null) {
-          this.playerGeneralInfo = { biography: { avatar: null } };
+          this.playerGeneralInfo = {biography: {avatar: null}};
         }
         this.playerService = new PlayerService(this.playerInfo);
       }
