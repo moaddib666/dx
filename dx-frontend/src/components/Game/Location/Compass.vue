@@ -172,6 +172,7 @@ export default {
   font-weight: 600;
   line-height: 1;
   color: var(--cyber-yellow, #ffd700);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
 .direction-label {
