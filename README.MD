@@ -17,7 +17,7 @@ I had **zero experience in game development** and struggled with all the newbie 
 
 A turn-based online game inspired by D&D. Built because COVID isolation and the war in Ukraine made our regular lamp meetups impossible, so I decided to build something so our team could have team building online.
 
-**[Play the game](https://dx.awsome.live/)** | **[Discord](https://discord.gg/32dwT8EP)** | **[Explore Lore](https://chatgpt.com/g/g-VIcO0L3rg-dimension-x-game-architect)**
+**[Play the game](https://dx.awsome.live/)** | **[Discord](https://discord.gg/vC3TvVzK)** | **[Explore Lore](https://chatgpt.com/g/g-VIcO0L3rg-dimension-x-game-architect)**
 
 ### The Story
 
@@ -64,7 +64,7 @@ If you're interested in the world and lore:
 
 ## Want to Participate?
 
-If you're interested or want to participate, feel free to join the [Discord](https://discord.gg/32dwT8EP)!
+If you're interested or want to participate, feel free to join the [Discord](https://discord.gg/vC3TvVzK)!
 
 The game is hosted at https://dx.awsome.live/ if you want to try it but without a game master you don't go far out or up your own instance.
 

@@ -17,7 +17,7 @@ Since this is a solo learning project, I'm not expecting big contributions, but 
 ### Found Issues?
 - Report bugs you encounter
 - Suggest improvements based on actual gameplay
-- Share ideas on [Discord](https://discord.gg/32dwT8EP)
+- Share ideas on [Discord](https://discord.gg/vC3TvVzK)
 
 ### Want to Code?
 - Feel free to fork and experiment
@@ -57,7 +57,7 @@ This isn't a personal project with no standards. It's about:
 
 ## Questions?
 
-Join the [Discord](https://discord.gg/32dwT8EP) if you want to chat about the project or just hang out!
+Join the [Discord](https://discord.gg/vC3TvVzK) if you want to chat about the project or just hang out!
 
 ---
 
