@@ -10,21 +10,11 @@
 
     <!-- Top Row (Character Cards) -->
     <div class="top-row">
-      <CharacterCardHolder
-          v-if="characters.length > 0"
-          :characters="characters"
+      <NewCharacterCardHolder
+          v-if="characters.length > 0 || npcCharacters.length > 0"
+          :characters="characters.concat(npcCharacters)"
           :selectedCharacterId="selectedCharacterId"
           :additionalCharactersData="additionalCharactersData"
-          class="top-left"
-          @characterSelected="updateSelectedGameObjectId"
-      />
-      <div class="top-separator"></div>
-      <CharacterCardHolder
-          v-if="npcCharacters.length > 0"
-          :characters="npcCharacters"
-          :selectedCharacterId="selectedCharacterId"
-          :additionalCharactersData="additionalCharactersData"
-          class="top-right"
           @characterSelected="updateSelectedGameObjectId"
       />
     </div>
@@ -162,11 +152,13 @@ import bargainService from "@/services/bargainService.js";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import DimensionalGlitch from "@/components/Glitch/DimensionalGlitch.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
+import NewCharacterCardHolder from "@/components/Game/Location/NewCharacterCardHolder.vue";
 
 export default {
   name: 'LocationView',
   components: {
     CharacterRPGBars,
+    NewCharacterCardHolder,
     DimensionalGlitch,
     BargainComponent,
     UserActionLog,

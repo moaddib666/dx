@@ -14,6 +14,7 @@
 <script>
 import RealisticDiceRoller from '@/components/DiceRoller/RealisticDiceRoller.vue'
 import HeroBackground from "@/components/WhatIsIt/HeroBackground.vue";
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'DiceRollerView',
@@ -21,6 +22,11 @@ export default {
   components: {
     HeroBackground,
     RealisticDiceRoller
+  },
+
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
 
   data() {
@@ -45,15 +51,15 @@ export default {
     },
 
     onReady() {
-      console.log('Dice roller is ready!')
+      console.log(this.t('diceRoller.ready'))
     },
 
     onError(error) {
-      console.error('Dice roller error:', error)
+      console.error(this.t('diceRoller.error'), error)
     },
 
     onRollComplete(result) {
-      console.log('Roll completed:', result)
+      console.log(this.t('diceRoller.rollComplete'), result)
     }
   }
 }
@@ -64,5 +70,9 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  /* Site theme colors */
+  --cyber-yellow: #ffd700;
+  --light-steel-blue: #b0c4de;
+  --bg-overlay: rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -75,11 +75,13 @@ const emit = defineEmits(['select'])
   box-shadow:
       0 0.25rem 0.9375rem rgba(0, 0, 0, 0.4),
       0 0 0 0.125rem rgba(100, 150, 255, 0.2);
+  border: 0.0625rem solid rgba(100, 150, 255, 0.3);
+  background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
 }
 
 .character-card:hover {
-  transform: translateY(-0.5rem) scale(1.02);
+  transform: translateY(0.5rem) scale(1.02);
   box-shadow:
       0 0.5rem 1.5625rem rgba(0, 0, 0, 0.6),
       0 0 0 0.1875rem rgba(100, 150, 255, 0.5),

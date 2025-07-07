@@ -479,6 +479,19 @@
     "title": "404 - Page Not Found",
     "message": "Sorry, nothing interesting here was found. Perhaps sometime we'll add some information to this page, but for now only void here and your virtual friend Jonnie. So wish him luck and return on the path! See you, wanderer."
   },
+  "diceRoller": {
+    "title": "Dice Roller",
+    "subtitle": "Roll dice for your Dimension-X adventures",
+    "ready": "Dice roller is ready!",
+    "error": "Dice roller error occurred",
+    "rollComplete": "Roll completed",
+    "instructions": "Click and drag to interact with the dice",
+    "footer": {
+      "readyToBegin": "Ready to roll the dice of fate?",
+      "backToGame": "Back to Game",
+      "playerCheatSheet": "Player Cheat Sheet"
+    }
+  },
   "playerComponents": {
     "bio": {
       "title": "Character Bio",
