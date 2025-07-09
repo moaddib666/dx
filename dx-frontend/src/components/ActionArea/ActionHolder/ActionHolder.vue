@@ -119,9 +119,6 @@ const handleSpecialAction = (specialType: string) => {
 
 <style scoped>
 .action-holder {
-  z-index: 1000;
-  position: fixed;
-  bottom: 0;
   background: url("@/assets/images/action-area/Area.png") no-repeat center center;
   background-size: cover;
   display: flex;
@@ -144,8 +141,8 @@ const handleSpecialAction = (specialType: string) => {
   height: 12.6rem;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   position: relative;
   flex-wrap: wrap;
 }
@@ -155,8 +152,8 @@ const handleSpecialAction = (specialType: string) => {
   height: 12.6rem;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   position: relative;
   flex-wrap: wrap;
 }
@@ -166,8 +163,8 @@ const handleSpecialAction = (specialType: string) => {
   height: 12.6rem;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   position: relative;
   flex-wrap: wrap;
 }
