@@ -2,10 +2,9 @@
 import { computed } from 'vue';
 import { TypeC27Enum } from "@/api/dx-backend";
 
-interface Cost {
-  HP: number;
-  AP: number;
-  FP: number;
+interface CostItem {
+  kind: string;
+  value: number;
 }
 
 interface Props {
@@ -14,7 +13,7 @@ interface Props {
   image?: string;
   disabled?: boolean;
   title?: string;
-  cost?: Cost;
+  cost?: CostItem[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -23,8 +22,17 @@ const props = withDefaults(defineProps<Props>(), {
   image: '',
   disabled: false,
   title: '',
-  cost: () => ({ HP: 0, AP: 0, FP: 0 })
+  cost: () => []
 });
+
+const costByKind = (kind: string): CostItem | null => {
+  return props.cost?.find((cost) => cost.kind === kind) || null;
+};
+
+const actionPointsCost = computed(() => costByKind('Action Points'));
+const energyCost = computed(() => costByKind('Energy'));
+const healthCost = computed(() => costByKind('Health'));
+const flowCost = computed(() => costByKind('Flow'));
 
 const emit = defineEmits<{
   select: [id: string];
