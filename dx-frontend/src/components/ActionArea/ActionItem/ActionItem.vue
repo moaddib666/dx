@@ -56,9 +56,6 @@ const props = defineProps({
 </template>
 <style scoped>
 .cta__holder {
-
-  width: 3rem;
-  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;

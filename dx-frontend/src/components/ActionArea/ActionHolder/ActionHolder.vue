@@ -16,12 +16,17 @@ const props = defineProps({
   items: {
     type: Array as () => CharacterItem[],
     default: () => []
+  },
+  special: {
+    type: Array as () => CharacterItem[],
+    default: () => []
   }
 });
 
 
 const MaxSkills = 40;
-const MaxItems = 20;
+const MaxItems = 12;
+const MaxSpecial = 8;
 
 </script>
 
@@ -29,22 +34,63 @@ const MaxItems = 20;
   <div class="action-holder">
     <div class="skills-area">
       <ActionItem
-          v-for="i in MaxSkills"
-          :key="`skill-${i}`"
+          v-for="skill in skills"
+          :key="`skill-${skill.id}`"
+          :id="skill.id"
+          :image="skill.skill.icon"
+          :title="skill.skill.name"
+          :ctaType="skill.skill.type"
           @select="applyAction"
+          class="cta"
+      />
+      <ActionItem
+          v-for="i in (MaxSkills - skills.length)"
+          :key="`empty-skill-${i}`"
+          :id="''"
+          @select="applyAction"
+          class="cta"
       />
     </div>
     <div class="separator"></div>
     <div class="items-area">
       <ActionItem
-          v-for="i in MaxItems"
-          :key="`item-${i}`"
-          :id="123"
-          image="@/assets/images/action/anomaly.png"
+          v-for="item in items"
+          :key="`item-${item.id}`"
+          :id="item.id"
+          :image="item.world_item.item.icon"
+          :title="item.world_item.item.name"
+          :ctaType="item.world_item.item.type"
           @select="applyAction"
+          class="cta"
+      />
+      <ActionItem
+          v-for="i in (MaxItems - items.length)"
+          :key="`empty-item-${i}`"
+          :id="''"
+          @select="applyAction"
+          class="cta"
       />
     </div>
-
+    <div class="separator"></div>
+    <div class="items-area-2">
+      <ActionItem
+          v-for="item in items"
+          :key="`item-${item.id}`"
+          :id="item.id"
+          :image="item.world_item.item.icon"
+          :title="item.world_item.item.name"
+          :ctaType="item.world_item.item.type"
+          @select="applyAction"
+          class="cta"
+      />
+      <ActionItem
+          v-for="i in (MaxSpecial - items.length)"
+          :key="`empty-item-${i}`"
+          :id="''"
+          @select="applyAction"
+          class="cta"
+      />
+    </div>
   </div>
 </template>
 
@@ -60,8 +106,25 @@ const MaxItems = 20;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
-  width: 50.25rem;
+  width: 51.55rem;
   height: 15rem;
+}
+
+.cta {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: url("@/assets/images/action-area/Cell.png") no-repeat center center;
+  background-size: cover;
+  transition: transform 0.2s ease-in-out;
+  position: relative;
+  color: white;
+  margin: 0;
+  padding: 0;
+
 }
 
 .skills-area {
@@ -76,7 +139,18 @@ const MaxItems = 20;
 }
 
 .items-area {
-  width: 15rem;
+  width: 9rem;
+  height: 12.6rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.items-area-2 {
+  width: 6rem;
   height: 12.6rem;
   display: flex;
   flex-direction: row;
@@ -92,8 +166,7 @@ const MaxItems = 20;
   background-repeat: no-repeat;
   width: 3rem;
   height: 12.6rem;
-  left: 33rem;
-  z-index: 1000;
+  z-index: 10;
   margin: 0 -1rem;
 }
 </style>
