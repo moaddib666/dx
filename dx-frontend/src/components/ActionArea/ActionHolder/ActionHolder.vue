@@ -62,6 +62,7 @@ const handleSpecialAction = (specialType: string) => {
           :image="skill.icon || ''"
           :title="skill.name"
           :cta-type="skill.type || TypeC27Enum.Utility"
+          :cost="skill.cost || []"
           @select="() => handleSkillAction(skill.id.toString())"
       />
       <ActionItem
@@ -82,6 +83,7 @@ const handleSpecialAction = (specialType: string) => {
           :image="item.item.icon || ''"
           :title="item.item.name"
           :cta-type="item.item.skill.type || TypeC27Enum.Utility"
+          :cost="item.item.skill?.cost || []"
           @select="() => handleItemAction(item.id)"
       />
       <ActionItem
@@ -102,6 +104,7 @@ const handleSpecialAction = (specialType: string) => {
           :image="specialAction.icon || ''"
           :title="specialAction.name || specialAction.action_type"
           :cta-type="TypeC27Enum.Special"
+          :cost="specialAction.cost || []"
           @select="() => handleSpecialAction(specialAction.action_type)"
       />
       <ActionItem
