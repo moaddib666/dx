@@ -1,139 +1,222 @@
 <script setup lang="ts">
-import {defineProps} from 'vue';
-import {TypeC27Enum} from "@/api/dx-backend";
-// TODO: decode emitted events
+import { computed } from 'vue';
+import { TypeC27Enum } from "@/api/dx-backend";
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: ''
-  },
-  ctaType: {
-    type: TypeC27Enum,
-    default: TypeC27Enum.Defense
-  },
-  image: {
-    type: String,
-    default: ''
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  title: {
-    type: String,
-    default: ''
-  }
+interface Cost {
+  HP: number;
+  AP: number;
+  FP: number;
+}
+
+interface Props {
+  id?: string;
+  ctaType?: TypeC27Enum;
+  image?: string;
+  disabled?: boolean;
+  title?: string;
+  cost?: Cost;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  ctaType: TypeC27Enum.Utility,
+  image: '',
+  disabled: false,
+  title: '',
+  cost: () => ({ HP: 0, AP: 0, FP: 0 })
 });
+
+const emit = defineEmits<{
+  select: [id: string];
+}>();
+
+const isEmpty = computed(() => props.id === '');
+const isDisabled = computed(() => props.disabled || isEmpty.value);
+const hasImage = computed(() => props.image !== '');
+
+const handleClick = () => {
+  if (!isDisabled.value) {
+    emit('select', props.id);
+  }
+};
+
+const iconClasses = computed(() => ({
+  'action-item__icon': true,
+  'action-item__icon--attack': props.ctaType === TypeC27Enum.Attack,
+  'action-item__icon--defense': props.ctaType === TypeC27Enum.Defense,
+  'action-item__icon--heal': props.ctaType === TypeC27Enum.Heal,
+  'action-item__icon--buff': props.ctaType === TypeC27Enum.Buff,
+  'action-item__icon--debuff': props.ctaType === TypeC27Enum.Debuff,
+  'action-item__icon--utility': props.ctaType === TypeC27Enum.Utility,
+  'action-item__icon--special': props.ctaType === TypeC27Enum.Special,
+  'action-item__icon--disabled': isDisabled.value
+}));
+
+const holderClasses = computed(() => ({
+  'action-item': true,
+  'action-item--disabled': isDisabled.value,
+  'action-item--empty': isEmpty.value
+}));
 
 </script>
 
 <template>
-  <div class="cta__holder"
-       @click="$emit('select')"
-       :class="{
-         'cta__holder--disabled': id === '' || disabled,
-       }"
+  <div
+    :class="holderClasses"
+    @click="handleClick"
+    :title="title"
   >
     <img
-        :title="title"
-        :class="{
-         'cta__icon__attack': ctaType === TypeC27Enum.Attack,
-         'cta__icon__defense': ctaType === TypeC27Enum.Defense,
-         'cta__icon__heal': ctaType === TypeC27Enum.Heal,
-         'cta__icon__buff': ctaType === TypeC27Enum.Buff,
-         'cta__icon__debuff': ctaType === TypeC27Enum.Debuff,
-         'cta__icon__utility': ctaType === TypeC27Enum.Utility,
-         'cta__icon__special': ctaType === TypeC27Enum.Special,
-         'cta__icon--disabled': disabled
-       }"
-        src="@/assets/images/action/anomaly.png"
-        alt="Action Icon"
-        class="cta__icon"
-        v-if="image"
+      v-if="hasImage"
+      :src="image"
+      :alt="title || 'Action Icon'"
+      :class="iconClasses"
     />
+    <div
+      v-else-if="!isEmpty"
+      :class="iconClasses"
+      class="action-item__placeholder"
+    >
+      ?
+    </div>
   </div>
 </template>
 <style scoped>
-.cta__holder {
+.action-item {
+  width: 3rem;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   background: url("@/assets/images/action-area/Cell.png") no-repeat center center;
   background-size: cover;
-}
-
-.cta__icon {
-  width: 85%;
-  height: 85%;
-  object-fit: contain;
-}
-
-.cta__holder--disabled {
-  pointer-events: none;
-}
-
-.cta__icon__attack {
-  border: 0 solid #ff1744;
-  box-shadow: 0 0 5px #ff1744;
-}
-
-.cta__icon__defense {
-  border: 0 solid #00e5ff;
-  box-shadow: 0 0 0.3rem #00e5ff;
-}
-
-.cta__icon__heal {
-  border: 0 solid #00ff00;
-  box-shadow: 0 0 5px #00ff00;
-}
-
-.cta__icon__buff {
-  border: 0 solid #ffc107;
-  box-shadow: 0 0 5px #ffc107;
-}
-
-.cta__icon__debuff {
-  border: 0 solid #b71c1c;
-  box-shadow: 0 0 5px #b71c1c;
-}
-
-.cta__icon__utility {
-  border: 0 solid #9e9e9e;
-  box-shadow: 0 0 5px #9e9e9e;
-}
-
-.cta__icon__special {
-  border: 0 solid #673ab7;
-  box-shadow: 0 0 5px #673ab7;
-}
-
-.cta__icon:hover {
-  transform: scale(1.1);
   transition: transform 0.2s ease-in-out;
+  position: relative;
+  border-radius: 0.2rem;
+}
+
+.action-item:hover:not(.action-item--disabled) {
+  transform: scale(1.05);
+}
+
+.action-item:active:not(.action-item--disabled) {
+  transform: scale(0.95);
+}
+
+.action-item--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.action-item--empty {
+  opacity: 0.3;
+}
+
+.action-item__icon {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  border-radius: 0.1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.action-item__placeholder {
+  width: 75%;
+  height: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #666;
+  border: 1px dashed #666;
+  border-radius: 0.1rem;
+}
+
+/* Action Type Styling */
+.action-item__icon--attack {
+  border: 0 solid #ff1744;
+  box-shadow: 0 0 0.3rem rgba(255, 23, 68, 0.6);
+}
+
+.action-item__icon--defense {
+  border: 0 solid #00e5ff;
+  box-shadow: 0 0 0.3rem rgba(0, 229, 255, 0.6);
+}
+
+.action-item__icon--heal {
+  border: 0 solid #00ff00;
+  box-shadow: 0 0 0.3rem rgba(0, 255, 0, 0.6);
+}
+
+.action-item__icon--buff {
+  border: 0 solid #ffc107;
+  box-shadow: 0 0 0.3rem rgba(255, 193, 7, 0.6);
+}
+
+.action-item__icon--debuff {
+  border: 0 solid #b71c1c;
+  box-shadow: 0 0 0.3rem rgba(183, 28, 28, 0.6);
+}
+
+.action-item__icon--utility {
+  border: 0 solid #9e9e9e;
+  box-shadow: 0 0 0.3rem rgba(158, 158, 158, 0.6);
+}
+
+.action-item__icon--special {
+  border: 0 solid #673ab7;
+  box-shadow: 0 0 0.3rem rgba(103, 58, 183, 0.6);
+}
+
+.action-item__icon--disabled {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+
+/* Hover Effects */
+.action-item:hover:not(.action-item--disabled) .action-item__icon {
+  transform: scale(1.1);
   border-width: 0.1rem;
 }
 
-.cta__icon:active {
-  transform: scale(1);
-  transition: transform 0.1s ease-in-out;
+.action-item:hover:not(.action-item--disabled) .action-item__icon--attack {
+  box-shadow: 0 0 0.5rem rgba(255, 23, 68, 0.8);
 }
 
-.cta__icon--disabled {
-  filter: grayscale(100%);
+.action-item:hover:not(.action-item--disabled) .action-item__icon--defense {
+  box-shadow: 0 0 0.5rem rgba(0, 229, 255, 0.8);
 }
 
-.cta__icon:focus {
+.action-item:hover:not(.action-item--disabled) .action-item__icon--heal {
+  box-shadow: 0 0 0.5rem rgba(0, 255, 0, 0.8);
+}
+
+.action-item:hover:not(.action-item--disabled) .action-item__icon--buff {
+  box-shadow: 0 0 0.5rem rgba(255, 193, 7, 0.8);
+}
+
+.action-item:hover:not(.action-item--disabled) .action-item__icon--debuff {
+  box-shadow: 0 0 0.5rem rgba(183, 28, 28, 0.8);
+}
+
+.action-item:hover:not(.action-item--disabled) .action-item__icon--utility {
+  box-shadow: 0 0 0.5rem rgba(158, 158, 158, 0.8);
+}
+
+.action-item:hover:not(.action-item--disabled) .action-item__icon--special {
+  box-shadow: 0 0 0.5rem rgba(103, 58, 183, 0.8);
+}
+
+/* Focus States */
+.action-item:focus {
   outline: none;
-  box-shadow: 0 0 0.3rem rgba(255, 255, 255, 0.5);
-}
-.cta__icon[title] {
-  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
 
-.cta__icon[title]:hover {
-  box-shadow: 0 0 0.3rem rgba(255, 255, 255, 0.7);
+.action-item:focus .action-item__icon {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
 }
 
 </style>

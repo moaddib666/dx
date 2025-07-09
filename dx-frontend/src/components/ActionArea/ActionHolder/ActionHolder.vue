@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import ActionItem from "@/components/ActionArea/ActionItem/ActionItem.vue";
-import { CharacterItem, LearnedSkill, SpecialAction, TypeC27Enum } from "@/api/dx-backend";
+import {OpenaiSkill, SpecialAction, TypeC27Enum, WorldItem} from "@/api/dx-backend";
 
 interface Props {
-  skills?: LearnedSkill[];
-  items?: CharacterItem[];
-  special?: SpecialAction[];
+  skills?: OpenaiSkill[];
+  items?: WorldItem[];
+  specials?: SpecialAction[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   skills: () => [],
   items: () => [],
-  special: () => []
+  specials: () => []
 });
 
 const emit = defineEmits<{
-  skillSelected: [skill: LearnedSkill];
-  itemSelected: [item: CharacterItem];
+  skillSelected: [skill: OpenaiSkill];
+  itemSelected: [item: WorldItem];
   specialSelected: [special: SpecialAction];
 }>();
 
@@ -27,10 +27,10 @@ const MAX_SPECIAL = 8;
 
 const emptySkillSlots = computed(() => Math.max(0, MAX_SKILLS - props.skills.length));
 const emptyItemSlots = computed(() => Math.max(0, MAX_ITEMS - props.items.length));
-const emptySpecialSlots = computed(() => Math.max(0, MAX_SPECIAL - props.special.length));
+const emptySpecialSlots = computed(() => Math.max(0, MAX_SPECIAL - props.specials.length));
 
 const handleSkillAction = (skillId: string) => {
-  const skill = props.skills.find(s => s.id === skillId);
+  const skill = props.skills.find(s => s.id.toString() === skillId);
   if (skill) {
     emit('skillSelected', skill);
   }
@@ -44,7 +44,7 @@ const handleItemAction = (itemId: string) => {
 };
 
 const handleSpecialAction = (specialType: string) => {
-  const special = props.special.find(s => s.action_type === specialType);
+  const special = props.specials.find(s => s.action_type === specialType);
   if (special) {
     emit('specialSelected', special);
   }
@@ -58,12 +58,11 @@ const handleSpecialAction = (specialType: string) => {
       <ActionItem
           v-for="skill in skills"
           :key="`skill-${skill.id}`"
-          :id="skill.id"
-          :image="skill.skill.icon || ''"
-          :title="skill.skill.name"
-          :cta-type="skill.skill.type || TypeC27Enum.Utility"
-          @select="() => handleSkillAction(skill.id)"
-          class="action-holder__item"
+          :id="skill.id.toString()"
+          :image="skill.icon || ''"
+          :title="skill.name"
+          :cta-type="skill.type || TypeC27Enum.Utility"
+          @select="() => handleSkillAction(skill.id.toString())"
       />
       <ActionItem
           v-for="i in emptySkillSlots"
@@ -80,11 +79,10 @@ const handleSpecialAction = (specialType: string) => {
           v-for="item in items"
           :key="`item-${item.id}`"
           :id="item.id"
-          :image="item.world_item.item.icon || ''"
-          :title="item.world_item.item.name"
-          :cta-type="item.world_item.item.type || TypeC27Enum.Utility"
+          :image="item.item.icon || ''"
+          :title="item.item.name"
+          :cta-type="item.item.skill.type || TypeC27Enum.Utility"
           @select="() => handleItemAction(item.id)"
-          class="action-holder__item"
       />
       <ActionItem
           v-for="i in emptyItemSlots"
@@ -98,14 +96,13 @@ const handleSpecialAction = (specialType: string) => {
 
     <div class="action-holder__special">
       <ActionItem
-          v-for="specialAction in special"
+          v-for="specialAction in specials"
           :key="`special-${specialAction.action_type}`"
           :id="specialAction.action_type"
           :image="specialAction.icon || ''"
           :title="specialAction.name || specialAction.action_type"
           :cta-type="TypeC27Enum.Special"
           @select="() => handleSpecialAction(specialAction.action_type)"
-          class="action-holder__item"
       />
       <ActionItem
           v-for="i in emptySpecialSlots"
@@ -134,24 +131,9 @@ const handleSpecialAction = (specialType: string) => {
   padding-bottom: 0.5rem;
 }
 
-.action-holder__item {
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: url("@/assets/images/action-area/Cell.png") no-repeat center center;
-  background-size: cover;
-  transition: transform 0.2s ease-in-out;
-  position: relative;
-  color: white;
-  margin: 0;
-  padding: 0;
-}
-
 .action-holder__item--empty {
   pointer-events: none;
+  opacity: 0.3;
 }
 
 .action-holder__skills {

@@ -108,6 +108,11 @@
       </div>
     </div>
   </div>
+  <ActionHolder
+    :items="availableItems"
+    :skills="availableActions"
+    :specials="playerSpecials"
+  />
 </template>
 
 
@@ -153,10 +158,14 @@ import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import DimensionalGlitch from "@/components/Glitch/DimensionalGlitch.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import NewCharacterCardHolder from "@/components/Game/Location/NewCharacterCardHolder.vue";
+import ActionHolder from "@/components/ActionArea/ActionHolder/ActionHolder.vue";
+import ActionItem from "@/components/ActionArea/ActionItem/ActionItem.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    ActionItem,
+    ActionHolder,
     CharacterRPGBars,
     NewCharacterCardHolder,
     DimensionalGlitch,
