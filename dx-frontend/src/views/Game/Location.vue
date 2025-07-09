@@ -1,5 +1,11 @@
 <template>
   <div class="location-view">
+    <ActionHolder
+        class="rpg-action-holder"
+        :items="availableItems"
+        :skills="availableActions"
+        :specials="playerSpecials"
+    />
     <!-- Background View -->
     <BackgroundView
         :key="position?.id"
@@ -85,34 +91,29 @@
                          :glitch-id="an" @glitch-found="handleAnomalyClick"/>
     </div>
     <!-- Bottom Row -->
-    <div class="bottom">
-      <!-- Current Turn Component (Bottom, Left) -->
-      <div class="left-action-group">
-        <CurrentTurnComponent
-            class="current-turn-component"
-            :current-turn="currentCycleNumber"
-        />
-      </div>
-      <!-- Dice Component (Bottom, Right) -->
-      <div class="right-action-group">
-        <InventoryButton
-            @click="toggleInventory"
-        />
-        <ActionButton
-            v-if="hasActionPoints"
-            @click="toggleActionConstructor"
-        />
-        <DiceComponent
-            @click="toogleDice"
-        />
-      </div>
+  </div>
+  <div class="bottom">
+    <!-- Current Turn Component (Bottom, Left) -->
+    <div class="left-action-group">
+      <CurrentTurnComponent
+          class="current-turn-component"
+          :current-turn="currentCycleNumber"
+      />
+    </div>
+    <!-- Dice Component (Bottom, Right) -->
+    <div class="right-action-group">
+      <InventoryButton
+          @click="toggleInventory"
+      />
+      <ActionButton
+          v-if="hasActionPoints"
+          @click="toggleActionConstructor"
+      />
+      <DiceComponent
+          @click="toogleDice"
+      />
     </div>
   </div>
-  <ActionHolder
-    :items="availableItems"
-    :skills="availableActions"
-    :specials="playerSpecials"
-  />
 </template>
 
 
@@ -717,6 +718,13 @@ export default {
 </script>
 
 <style scoped>
+.rpg-action-holder {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
 .center-section {
   display: flex;
   justify-content: space-between;
