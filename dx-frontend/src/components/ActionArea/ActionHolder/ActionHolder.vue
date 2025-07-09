@@ -7,12 +7,14 @@ interface Props {
   skills?: OpenaiSkill[];
   items?: WorldItem[];
   specials?: SpecialAction[];
+  playerService?: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   skills: () => [],
   items: () => [],
-  specials: () => []
+  specials: () => [],
+  playerService: null
 });
 
 const emit = defineEmits<{
@@ -25,27 +27,79 @@ const MAX_SKILLS = 40;
 const MAX_ITEMS = 12;
 const MAX_SPECIAL = 8;
 
+// Cost validation function for skills
+const canPerformSkillAction = (skill: OpenaiSkill): boolean => {
+  if (!props.playerService) return true;
+  if (!skill.cost || !Array.isArray(skill.cost) || skill.cost.length === 0) return true;
+
+  for (const cost of skill.cost) {
+    const currentValue = props.playerService.getCurrentAttributeValue(cost.kind);
+    if (currentValue === null || currentValue < cost.value) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Cost validation function for items
+const canPerformItemAction = (item: WorldItem): boolean => {
+  if (!props.playerService || !item.item || !item.item.skill) return true;
+  
+  const skill = item.item.skill;
+  if (!skill.cost || !Array.isArray(skill.cost) || skill.cost.length === 0) return true;
+
+  for (const cost of skill.cost) {
+    const currentValue = props.playerService.getCurrentAttributeValue(cost.kind);
+    if (currentValue === null || currentValue < cost.value) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Cost validation function for special actions
+const canPerformSpecialAction = (special: SpecialAction): boolean => {
+  if (!props.playerService) return true;
+  if (!special.cost || !Array.isArray(special.cost) || special.cost.length === 0) return true;
+
+  for (const cost of special.cost) {
+    const currentValue = props.playerService.getCurrentAttributeValue(cost.kind);
+    if (currentValue === null || currentValue < cost.value) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Filter items to only show those with charges > 0
+const filteredItems = computed(() => {
+  return props.items.filter(item => {
+    // Check if item has charges_left property and it's > 0
+    return item.charges_left > 0;
+  });
+});
+
 const emptySkillSlots = computed(() => Math.max(0, MAX_SKILLS - props.skills.length));
-const emptyItemSlots = computed(() => Math.max(0, MAX_ITEMS - props.items.length));
+const emptyItemSlots = computed(() => Math.max(0, MAX_ITEMS - filteredItems.value.length));
 const emptySpecialSlots = computed(() => Math.max(0, MAX_SPECIAL - props.specials.length));
 
 const handleSkillAction = (skillId: string) => {
   const skill = props.skills.find(s => s.id.toString() === skillId);
-  if (skill) {
+  if (skill && canPerformSkillAction(skill)) {
     emit('skillSelected', skill);
   }
 };
 
 const handleItemAction = (itemId: string) => {
-  const item = props.items.find(i => i.id === itemId);
-  if (item) {
+  const item = filteredItems.value.find(i => i.id === itemId);
+  if (item && canPerformItemAction(item)) {
     emit('itemSelected', item);
   }
 };
 
 const handleSpecialAction = (specialType: string) => {
   const special = props.specials.find(s => s.action_type === specialType);
-  if (special) {
+  if (special && canPerformSpecialAction(special)) {
     emit('specialSelected', special);
   }
 };
@@ -63,6 +117,7 @@ const handleSpecialAction = (specialType: string) => {
           :title="skill.name"
           :cta-type="skill.type || TypeC27Enum.Utility"
           :cost="skill.cost || []"
+          :disabled="!canPerformSkillAction(skill)"
           @select="() => handleSkillAction(skill.id.toString())"
       />
       <ActionItem
@@ -77,13 +132,14 @@ const handleSpecialAction = (specialType: string) => {
 
     <div class="action-holder__items">
       <ActionItem
-          v-for="item in items"
+          v-for="item in filteredItems"
           :key="`item-${item.id}`"
           :id="item.id"
           :image="item.item.icon || ''"
           :title="item.item.name"
           :cta-type="item.item.skill.type || TypeC27Enum.Utility"
           :cost="item.item.skill?.cost || []"
+          :disabled="!canPerformItemAction(item)"
           @select="() => handleItemAction(item.id)"
       />
       <ActionItem
@@ -105,6 +161,7 @@ const handleSpecialAction = (specialType: string) => {
           :title="specialAction.name || specialAction.action_type"
           :cta-type="TypeC27Enum.Special"
           :cost="specialAction.cost || []"
+          :disabled="!canPerformSpecialAction(specialAction)"
           @select="() => handleSpecialAction(specialAction.action_type)"
       />
       <ActionItem

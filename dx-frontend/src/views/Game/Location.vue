@@ -5,7 +5,20 @@
         :items="availableItems"
         :skills="availableActions"
         :specials="playerSpecials"
+        :player-service="playerService"
     />
+    <div class="right-action-group">
+      <InventoryButton
+          @click="toggleInventory"
+      />
+      <ActionButton
+          v-if="hasActionPoints"
+          @click="toggleActionConstructor"
+      />
+      <DiceComponent
+          @click="toogleDice"
+      />
+    </div>
     <!-- Background View -->
     <BackgroundView
         :key="position?.id"
@@ -101,18 +114,6 @@
       />
     </div>
     <!-- Dice Component (Bottom, Right) -->
-    <div class="right-action-group">
-      <InventoryButton
-          @click="toggleInventory"
-      />
-      <ActionButton
-          v-if="hasActionPoints"
-          @click="toggleActionConstructor"
-      />
-      <DiceComponent
-          @click="toogleDice"
-      />
-    </div>
   </div>
 </template>
 
@@ -828,19 +829,35 @@ export default {
 }
 
 .right-action-group {
+  position: fixed;
+  bottom: 2rem;
+  right: 0;
+  width: 10rem;
+  height: 3rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  flex: 1;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 1.5rem;
+  box-sizing: border-box;
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  flex-direction: row;
   z-index: 20;
   margin-right: 0.5rem;
   gap: 1rem;
-  height: 3rem;
 }
 
 .right-action-group * {
-  height: 3rem;
-  width: 3rem;
+  height: 2rem;
+  width: 2rem;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media (max-width: 480px) {
