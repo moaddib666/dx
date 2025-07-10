@@ -19,8 +19,6 @@ import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.v
 .trigger__group__holder {
   position: relative;
   width: 100%;
-  aspect-ratio: 10/9;
-  background: #ff5252;
 }
 
 .trigger__cta {
@@ -30,7 +28,7 @@ import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.v
 
 /* Big component - Bottom Left */
 .trigger__next-turn {
-  width: 30%;
+  width: 80%;
   aspect-ratio: 1;
   bottom: 0;
   left: 0;
@@ -39,20 +37,20 @@ import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.v
 
 /* Medium component - Bottom Right */
 .trigger__safe-place {
-  width: 20%;
+  width: 53%;
   aspect-ratio: 1;
   bottom: 0;
-  margin-bottom: -3%;
+  margin-bottom: -8%;
   z-index: 0;
-  left: 25%;
+  left: 67%;
 }
 
 /* Small component - Top Left */
 .trigger__roll-dice {
-  width: 12%;
+  width: 32%;
   aspect-ratio: 1;
-  bottom: 23%;
-  left: 3%;
+  bottom: 40%;
+  left: 5%;
   z-index: 3;
 }
 

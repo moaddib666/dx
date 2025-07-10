@@ -44,7 +44,7 @@ const canPerformSkillAction = (skill: OpenaiSkill): boolean => {
 // Cost validation function for items
 const canPerformItemAction = (item: WorldItem): boolean => {
   if (!props.playerService || !item.item || !item.item.skill) return true;
-  
+
   const skill = item.item.skill;
   if (!skill.cost || !Array.isArray(skill.cost) || skill.cost.length === 0) return true;
 
