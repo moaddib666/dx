@@ -4,44 +4,56 @@ import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.v
 </script>
 
 <template>
+<!--  Group of Composed components with responsive positioning -->
 <div class="trigger__group__holder">
-  <!-- EndTurn 100% - Left,Bottom -->
+  <!-- EndTurn 100% - Big, Bottom Left -->
   <ActionTrigger image="EndTurn" class="trigger__cta trigger__next-turn"/>
-  <!-- ToSafe 75%  Right, Bottom-->
+  <!-- ToSafe 75%  Medium, Bottom Right-->
   <ActionTrigger image="ToSafe" class="trigger__cta trigger__safe-place"/>
-  <!-- RollDice 50% Left,Top -->
+  <!-- RollDice 50% Small, Top Left -->
   <ActionTrigger image="RollDice" class="trigger__cta trigger__roll-dice"/>
 </div>
 </template>
 
 <style scoped>
 .trigger__group__holder {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 1rem;
-  background: #00e5ff;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 10/9;
+  background: #ff5252;
 }
 
+.trigger__cta {
+  position: absolute;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Big component - Bottom Left */
 .trigger__next-turn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 30%;
+  aspect-ratio: 1;
   bottom: 0;
   left: 0;
+  z-index: 1;
 }
+
+/* Medium component - Bottom Right */
 .trigger__safe-place {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 20%;
+  aspect-ratio: 1;
   bottom: 0;
-  right: 0;
+  margin-bottom: -3%;
+  z-index: 0;
+  left: 25%;
 }
+
+/* Small component - Top Left */
 .trigger__roll-dice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
+  width: 12%;
+  aspect-ratio: 1;
+  bottom: 23%;
+  left: 3%;
+  z-index: 3;
 }
+
 </style>
