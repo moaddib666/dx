@@ -1,11 +1,14 @@
 <script setup lang="ts">
 
 import {computed} from "vue";
+import TriggerEndTurn from '@/assets/images/action-area/TriggerEndTurn.png';
+import TriggerRollDice from '@/assets/images/action-area/TriggerRollDice.png';
+import TriggerToSafe from '@/assets/images/action-area/TriggerToSafe.png';
 
 const Images = {
-  EndTurn: require('@/assets/images/action-area/TriggerEndTurn.png'),
-  RollDice: require('@/assets/images/action-area/TriggerRollDice.png'),
-  ToSafe: require('@/assets/images/action-area/TriggerToSafe.png'),
+  EndTurn: TriggerEndTurn,
+  RollDice: TriggerRollDice,
+  ToSafe: TriggerToSafe,
 };
 
 
@@ -20,7 +23,7 @@ const ImagesEnum = {
 type TypeOfImageEnum = (typeof ImagesEnum)[keyof typeof ImagesEnum];
 
 interface Props {
-  id?: string;
+  id?: any;
   image?: TypeOfImageEnum;
   disabled?: boolean;
   title?: string;
@@ -32,11 +35,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  select: [id: string];
+  select: [id: any];
 }>();
 
-const isEmpty = computed(() => props.id === '');
-const isDisabled = computed(() => props.disabled || isEmpty.value);
 const imageSrc = computed(() => {
   return props.image ? Images[props.image] : '';
 });
@@ -86,8 +87,8 @@ const imageSrc = computed(() => {
   border-radius: 50%;
 }
 .action__trigger__image {
-  width: 50%;
-  height: 50%;
+  width: 60%;
+  height: 60%;
   object-fit: contain;
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
