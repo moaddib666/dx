@@ -1,12 +1,19 @@
 <template>
   <div class="location-view">
+    <div class="rpg-action-holder">
     <ActionHolder
-        class="rpg-action-holder"
         :items="availableItems"
         :skills="availableActions"
         :specials="playerSpecials"
         :player-service="playerService"
     />
+      <ActionTriggerGroup
+          class="trigger"
+          @next-turn-triggered="() => {}"
+          @safe-place-triggered="() => {}"
+          @roll-dice-triggered="toogleDice"
+      />
+    </div>
     <div class="right-action-group">
       <InventoryButton
           @click="toggleInventory"
@@ -162,10 +169,14 @@ import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import NewCharacterCardHolder from "@/components/Game/Location/NewCharacterCardHolder.vue";
 import ActionHolder from "@/components/ActionArea/ActionHolder/ActionHolder.vue";
 import ActionItem from "@/components/ActionArea/ActionItem/ActionItem.vue";
+import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.vue";
+import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/ActionTriggerGroup.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    ActionTriggerGroup,
+    ActionTrigger,
     ActionItem,
     ActionHolder,
     CharacterRPGBars,
@@ -725,6 +736,18 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.trigger {
+  display: flex;
+  width: 12rem;
+  height: 11rem;
+  margin-left: -2.5rem;
+  transform: translateY(35%);
+
 }
 .center-section {
   display: flex;

@@ -1,18 +1,25 @@
 <script setup lang="ts">
 
 import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.vue";
+
+const emit = defineEmits<{
+  nextTurnTriggered: [];
+  safePlaceTriggered: [];
+  rollDiceTriggered: [];
+}>();
+
 </script>
 
 <template>
-<!--  Group of Composed components with responsive positioning -->
-<div class="trigger__group__holder">
-  <!-- EndTurn 100% - Big, Bottom Left -->
-  <ActionTrigger image="EndTurn" class="trigger__cta trigger__next-turn"/>
-  <!-- ToSafe 75%  Medium, Bottom Right-->
-  <ActionTrigger image="ToSafe" class="trigger__cta trigger__safe-place"/>
-  <!-- RollDice 50% Small, Top Left -->
-  <ActionTrigger image="RollDice" class="trigger__cta trigger__roll-dice"/>
-</div>
+  <!--  Group of Composed components with responsive positioning -->
+  <div class="trigger__group__holder">
+    <!-- EndTurn 100% - Big, Bottom Left -->
+    <ActionTrigger image="EndTurn" class="trigger__cta trigger__next-turn" @select="$emit('nextTurnTriggered')"/>
+    <!-- ToSafe 75%  Medium, Bottom Right-->
+    <ActionTrigger image="ToSafe" class="trigger__cta trigger__safe-place" @select="$emit('safePlaceTriggered')"/>
+    <!-- RollDice 50% Small, Top Left -->
+    <ActionTrigger image="RollDice" class="trigger__cta trigger__roll-dice" @select="$emit('rollDiceTriggered')"/>
+  </div>
 </template>
 
 <style scoped>
