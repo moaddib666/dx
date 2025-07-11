@@ -3,6 +3,9 @@
     <div class="modal-overlay" @click="closeModal"></div>
     <div class="modal-container" @click="handleContainerClick">
       <div class="modal-container--mask">
+        <div v-if="currentState === 'results' && lastResult" class="outcome-banner" :class="outcomeClass">
+          {{ currentOutcome }}
+        </div>
         <div class="dice-canvas-content" @click="rollDice">
           <DiceCanvas
               ref="diceCanvas"
@@ -13,7 +16,7 @@
               class="dice-canvas"
           />
         </div>
-        <div class="instruction-text">Click to roll D20</div>
+
       </div>
     </div>
   </div>
@@ -31,7 +34,10 @@ interface RollResult {
   [key: string]: any; // For any additional properties in the result
 }
 
-const DICE_ROLL_TARGET = 10; // Predefined constant - not changeable
+// Define outcome types
+type OutcomeType = 'Critical Fail' | 'Fail' | 'Success' | 'Critical Success';
+
+const DICE_ROLL_TARGET = 2; // Predefined constant - not changeable
 export default defineComponent({
   name: 'DiceRollerModal',
 
@@ -58,7 +64,8 @@ export default defineComponent({
       currentState: 'initial' as 'initial' | 'rolling' | 'results',
       isCanvasReady: false,
       lastResult: null as RollResult | null,
-      file: null as File | null
+      file: null as File | null,
+      currentOutcome: null as OutcomeType | null
     }
   },
 
@@ -82,6 +89,23 @@ export default defineComponent({
   computed: {
     canRoll(): boolean {
       return this.isCanvasReady && this.currentState !== 'rolling'
+    },
+
+    outcomeClass(): string {
+      if (!this.currentOutcome) return '';
+
+      switch (this.currentOutcome) {
+        case 'Critical Fail':
+          return 'outcome-critical-fail';
+        case 'Fail':
+          return 'outcome-fail';
+        case 'Success':
+          return 'outcome-success';
+        case 'Critical Success':
+          return 'outcome-critical-success';
+        default:
+          return '';
+      }
     }
   },
 
@@ -125,8 +149,21 @@ export default defineComponent({
       }
     },
 
+    determineOutcome(rollValue: number): OutcomeType {
+      if (rollValue === 1) {
+        return 'Critical Fail';
+      } else if (rollValue < 15) {
+        return 'Fail';
+      } else if (rollValue === 20) {
+        return 'Critical Success';
+      } else {
+        return 'Success';
+      }
+    },
+
     onRollComplete(result: RollResult): void {
       this.lastResult = result;
+      this.currentOutcome = this.determineOutcome(result.number);
       this.currentState = 'results';
       this.$emit('roll-complete', result);
     }
@@ -201,4 +238,62 @@ export default defineComponent({
 .dice-canvas {
   pointer-events: none;
 }
+
+.roll-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.roll-number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.roll-outcome {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.outcome-banner {
+  position: absolute;
+  top: 6rem;
+  width: 60%;
+  flex-wrap: wrap;
+  text-wrap: wrap;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: 'Copperplate Gothic', 'Gothic', serif;
+  letter-spacing: 2px;
+  padding: 0.5rem;
+}
+
+.outcome-critical-fail {
+  color: #ff0000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.outcome-fail {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.outcome-success, .outcome-critical-success {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(to bottom, #f6e27a, #d4af37, #c5a028, #f6e27a);
+}
+
 </style>
