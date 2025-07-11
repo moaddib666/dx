@@ -8,7 +8,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
-from apps.core.models import GameMasterImpactAction
+from apps.core.models import GameMasterImpactAction, CharacterActionType
 from apps.core.utils.api import CampaignFilterMixin
 from apps.game.services.action import special
 from apps.game.services.action.factory import GameMasterActionFactory
@@ -16,7 +16,7 @@ from apps.game.services.character.core import CharacterService
 from apps.gamemaster.tools import ACTION_PIPELINE_TOOL
 from ..serializers.openapi import CharacterActionSerializer, GameMasterCharacterActionLogSerializer, \
     RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer, \
-    CharacterActionLogSerializer
+    CharacterActionLogSerializer, DiceRollResultSerializer
 from ...models import CharacterAction, Cycle, SpecialAction
 
 
@@ -156,6 +156,62 @@ class CharacterActionsViewSet(
         )
         serializer = CharacterActionSerializer(actions, many=True)
         return Response(data=serializer.data)
+
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated],
+            serializer_class=serializers.Serializer)
+    @transaction.atomic
+    def roll_d20_dice(self, request):
+        """
+        Roll dice endpoint that creates a dice roll action, executes it immediately,
+        and returns the dice outcome result.
+        """
+        sides = 20
+
+        # Get the user's main character
+        initiator = request.user.main_character
+        if not initiator:
+            return Response(
+                {'error': 'No main character found for user'},
+                status=400
+            )
+
+        # Get the campaign from the initiator
+        campaign = initiator.campaign
+        if not campaign:
+            return Response(
+                {'error': 'Character is not in a campaign'},
+                status=400
+            )
+
+        # Create dice roll action
+        action = CharacterAction.objects.create(
+            action_type=CharacterActionType.DICE_ROLL,
+            initiator=initiator,
+            data={'sides': sides},
+            position=initiator.position,
+            cycle=Cycle.objects.current(campaign=campaign),
+            immediate=True
+        )
+
+        # Execute the action immediately using the action pipeline
+        ACTION_PIPELINE_TOOL.chain(action).execute()
+
+        # Get the dice roll result from the action's impacts
+        dice_result = None
+        for impact in action.impacts.all():
+            if impact.dice_roll_result:
+                dice_result = impact.dice_roll_result
+                break
+
+        if not dice_result:
+            return Response(
+                {'error': 'Failed to get dice roll result'},
+                status=500
+            )
+
+        # Serialize and return the dice roll result
+        serializer = DiceRollResultSerializer(dice_result)
+        return Response(serializer.data)
 
 
 class GameMasterActionsViewSet(
