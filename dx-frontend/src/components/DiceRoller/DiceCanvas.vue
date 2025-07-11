@@ -19,6 +19,13 @@ import D20TextureService from '@/services/dice/d20TextureService.js'
 export default {
   name: 'DiceCanvas',
 
+  props: {
+    preloadedTexture: {
+      type: File,
+      default: null
+    }
+  },
+
   emits: ['ready', 'error', 'roll-complete', 'state-change', 'number-change'],
 
   data() {
@@ -46,6 +53,12 @@ export default {
   async mounted() {
     try {
       await this.initializeServices()
+
+      // Apply preloaded texture if provided before creating dice
+      if (this.preloadedTexture) {
+        await this.d20Service.setUserTexture(this.preloadedTexture)
+      }
+
       await this.setupCanvas()
       this.startAnimation()
       this.$emit('ready')

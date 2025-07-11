@@ -6,6 +6,7 @@
         <div class="dice-canvas-content" @click="rollDice">
           <DiceCanvas
               ref="diceCanvas"
+              :preloaded-texture="file"
               @ready="onCanvasReady"
               @error="onCanvasError"
               @roll-complete="onRollComplete"
@@ -31,15 +32,6 @@ interface RollResult {
 }
 
 const DICE_ROLL_TARGET = 10; // Predefined constant - not changeable
-const textureModule = await import('@/assets/textures/dice-texture.png');
-const textureUrl = textureModule.default;
-
-// Fetch the texture image
-const response = await fetch(textureUrl);
-const blob = await response.blob();
-
-// Create a File object from the blob
-const file = new File([blob], 'dice-texture.png', {type: blob.type});
 export default defineComponent({
   name: 'DiceRollerModal',
 
@@ -65,7 +57,25 @@ export default defineComponent({
     return {
       currentState: 'initial' as 'initial' | 'rolling' | 'results',
       isCanvasReady: false,
-      lastResult: null as RollResult | null
+      lastResult: null as RollResult | null,
+      file: null as File | null
+    }
+  },
+
+  async created() {
+    try {
+      // Load the texture
+      const textureModule = await import('@/assets/textures/dice-texture.png');
+      const textureUrl = textureModule.default;
+
+      // Fetch the texture image
+      const response = await fetch(textureUrl);
+      const blob = await response.blob();
+
+      // Create a File object from the blob
+      this.file = new File([blob], 'dice-texture.png', {type: blob.type});
+    } catch (error) {
+      console.error('Failed to load dice texture:', error);
     }
   },
 
@@ -82,14 +92,7 @@ export default defineComponent({
 
     async onCanvasReady(): Promise<void> {
       this.isCanvasReady = true;
-
-      // Automatically apply the texture when canvas is ready
-      try {
-        // Apply the texture to the dice
-        await this.$refs.diceCanvas.setUserTexture(file);
-      } catch (error) {
-        console.error('Failed to apply dice texture:', error);
-      }
+      // Texture is now applied during initialization via the preloaded-texture prop
     },
 
     onCanvasError(error: Error): void {
