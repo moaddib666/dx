@@ -49,7 +49,7 @@ export class D20Service {
 
             // Camera setup - start with top view
             this.camera = markRaw(new THREE.PerspectiveCamera(75, width / height, 0.1, 1000))
-            this.camera.position.set(0, 12, 0)
+            this.camera.position.set(0, 6, 0)
             this.camera.lookAt(0, 0, 0)
 
             // Renderer setup - exact same as dice6.html
