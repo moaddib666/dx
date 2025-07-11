@@ -1,39 +1,41 @@
 <template>
   <div class="realistic-dice-roller">
-    <DiceInfoPanel />
-
-    <DiceCanvas
-      ref="diceCanvas"
-      @ready="onCanvasReady"
-      @error="onCanvasError"
-      @number-change="onNumberChange"
-      @state-change="onStateChange"
-    />
+    <DiceInfoPanel/>
+    <div class="realistic-dice-roller-content">
+      <DiceCanvas
+          ref="diceCanvas"
+          @ready="onCanvasReady"
+          @error="onCanvasError"
+          @number-change="onNumberChange"
+          @state-change="onStateChange"
+          class="dice-canvas"
+      />
+    </div>
 
     <DiceControlPanel
-      @roll-dice="handleRollDice"
-      @random-roll="handleRandomRoll"
-      @reset-camera="handleResetCamera"
-      @toggle-wireframe="handleToggleWireframe"
-      @camera-view="handleCameraView"
-      @texture-upload="handleTextureUpload"
-      @material-change="handleMaterialChange"
-      @shader-change="handleShaderChange"
-      @dice-count-change="handleDiceCountChange"
-      @result-mode-change="handleResultModeChange"
-      :is-rolling="isRolling"
-      :current-number="currentDisplayNumber"
-      :status="rollStatus"
-      :material-types="materialTypes"
-      :shader-types="shaderTypes"
-      :current-material="currentMaterial"
-      :current-shader="currentShader"
+        @roll-dice="handleRollDice"
+        @random-roll="handleRandomRoll"
+        @reset-camera="handleResetCamera"
+        @toggle-wireframe="handleToggleWireframe"
+        @camera-view="handleCameraView"
+        @texture-upload="handleTextureUpload"
+        @material-change="handleMaterialChange"
+        @shader-change="handleShaderChange"
+        @dice-count-change="handleDiceCountChange"
+        @result-mode-change="handleResultModeChange"
+        :is-rolling="isRolling"
+        :current-number="currentDisplayNumber"
+        :status="rollStatus"
+        :material-types="materialTypes"
+        :shader-types="shaderTypes"
+        :current-material="currentMaterial"
+        :current-shader="currentShader"
     />
 
     <DiceResultDisplay
-      v-if="showResult"
-      :result="lastResult"
-      @close="showResult = false"
+        v-if="showResult"
+        :result="lastResult"
+        @close="showResult = false"
     />
   </div>
 </template>
@@ -146,7 +148,7 @@ export default {
           // Single dice or same target for all
           result = await this.$refs.diceCanvas.rollToTarget(targetNumbers)
         }
-        
+
         this.handleRollComplete(result)
       } catch (error) {
         console.error('Roll failed:', error)
@@ -175,7 +177,7 @@ export default {
       this.isRolling = false
       this.lastResult = result
       this.showResult = true
-      
+
       // Update status message based on result type
       if (result.diceCount > 1) {
         if (result.resultType === 'both') {
@@ -244,8 +246,8 @@ export default {
         if (success) {
           this.currentShader = shaderType
           this.rollStatus = shaderType === 'none'
-            ? 'Shader effects disabled'
-            : `Shader changed to ${shaderType}`
+              ? 'Shader effects disabled'
+              : `Shader changed to ${shaderType}`
         } else {
           this.rollStatus = 'Failed to change shader'
         }
@@ -298,5 +300,19 @@ export default {
   border-radius: 10px;
   overflow: hidden;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.realistic-dice-roller-content {
+  width: 60rem;
+  height: 30rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 </style>
