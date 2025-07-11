@@ -76,8 +76,7 @@
             <span>Inventory</span>
           </template>
         </ItemHolder>
-        <DiceVisualizer v-if="isDiceVisible" :result="diceResult" @close="toogleDice"
-                        @selectedDice="diceRoll"/>
+        <DiceRollerModal :visible="isDiceVisible" @close="toogleDice" @roll-complete="onDiceRollComplete" />
         <CompassComponent
             v-if="isCompassVisible"
             :connections="activeConnections"
@@ -149,7 +148,7 @@ import ActionPreview from "@/components/Pickers/ActionPreview.vue";
 import CompactPlayButton from "@/components/btn/CompactPlayButton.vue";
 import ActionConstructor from "@/components/Action/ActionConstructor.vue";
 import ActionButton from "@/components/Action/ActionButton.vue";
-import DiceVisualizer from "@/components/Dice/DiceVisualizer.vue";
+import DiceRollerModal from "@/components/DiceRoller/DiceRollerModal.vue";
 import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 import EffectItem from "@/components/Effect/EffectItem.vue";
 import EffectsHolder from "@/components/Effect/EffectsHolder.vue";
@@ -175,6 +174,7 @@ import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/Actio
 export default {
   name: 'LocationView',
   components: {
+    DiceRollerModal,
     ActionTriggerGroup,
     ActionTrigger,
     ActionItem,
@@ -193,7 +193,6 @@ export default {
     EffectsHolder,
     EffectItem,
     CoordinatesDisplay,
-    DiceVisualizer,
     ActionButton,
     ActionConstructor,
     CompactPlayButton,
@@ -618,6 +617,17 @@ export default {
         this.diceResult = await this.actionService.diceRoll(dice.value);
       } catch (error) {
         console.error(`Error rolling dice:`, error);
+        this.diceResult = null;
+      }
+    },
+
+    async onDiceRollComplete(result) {
+      try {
+        // Store the dice roll result
+        this.diceResult = result.number;
+        console.log('Dice roll complete:', result);
+      } catch (error) {
+        console.error('Error handling dice roll result:', error);
         this.diceResult = null;
       }
     },
