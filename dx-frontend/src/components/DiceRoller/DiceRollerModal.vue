@@ -31,8 +31,15 @@ interface RollResult {
 }
 
 const DICE_ROLL_TARGET = 10; // Predefined constant - not changeable
-const TextureImage = () => import('@/assets/textures/dice-texture.png'); // Lazy load texture
+const textureModule = await import('@/assets/textures/dice-texture.png');
+const textureUrl = textureModule.default;
 
+// Fetch the texture image
+const response = await fetch(textureUrl);
+const blob = await response.blob();
+
+// Create a File object from the blob
+const file = new File([blob], 'dice-texture.png', {type: blob.type});
 export default defineComponent({
   name: 'DiceRollerModal',
 
@@ -78,16 +85,6 @@ export default defineComponent({
 
       // Automatically apply the texture when canvas is ready
       try {
-        const textureModule = await import('@/assets/textures/dice-texture.png');
-        const textureUrl = textureModule.default;
-
-        // Fetch the texture image
-        const response = await fetch(textureUrl);
-        const blob = await response.blob();
-
-        // Create a File object from the blob
-        const file = new File([blob], 'dice-texture.png', {type: blob.type});
-
         // Apply the texture to the dice
         await this.$refs.diceCanvas.setUserTexture(file);
       } catch (error) {
