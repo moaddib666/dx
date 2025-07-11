@@ -48,7 +48,7 @@ export class D20Service {
             this.scene = markRaw(new THREE.Scene())
 
             // Camera setup - start with top view
-            this.camera = markRaw(new THREE.PerspectiveCamera(75, width / height, 0.1, 1000))
+            this.camera = markRaw(new THREE.PerspectiveCamera(75, width / height, 2, 5))
             this.camera.position.set(0, 6, 0)
             this.camera.lookAt(0, 0, 0)
 

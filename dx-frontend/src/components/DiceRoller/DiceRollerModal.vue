@@ -15,13 +15,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, ref, PropType } from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
+
+// Define types for component
+interface RollResult {
+  number: number;
+  rollTime: number;
+  [key: string]: any; // For any additional properties in the result
+}
 
 const DICE_ROLL_TARGET = 10; // Predefined constant - not changeable
 const TextureImage = () => import('@/assets/textures/dice-texture.png'); // Lazy load texture
 
-export default {
+export default defineComponent({
   name: 'DiceRollerModal',
 
   components: {
@@ -30,94 +38,96 @@ export default {
 
   props: {
     visible: {
-      type: Boolean,
+      type: Boolean as PropType<boolean>,
       default: false
     }
   },
 
+  emits: ['close', 'error', 'roll-complete'],
+
+  setup() {
+    // Return empty setup to use options API with TypeScript
+    return {};
+  },
+
   data() {
     return {
-      currentState: 'initial', // initial, rolling, results
+      currentState: 'initial' as 'initial' | 'rolling' | 'results',
       isCanvasReady: false,
-      lastResult: null
+      lastResult: null as RollResult | null
     }
   },
+
   computed: {
-    canRoll() {
+    canRoll(): boolean {
       return this.isCanvasReady && this.currentState !== 'rolling'
     }
   },
 
   methods: {
-    async setUserTexture(file) {
-      if (!this.d20Service) return false
-      const success = await this.d20Service.setUserTexture(file)
-      this.d20Service.createDice()
-      return success
-    },
-    closeModal() {
-      this.$emit('close')
+    closeModal(): void {
+      this.$emit('close');
     },
 
-    async onCanvasReady() {
-      this.isCanvasReady = true
+    async onCanvasReady(): Promise<void> {
+      this.isCanvasReady = true;
 
       // Automatically apply the texture when canvas is ready
       try {
-        const textureModule = await import('@/assets/textures/dice-texture.png')
-        const textureUrl = textureModule.default
+        const textureModule = await import('@/assets/textures/dice-texture.png');
+        const textureUrl = textureModule.default;
 
         // Fetch the texture image
-        const response = await fetch(textureUrl)
-        const blob = await response.blob()
+        const response = await fetch(textureUrl);
+        const blob = await response.blob();
 
         // Create a File object from the blob
-        const file = new File([blob], 'dice-texture.png', { type: blob.type })
+        const file = new File([blob], 'dice-texture.png', { type: blob.type });
 
         // Apply the texture to the dice
-        await this.$refs.diceCanvas.setUserTexture(file)
+        await this.$refs.diceCanvas.setUserTexture(file);
       } catch (error) {
-        console.error('Failed to apply dice texture:', error)
+        console.error('Failed to apply dice texture:', error);
       }
     },
 
-    onCanvasError(error) {
-      console.error('Canvas error:', error)
-      this.$emit('error', error)
+    onCanvasError(error: Error): void {
+      console.error('Canvas error:', error);
+      this.$emit('error', error);
     },
 
-    handleContainerClick(event) {
+    handleContainerClick(event: MouseEvent): void {
       // Prevent closing modal when clicking inside
-      event.stopPropagation()
+      event.stopPropagation();
 
       if (this.canRoll) {
-        this.rollDice()
+        this.rollDice();
       }
     },
 
-    async rollDice() {
-      if (!this.canRoll || !this.$refs.diceCanvas) return
+    async rollDice(): Promise<void> {
+      if (!this.canRoll || !this.$refs.diceCanvas) return;
 
       try {
-        this.currentState = 'rolling'
+        this.currentState = 'rolling';
 
         // Use random roll for simplicity - the target is just for visual effect
-        const result = await this.$refs.diceCanvas.rollRandom()
+        const result = await this.$refs.diceCanvas.rollToTarget(DICE_ROLL_TARGET);
 
         // Result will be handled by onRollComplete
       } catch (error) {
-        console.error('Error rolling dice:', error)
-        this.currentState = 'initial'
+        console.error('Error rolling dice:', error);
+        this.currentState = 'initial';
       }
     },
 
-    onRollComplete(result) {
-      this.lastResult = result
-      this.currentState = 'results'
-      this.$emit('roll-complete', result)
+    onRollComplete(result: RollResult): void {
+      this.lastResult = result;
+      this.currentState = 'results';
+      this.$emit('roll-complete', result);
     }
   }
-}
+});
 </script>
 
 <style scoped>
