@@ -74,9 +74,8 @@ const emit = defineEmits(['select'])
   overflow: hidden;
   position: relative;
   box-shadow:
-      0 0.25rem 0.9375rem rgba(0, 0, 0, 0.4),
-      0 0 0 0.125rem rgba(0, 255, 255, 0.2);
-  border: 0.0625rem solid rgba(0, 200, 255, 0.4);
+      0 0.15rem 0.5rem rgba(0, 0, 0, 0.3);
+  border: 0.03125rem solid rgba(0, 0, 0, 0.2);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
   perspective: 800px;
@@ -86,10 +85,8 @@ const emit = defineEmits(['select'])
 .character-card:hover {
   transform: translateY(0.5rem) scale(1.05) rotateX(-10deg);
   box-shadow:
-      0 0.75rem 1.5625rem rgba(0, 0, 0, 0.7),
-      0 0 0 0.1875rem rgba(0, 255, 255, 0.5),
-      0 0 1.25rem rgba(0, 200, 255, 0.4),
-      0 0.5rem 0.5rem -0.25rem rgba(0, 0, 0, 0.3);
+      0 0.4rem 0.8rem rgba(0, 0, 0, 0.5),
+      0 0.25rem 0.25rem -0.125rem rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
@@ -153,9 +150,9 @@ const emit = defineEmits(['select'])
   min-width: 1rem;
   text-align: center;
   box-shadow:
-      0 0.125rem 0.5rem rgba(255, 215, 0, 0.4),
-      inset 0 0.0625rem 0 rgba(255, 255, 255, 0.3);
-  border: 0.0625rem solid rgba(255, 215, 0, 0.6);
+      0 0.0625rem 0.25rem rgba(255, 215, 0, 0.3),
+      inset 0 0.03125rem 0 rgba(255, 255, 255, 0.2);
+  border: 0.03125rem solid rgba(255, 215, 0, 0.5);
   line-height: 1;
 }
 
@@ -165,8 +162,8 @@ const emit = defineEmits(['select'])
   color: #ffffff;
   text-align: center;
   text-shadow:
-      0 0.125rem 0.25rem rgba(0, 0, 0, 0.8),
-      0 0 0.5rem rgba(0, 0, 0, 0.6);
+      0 0.0625rem 0.125rem rgba(0, 0, 0, 0.6),
+      0 0 0.25rem rgba(0, 0, 0, 0.4);
   margin-bottom: 0.3rem;
   line-height: 1.1;
   letter-spacing: 0.03em;
@@ -180,33 +177,16 @@ const emit = defineEmits(['select'])
 }
 
 .selection-glow {
-  position: absolute;
-  top: -0.125rem;
-  left: -0.125rem;
-  right: -0.125rem;
-  bottom: -0.125rem;
-  border-radius: 0.875rem;
-  background: linear-gradient(45deg,
-  transparent,
-  rgba(100, 150, 255, 0.3),
-  transparent,
-  rgba(100, 150, 255, 0.3),
-  transparent
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: -1;
+  display: none; /* Completely remove the selection glow */
 }
 
 .character-card:hover .selection-glow {
-  opacity: 1;
-  animation: pulse-glow 2s infinite;
+  display: none;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0; }
 }
 
 /* Responsive Design for different viewport sizes */
@@ -273,35 +253,6 @@ const emit = defineEmits(['select'])
   }
 }
 
-/* Card Holder Row Layout Support */
-.character-card-row {
-  display: flex;
-  gap: clamp(0.375rem, 0.75vw, 0.75rem);
-  padding: 0.75rem;
-  overflow-x: auto;
-  align-items: flex-start;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(100, 150, 255, 0.3) transparent;
-}
-
-.character-card-row::-webkit-scrollbar {
-  height: 0.28125rem;
-}
-
-.character-card-row::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 0.140625rem;
-}
-
-.character-card-row::-webkit-scrollbar-thumb {
-  background: rgba(100, 150, 255, 0.3);
-  border-radius: 0.140625rem;
-}
-
-.character-card-row::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 150, 255, 0.5);
-}
-
 .selection-indicator {
   position: absolute;
   bottom: -2rem;
@@ -313,18 +264,18 @@ const emit = defineEmits(['select'])
   height: 5.5rem;
   shape-rendering: crispEdges;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 0 0.5rem rgba(0, 255, 255, 0.5));
+  filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.3));
   animation: pulse-selector 4s infinite ease-in-out;
 }
 
 @keyframes pulse-selector {
   0%, 20%, 80%, 100% {
     transform: translateX(-50%) scale(1);
-    filter: drop-shadow(0 0 0.5rem rgba(0, 255, 255, 0.5));
+    filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.3));
   }
   50% {
     transform: translateX(-50%) scale(1.05);
-    filter: drop-shadow(0 0 0.7rem rgba(0, 255, 255, 0.6));
+    filter: drop-shadow(0 0 0.3rem rgba(0, 0, 0, 0.4));
   }
 }
 

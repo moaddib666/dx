@@ -578,9 +578,6 @@ export default {
 
         // Wait for the next tick to ensure the state is updated
         await this.$nextTick();
-
-        // Open the action constructor
-        await this.openActionConstructor();
       } catch (error) {
         console.error("Error updating selected game object ID:", error);
         // Reset state in case of error
