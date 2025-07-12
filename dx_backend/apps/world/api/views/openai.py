@@ -14,7 +14,7 @@ from apps.core.utils.api import CampaignFilterMixin
 from apps.game.services.location import LocationService
 from apps.game.services.world.position import JsonDumper
 from apps.world.api.serializers.openapi import LocationSerializer, AreaSerializer, CitySerializer, DimensionSerializer, \
-    PositionSerializer, TeleportPositionSerializer, TeleportCoordinatesSerializer, MapPositionSerializer, \
+    WorldPositionSerializer, TeleportPositionSerializer, TeleportCoordinatesSerializer, MapPositionSerializer, \
     NewCoordinatesSerializer, MapSerializer, GenericPositionSerializer, GenericPositionIdSerializer, \
     MapPositionMutableSerializer, MiniMapSerializer
 from apps.world.models import Location, Area, City, Dimension, Position, MapPosition, Map
@@ -126,7 +126,7 @@ class OpenAIDimensionManagementViewSet(viewsets.ReadOnlyModelViewSet, GenericGam
 
 class PositionManagementViewSet(GenericGameViewSet):
     queryset = Character.objects.filter(is_active=True)
-    serializer_class = PositionSerializer
+    serializer_class = WorldPositionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=False, methods=['get'])
@@ -164,7 +164,7 @@ class PositionManagementViewSet(GenericGameViewSet):
     @action(detail=True, methods=['get'], permission_classes=[permissions.IsAdminUser])
     def info(self, request, pk=None):
         pos = get_object_or_404(Position, pk=pk)
-        serializer = PositionSerializer(pos, context=self.get_serializer_context())
+        serializer = WorldPositionSerializer(pos, context=self.get_serializer_context())
         return Response(data=serializer.data)
 
     @action(detail=True, methods=['post'], serializer_class=None, permission_classes=[permissions.IsAuthenticated])
@@ -177,7 +177,7 @@ class PositionManagementViewSet(GenericGameViewSet):
 
         character.position = new_position
         character.save()
-        return Response(data=PositionSerializer(new_position, context=self.get_serializer_context()).data)
+        return Response(data=WorldPositionSerializer(new_position, context=self.get_serializer_context()).data)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=TeleportPositionSerializer)

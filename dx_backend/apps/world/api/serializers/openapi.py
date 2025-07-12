@@ -202,7 +202,7 @@ class TeleportPositionSerializer(serializers.Serializer):
         return instance
 
 
-class PositionSerializer(serializers.ModelSerializer):
+class WorldPositionSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._client = self.context.get('request').user if 'request' in self.context else None
@@ -221,6 +221,7 @@ class PositionSerializer(serializers.ModelSerializer):
             'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
             "image", 'is_safe', 'anomalies')
 
+    @extend_schema_field(serializers.ListField(child=serializers.UUIDField()))
     def get_anomalies(self, obj):
         """Retrieve all anomalies in the current position."""
         return [
@@ -230,6 +231,7 @@ class PositionSerializer(serializers.ModelSerializer):
             ) if not t.known
         ]
 
+    @extend_schema_field(serializers.ListField(child=PositionConnectionSerializer(many=True)))
     def get_connections(self, obj):
         """Retrieve all connections where the current position is involved."""
         connections = PositionConnection.objects.filter(
@@ -243,11 +245,13 @@ class PositionSerializer(serializers.ModelSerializer):
         )
         return serializer.data
 
+    @extend_schema_field(serializers.ListField(child=serializers.UUIDField()))
     def get_characters(self, obj):
         """Retrieve all characters in the current position."""
         return [character.id for character in
                 obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign)]
 
+    @extend_schema_field(serializers.CharField(allow_null=True))
     def get_image(self, obj):
         """Retrieve the background of the current position."""
         # if obj.image return obj.image.url if not take sub_location.image if not take location.image if not take area.image if not take city.image
