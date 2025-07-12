@@ -193,7 +193,7 @@ const emit = defineEmits(['select'])
 @media (max-width: 75em) { /* 1200px */
   .character-card {
     width: clamp(5.5rem, 9vw, 7rem);
-    height: clamp(7.5rem, 13vw, 10rem);
+    height: clamp(11rem, 18vw, 14rem);
   }
 
   .card-content {
@@ -214,7 +214,7 @@ const emit = defineEmits(['select'])
 @media (max-width: 48em) { /* 768px */
   .character-card {
     width: clamp(5rem, 12vw, 6.5rem);
-    height: clamp(7rem, 16vw, 9rem);
+    height: clamp(10rem, 24vw, 13rem);
   }
 
   .card-content {
@@ -235,7 +235,7 @@ const emit = defineEmits(['select'])
 @media (max-width: 30em) { /* 480px */
   .character-card {
     width: clamp(4.5rem, 15vw, 6rem);
-    height: clamp(6.5rem, 20vw, 8.5rem);
+    height: clamp(9rem, 30vw, 12rem);
   }
 
   .card-content {
