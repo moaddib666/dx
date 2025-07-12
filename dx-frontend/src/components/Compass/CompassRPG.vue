@@ -397,11 +397,11 @@ const arrowRotationClass = computed(() => {
 }
 
 .arrow-up-left {
-  transform: rotate(45deg);
+  transform: rotate(-45deg);
 }
 
 .arrow-up-right {
-  transform: rotate(-45deg);
+  transform: rotate(45deg);
 }
 
 .arrow-down {
@@ -409,19 +409,19 @@ const arrowRotationClass = computed(() => {
 }
 
 .arrow-down-left {
-  transform: rotate(135deg);
-}
-
-.arrow-left {
-  transform: rotate(90deg);
-}
-
-.arrow-down-right {
   transform: rotate(-135deg);
 }
 
-.arrow-right {
+.arrow-left {
   transform: rotate(-90deg);
+}
+
+.arrow-down-right {
+  transform: rotate(135deg);
+}
+
+.arrow-right {
+  transform: rotate(90deg);
 }
 
 .arrow:hover {
