@@ -39,7 +39,7 @@
       <NewCharacterCardHolder
           v-if="characters.length > 0 || npcCharacters.length > 0"
           :characters="characters.concat(npcCharacters)"
-          :selectedCharacterId="selectedCharacterId"
+          :selectedCharacterId="selectedGameObjectId"
           :additionalCharactersData="additionalCharactersData"
           @characterSelected="updateSelectedGameObjectId"
       />
@@ -216,7 +216,6 @@ export default {
       playerGeneralInfo: null,
       characters: [],
       npcCharacters: [],
-      selectedCharacterId: 'f3c4216f-cbaa-4792-b6e6-1cedd502deae',
       actionService: new ActionService(ActionGameApi),
       playerService: null,
       playerSkills: null,

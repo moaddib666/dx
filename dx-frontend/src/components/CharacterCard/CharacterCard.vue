@@ -31,7 +31,8 @@
       </div>
 
       <!-- Selection Indicator -->
-      <div class="selection-glow"></div>
+      <div class="selection-indicator" v-if="selected">
+      </div>
     </div>
   </div>
 </template>
@@ -74,18 +75,18 @@ const emit = defineEmits(['select'])
   position: relative;
   box-shadow:
       0 0.25rem 0.9375rem rgba(0, 0, 0, 0.4),
-      0 0 0 0.125rem rgba(100, 150, 255, 0.2);
-  border: 0.0625rem solid rgba(100, 150, 255, 0.3);
+      0 0 0 0.125rem rgba(0, 255, 255, 0.2);
+  border: 0.0625rem solid rgba(0, 200, 255, 0.4);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
 }
 
 .character-card:hover {
-  transform: translateY(0.5rem) scale(1.02);
+  transform: translateY(0.5rem) scale(1.05);
   box-shadow:
       0 0.5rem 1.5625rem rgba(0, 0, 0, 0.6),
-      0 0 0 0.1875rem rgba(100, 150, 255, 0.5),
-      0 0 1.25rem rgba(100, 150, 255, 0.3);
+      0 0 0 0.1875rem rgba(0, 255, 255, 0.5),
+      0 0 1.25rem rgba(0, 200, 255, 0.4);
   z-index: 10;
 }
 
@@ -297,4 +298,31 @@ const emit = defineEmits(['select'])
 .character-card-row::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 150, 255, 0.5);
 }
+
+.selection-indicator {
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: url("@/assets/images/character/selector.png") no-repeat center center;
+  background-size: contain;
+  width: 6rem;
+  height: 6rem;
+  shape-rendering: crispEdges;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 0.5rem rgba(0, 255, 255, 0.5));
+  animation: pulse-selector 4s infinite ease-in-out;
+}
+
+@keyframes pulse-selector {
+  0%, 20%, 80%, 100% {
+    transform: translateX(-50%) scale(1);
+    filter: drop-shadow(0 0 0.5rem rgba(0, 255, 255, 0.5));
+  }
+  50% {
+    transform: translateX(-50%) scale(1.05);
+    filter: drop-shadow(0 0 0.7rem rgba(0, 255, 255, 0.6));
+  }
+}
+
 </style>

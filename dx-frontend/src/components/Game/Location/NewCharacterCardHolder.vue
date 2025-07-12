@@ -7,6 +7,7 @@
           :icon="character.biography?.avatar || ''"
           :name="character.name"
           :details="getCharDetails(character.id)"
+          :selected="character.id === selectedCharacterId"
           @click="selectCharacter(character.id)"
       />
   </div>
