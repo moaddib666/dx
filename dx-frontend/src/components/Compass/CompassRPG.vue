@@ -7,8 +7,8 @@
 // If direction is dangerous, it must show the danger section
 // if direction is locked, it must show the locked section
 // The pressed section must be emitted to the parent component
-import { computed, ref } from 'vue';
-import { WorldPosition, PositionConnection } from '@/api/dx-backend/api';
+import {computed, ref} from 'vue';
+import {WorldPosition, PositionConnection} from '@/api/dx-backend/api';
 
 // Direction mapping constants
 const DIRECTIONS = {
@@ -59,16 +59,19 @@ const hoveredDirection = ref<string | null>(null);
 const hasStairs = computed(() => {
   // Check if there are vertical connections (up/down)
   if (!props.position?.connections) return false;
-
-  // Check for vertical connections (currently not supported in the data structure)
-  // In the future, we might need to check for specific vertical directions
+  for (const conn of props.position.connections) {
+    if (conn.direction && (conn.direction.toLowerCase() === 'up' || conn.direction.toLowerCase() === 'down')) {
+      return true;
+    }
+  }
   return false;
 });
 
 const stairsLocked = computed(() => {
-  // Since we don't have vertical connections in the current data structure,
-  // we'll return true to indicate stairs are locked/unavailable
-  return true;
+// check middle center connection for stairs
+  if (!props.position?.connections) return true;
+  const connection = connectionMap.value[DIRECTIONS.MIDDLE_CENTER];
+  return connection?.is_locked || false; // Default to false if is_locked is not specified
 });
 
 // Map connections to compass directions
@@ -99,9 +102,23 @@ const connectionMap = computed(() => {
     else if (direction === 'south-west') map[DIRECTIONS.BOTTOM_LEFT] = conn;
     else if (direction === 'south') map[DIRECTIONS.BOTTOM_CENTER] = conn;
     else if (direction === 'south-east') map[DIRECTIONS.BOTTOM_RIGHT] = conn;
+    else if (direction === 'up' || direction === 'down') map[DIRECTIONS.MIDDLE_CENTER] = conn; // Use middle center for vertical connections
+    else {
+      console.warn('[CompassRPG]', 'Unknown direction:', direction, 'for connection:', conn);
+    }
   });
 
   return map;
+});
+
+const is_downstairs = computed(() => {
+  // Check if the current position has stairs
+  return props.position?.connections.some(conn => conn.direction?.toLowerCase() === 'down');
+});
+
+const is_upstairs = computed(() => {
+  // Check if the current position has stairs
+  return props.position?.connections.some(conn => conn.direction?.toLowerCase() === 'up');
 });
 
 // Get the status class for a direction
@@ -123,6 +140,10 @@ const getDirectionClass = (direction: string) => {
 // Handle hover on a direction
 const handleHover = (direction: string | null) => {
   console.debug('[CompassRPG]', 'Hovering over direction:', direction);
+  const con = connectionMap.value[direction || ''];
+  if (!con) {
+    return;
+  }
   hoveredDirection.value = direction;
 };
 
@@ -133,6 +154,8 @@ const handleMove = (direction: string) => {
   // Default to allowing movement if is_locked is not specified
   if (conn && conn.is_locked !== true) {
     emit('move', conn);
+  } else {
+    console.warn('[CompassRPG]', 'Cannot move in direction:', direction, 'Connection', conn, ' is locked or does not exist.');
   }
 };
 
@@ -160,20 +183,23 @@ const arrowRotationClass = computed(() => {
       <div class="compass--background">
         <!-- Arrow that rotates based on hovered direction -->
         <div
-          class="compass--background--real-center arrow"
-          :class="arrowRotationClass"
-          v-if="!hasStairs || hoveredDirection !== DIRECTIONS.MIDDLE_CENTER"
-        ></div>
+            class="arrow-wrapper"
+            v-if="!hasStairs || hoveredDirection !== DIRECTIONS.MIDDLE_CENTER"
+        >
+          <div
+              class="compass--background--real-center arrow"
+              :class="arrowRotationClass"
+          ></div>
+        </div>
 
         <!-- Stairs for vertical movement (up/down) -->
         <div
-          class="compass--background--stairs stairs"
-          :class="{ 'stairs--locked': stairsLocked }"
-          v-if="hasStairs && hoveredDirection === DIRECTIONS.MIDDLE_CENTER"
-          @click="handleStairsMove"
+            class="compass--background--stairs stairs"
+            :class="{ 'stairs--locked': stairsLocked }"
+            v-if="hasStairs && hoveredDirection === DIRECTIONS.MIDDLE_CENTER"
         >
-          <div class="stairs-arrow stairs-arrow-down"></div>
-          <div class="stairs-arrow stairs-arrow-up"></div>
+          <div class="stairs-arrow stairs-arrow-down" v-if="is_downstairs"></div>
+          <div class="stairs-arrow stairs-arrow-up" v-if="is_upstairs"></div>
         </div>
       </div>
 
@@ -182,69 +208,70 @@ const arrowRotationClass = computed(() => {
         <div class="compass--outer">
           <!-- Top row -->
           <div
-            class="compass--outer--section--top--left compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.TOP_LEFT)"
-            @mouseover="handleHover(DIRECTIONS.TOP_LEFT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.TOP_LEFT)"
+              class="compass--outer--section--top--left compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.TOP_LEFT)"
+              @mouseover="handleHover(DIRECTIONS.TOP_LEFT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.TOP_LEFT)"
           ></div>
           <div
-            class="compass--outer--section--top--center compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.TOP_CENTER)"
-            @mouseover="handleHover(DIRECTIONS.TOP_CENTER)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.TOP_CENTER)"
+              class="compass--outer--section--top--center compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.TOP_CENTER)"
+              @mouseover="handleHover(DIRECTIONS.TOP_CENTER)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.TOP_CENTER)"
           ></div>
           <div
-            class="compass--outer--section--top--right compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.TOP_RIGHT)"
-            @mouseover="handleHover(DIRECTIONS.TOP_RIGHT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.TOP_RIGHT)"
+              class="compass--outer--section--top--right compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.TOP_RIGHT)"
+              @mouseover="handleHover(DIRECTIONS.TOP_RIGHT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.TOP_RIGHT)"
           ></div>
 
           <!-- Middle row -->
           <div
-            class="compass--outer--section--middle--left compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.MIDDLE_LEFT)"
-            @mouseover="handleHover(DIRECTIONS.MIDDLE_LEFT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.MIDDLE_LEFT)"
+              class="compass--outer--section--middle--left compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.MIDDLE_LEFT)"
+              @mouseover="handleHover(DIRECTIONS.MIDDLE_LEFT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.MIDDLE_LEFT)"
           ></div>
           <div
-            class="compass--outer--section--middle--center compass--outer--section"
-            @mouseover="handleHover(DIRECTIONS.MIDDLE_CENTER)"
-            @mouseleave="handleHover(null)"
+              class="compass--outer--section--middle--center compass--outer--section"
+              @mouseover="handleHover(DIRECTIONS.MIDDLE_CENTER)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.MIDDLE_CENTER)"
           ></div>
           <div
-            class="compass--outer--section--middle--right compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.MIDDLE_RIGHT)"
-            @mouseover="handleHover(DIRECTIONS.MIDDLE_RIGHT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.MIDDLE_RIGHT)"
+              class="compass--outer--section--middle--right compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.MIDDLE_RIGHT)"
+              @mouseover="handleHover(DIRECTIONS.MIDDLE_RIGHT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.MIDDLE_RIGHT)"
           ></div>
 
           <!-- Bottom row -->
           <div
-            class="compass--outer--section--bottom--left compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.BOTTOM_LEFT)"
-            @mouseover="handleHover(DIRECTIONS.BOTTOM_LEFT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.BOTTOM_LEFT)"
+              class="compass--outer--section--bottom--left compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.BOTTOM_LEFT)"
+              @mouseover="handleHover(DIRECTIONS.BOTTOM_LEFT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.BOTTOM_LEFT)"
           ></div>
           <div
-            class="compass--outer--section--bottom--center compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.BOTTOM_CENTER)"
-            @mouseover="handleHover(DIRECTIONS.BOTTOM_CENTER)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.BOTTOM_CENTER)"
+              class="compass--outer--section--bottom--center compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.BOTTOM_CENTER)"
+              @mouseover="handleHover(DIRECTIONS.BOTTOM_CENTER)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.BOTTOM_CENTER)"
           ></div>
           <div
-            class="compass--outer--section--bottom--right compass--outer--section"
-            :class="getDirectionClass(DIRECTIONS.BOTTOM_RIGHT)"
-            @mouseover="handleHover(DIRECTIONS.BOTTOM_RIGHT)"
-            @mouseleave="handleHover(null)"
-            @click="handleMove(DIRECTIONS.BOTTOM_RIGHT)"
+              class="compass--outer--section--bottom--right compass--outer--section"
+              :class="getDirectionClass(DIRECTIONS.BOTTOM_RIGHT)"
+              @mouseover="handleHover(DIRECTIONS.BOTTOM_RIGHT)"
+              @mouseleave="handleHover(null)"
+              @click="handleMove(DIRECTIONS.BOTTOM_RIGHT)"
           ></div>
         </div>
       </div>
@@ -252,8 +279,11 @@ const arrowRotationClass = computed(() => {
       <!-- Inner compass (center) -->
       <div class="compass--inner--mask">
         <div
-          class="compass--inner"
-          :class="{ 'danger': hasStairs && stairsLocked }"
+            class="compass--inner"
+            :class="{
+              'locked': hasStairs && stairsLocked ,
+              'active': hasStairs,
+            }"
         ></div>
       </div>
     </div>
@@ -301,7 +331,8 @@ const arrowRotationClass = computed(() => {
 }
 
 .compass--outer--section--middle--center {
-  margin: 0.5rem auto;
+  transform: scale(0.6);
+  cursor: pointer;
 }
 
 .compass--outer--section {
@@ -371,12 +402,58 @@ const arrowRotationClass = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none; /* Prevent interaction with the background */
 }
 
 .compass--background--real-center {
   width: 50%;
   height: 50%;
   border-radius: 50%;
+}
+
+.arrow-wrapper {
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: arrow-shake 5s ease-in-out infinite;
+}
+
+@keyframes arrow-shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  1% {
+    transform: rotate(-5deg);
+  }
+  2% {
+    transform: rotate(4deg);
+  }
+  3% {
+    transform: rotate(-3deg);
+  }
+  4% {
+    transform: rotate(2deg);
+  }
+  5%, 85%, 100% {
+    transform: rotate(0deg);
+  }
+  86% {
+    transform: rotate(-5deg);
+  }
+  87% {
+    transform: rotate(4deg);
+  }
+  88% {
+    transform: rotate(-3deg);
+  }
+  89% {
+    transform: rotate(2deg);
+  }
+  90% {
+    transform: rotate(0deg);
+  }
 }
 
 .compass--background--stairs {
@@ -390,7 +467,10 @@ const arrowRotationClass = computed(() => {
   background: url('@/assets/images/compass/compass-arrow.png') no-repeat center center;
   background-size: contain;
   transition: transform 0.3s ease;
+  width: 100%;
+  height: 100%;
 }
+
 
 .arrow-up {
   transform: rotate(0deg);

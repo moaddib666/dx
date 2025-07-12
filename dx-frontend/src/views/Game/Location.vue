@@ -77,14 +77,6 @@
           </template>
         </ItemHolder>
         <DiceRollerModal :visible="isDiceVisible" @close="toogleDice" @roll-complete="onDiceRollComplete" />
-        <CompassComponent
-            v-if="isCompassVisible && false"
-            :connections="activeConnections"
-            centerAction="true"
-            centerLabel="Up"
-            class="compass-component"
-            @move="handleMove"
-        />
         <CompassRPG
             v-if="isCompassVisible"
             :position="position"
@@ -638,7 +630,8 @@ export default {
         this.diceResult = null;
       }
     },
-    async handleMove(direction) {
+    async handleMove(connection) {
+      const direction = connection.direction;
       try {
         const move_direction = this.connections[direction];
         if (!move_direction) {
