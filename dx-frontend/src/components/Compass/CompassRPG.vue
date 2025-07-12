@@ -60,46 +60,45 @@ const hasStairs = computed(() => {
   // Check if there are vertical connections (up/down)
   if (!props.position?.connections) return false;
 
-  // Flatten the connections array and check for vertical connections
-  return props.position.connections.flat().some(conn =>
-    conn.is_vertical === 'up' || conn.is_vertical === 'down'
-  );
+  // Check for vertical connections (currently not supported in the data structure)
+  // In the future, we might need to check for specific vertical directions
+  return false;
 });
 
 const stairsLocked = computed(() => {
-  if (!props.position?.connections) return true;
-
-  // Check if vertical connections are locked
-  return props.position.connections.flat()
-    .filter(conn => conn.is_vertical === 'up' || conn.is_vertical === 'down')
-    .some(conn => conn.locked);
+  // Since we don't have vertical connections in the current data structure,
+  // we'll return true to indicate stairs are locked/unavailable
+  return true;
 });
 
 // Map connections to compass directions
 const connectionMap = computed(() => {
   if (!props.position?.connections) {
-    console.warn('No connections available for the position.', props.position);
+    console.warn('[CompassRPG]', 'No connections available for the position.', props.position);
     return {};
   }
 
-  const flatConnections = props.position.connections.flat();
+  const connections = props.position.connections;
   const map: Record<string, PositionConnection> = {};
 
-  console.debug('Mapping connections to directions:', flatConnections);
+  console.debug('[CompassRPG]', 'Mapping connections to directions:', connections);
   // Process each connection and map to a direction
-  flatConnections.forEach(conn => {
-    // Skip vertical connections (handled separately for stairs)
-    if (conn.is_vertical === 'up' || conn.is_vertical === 'down') return;
+  connections.forEach(conn => {
+    // Skip invalid or inactive connections
+    if (!conn || conn.is_active === false) return;
 
-    // Map horizontal directions
-    if (conn.is_horizontal === 'north-west') map[DIRECTIONS.TOP_LEFT] = conn;
-    else if (conn.is_horizontal === 'north') map[DIRECTIONS.TOP_CENTER] = conn;
-    else if (conn.is_horizontal === 'north-east') map[DIRECTIONS.TOP_RIGHT] = conn;
-    else if (conn.is_horizontal === 'west') map[DIRECTIONS.MIDDLE_LEFT] = conn;
-    else if (conn.is_horizontal === 'east') map[DIRECTIONS.MIDDLE_RIGHT] = conn;
-    else if (conn.is_horizontal === 'south-west') map[DIRECTIONS.BOTTOM_LEFT] = conn;
-    else if (conn.is_horizontal === 'south') map[DIRECTIONS.BOTTOM_CENTER] = conn;
-    else if (conn.is_horizontal === 'south-east') map[DIRECTIONS.BOTTOM_RIGHT] = conn;
+    // Map directions based on the direction property
+    const direction = conn.direction?.toLowerCase();
+    if (!direction) return;
+
+    if (direction === 'north-west') map[DIRECTIONS.TOP_LEFT] = conn;
+    else if (direction === 'north') map[DIRECTIONS.TOP_CENTER] = conn;
+    else if (direction === 'north-east') map[DIRECTIONS.TOP_RIGHT] = conn;
+    else if (direction === 'west') map[DIRECTIONS.MIDDLE_LEFT] = conn;
+    else if (direction === 'east') map[DIRECTIONS.MIDDLE_RIGHT] = conn;
+    else if (direction === 'south-west') map[DIRECTIONS.BOTTOM_LEFT] = conn;
+    else if (direction === 'south') map[DIRECTIONS.BOTTOM_CENTER] = conn;
+    else if (direction === 'south-east') map[DIRECTIONS.BOTTOM_RIGHT] = conn;
   });
 
   return map;
@@ -109,44 +108,48 @@ const connectionMap = computed(() => {
 const getDirectionClass = (direction: string) => {
   const conn = connectionMap.value[direction];
   if (!conn) return 'unavailable';
-  if (conn.locked) return 'locked';
 
-  // Check if the position is dangerous (not safe)
-  const targetPosition = conn.position_to_details;
-  if (targetPosition && targetPosition.is_safe === false) return 'danger';
+  // Check if the connection is locked - this takes precedence over other statuses
+  // Default to false if is_locked is not specified
+  if (conn.is_locked === true) return 'locked';
+
+  // In the current data structure, we don't have position_to_details
+  // We'll check if the position itself is marked as unsafe
+  // if (props.position && props.position.is_safe === false) return 'danger';
 
   return 'active';
 };
 
 // Handle hover on a direction
 const handleHover = (direction: string | null) => {
+  console.debug('[CompassRPG]', 'Hovering over direction:', direction);
   hoveredDirection.value = direction;
 };
 
 // Handle click on a direction
 const handleMove = (direction: string) => {
   const conn = connectionMap.value[direction];
-  if (conn && !conn.locked) {
+  // Allow movement if connection exists and is not locked
+  // Default to allowing movement if is_locked is not specified
+  if (conn && conn.is_locked !== true) {
     emit('move', conn);
   }
 };
 
 // Handle click on stairs
 const handleStairsMove = () => {
-  if (!props.position?.connections || stairsLocked.value) return;
-
-  const verticalConn = props.position.connections.flat()
-    .find(conn => conn.is_vertical === 'up' || conn.is_vertical === 'down');
-
-  if (verticalConn && !verticalConn.locked) {
-    emit('move', verticalConn);
-  }
+  // Since vertical connections are not supported in the current data structure,
+  // this function does nothing
+  return;
 };
 
 // Get the arrow rotation class based on hovered direction
 const arrowRotationClass = computed(() => {
+  console.debug('[CompassRPG]', 'Hovered direction:', hoveredDirection.value);
   if (!hoveredDirection.value) return 'arrow-up';
-  return ARROW_ROTATIONS[hoveredDirection.value] || 'arrow-up';
+  const arrowDirection = ARROW_ROTATIONS[hoveredDirection.value] || 'arrow-up';
+  console.debug('[CompassRPG]', 'Arrow rotation class:', arrowDirection);
+  return arrowDirection;
 });
 
 </script>
@@ -251,9 +254,6 @@ const arrowRotationClass = computed(() => {
         <div
           class="compass--inner"
           :class="{ 'danger': hasStairs && stairsLocked }"
-          @mouseover="handleHover(DIRECTIONS.MIDDLE_CENTER)"
-          @mouseleave="handleHover(null)"
-          @click="handleStairsMove"
         ></div>
       </div>
     </div>
@@ -345,6 +345,7 @@ const arrowRotationClass = computed(() => {
   mask-position: center;
   -webkit-mask-image: url('@/assets/images/compass/compass-mask-circle.png');
   -webkit-mask-size: cover;
+  pointer-events: none;
 }
 
 .compass--inner {

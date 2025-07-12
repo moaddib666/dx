@@ -78,7 +78,7 @@
         </ItemHolder>
         <DiceRollerModal :visible="isDiceVisible" @close="toogleDice" @roll-complete="onDiceRollComplete" />
         <CompassComponent
-            v-if="isCompassVisible && false"
+            v-if="isCompassVisible"
             :connections="activeConnections"
             centerAction="true"
             centerLabel="Up"
