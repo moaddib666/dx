@@ -1877,13 +1877,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -7082,6 +7082,85 @@ export interface WorldItemRequest {
      * @memberof WorldItemRequest
      */
     'campaign': string;
+}
+/**
+ * 
+ * @export
+ * @interface WorldPosition
+ */
+export interface WorldPosition {
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldPosition
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldPosition
+     */
+    'grid_x'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldPosition
+     */
+    'grid_y'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WorldPosition
+     */
+    'grid_z'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldPosition
+     */
+    'sub_location': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldPosition
+     */
+    'location': string;
+    /**
+     * 
+     * @type {any}
+     * @memberof WorldPosition
+     */
+    'labels'?: any;
+    /**
+     * 
+     * @type {Array<Array<PositionConnection>>}
+     * @memberof WorldPosition
+     */
+    'connections': Array<Array<PositionConnection>>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WorldPosition
+     */
+    'characters': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldPosition
+     */
+    'image': string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof WorldPosition
+     */
+    'is_safe'?: boolean;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof WorldPosition
+     */
+    'anomalies': Array<string>;
 }
 
 /**
@@ -22994,7 +23073,7 @@ export const WorldApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async worldPositionCurrentRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+        async worldPositionCurrentRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldPosition>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.worldPositionCurrentRetrieve(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldApi.worldPositionCurrentRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -23006,7 +23085,7 @@ export const WorldApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async worldPositionInfoRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+        async worldPositionInfoRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldPosition>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.worldPositionInfoRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldApi.worldPositionInfoRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -23017,7 +23096,7 @@ export const WorldApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async worldPositionMapRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Position>> {
+        async worldPositionMapRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WorldPosition>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.worldPositionMapRetrieve(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['WorldApi.worldPositionMapRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -23254,7 +23333,7 @@ export const WorldApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        worldPositionCurrentRetrieve(options?: any): AxiosPromise<Position> {
+        worldPositionCurrentRetrieve(options?: any): AxiosPromise<WorldPosition> {
             return localVarFp.worldPositionCurrentRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
@@ -23263,7 +23342,7 @@ export const WorldApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        worldPositionInfoRetrieve(id: string, options?: any): AxiosPromise<Position> {
+        worldPositionInfoRetrieve(id: string, options?: any): AxiosPromise<WorldPosition> {
             return localVarFp.worldPositionInfoRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -23271,7 +23350,7 @@ export const WorldApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        worldPositionMapRetrieve(options?: any): AxiosPromise<Position> {
+        worldPositionMapRetrieve(options?: any): AxiosPromise<WorldPosition> {
             return localVarFp.worldPositionMapRetrieve(options).then((request) => request(axios, basePath));
         },
         /**

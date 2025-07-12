@@ -78,13 +78,18 @@
         </ItemHolder>
         <DiceRollerModal :visible="isDiceVisible" @close="toogleDice" @roll-complete="onDiceRollComplete" />
         <CompassComponent
-            v-if="isCompassVisible"
+            v-if="isCompassVisible && false"
             :connections="activeConnections"
             centerAction="true"
             centerLabel="Up"
             class="compass-component"
             @move="handleMove"
         />
+        <CompassRPG
+            v-if="isCompassVisible"
+        >
+
+        </CompassRPG>
 
         <ActionConstructor v-if="isActionConstructorVisible"
                            :availableSkills="availableActions"
@@ -170,10 +175,12 @@ import ActionHolder from "@/components/ActionArea/ActionHolder/ActionHolder.vue"
 import ActionItem from "@/components/ActionArea/ActionItem/ActionItem.vue";
 import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.vue";
 import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/ActionTriggerGroup.vue";
+import CompassRPG from "@/components/Compass/CompassRPG.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    CompassRPG,
     DiceRollerModal,
     ActionTriggerGroup,
     ActionTrigger,
