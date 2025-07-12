@@ -234,22 +234,43 @@ const emit = defineEmits(['select'])
 
 @media (max-width: 30em) { /* 480px */
   .character-card {
-    width: clamp(4.5rem, 15vw, 6rem);
-    height: clamp(9rem, 30vw, 12rem);
+    width: clamp(3.5rem, 12vw, 5rem);
+    height: clamp(7rem, 24vw, 10rem);
   }
 
   .card-content {
-    padding: 0.3rem;
+    padding: 0.25rem;
   }
 
   .character-name {
-    font-size: clamp(0.5rem, 1.8vw, 0.65rem);
+    font-size: clamp(0.45rem, 1.6vw, 0.6rem);
     margin-bottom: 0.15rem;
   }
 
   .rank-badge {
-    font-size: 0.45rem;
+    font-size: 0.4rem;
     padding: 0.08rem 0.25rem;
+  }
+}
+
+@media (max-width: 20em) { /* 320px - for very small screens */
+  .character-card {
+    width: clamp(3rem, 10vw, 4rem);
+    height: clamp(6rem, 20vw, 8rem);
+  }
+
+  .card-content {
+    padding: 0.2rem;
+  }
+
+  .character-name {
+    font-size: clamp(0.4rem, 1.4vw, 0.55rem);
+    margin-bottom: 0.1rem;
+  }
+
+  .rank-badge {
+    font-size: 0.35rem;
+    padding: 0.06rem 0.2rem;
   }
 }
 
@@ -266,6 +287,30 @@ const emit = defineEmits(['select'])
   transition: all 0.3s ease;
   filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.3));
   animation: pulse-selector 4s infinite ease-in-out;
+}
+
+@media (max-width: 48em) {
+  .selection-indicator {
+    width: 4.5rem;
+    height: 4.5rem;
+    bottom: -1.5rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .selection-indicator {
+    width: 3.5rem;
+    height: 3.5rem;
+    bottom: -1.2rem;
+  }
+}
+
+@media (max-width: 20em) {
+  .selection-indicator {
+    width: 3rem;
+    height: 3rem;
+    bottom: -1rem;
+  }
 }
 
 @keyframes pulse-selector {
