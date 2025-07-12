@@ -1515,6 +1515,12 @@ export interface CharacterTemplate {
 export interface CharacterTemplateFull {
     /**
      * 
+     * @type {string}
+     * @memberof CharacterTemplateFull
+     */
+    'id'?: string | null;
+    /**
+     * 
      * @type {CharacterTemplate}
      * @memberof CharacterTemplateFull
      */
@@ -7627,6 +7633,45 @@ export const ActionApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
+         * Roll dice endpoint that creates a dice roll action, executes it immediately, and returns the dice outcome result.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionRollD20DiceCreate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/action/roll_d20_dice/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7945,6 +7990,17 @@ export const ActionApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Roll dice endpoint that creates a dice roll action, executes it immediately, and returns the dice outcome result.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async actionRollD20DiceCreate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DiceRollResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.actionRollD20DiceCreate(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ActionApi.actionRollD20DiceCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Simple mixin that filters queryset by user\'s campaign
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8110,6 +8166,14 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
          */
         actionNextCycleCreate(options?: any): AxiosPromise<void> {
             return localVarFp.actionNextCycleCreate(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Roll dice endpoint that creates a dice roll action, executes it immediately, and returns the dice outcome result.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        actionRollD20DiceCreate(options?: any): AxiosPromise<DiceRollResult> {
+            return localVarFp.actionRollD20DiceCreate(options).then((request) => request(axios, basePath));
         },
         /**
          * Simple mixin that filters queryset by user\'s campaign
@@ -8288,6 +8352,16 @@ export class ActionApi extends BaseAPI {
      */
     public actionNextCycleCreate(options?: RawAxiosRequestConfig) {
         return ActionApiFp(this.configuration).actionNextCycleCreate(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Roll dice endpoint that creates a dice roll action, executes it immediately, and returns the dice outcome result.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ActionApi
+     */
+    public actionRollD20DiceCreate(options?: RawAxiosRequestConfig) {
+        return ActionApiFp(this.configuration).actionRollD20DiceCreate(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

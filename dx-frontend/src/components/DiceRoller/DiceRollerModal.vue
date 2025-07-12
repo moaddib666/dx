@@ -25,19 +25,20 @@
 <script lang="ts">
 import {defineComponent, ref, PropType} from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
+import DiceBackendService from "@/services/dice/DiceBackendService.js";
 
 // Define types for component
 interface RollResult {
   number: number;
   rollTime: number;
+  targetNumber?: number;
+  outcome?: string;
 
   [key: string]: any; // For any additional properties in the result
 }
 
 // Define outcome types
 type OutcomeType = 'Critical Fail' | 'Fail' | 'Success' | 'Critical Success';
-
-const DICE_ROLL_TARGET = 2; // Predefined constant - not changeable
 export default defineComponent({
   name: 'DiceRollerModal',
 
@@ -64,8 +65,10 @@ export default defineComponent({
       currentState: 'initial' as 'initial' | 'rolling' | 'results',
       isCanvasReady: false,
       lastResult: null as RollResult | null,
+      lastApiResult: null as RollResult | null,
       file: null as File | null,
-      currentOutcome: null as OutcomeType | null
+      currentOutcome: null as OutcomeType | null,
+      diceBackendService: new DiceBackendService()
     }
   },
 
@@ -139,8 +142,15 @@ export default defineComponent({
       try {
         this.currentState = 'rolling';
 
-        // Use random roll for simplicity - the target is just for visual effect
-        const result = await this.$refs.diceCanvas.rollToTarget(DICE_ROLL_TARGET);
+        // Get dice roll result from backend API
+        const apiResult = await this.diceBackendService.rollD20Dice();
+
+        // Use the target number from the API response for the visual dice roll
+        const result = await this.$refs.diceCanvas.rollToTarget(apiResult.number);
+
+        // Store the API result for use in onRollComplete
+        this.lastApiResult = apiResult;
+        this.lastResult = result;
 
         // Result will be handled by onRollComplete
       } catch (error) {
@@ -149,23 +159,30 @@ export default defineComponent({
       }
     },
 
-    determineOutcome(rollValue: number): OutcomeType {
-      if (rollValue === 1) {
-        return 'Critical Fail';
-      } else if (rollValue < 15) {
-        return 'Fail';
-      } else if (rollValue === 20) {
-        return 'Critical Success';
-      } else {
-        return 'Success';
-      }
-    },
-
     onRollComplete(result: RollResult): void {
-      this.lastResult = result;
-      this.currentOutcome = this.determineOutcome(result.number);
+      // Combine the visual roll result with the API result
+      const combinedResult = {
+        ...result,
+        // Use the API result for the actual outcome if available
+        number: this.lastApiResult?.number || result.number,
+        targetNumber: this.lastApiResult?.targetNumber || result.targetNumber
+      };
+
+      this.lastResult = combinedResult;
+
+      // Always use the outcome from the API result, which is determined by the service
+      if (this.lastApiResult?.outcome) {
+        this.currentOutcome = this.lastApiResult.outcome as OutcomeType;
+      } else {
+        // If for some reason we don't have an API result, use the service to determine the outcome
+        this.currentOutcome = this.diceBackendService.determineOutcome(combinedResult.number) as OutcomeType;
+      }
+
       this.currentState = 'results';
-      this.$emit('roll-complete', result);
+      this.$emit('roll-complete', combinedResult);
+
+      // Clear the API result after using it
+      this.lastApiResult = null;
     }
   }
 });
