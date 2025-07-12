@@ -87,9 +87,9 @@
         />
         <CompassRPG
             v-if="isCompassVisible"
-        >
-
-        </CompassRPG>
+            :position="position"
+            @move="handleMove"
+        />
 
         <ActionConstructor v-if="isActionConstructorVisible"
                            :availableSkills="availableActions"
