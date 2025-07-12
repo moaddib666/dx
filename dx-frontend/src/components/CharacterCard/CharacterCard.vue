@@ -79,14 +79,17 @@ const emit = defineEmits(['select'])
   border: 0.0625rem solid rgba(0, 200, 255, 0.4);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
+  perspective: 800px;
+  transform-origin: center bottom;
 }
 
 .character-card:hover {
-  transform: translateY(0.5rem) scale(1.05);
+  transform: translateY(0.5rem) scale(1.05) rotateX(-10deg);
   box-shadow:
-      0 0.5rem 1.5625rem rgba(0, 0, 0, 0.6),
+      0 0.75rem 1.5625rem rgba(0, 0, 0, 0.7),
       0 0 0 0.1875rem rgba(0, 255, 255, 0.5),
-      0 0 1.25rem rgba(0, 200, 255, 0.4);
+      0 0 1.25rem rgba(0, 200, 255, 0.4),
+      0 0.5rem 0.5rem -0.25rem rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 
@@ -306,8 +309,8 @@ const emit = defineEmits(['select'])
   transform: translateX(-50%);
   background: url("@/assets/images/character/selector.png") no-repeat center center;
   background-size: contain;
-  width: 6rem;
-  height: 6rem;
+  width: 5.5rem;
+  height: 5.5rem;
   shape-rendering: crispEdges;
   transition: all 0.3s ease;
   filter: drop-shadow(0 0 0.5rem rgba(0, 255, 255, 0.5));
