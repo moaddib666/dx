@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.db import transaction
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions, serializers
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -157,9 +158,13 @@ class CharacterActionsViewSet(
         serializer = CharacterActionSerializer(actions, many=True)
         return Response(data=serializer.data)
 
+    @extend_schema(
+        responses={
+            200: DiceRollResultSerializer,
+        }
+    )
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated],
             serializer_class=serializers.Serializer)
-    @transaction.atomic
     def roll_d20_dice(self, request):
         """
         Roll dice endpoint that creates a dice roll action, executes it immediately,
