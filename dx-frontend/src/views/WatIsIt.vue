@@ -108,11 +108,6 @@ export default {
           caption: 'Character Card'
         },
         {
-          src: PlayerActionsImg,
-          alt: 'Player actions interface',
-          caption: 'Player Actions'
-        },
-        {
           src: DiceAreaImg,
           alt: 'Dice rolling interface',
           caption: 'Dice Rolling System'

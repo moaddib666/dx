@@ -80,6 +80,7 @@
       </div>
       <div class="center-right">
         <MapColumn :map-data="mapData" :coordinates="playerInfo?.coordinates" class="mini-map"></MapColumn>
+        <div class="map--effect-overlay"></div>
         <RPGActionLog :actions="actionLog" class="action-log"></RPGActionLog>
       </div>
       <DimensionalGlitch v-for="an in position?.anomalies || []" :key="an" :force-visible="false"
@@ -818,6 +819,7 @@ export default {
 }
 
 .center-right {
+  position: relative;
   flex: 1;
   flex-direction: column;
   align-items: center;
@@ -838,6 +840,19 @@ export default {
   margin-bottom: -2.7rem;
 }
 
+.center-right .map--effect-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("@/assets/images/RightBar/GlowFlowFG.png") no-repeat center center;
+  background-size: cover;
+  mask-image: linear-gradient(to top, transparent, rgba(0, 0, 0, 1));
+  z-index: 1;
+  mix-blend-mode: screen;
+}
+
 .action-log {
   display: flex;
   flex: 5;
@@ -847,6 +862,7 @@ export default {
   scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
   scroll-behavior: smooth;
   font-size: 0.6rem;
+  z-index: 10;
 }
 
 
