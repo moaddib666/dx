@@ -6,15 +6,30 @@
       <h2>Your Inventory</h2>
       <!-- Clicking an item immediately offers it, unless already submitted -->
       <ItemHolder :items="itemsAvailableToSubmit" @item-clicked="handleItemClicked" :disabled="submitted" :show-header="false"
-                  :gridSize="15"/>
+                  :row-count="4"
+                  :col-count="3"
+      />
     </div>
 
     <!-- Center Column: Your Offer -->
     <div class="column offer-column">
       <h2>Your Offer</h2>
       <ItemHolder :items="yourOffer" @item-clicked="removeOfferItem" :disabled="submitted" :show-header="false"
-                  :gridSize="15"/>
-      <div class="action">
+                  :row-count="4"
+                  :col-count="3"
+      />
+    </div>
+
+    <!-- Right Column: Target's Offer -->
+    <div class="column target-offer-column">
+      <h2>Target's Offer</h2>
+      <ItemHolder :items="targetOffer" @item-clicked="removeOfferItem" :disabled="submitted" :show-header="false"
+                  :row-count="4"
+                  :col-count="3"
+      />
+    </div>
+
+    <div class="action">
       <!-- Submit button is shown only if there is at least one offered item and not yet submitted -->
       <button
           v-if="yourOffer.length && !submitted"
@@ -30,14 +45,6 @@
       >
         Reject Offers
       </button>
-      </div>
-    </div>
-
-    <!-- Right Column: Target's Offer -->
-    <div class="column target-offer-column">
-      <h2>Target's Offer</h2>
-      <ItemHolder :items="targetOffer" @item-clicked="removeOfferItem" :disabled="submitted" :show-header="false"
-                  :gridSize="15"/>
     </div>
   </div>
 </template>
@@ -181,10 +188,20 @@ export default {
 <style scoped>
 /* Reduce the overall font size by 0.6 rem */
 .bargain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
   font-size: calc(1rem - 0.6rem);
   display: flex;
+  flex-direction: row;
+  justify-items: center;
+  align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
+  backdrop-filter: blur(5px);
 }
 
 /* When submitted, gray out the container and disable interactions */
@@ -199,7 +216,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
   border-radius: 1rem;
   padding: 1rem;
   color: white;

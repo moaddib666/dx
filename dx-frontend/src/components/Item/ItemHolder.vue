@@ -8,9 +8,9 @@
 
     <!-- Grid with pagination -->
     <RPGGridWithScroller
-      :row-count="3"
-      :col-count="5"
-      :cell-size="6"
+      :row-count="rowCount"
+      :col-count="colCount"
+      :cell-size="cellSize"
       :items="items"
       :initial-page="currentPage + 1"
       class="item-grid"
@@ -47,6 +47,18 @@ export default {
     items: {
       type: Array,
       required: true, // List of items to display
+    },
+    rowCount: {
+      type: Number,
+      default: 3, // Default number of rows
+    },
+    colCount: {
+      type: Number,
+      default: 5, // Default number of columns
+    },
+    cellSize: {
+      type: Number,
+      default: 6, // Default size of each cell in rem
     },
   },
   data() {
