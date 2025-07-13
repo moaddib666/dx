@@ -86,9 +86,10 @@
 
       </div>
       <div class="center-right" v-if="centerAreaNotInteractive">
-        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>
-        <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>
-        <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>
+<!--        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>-->
+<!--        <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>-->
+<!--        <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>-->
+        <MapColumn :map-data="mapData"></MapColumn>
       </div>
       <DimensionalGlitch v-for="an in position?.anomalies || []" :key="an" :force-visible="false"
                          :glitch-id="an" @glitch-found="handleAnomalyClick"/>
@@ -153,10 +154,12 @@ import ActionItem from "@/components/ActionArea/ActionItem/ActionItem.vue";
 import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.vue";
 import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/ActionTriggerGroup.vue";
 import CompassRPG from "@/components/Compass/CompassRPG.vue";
+import MapColumn from "@/components/MapColumn/MapColumn.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    MapColumn,
     CompassRPG,
     DiceRollerModal,
     ActionTriggerGroup,

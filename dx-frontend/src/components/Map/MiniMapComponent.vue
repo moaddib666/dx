@@ -1,16 +1,47 @@
 <template>
-  <div class="mini-map-container">
-    <svg :height="svgHeight" :width="svgWidth" class="map">
+  <div class="mini-map-container" :style="{ width, height }">
+    <svg :width="'100%'" :height="'100%'" :viewBox="`0 0 ${baseWidth} ${baseHeight}`" class="map">
       <defs>
         <clipPath id="circleClip">
-          <circle :cx="svgWidth / 2" :cy="svgHeight / 2" :r="circleRadius"/>
+          <circle :cx="baseWidth / 2" :cy="baseHeight / 2" :r="circleRadius"/>
         </clipPath>
+
+        <!-- Glow filters for holographic effect -->
+        <filter id="glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feFlood flood-color="rgba(42, 250, 207, 0.6)" result="glow-color"/>
+          <feComposite in="glow-color" in2="blur" operator="in" result="glow-blur"/>
+          <feMerge>
+            <feMergeNode in="glow-blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <filter id="glow-gold" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feFlood flood-color="rgba(255, 215, 0, 0.7)" result="glow-color"/>
+          <feComposite in="glow-color" in2="blur" operator="in" result="glow-blur"/>
+          <feMerge>
+            <feMergeNode in="glow-blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <filter id="glow-blue" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.5" result="blur"/>
+          <feFlood flood-color="rgba(30, 144, 255, 0.7)" result="glow-color"/>
+          <feComposite in="glow-color" in2="blur" operator="in" result="glow-blur"/>
+          <feMerge>
+            <feMergeNode in="glow-blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
 
       <!-- Grid behind everything, inside the clip -->
       <g clip-path="url(#circleClip)">
         <g class="grid">
-          <!-- Vertical lines -->
+          <!-- Vertical lines with holographic effect -->
           <line
               v-for="(vLine, idx) in gridData.vLines"
               :key="'vLine' + idx"
@@ -18,10 +49,11 @@
               :x2="vLine.x"
               :y1="vLine.y1"
               :y2="vLine.y2"
-              stroke="rgba(42, 250, 207, 0.5)"
+              stroke="rgba(42, 250, 207, 0.4)"
               stroke-width="1"
+              class="holo-grid-line"
           />
-          <!-- Horizontal lines -->
+          <!-- Horizontal lines with holographic effect -->
           <line
               v-for="(hLine, idx) in gridData.hLines"
               :key="'hLine' + idx"
@@ -29,17 +61,19 @@
               :x2="hLine.x2"
               :y1="hLine.y"
               :y2="hLine.y"
-              stroke="rgba(42, 250, 207, 0.5)"
+              stroke="rgba(42, 250, 207, 0.4)"
               stroke-width="1"
+              class="holo-grid-line"
           />
-          <!-- Dots at cell centers -->
+          <!-- Dots at cell centers with holographic effect -->
           <circle
               v-for="(dot, idx) in gridData.dots"
               :key="'dot' + idx"
               :cx="dot.x"
               :cy="dot.y"
-              fill="rgba(42, 250, 207, 0.9)"
-              r="1"
+              fill="rgba(42, 250, 207, 0.7)"
+              r="0.8"
+              class="holo-grid-dot"
           />
         </g>
 
@@ -49,48 +83,67 @@
             :key="'conn-' + i"
             :d="conn.d"
             fill="none"
-            stroke="#aaa"
+            stroke="rgba(42, 250, 207, 0.9)"
             stroke-linecap="round"
             stroke-width="2"
+            filter="url(#glow-cyan)"
+            class="holo-connection"
         />
 
         <!-- Draw positions -->
         <g v-for="pos in scaledPositions" :key="pos.id">
+          <!-- Position circle with appropriate filter based on type -->
           <circle
               :cx="pos.sx"
               :cy="pos.sy"
               :fill="pos.isCurrent
-              ? '#1E90FF'
+              ? 'rgba(30, 144, 255, 0.85)'
               : pos.hasCharacter
-                ? 'gold'
-                : '#666'"
+                ? 'rgba(255, 215, 0, 0.85)'
+                : 'rgba(42, 250, 207, 0.7)'"
               :r="pos.isCurrent ? 9 : (pos.hasCharacter ? 7 : 5)"
-              stroke="#333"
-              stroke-width="1"
+              stroke="rgba(42, 250, 207, 0.9)"
+              stroke-width="1.5"
+              :filter="pos.isCurrent
+                ? 'url(#glow-blue)'
+                : pos.hasCharacter
+                  ? 'url(#glow-gold)'
+                  : 'url(#glow-cyan)'"
+              :class="pos.isCurrent
+                ? 'holo-current-position'
+                : pos.hasCharacter
+                  ? 'holo-character-position'
+                  : 'holo-position'"
           />
+
+          <!-- Character count with enhanced visibility -->
           <text
               v-if="pos.characterCount > 0"
               :x="pos.sx"
               :y="pos.sy + 3"
               fill="#fff"
               font-size="10"
+              font-weight="bold"
               text-anchor="middle"
+              filter="url(#glow-cyan)"
           >
             {{ pos.characterCount }}
           </text>
+
+          <!-- Additional ring for positions with characters -->
+          <circle
+              v-if="pos.hasCharacter && !pos.isCurrent"
+              :cx="pos.sx"
+              :cy="pos.sy"
+              fill="none"
+              :r="10"
+              stroke="rgba(255, 215, 0, 0.5)"
+              stroke-width="1"
+              stroke-dasharray="3,2"
+              class="holo-character-ring"
+          />
         </g>
       </g>
-
-      <!-- Circular boundary -->
-      <circle
-          :cx="svgWidth / 2"
-          :cy="svgHeight / 2"
-          :r="circleRadius"
-          fill="none"
-          stroke="#555"
-          stroke-dasharray="4 4"
-          stroke-width="2"
-      />
     </svg>
   </div>
 </template>
@@ -103,14 +156,17 @@ export default {
     arcFactor: {type: Number, default: 0},
     minArcFactor: {type: Number, default: 0.25},
     maxArcFactor: {type: Number, default: 0.5},
+    width: {type: [Number, String], default: '100%'},
+    height: {type: [Number, String], default: '100%'},
   },
   data() {
     return {
-      svgWidth: 210,
-      svgHeight: 210,
       padding: 5,
       // Radius in "map units" for how far around the current position we show
       radius: 2.05,
+      // Base dimensions for viewBox
+      baseWidth: 210,
+      baseHeight: 210,
     };
   },
   methods: {
@@ -173,16 +229,16 @@ export default {
       // The largest circle we can draw inside the SVG (account for padding)
       // We'll treat half that dimension as our "usable radius in px."
       const usableRadius = Math.min(
-          (this.svgWidth - 2 * this.padding) / 2,
-          (this.svgHeight - 2 * this.padding) / 2
+          (this.baseWidth - 2 * this.padding) / 2,
+          (this.baseHeight - 2 * this.padding) / 2
       );
       // scale is how many SVG px per "map unit"
       const scale = usableRadius / this.radius;
 
       // offset so that current position is in center of the SVG
-      // (i.e., at svgWidth/2, svgHeight/2)
-      const offsetX = (this.svgWidth / 2) - this.currentPosCoords.x * scale;
-      const offsetY = (this.svgHeight / 2) - this.currentPosCoords.y * scale;
+      // (i.e., at baseWidth/2, baseHeight/2)
+      const offsetX = (this.baseWidth / 2) - this.currentPosCoords.x * scale;
+      const offsetY = (this.baseHeight / 2) - this.currentPosCoords.y * scale;
 
       return {scale, offsetX, offsetY};
     },
@@ -306,6 +362,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .grid {
@@ -313,9 +372,72 @@ export default {
 }
 
 .map {
-  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.7);
+  border: 0.15rem solid rgba(42, 250, 207, 0.9);
+  filter: drop-shadow(0 0 5px rgba(42, 250, 207, 0.5));
+  animation: mapPulse 10s infinite alternate;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1 / 1;
 }
 
+/* Holographic animations */
+@keyframes mapPulse {
+  0% { filter: drop-shadow(0 0 3px rgba(42, 250, 207, 0.4)); }
+  50% { filter: drop-shadow(0 0 7px rgba(42, 250, 207, 0.6)); }
+  100% { filter: drop-shadow(0 0 5px rgba(42, 250, 207, 0.5)); }
+}
+
+@keyframes holoFlicker {
+  0% { opacity: 0.7; }
+  25% { opacity: 0.9; }
+  30% { opacity: 0.7; }
+  35% { opacity: 0.8; }
+  70% { opacity: 0.9; }
+  75% { opacity: 0.7; }
+  100% { opacity: 0.8; }
+}
+
+@keyframes holoGridFlicker {
+  0% { opacity: 0.3; }
+  25% { opacity: 0.5; }
+  50% { opacity: 0.4; }
+  75% { opacity: 0.5; }
+  100% { opacity: 0.3; }
+}
+
+@keyframes holoRingPulse {
+  0% { stroke-width: 0.8; opacity: 0.4; }
+  50% { stroke-width: 1.2; opacity: 0.6; }
+  100% { stroke-width: 0.8; opacity: 0.4; }
+}
+
+/* Apply animations to elements */
+.holo-connection {
+  animation: holoFlicker 8s infinite;
+}
+
+.holo-grid-line {
+  animation: holoGridFlicker 12s infinite;
+}
+
+.holo-grid-dot {
+  animation: holoGridFlicker 10s infinite alternate;
+}
+
+.holo-position {
+  animation: holoFlicker 15s infinite;
+}
+
+.holo-character-position {
+  animation: holoFlicker 7s infinite;
+}
+
+.holo-current-position {
+  animation: holoFlicker 5s infinite;
+}
+
+.holo-character-ring {
+  animation: holoRingPulse 4s infinite alternate;
+}
 </style>
