@@ -4,11 +4,13 @@ import {computed} from "vue";
 import TriggerEndTurn from '@/assets/images/action-area/TriggerEndTurn.png';
 import TriggerRollDice from '@/assets/images/action-area/TriggerRollDice.png';
 import TriggerToSafe from '@/assets/images/action-area/TriggerToSafe.png';
+import TriggerBackpack from '@/assets/images/action-area/TriggerBackpack.png';
 
 const Images = {
   EndTurn: TriggerEndTurn,
   RollDice: TriggerRollDice,
   ToSafe: TriggerToSafe,
+  Backpack: TriggerBackpack,
 };
 
 
@@ -16,7 +18,8 @@ const Images = {
 const ImagesEnum = {
   EndTurn: 'EndTurn',
   RollDice: 'RollDice',
-  ToSafe: 'ToSafe'
+  ToSafe: 'ToSafe',
+  Backpack: 'Backpack'
 } as const;
 
 // More explicit type extraction

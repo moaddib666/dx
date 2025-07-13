@@ -1877,13 +1877,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -10140,6 +10140,51 @@ export const CharacterApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
+         * End the character\'s turn by spending all action points.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerEndTurnCreate: async (openaiCharacterRequest: OpenaiCharacterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'openaiCharacterRequest' is not null or undefined
+            assertParamExists('characterPlayerEndTurnCreate', 'openaiCharacterRequest', openaiCharacterRequest)
+            const localVarPath = `/api/character/player/end_turn/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(openaiCharacterRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Create a new character for the user.
          * @param {CharacterGenericDataRequest} characterGenericDataRequest 
          * @param {*} [options] Override http request option.
@@ -10590,6 +10635,18 @@ export const CharacterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * End the character\'s turn by spending all action points.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPlayerEndTurnCreate(openaiCharacterRequest: OpenaiCharacterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpenaiCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPlayerEndTurnCreate(openaiCharacterRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharacterApi.characterPlayerEndTurnCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Create a new character for the user.
          * @param {CharacterGenericDataRequest} characterGenericDataRequest 
          * @param {*} [options] Override http request option.
@@ -10786,6 +10843,15 @@ export const CharacterApiFactory = function (configuration?: Configuration, base
          */
         characterPlayerChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: any): AxiosPromise<CharacterPath> {
             return localVarFp.characterPlayerChosePathCreate(characterPathRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * End the character\'s turn by spending all action points.
+         * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPlayerEndTurnCreate(openaiCharacterRequest: OpenaiCharacterRequest, options?: any): AxiosPromise<OpenaiCharacter> {
+            return localVarFp.characterPlayerEndTurnCreate(openaiCharacterRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Create a new character for the user.
@@ -10986,6 +11052,17 @@ export class CharacterApi extends BaseAPI {
      */
     public characterPlayerChosePathCreate(characterPathRequest?: CharacterPathRequest, options?: RawAxiosRequestConfig) {
         return CharacterApiFp(this.configuration).characterPlayerChosePathCreate(characterPathRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * End the character\'s turn by spending all action points.
+     * @param {OpenaiCharacterRequest} openaiCharacterRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharacterApi
+     */
+    public characterPlayerEndTurnCreate(openaiCharacterRequest: OpenaiCharacterRequest, options?: RawAxiosRequestConfig) {
+        return CharacterApiFp(this.configuration).characterPlayerEndTurnCreate(openaiCharacterRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

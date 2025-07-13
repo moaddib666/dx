@@ -6,6 +6,7 @@ const emit = defineEmits<{
   nextTurnTriggered: [];
   safePlaceTriggered: [];
   rollDiceTriggered: [];
+  backpackTriggered: [];
 }>();
 
 </script>
@@ -16,7 +17,7 @@ const emit = defineEmits<{
     <!-- EndTurn 100% - Big, Bottom Left -->
     <ActionTrigger image="EndTurn" class="trigger__cta trigger__next-turn" @select="$emit('nextTurnTriggered')"/>
     <!-- ToSafe 75%  Medium, Bottom Right-->
-    <ActionTrigger image="ToSafe" class="trigger__cta trigger__safe-place" @select="$emit('safePlaceTriggered')"/>
+    <ActionTrigger image="Backpack" class="trigger__cta trigger__backpack" @select="$emit('backpackTriggered')"/>
     <!-- RollDice 50% Small, Top Left -->
     <ActionTrigger image="RollDice" class="trigger__cta trigger__roll-dice" @select="$emit('rollDiceTriggered')"/>
   </div>
@@ -43,7 +44,7 @@ const emit = defineEmits<{
 }
 
 /* Medium component - Bottom Right */
-.trigger__safe-place {
+.trigger__backpack {
   width: 53%;
   aspect-ratio: 1;
   bottom: 0;

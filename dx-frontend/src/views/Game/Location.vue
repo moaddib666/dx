@@ -12,9 +12,10 @@
     />
       <ActionTriggerGroup
           class="trigger"
-          @next-turn-triggered="() => {}"
+          @next-turn-triggered="handleEndTurn"
           @safe-place-triggered="() => {}"
           @roll-dice-triggered="toogleDice"
+          @backpack-triggered="toggleInventory"
       />
     </div>
     <div class="right-action-group">
@@ -617,6 +618,42 @@ export default {
       } catch (error) {
         console.error('Error handling dice roll result:', error);
         this.diceResult = null;
+      }
+    },
+    async handleEndTurn() {
+      try {
+        console.log('End turn triggered');
+        if (!this.playerInfo || !this.playerGeneralInfo) {
+          console.error('Player info not available');
+          return;
+        }
+
+        // Construct the OpenaiCharacterRequest object
+        const request = {
+          name: this.playerGeneralInfo.name || '',
+          biography: {
+            character: this.playerGeneralInfo.biography?.character || ''
+          },
+          rank: {
+            name: this.playerGeneralInfo.rank?.name || ''
+          },
+          path: {
+            name: this.playerGeneralInfo.path?.name || ''
+          },
+          campaign: {
+            id: this.playerGeneralInfo.campaign?.id || ''
+          }
+        };
+
+        // Call the end turn API
+        await CharacterGameApi.characterPlayerEndTurnCreate(request);
+
+        // Update the game state
+        await this.updateAll();
+
+        console.log('End turn completed');
+      } catch (error) {
+        console.error('Error ending turn:', error);
       }
     },
     async handleMove(connection) {
