@@ -201,6 +201,24 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(character)
         return Response(data=serializer.data)
 
+    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def end_turn(self, request):
+        """
+        End the character's turn by spending all action points.
+        """
+        user = request.user
+        try:
+            character = user.main_character
+            if not character:
+                return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            service = CharacterService(character)
+            service.spend_all_ap()
+
+            return Response({"detail": "Turn ended. All action points spent."})
+        except Character.DoesNotExist:
+            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+
 
 class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Character.objects.filter(is_active=True)
