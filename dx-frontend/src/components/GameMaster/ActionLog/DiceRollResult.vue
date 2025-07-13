@@ -1,6 +1,6 @@
 <template>
   <div class="dice-roll-result compact">
-    <span class="dice">🎲 <br> {{ result.dice_side }}</span>
+    <span class="dice"><br> {{ result.dice_side }}</span>
     <span class="multiplier">x{{ result.multiplier }}</span>
     <span class="outcome"> {{ result.outcome }}</span>
   </div>
@@ -45,6 +45,13 @@ export default {
 .dice-roll-result .outcome {
   flex: 1;
   font-weight: bold;
+  font-size: 0.5rem;
   color: #ff6666;
+}
+
+.dice {
+  background: url("@/assets/icons/dice.png") no-repeat center center;
+  background-size: contain;
+  padding: 0.5rem;
 }
 </style>
