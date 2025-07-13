@@ -86,10 +86,7 @@
 
       </div>
       <div class="center-right" v-if="centerAreaNotInteractive">
-<!--        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>-->
-<!--        <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>-->
-<!--        <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>-->
-        <MapColumn :map-data="mapData" class="mini-map"></MapColumn>
+        <MapColumn :map-data="mapData" :coordinates="playerInfo?.coordinates" class="mini-map"></MapColumn>
         <RPGActionLog :actions="actionLog" class="action-log"></RPGActionLog>
       </div>
       <DimensionalGlitch v-for="an in position?.anomalies || []" :key="an" :force-visible="false"
@@ -797,7 +794,7 @@ export default {
   flex:1;
   width: 55%;
   min-width: 10rem;
-  margin-bottom: -2rem;
+  margin-bottom: -2.7rem;
 }
 
 .action-log {
