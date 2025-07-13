@@ -9,7 +9,7 @@
         <!-- Glow filters for holographic effect -->
         <filter id="glow-cyan" x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="2.5" result="blur"/>
-          <feFlood flood-color="rgba(42, 250, 207, 0.6)" result="glow-color"/>
+          <feFlood flood-color="rgba(22, 234, 255, 0.6)" result="glow-color"/>
           <feComposite in="glow-color" in2="blur" operator="in" result="glow-blur"/>
           <feMerge>
             <feMergeNode in="glow-blur"/>
@@ -49,7 +49,7 @@
               :x2="vLine.x"
               :y1="vLine.y1"
               :y2="vLine.y2"
-              stroke="rgba(42, 250, 207, 0.4)"
+              stroke="rgba(22, 234, 255, 0.4)"
               stroke-width="1"
               class="holo-grid-line"
           />
@@ -61,7 +61,7 @@
               :x2="hLine.x2"
               :y1="hLine.y"
               :y2="hLine.y"
-              stroke="rgba(42, 250, 207, 0.4)"
+              stroke="rgba(22, 234, 255, 0.4)"
               stroke-width="1"
               class="holo-grid-line"
           />
@@ -71,7 +71,7 @@
               :key="'dot' + idx"
               :cx="dot.x"
               :cy="dot.y"
-              fill="rgba(42, 250, 207, 0.7)"
+              fill="rgba(22, 234, 255, 0.7)"
               r="0.8"
               class="holo-grid-dot"
           />
@@ -83,7 +83,7 @@
             :key="'conn-' + i"
             :d="conn.d"
             fill="none"
-            stroke="rgba(42, 250, 207, 0.9)"
+            stroke="rgba(22, 234, 255, 0.9)"
             stroke-linecap="round"
             stroke-width="2"
             filter="url(#glow-cyan)"
@@ -100,9 +100,9 @@
               ? 'rgba(30, 144, 255, 0.85)'
               : pos.hasCharacter
                 ? 'rgba(255, 215, 0, 0.85)'
-                : 'rgba(42, 250, 207, 0.7)'"
+                : 'rgba(22, 234, 255, 0.7)'"
               :r="pos.isCurrent ? 9 : (pos.hasCharacter ? 7 : 5)"
-              stroke="rgba(42, 250, 207, 0.9)"
+              stroke="rgba(22, 234, 255, 0.9)"
               stroke-width="1.5"
               :filter="pos.isCurrent
                 ? 'url(#glow-blue)'
@@ -373,8 +373,8 @@ export default {
 
 .map {
   border-radius: 50%;
-  border: 0.15rem solid rgba(42, 250, 207, 0.9);
-  filter: drop-shadow(0 0 5px rgba(42, 250, 207, 0.5));
+  border: 0.15rem solid rgba(22, 234, 255, 0.9);
+  filter: drop-shadow(0 0 5px rgba(22, 234, 255, 0.5));
   animation: mapPulse 10s infinite alternate;
   max-width: 100%;
   max-height: 100%;
@@ -383,9 +383,9 @@ export default {
 
 /* Holographic animations */
 @keyframes mapPulse {
-  0% { filter: drop-shadow(0 0 3px rgba(42, 250, 207, 0.4)); }
-  50% { filter: drop-shadow(0 0 7px rgba(42, 250, 207, 0.6)); }
-  100% { filter: drop-shadow(0 0 5px rgba(42, 250, 207, 0.5)); }
+  0% { filter: drop-shadow(0 0 3px rgba(22, 234, 255, 0.4)); }
+  50% { filter: drop-shadow(0 0 7px rgba(22, 234, 255, 0.6)); }
+  100% { filter: drop-shadow(0 0 5px rgba(22, 234, 255, 0.5)); }
 }
 
 @keyframes holoFlicker {
