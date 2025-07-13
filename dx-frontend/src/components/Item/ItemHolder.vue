@@ -13,7 +13,6 @@
       :cell-size="6"
       :items="items"
       :initial-page="currentPage + 1"
-      @grid-item-picked="handleItemClick"
       class="item-grid"
     >
       <template #default="{ item }">
@@ -21,6 +20,7 @@
           class="item-cell"
           v-if="item"
           :itemData="item"
+          @click="handleItemClick(item.id || item)"
         />
       </template>
     </RPGGridWithScroller>
@@ -56,7 +56,8 @@ export default {
   },
   methods: {
     handleItemClick(item) {
-      this.$emit("item-clicked", item.id || item); // Emit clicked item ID to parent
+      // Always emit the full item object to parent, not just the ID
+      this.$emit("item-clicked", item);
     },
     close() {
       this.$emit("close"); // Emit close event to parent
