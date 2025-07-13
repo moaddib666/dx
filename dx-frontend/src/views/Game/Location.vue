@@ -21,9 +21,6 @@
       <InventoryButton
           @click="toggleInventory"
       />
-      <DiceComponent
-          @click="toogleDice"
-      />
     </div>
     <!-- Background View -->
     <BackgroundView
