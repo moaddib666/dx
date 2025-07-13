@@ -552,6 +552,8 @@ export default {
             console.log(`Unhandled action type: ${result.action_type}`);
             break;
         }
+        // Refresh the action log after applying the action
+        await this.refreshActionLog();
       } catch (error) {
         console.error("Error applying action:", error);
       }
@@ -594,6 +596,7 @@ export default {
         // sleep for 1 second
         await new Promise(r => setTimeout(r, 1000));
         this.diceResult = await this.actionService.diceRoll(dice.value);
+        this.refreshActionLog();
       } catch (error) {
         console.error(`Error rolling dice:`, error);
         this.diceResult = null;

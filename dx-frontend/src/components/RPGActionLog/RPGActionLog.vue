@@ -1,16 +1,11 @@
 <script setup lang="ts">
 import {defineProps, withDefaults} from 'vue';
-import type {PaginatedCharacterActionLogList} from '@/api/dx-backend/api';
+import {CharacterActionLog} from '@/api/dx-backend/api';
 
 const props = withDefaults(defineProps<{
-  actionLog?: PaginatedCharacterActionLogList
+  actions: Array<CharacterActionLog>
 }>(), {
-  actionLog: () => ({
-    items: [],
-    total: 0,
-    page: 1,
-    pageSize: 0
-  })
+  actions: () => ([])
 });
 
 </script>
@@ -19,11 +14,11 @@ const props = withDefaults(defineProps<{
   <div class="action-log--container">
     <div class="action-log--content">
       <ul>
-        <li v-for="(action, index) in actionLog.items" :key="index">
+        <li v-for="(action, index) in actions" :key="index">
           {{ action.timestamp }} - {{ action.description }}
         </li>
       </ul>
-      <p v-if="actionLog.total === 0">No actions logged.</p>
+      <p v-if="actions.length === 0">No actions logged.</p>
     </div>
   </div>
 </template>
