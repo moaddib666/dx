@@ -249,7 +249,8 @@ class WorldPositionSerializer(serializers.ModelSerializer):
     def get_characters(self, obj):
         """Retrieve all characters in the current position."""
         return [character.id for character in
-                obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign)]
+                obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign,
+                                                                 is_active=True)]
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_image(self, obj):
