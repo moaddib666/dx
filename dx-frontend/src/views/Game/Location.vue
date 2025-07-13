@@ -314,32 +314,44 @@ export default {
   },
   methods: {
     async handleSkillSelected(skill) {
+      if (!this.selectedGameObjectId) {
+        console.warn("Cannot use skill without a selected target");
+        return;
+      }
       const action = {
         actionType: "USE_SKILL",
         actionData: {},
         skill: skill.id,
         item: null,
-        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+        targets: [this.selectedGameObjectId],
       };
       await this.applyAction(action);
     },
     async handleItemSelected(item) {
+      if (!this.selectedGameObjectId) {
+        console.warn("Cannot use item without a selected target");
+        return;
+      }
       const action = {
         actionType: "USE_ITEM",
         actionData: {},
         skill: null,
         item: item.id,
-        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+        targets: [this.selectedGameObjectId],
       };
       await this.applyAction(action);
     },
     async handleSpecialSelected(special) {
+      if (!this.selectedGameObjectId) {
+        console.warn("Cannot use special ability without a selected target");
+        return;
+      }
       const action = {
         actionType: special.action_type,
         actionData: special.action_data || {},
         skill: null,
         item: null,
-        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+        targets: [this.selectedGameObjectId],
       };
       await this.applyAction(action);
     },
