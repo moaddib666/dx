@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
-import { CharacterActionLog } from '@/api/dx-backend/api';
+import {defineProps, withDefaults} from 'vue';
+import {CharacterActionLog} from '@/api/dx-backend/api';
 import RPGActionLogItem from './RPGActionLogItem.vue';
+import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 
 const props = withDefaults(defineProps<{
   actions: Array<CharacterActionLog>
@@ -21,7 +22,9 @@ function shouldInsertSeparator(index: number): boolean {
 </script>
 
 <template>
-  <div class="action-log--container">
+  <RPGContainer
+      class="action-log--container"
+  >
     <div class="action-log--content">
       <div v-for="(action, index) in actions" :key="action.id">
         <!-- Separator if cycle changes -->
@@ -40,23 +43,12 @@ function shouldInsertSeparator(index: number): boolean {
       </div>
       <p v-if="actions.length === 0" class="no-actions">No actions logged.</p>
     </div>
-  </div>
+  </RPGContainer>
 </template>
 
 <style scoped>
 .action-log--container {
-  padding: 1rem;
-  padding-right: 2rem;
-  padding-top: 2rem;
-  display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  border-image-source: url("@/assets/rpg/bordertemplate.png");
-  border-image-slice: 120 150 120 150 fill;
-  border-image-width: 2.5rem 2.5rem 2.5rem 2.5rem;
-  border-image-outset: 0 0 0 0;
-  border-image-repeat: stretch stretch;
 }
 
 .action-log--content {
