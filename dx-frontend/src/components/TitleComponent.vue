@@ -43,6 +43,7 @@ export default {
   text-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4);
   margin-top: 2vw;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 @media (max-width: 600px) {

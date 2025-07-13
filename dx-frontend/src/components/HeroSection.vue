@@ -7,7 +7,7 @@
     <div class="background-layer layer3 blending" :style="layerStyles[2]"></div>
     <div class="background-layer layer4 blending" :style="layerStyles[3]"></div>
     <div class="content">
-      <TitleComponent>Dimension-X</TitleComponent>
+      <TitleComponent>Dimension-X <span class="alpha-tag">alpha</span></TitleComponent>
       <LandingButtonGroup>
         <LandingButton :action="signInAction">{{ t('navigation.register') }}</LandingButton>
         <LandingButton :action="logInAction">{{ t('navigation.login') }}</LandingButton>
@@ -162,5 +162,33 @@ html, body {
 .layer4 {
   background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-4.webp');
   z-index: -5;
+}
+
+.alpha-tag {
+  font-size: 0.2em;
+  position: absolute;
+  top: -0.3em;
+  right: -5em;
+  background-color: rgba(0, 255, 255, 0.2);
+  border: 1px solid rgba(0, 255, 255, 0.6);
+  border-radius: 4px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+  animation: float 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 </style>
