@@ -6,6 +6,9 @@
         :skills="availableActions"
         :specials="playerSpecials"
         :player-service="playerService"
+        @skill-selected="handleSkillSelected"
+        @item-selected="handleItemSelected"
+        @special-selected="handleSpecialSelected"
     />
       <ActionTriggerGroup
           class="trigger"
@@ -17,10 +20,6 @@
     <div class="right-action-group">
       <InventoryButton
           @click="toggleInventory"
-      />
-      <ActionButton
-          v-if="hasActionPoints"
-          @click="toggleActionConstructor"
       />
       <DiceComponent
           @click="toogleDice"
@@ -83,18 +82,6 @@
             @move="handleMove"
         />
 
-        <ActionConstructor v-if="isActionConstructorVisible"
-                           :availableSkills="availableActions"
-                           :availableSpecials="playerSpecials"
-                           :availableItems="availableItems"
-                           :availableGameObjects="availableGameObjects"
-                           :preSelectedTarget="selectedGameObjectId"
-                           :playerService="playerService"
-                           @applyAction="applyAction"
-                           @cancelAction="closeActionConstructor"
-                           class="action-constructor"
-                           :isSafe="position ? position.is_safe : false"
-        />
 
 
       </div>
@@ -143,8 +130,6 @@ import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
 import SkillSelector from "@/components/Selectors/SkillSelector.vue";
 import ActionPreview from "@/components/Pickers/ActionPreview.vue";
 import CompactPlayButton from "@/components/btn/CompactPlayButton.vue";
-import ActionConstructor from "@/components/Action/ActionConstructor.vue";
-import ActionButton from "@/components/Action/ActionButton.vue";
 import DiceRollerModal from "@/components/DiceRoller/DiceRollerModal.vue";
 import CoordinatesDisplay from "@/components/Map/Coordinates.vue";
 import EffectItem from "@/components/Effect/EffectItem.vue";
@@ -192,8 +177,6 @@ export default {
     EffectsHolder,
     EffectItem,
     CoordinatesDisplay,
-    ActionButton,
-    ActionConstructor,
     CompactPlayButton,
     ActionPicker: ActionPreview,
     ActionSelector: SkillSelector,
@@ -228,7 +211,6 @@ export default {
       diceVisible: false,
       bargainVisible: false,
       inventoryVisible: false,
-      actionConstructorVisible: false,
       isMoving: false,
       mapData: null,
       actionLog: null,
@@ -246,13 +228,10 @@ export default {
       return this.bargains?.[0]?.id;
     },
     centerAreaNotInteractive() {
-      return !this.isDiceVisible && !this.isInventoryVisible && !this.isActionConstructorVisible;
+      return !this.isDiceVisible && !this.isInventoryVisible;
     },
     isCompassVisible() {
-      return this.hasActionPoints && !this.isActionConstructorVisible && !this.isDiceVisible && !this.isInventoryVisible && !this.bargainVisible;
-    },
-    isActionConstructorVisible() {
-      return this.hasActionPoints && this.actionConstructorVisible;
+      return this.hasActionPoints && !this.isDiceVisible && !this.isInventoryVisible && !this.bargainVisible;
     },
     isDiceVisible() {
       return this.diceVisible;
@@ -331,6 +310,36 @@ export default {
     }
   },
   methods: {
+    async handleSkillSelected(skill) {
+      const action = {
+        actionType: "USE_SKILL",
+        actionData: {},
+        skill: skill.id,
+        item: null,
+        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+      };
+      await this.applyAction(action);
+    },
+    async handleItemSelected(item) {
+      const action = {
+        actionType: "USE_ITEM",
+        actionData: {},
+        skill: null,
+        item: item.id,
+        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+      };
+      await this.applyAction(action);
+    },
+    async handleSpecialSelected(special) {
+      const action = {
+        actionType: special.action_type,
+        actionData: special.action_data || {},
+        skill: null,
+        item: null,
+        targets: [this.selectedGameObjectId || this.playerInfo?.id], // Use selected target or default to player
+      };
+      await this.applyAction(action);
+    },
     async handleCycleChange(data) {
       try {
         console.log("Cycle change event received", data);
@@ -415,41 +424,11 @@ export default {
       return new Promise(resolve => {
         this.diceVisible = false;
         this.inventoryVisible = false;
-        this.actionConstructorVisible = false;
         this.bargainVisible = false;
         this.$nextTick(() => {
           resolve();
         });
       });
-    },
-    async toggleActionConstructor() {
-      console.debug("Toggling action constructor");
-      if (this.actionConstructorVisible) {
-        await this.closeActionConstructor();
-      } else {
-        await this.openActionConstructor();
-      }
-    },
-    async openActionConstructor() {
-      try {
-        // Wait for hideAll to complete before setting actionConstructorVisible
-        await this.hideAll();
-
-        // Use nextTick to ensure DOM is updated before setting actionConstructorVisible
-        await this.$nextTick();
-        this.actionConstructorVisible = true;
-
-        console.debug("Opening action constructor", this.selectedGameObjectId);
-      } catch (error) {
-        console.error("Error opening action constructor:", error);
-        // Reset state in case of error
-        this.actionConstructorVisible = false;
-      }
-    },
-    async closeActionConstructor() {
-      this.actionConstructorVisible = false;
-      this.selectedGameObjectId = null;
-      console.debug("Closing action constructor");
     },
     async setMovement() {
       this.isMoving = true;
@@ -582,7 +561,6 @@ export default {
         console.error("Error updating selected game object ID:", error);
         // Reset state in case of error
         this.selectedGameObjectId = null;
-        this.actionConstructorVisible = false;
       }
     },
     async updateAll() {
@@ -839,14 +817,6 @@ export default {
   z-index: 20;
 }
 
-.action-constructor {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 0.5rem;
-
-}
 
 .left-action-group {
   display: flex;
