@@ -14,12 +14,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-image: url("@/assets/rpg/grid_cell.png");
-  padding: 2rem;
+  border-image: url("@/assets/rpg/grid_cell_large.png");
+  padding: 10%;
   border-image-slice:
-      15 15 15 15 fill;
+      150 150 150 150 fill;
   border-image-width:
-      3em 3em 3em 3em;
+      20px 20px 20px 20px;
   border-image-outset:
       0px 0px 0px 0px;
   border-image-repeat:

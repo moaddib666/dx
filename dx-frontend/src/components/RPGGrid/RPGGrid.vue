@@ -80,8 +80,6 @@ const gridStyle = computed(() => {
 <style scoped>
 .rpg-grid {
   display: grid;
-  gap: 0.5rem;
-  padding: 1rem;
 }
 
 .empty-cell {

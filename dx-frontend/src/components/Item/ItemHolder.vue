@@ -1,53 +1,42 @@
 <template>
-  <div class="item-holder">
+  <RPGContainer class="item-holder">
     <!-- Header with slot and close button -->
     <div class="header" v-if="showHeader">
       <slot name="header"></slot>
       <button class="close-btn" @click="close">✖</button>
     </div>
 
-    <!-- 5x5 Grid for items -->
-    <div class="grid">
-      <div
-          v-for="(item, index) in visibleItems"
-          :key="index"
-          class="grid-cell"
-          :class="{ empty: !item }"
-      >
+    <!-- Grid with pagination -->
+    <RPGGridWithScroller
+      :row-count="3"
+      :col-count="5"
+      :cell-size="6"
+      :items="items"
+      :initial-page="currentPage + 1"
+      @grid-item-picked="handleItemClick"
+      class="item-grid"
+    >
+      <template #default="{ item }">
         <ItemCell
-            v-if="item"
-            :itemData="item"
-            @item-clicked="handleItemClick"
+          class="item-cell"
+          v-if="item"
+          :itemData="item"
         />
-      </div>
-    </div>
-
-    <!-- Footer with pagination -->
-    <div class="footer">
-      <button
-          class="pagination-btn"
-          @click="prevPage"
-          :disabled="currentPage === 0"
-      >
-        Prev
-      </button>
-      <button
-          class="pagination-btn"
-          @click="nextPage"
-          :disabled="!hasNextPage"
-      >
-        Next
-      </button>
-    </div>
-  </div>
+      </template>
+    </RPGGridWithScroller>
+  </RPGContainer>
 </template>
 
 <script>
 import ItemCell from "@/components/Item/ItemCell.vue";
+import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
+import RPGGridWithScroller from "@/components/RPGGrid/RPGGridWithScroller.vue";
 
 export default {
   name: "ItemHolder",
   components: {
+    RPGGridWithScroller,
+    RPGContainer,
     ItemCell,
   },
   props: {
@@ -59,46 +48,15 @@ export default {
       type: Array,
       required: true, // List of items to display
     },
-    gridSize: {
-      type: Number,
-      default: 15, // 5x3 grid by default
-    },
   },
   data() {
     return {
-      currentPage: 0,
+      currentPage: 0, // Keep for compatibility with initial-page prop
     };
   },
-  computed: {
-    visibleItems() {
-      const startIndex = this.currentPage * this.gridSize;
-      const endIndex = startIndex + this.gridSize;
-      const itemsInPage = this.items.slice(startIndex, endIndex);
-
-      // Fill remaining cells with `null` to maintain consistent grid size
-      while (itemsInPage.length < this.gridSize) {
-        itemsInPage.push(null);
-      }
-
-      return itemsInPage;
-    },
-    hasNextPage() {
-      return this.currentPage < Math.floor(this.items.length / this.gridSize);
-    },
-  },
   methods: {
-    handleItemClick(itemId) {
-      this.$emit("item-clicked", itemId); // Emit clicked item ID to parent
-    },
-    nextPage() {
-      if (this.hasNextPage) {
-        this.currentPage += 1;
-      }
-    },
-    prevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage -= 1;
-      }
+    handleItemClick(item) {
+      this.$emit("item-clicked", item.id || item); // Emit clicked item ID to parent
     },
     close() {
       this.$emit("close"); // Emit close event to parent
@@ -109,17 +67,21 @@ export default {
 
 <style scoped>
 .item-holder {
-  display: flex;
-  flex-direction: column;
   gap: 1rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   margin: auto;
   color: white;
+  flex-direction: column;
+  z-index: 1000; /* Ensure it appears above other elements */
 }
 
+.item-cell {
+  /* Custom styling for item cells */
+  width: 90%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .header {
   display: flex;
   justify-content: space-between;
@@ -143,52 +105,8 @@ export default {
   color: red;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 5 columns */
-  grid-template-rows: repeat(3, 1fr); /* 5 rows */
-  gap: 0.5rem;
-}
-
-.grid-cell {
-  width: 5rem;
-  height: 5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1); /* Background for empty cells */
-  border-radius: 0.5rem;
-  position: relative;
-}
-
-.grid-cell.empty {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.pagination-btn {
-  padding: 0.5rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: white;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-.pagination-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.pagination-btn:disabled {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.3);
-  cursor: not-allowed;
+.item-grid {
+  /* Custom styling for the grid component */
+  margin: 0 auto;
 }
 </style>
