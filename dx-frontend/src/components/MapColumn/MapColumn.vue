@@ -23,8 +23,6 @@ const props = withDefaults(defineProps<{
 
 <style scoped>
 .map--container {
-  width: 12rem;
-  height: 12rem;
   aspect-ratio: 1 / 1;
   z-index: 2;
   display: flex;

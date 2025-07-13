@@ -89,7 +89,8 @@
 <!--        <CoordinatesDisplay :coordinates="playerInfo?.coordinates"/>-->
 <!--        <MiniMapComponent v-if="mapData" :mapData="mapData" class="mini-map"/>-->
 <!--        <UserActionLog v-if="actionLog" :actions="actionLog" class="action-log"/>-->
-        <MapColumn :map-data="mapData"></MapColumn>
+        <MapColumn :map-data="mapData" class="mini-map"></MapColumn>
+        <RPGActionLog :actions="actionLog" class="action-log"></RPGActionLog>
       </div>
       <DimensionalGlitch v-for="an in position?.anomalies || []" :key="an" :force-visible="false"
                          :glitch-id="an" @glitch-found="handleAnomalyClick"/>
@@ -155,10 +156,12 @@ import ActionTrigger from "@/components/ActionArea/ActionTrigger/ActionTrigger.v
 import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/ActionTriggerGroup.vue";
 import CompassRPG from "@/components/Compass/CompassRPG.vue";
 import MapColumn from "@/components/MapColumn/MapColumn.vue";
+import RPGActionLog from "@/components/RPGActionLog/RPGActionLog.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    RPGActionLog,
     MapColumn,
     CompassRPG,
     DiceRollerModal,
@@ -776,12 +779,33 @@ export default {
 .center-right {
   flex: 1;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 1rem;
+  align-items: center;
+  justify-content: center;
   display: flex;
   height: 100%;
   margin-right: 0.5rem;
+  background: url("@/assets/images/RightBar/GlowFlowBG.png") no-repeat top;
+  background-size: calc(100%) calc(100% - 6rem);
+}
+
+
+.mini-map {
+  display: flex;
+  flex:1;
+  width: 55%;
+  min-width: 10rem;
+  margin-bottom: -2rem;
+}
+
+.action-log {
+  display: flex;
+  flex: 5;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+  scroll-behavior: smooth;
+  font-size: 0.6rem;
 }
 
 
@@ -871,28 +895,6 @@ export default {
     flex-direction: column;
     align-items: center;
   }
-}
-
-.mini-map {
-  display: flex;
-  justify-self: flex-end;
-  align-self: flex-end;
-}
-
-.action-log {
-  display: flex;
-  flex: 1;
-  width: 90%;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  max-height: 30vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
-  scroll-behavior: smooth;
-  font-size: 0.6rem;
 }
 
 .center-left {
