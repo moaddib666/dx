@@ -18,11 +18,6 @@
           @backpack-triggered="toggleInventory"
       />
     </div>
-    <div class="right-action-group">
-      <InventoryButton
-          @click="toggleInventory"
-      />
-    </div>
     <!-- Background View -->
     <BackgroundView
         :key="position?.id"
@@ -83,7 +78,7 @@
 
 
       </div>
-      <div class="center-right" v-if="centerAreaNotInteractive">
+      <div class="center-right">
         <MapColumn :map-data="mapData" :coordinates="playerInfo?.coordinates" class="mini-map"></MapColumn>
         <RPGActionLog :actions="actionLog" class="action-log"></RPGActionLog>
       </div>
@@ -485,7 +480,7 @@ export default {
     },
     async openInventory() {
       await this.refreshInventory();
-      await this.hideAll();
+      // Not hiding all elements as per requirement to keep the right section visible
       this.inventoryVisible = true;
     },
     async closeInventory() {
