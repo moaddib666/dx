@@ -13,7 +13,7 @@ from apps.game.services.npc.rank import NpcRankService
 from apps.game.services.npc.stats import StatsApplier
 from apps.skills.models import LearnedSchool, LearnedSkill
 from apps.items.models import CharacterItem
-from apps.world.models import Position, SubLocation
+from apps.world.models import Position, SubLocation, Dimension
 from .interface import NPCFactoryConfig, NPCFactoryProtocol
 from ...character.character_items import default_items_svc_factory
 
@@ -49,15 +49,14 @@ class NPCFactory(NPCFactoryProtocol):
         template = CharacterTemplate.objects.create(
             name=template_name,
             description=f"Template created from NPC: {npc.name}",
-            rank=npc.rank,
-            organization=npc.organization,
-            path=npc.path,
+            rank_id=npc.rank_id,
+            organization_id=npc.organization_id,
+            path_id=npc.path_id,
             tags=list(npc.tags).copy() if npc.tags else [],
             behavior=npc.behavior,
             dimension=npc.dimension if hasattr(npc, 'dimension') else None,
             stats_template=stats_template,
             biography_template=biography_template,
-            campaign=npc.campaign,
         )
 
         # Create school templates
@@ -90,7 +89,7 @@ class NPCFactory(NPCFactoryProtocol):
             CharacterStatTemplate.objects.create(
                 template=stats_template,
                 stat=stat.name,
-                value=stat.value
+                value=stat.base_value
             )
 
         return stats_template
@@ -141,7 +140,7 @@ class NPCFactory(NPCFactoryProtocol):
             # Check if this school template already exists
             existing = CharacterSchoolTemplate.objects.filter(
                 template=template,
-                school=learned_school.school
+                school_id=learned_school.school_id
             ).first()
 
             if existing:
@@ -154,7 +153,7 @@ class NPCFactory(NPCFactoryProtocol):
                 # Create a new template
                 CharacterSchoolTemplate.objects.create(
                     template=template,
-                    school=learned_school.school,
+                    school_id=learned_school.school_id,
                     is_base=learned_school.is_base
                 )
                 created_count += 1
@@ -212,7 +211,7 @@ class NPCFactory(NPCFactoryProtocol):
             # Check if this equipment template already exists
             existing = CharacterEquipmentTemplate.objects.filter(
                 template=template,
-                item=world_item.item
+                item_id=world_item.item_id
             ).first()
 
             if existing:
@@ -225,7 +224,7 @@ class NPCFactory(NPCFactoryProtocol):
                 # Create a new template
                 CharacterEquipmentTemplate.objects.create(
                     template=template,
-                    item=world_item.item,
+                    item_id=world_item.item_id,
                     quantity=1,  # Assuming quantity of 1 for each equipped item
                     is_equipped=True  # Since these are equipped items
                 )
@@ -245,7 +244,7 @@ class NPCFactory(NPCFactoryProtocol):
             # Check if this skill template already exists
             existing = CharacterSkillTemplate.objects.filter(
                 template=template,
-                skill=learned_skill.skill
+                skill_id=learned_skill.skill_id
             ).first()
 
             if existing:
@@ -258,7 +257,7 @@ class NPCFactory(NPCFactoryProtocol):
                 # Create a new template
                 CharacterSkillTemplate.objects.create(
                     template=template,
-                    skill=learned_skill.skill,
+                    skill_id=learned_skill.skill_id,
                     is_base=learned_skill.is_base
                 )
                 created_count += 1
@@ -338,7 +337,7 @@ class NPCFactory(NPCFactoryProtocol):
             rank=config.template.rank,
             npc=True,
             behavior=config.behavior or config.template.behavior,
-            dimension=config.template.dimension,
+            dimension=config.template.dimension or Dimension.objects.get(id=1),
             position=config.position or default_pos,
             is_active=True,
             campaign=config.campaign or config.template.campaign

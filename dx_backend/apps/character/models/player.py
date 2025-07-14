@@ -43,6 +43,7 @@ class Character(GameObject):
 
     #
     npc = models.BooleanField(default=False)
+    template = models.ForeignKey('character.CharacterTemplate', on_delete=models.SET_NULL, null=True, blank=True)
     behavior = models.CharField(max_length=20, choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE,
                                 db_index=True)
 
