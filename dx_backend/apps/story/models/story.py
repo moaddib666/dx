@@ -9,7 +9,7 @@ class Story(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
     tags = models.JSONField(default=list, help_text="List of tags for the story")
-    image = models.URLField(null=True, blank=True, help_text="Optional URL to an image representing the story")
+    image = models.ImageField(null=True, blank=True, help_text="Optional URL to an image representing the story")
     canonical = models.BooleanField(default=False, help_text="Default to false, need review by the Owner")
 
     def __str__(self):
@@ -26,7 +26,7 @@ class Chapter(BaseModel):
     story = models.ForeignKey(Story, on_delete=models.CASCADE, related_name='chapters')
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.URLField(null=True, blank=True, help_text="Optional URL to an image representing the chapter")
+    image = models.ImageField(null=True, blank=True, help_text="Optional URL to an image representing the chapter")
     order = models.PositiveIntegerField(default=0, help_text="Order of the chapter within the story")
 
     def __str__(self):
