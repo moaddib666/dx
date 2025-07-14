@@ -434,13 +434,25 @@ const handleQuestSelect = (quest) => {
   selectedQuest.value = quest;
 };
 
-const handleCreateQuest = async (questData) => {
+const handleCreateQuest = async () => {
   try {
     loading.value = true;
-    const quest = await storyService.createQuest({
-      ...questData,
-      chapterId: selectedChapter.value?.id
-    });
+
+    // Find the maximum order value from existing quests
+    let maxOrder = 0;
+    if (selectedChapter.value?.quests && selectedChapter.value.quests.length > 0) {
+      maxOrder = Math.max(...selectedChapter.value.quests.map(q => q.order || 0));
+    }
+
+    // Create a new quest with required fields
+    const questData = {
+      title: "New Quest",
+      description: "Quest description",
+      chapter: selectedChapter.value?.id,
+      order: maxOrder + 1
+    };
+
+    const quest = await storyService.createQuest(questData);
 
     // Refresh the selected chapter to get updated quests
     if (selectedChapter.value) {

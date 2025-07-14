@@ -202,6 +202,34 @@
         Cancel
       </button>
     </div>
+
+    <!-- Condition Editor Modal -->
+    <ConditionEditor
+      v-if="showConditionEditor"
+      :condition="conditionBeingEdited"
+      :questId="quest.id"
+      :type="conditionType"
+      @save="handleSaveCondition"
+      @cancel="handleCancelCondition"
+    />
+
+    <!-- Success Reward Editor Modal -->
+    <RewardEditor
+      v-if="showSuccessRewardEditor"
+      :reward="localQuest.onSuccess"
+      title="Success Reward"
+      @save="handleSaveSuccessReward"
+      @cancel="() => handleCancelReward('success')"
+    />
+
+    <!-- Failure Reward Editor Modal -->
+    <RewardEditor
+      v-if="showFailureRewardEditor"
+      :reward="localQuest.onFailure"
+      title="Failure Reward"
+      @save="handleSaveFailureReward"
+      @cancel="() => handleCancelReward('failure')"
+    />
   </div>
 </template>
 
@@ -212,6 +240,9 @@ import {
   Condition,
   Reward
 } from '@/api/dx-backend';
+import { storyService } from '@/services/Story';
+import ConditionEditor from './ConditionEditor.vue';
+import RewardEditor from './RewardEditor.vue';
 
 const props = defineProps<{
   quest: Quest;
@@ -278,46 +309,125 @@ const formatTriggerType = (type: string | undefined): string => {
   return triggerTypeMap[type] || type;
 };
 
+// State for condition and reward editors
+const showConditionEditor = ref(false);
+const conditionBeingEdited = ref<Condition | null>(null);
+const conditionType = ref<'starters' | 'objectives'>('starters');
+
+const showSuccessRewardEditor = ref(false);
+const showFailureRewardEditor = ref(false);
+
 // Event handlers
 const addCondition = (type: 'starters' | 'objectives') => {
-  // This would typically open a modal or form to add a new condition
-  console.log(`Add ${type} condition`);
-
-  // For demonstration, we'll just add a placeholder condition
-  const newCondition: Condition = {
-    id: `temp-${Date.now()}`,
-    type: 'custom',
-    triggers: []
-  };
-
-  if (!localQuest.value[type]) {
-    localQuest.value[type] = [];
-  }
-
-  localQuest.value[type].push(newCondition);
+  conditionType.value = type;
+  conditionBeingEdited.value = null;
+  showConditionEditor.value = true;
 };
 
 const editCondition = (condition: Condition) => {
-  // This would typically open a modal or form to edit the condition
-  console.log('Edit condition', condition);
+  // Determine if this is a starter or objective condition
+  if (localQuest.value.starters?.some(c => c.id === condition.id)) {
+    conditionType.value = 'starters';
+  } else if (localQuest.value.objectives?.some(c => c.id === condition.id)) {
+    conditionType.value = 'objectives';
+  }
+
+  conditionBeingEdited.value = { ...condition };
+  showConditionEditor.value = true;
 };
 
-const deleteCondition = (conditionId: string) => {
-  // Remove the condition from starters or objectives
-  if (localQuest.value.starters) {
-    localQuest.value.starters = localQuest.value.starters.filter(c => c.id !== conditionId);
-  }
+const deleteCondition = async (conditionId: string) => {
+  try {
+    // If it's a temporary ID, just remove it from the local state
+    if (conditionId.startsWith('temp-')) {
+      if (localQuest.value.starters) {
+        localQuest.value.starters = localQuest.value.starters.filter(c => c.id !== conditionId);
+      }
 
-  if (localQuest.value.objectives) {
-    localQuest.value.objectives = localQuest.value.objectives.filter(c => c.id !== conditionId);
+      if (localQuest.value.objectives) {
+        localQuest.value.objectives = localQuest.value.objectives.filter(c => c.id !== conditionId);
+      }
+      return;
+    }
+
+    // Otherwise, delete it from the backend
+    await storyService.deleteCondition(conditionId);
+
+    // Remove it from the local state
+    if (localQuest.value.starters) {
+      localQuest.value.starters = localQuest.value.starters.filter(c => c.id !== conditionId);
+    }
+
+    if (localQuest.value.objectives) {
+      localQuest.value.objectives = localQuest.value.objectives.filter(c => c.id !== conditionId);
+    }
+  } catch (error) {
+    console.error(`Failed to delete condition with ID ${conditionId}:`, error);
   }
+};
+
+const handleSaveCondition = async (condition: Condition) => {
+  try {
+    let savedCondition: Condition | null;
+
+    // If it's a new condition, create it
+    if (!condition.id || condition.id.startsWith('temp-')) {
+      savedCondition = await storyService.createCondition({
+        ...condition,
+        questId: localQuest.value.id,
+        type: conditionType.value
+      });
+    } else {
+      // Otherwise, update it
+      savedCondition = await storyService.updateCondition(condition.id, {
+        ...condition,
+        questId: localQuest.value.id,
+        type: conditionType.value
+      });
+    }
+
+    if (savedCondition) {
+      // Update the local state
+      if (conditionType.value === 'starters') {
+        if (!localQuest.value.starters) {
+          localQuest.value.starters = [];
+        }
+
+        const index = localQuest.value.starters.findIndex(c => c.id === condition.id);
+        if (index >= 0) {
+          localQuest.value.starters[index] = savedCondition;
+        } else {
+          localQuest.value.starters.push(savedCondition);
+        }
+      } else if (conditionType.value === 'objectives') {
+        if (!localQuest.value.objectives) {
+          localQuest.value.objectives = [];
+        }
+
+        const index = localQuest.value.objectives.findIndex(c => c.id === condition.id);
+        if (index >= 0) {
+          localQuest.value.objectives[index] = savedCondition;
+        } else {
+          localQuest.value.objectives.push(savedCondition);
+        }
+      }
+    }
+
+    // Close the editor
+    showConditionEditor.value = false;
+    conditionBeingEdited.value = null;
+  } catch (error) {
+    console.error('Failed to save condition:', error);
+  }
+};
+
+const handleCancelCondition = () => {
+  showConditionEditor.value = false;
+  conditionBeingEdited.value = null;
 };
 
 const editSuccessReward = () => {
-  // This would typically open a modal or form to edit the success reward
-  console.log('Edit success reward');
-
-  // For demonstration, we'll just add a placeholder reward if none exists
+  // Initialize the success reward if it doesn't exist
   if (!localQuest.value.onSuccess) {
     localQuest.value.onSuccess = {
       items: [],
@@ -325,19 +435,94 @@ const editSuccessReward = () => {
       effects: []
     };
   }
+
+  showSuccessRewardEditor.value = true;
 };
 
 const editFailureReward = () => {
-  // This would typically open a modal or form to edit the failure reward
-  console.log('Edit failure reward');
-
-  // For demonstration, we'll just add a placeholder reward if none exists
+  // Initialize the failure reward if it doesn't exist
   if (!localQuest.value.onFailure) {
     localQuest.value.onFailure = {
       items: [],
       tokens: [],
       effects: []
     };
+  }
+
+  showFailureRewardEditor.value = true;
+};
+
+const handleSaveSuccessReward = async (reward: Reward) => {
+  try {
+    let savedReward: Reward | null;
+
+    // If it's a new reward, create it
+    if (!reward.id || reward.id.startsWith('temp-')) {
+      savedReward = await storyService.createReward({
+        ...reward,
+        questId: localQuest.value.id,
+        type: 'success'
+      });
+    } else {
+      // Otherwise, update it
+      savedReward = await storyService.updateReward(reward.id, {
+        ...reward,
+        questId: localQuest.value.id,
+        type: 'success'
+      });
+    }
+
+    if (savedReward) {
+      // Update the local state
+      localQuest.value.onSuccess = savedReward;
+      localQuest.value.success_reward_id = savedReward.id;
+    }
+
+    // Close the editor
+    showSuccessRewardEditor.value = false;
+  } catch (error) {
+    console.error('Failed to save success reward:', error);
+  }
+};
+
+const handleSaveFailureReward = async (reward: Reward) => {
+  try {
+    let savedReward: Reward | null;
+
+    // If it's a new reward, create it
+    if (!reward.id || reward.id.startsWith('temp-')) {
+      savedReward = await storyService.createReward({
+        ...reward,
+        questId: localQuest.value.id,
+        type: 'failure'
+      });
+    } else {
+      // Otherwise, update it
+      savedReward = await storyService.updateReward(reward.id, {
+        ...reward,
+        questId: localQuest.value.id,
+        type: 'failure'
+      });
+    }
+
+    if (savedReward) {
+      // Update the local state
+      localQuest.value.onFailure = savedReward;
+      localQuest.value.failure_reward_id = savedReward.id;
+    }
+
+    // Close the editor
+    showFailureRewardEditor.value = false;
+  } catch (error) {
+    console.error('Failed to save failure reward:', error);
+  }
+};
+
+const handleCancelReward = (type: 'success' | 'failure') => {
+  if (type === 'success') {
+    showSuccessRewardEditor.value = false;
+  } else {
+    showFailureRewardEditor.value = false;
   }
 };
 
