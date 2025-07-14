@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'apps.adapters',
     'apps.adapters.centrifugo',
     'apps.gamemaster',
+    'apps.story',
 ]
 
 MIDDLEWARE = [

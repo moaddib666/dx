@@ -735,3 +735,29 @@ class PositionConnectionConfig(BaseModel):
    """
     requirements: list[PositionConnectionRequirement] = Field(
         default_factory=list)  # List of requirements for the connection
+
+
+class TriggerType(DjangoChoicesMixin, StrEnum):
+    SEARCH = "search"
+    KILL = "kill"
+    INTERACTION = "interaction"
+    POSITION = "position"
+    USE_ITEM = "useItem"
+    USE_SKILL = "useSkill"
+
+
+class Trigger(DjangoBaseModel):
+    """
+    Represents a trigger condition for quests based on QuestStoryTaller.MD specification.
+    """
+    type = django_models.CharField(max_length=20, choices=TriggerType.choices())
+    game_object = django_models.ForeignKey(GameObject, on_delete=django_models.CASCADE, null=True, blank=True,
+                                           help_text="Item, NPC, Anomaly")
+    position = django_models.ForeignKey("world.Position", on_delete=django_models.CASCADE, null=True, blank=True,
+                                        help_text="Position in the game world")
+    description = django_models.TextField(help_text="Description of the trigger")
+    location = django_models.ForeignKey("world.Location", on_delete=django_models.CASCADE, null=True, blank=True,
+                                        help_text="Optional limit trigger to a specific location")
+
+    def __str__(self):
+        return f"{self.type}: {self.description}"

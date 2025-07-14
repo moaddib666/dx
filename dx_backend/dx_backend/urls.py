@@ -50,6 +50,8 @@ urlpatterns = [
     path('api/bargain/', include('apps.bargain.urls')),
     # Game Master API
     path('api/gamemaster/', include('apps.gamemaster.urls')),
+    # Story Builder API (Game Masters only)
+    path('api/story/', include('apps.story.urls')),
     # Adapters
     path('api/adapters/centrifugo/', include('apps.adapters.centrifugo.urls')),
 ]
