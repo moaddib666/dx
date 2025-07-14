@@ -125,7 +125,7 @@ class TriggerViewSet(viewsets.ModelViewSet):
     serializer_class = TriggerSerializer
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['type', 'game_object', 'position', 'location']
+    filterset_fields = ['type', 'game_object', 'position', 'location', 'npc']
     search_fields = ['description']
 
 

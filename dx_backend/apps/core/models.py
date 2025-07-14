@@ -752,12 +752,17 @@ class Trigger(DjangoBaseModel):
     """
     type = django_models.CharField(max_length=20, choices=TriggerType.choices())
     game_object = django_models.ForeignKey(GameObject, on_delete=django_models.CASCADE, null=True, blank=True,
-                                           help_text="Item, NPC, Anomaly")
+                                           help_text="Item, Character, Anomaly")
     position = django_models.ForeignKey("world.Position", on_delete=django_models.CASCADE, null=True, blank=True,
                                         help_text="Position in the game world")
     description = django_models.TextField(help_text="Description of the trigger")
     location = django_models.ForeignKey("world.Location", on_delete=django_models.CASCADE, null=True, blank=True,
                                         help_text="Optional limit trigger to a specific location")
+    npc = django_models.ForeignKey("character.CharacterTemplate", on_delete=django_models.CASCADE, null=True,
+                                   blank=True,
+                                   help_text="All NPCs that been created from this template will have this trigger")
+
+    # TODO: When implementing the automatic triggers execution, add fitls, active, oneOff, etc.
 
     def __str__(self):
         return f"{self.type}: {self.description}"
