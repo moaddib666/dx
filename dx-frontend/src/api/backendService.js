@@ -16,6 +16,7 @@ import {
     SchoolApi,
     ShieldsApi,
     SkillsApi,
+    StoryApi,
     WorldApi,
 } from '@/api/dx-backend';
 
@@ -39,3 +40,4 @@ export const ShieldsGameApi = new ShieldsApi(GameApiConfig);
 export const GameMasterApi = new GamemasterApi(GameApiConfig);
 export const GMWorldPositionConnectionsApi = new GMWorldEditiorPositionConnectionsApi(GameApiConfig);
 export const GMWorldPositionsApi = new GMWorldEditiorPositionsApi(GameApiConfig);
+export const StoryGameApi = new StoryApi(GameApiConfig);

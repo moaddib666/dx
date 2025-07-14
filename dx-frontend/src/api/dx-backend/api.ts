@@ -638,6 +638,92 @@ export interface CampaignRequest {
     'name': string;
 }
 /**
+ * Serializer for Chapter model.
+ * @export
+ * @interface Chapter
+ */
+export interface Chapter {
+    /**
+     * 
+     * @type {string}
+     * @memberof Chapter
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Chapter
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Chapter
+     */
+    'description': string;
+    /**
+     * Optional URL to an image representing the chapter
+     * @type {string}
+     * @memberof Chapter
+     */
+    'image'?: string | null;
+    /**
+     * Order of the chapter within the story
+     * @type {number}
+     * @memberof Chapter
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Chapter
+     */
+    'story': string;
+    /**
+     * 
+     * @type {Array<Quest>}
+     * @memberof Chapter
+     */
+    'quests': Array<Quest>;
+}
+/**
+ * Serializer for Chapter model.
+ * @export
+ * @interface ChapterRequest
+ */
+export interface ChapterRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ChapterRequest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChapterRequest
+     */
+    'description': string;
+    /**
+     * Optional URL to an image representing the chapter
+     * @type {File}
+     * @memberof ChapterRequest
+     */
+    'image'?: File | null;
+    /**
+     * Order of the chapter within the story
+     * @type {number}
+     * @memberof ChapterRequest
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChapterRequest
+     */
+    'story': string;
+}
+/**
  * 
  * @export
  * @interface CharacterAction
@@ -1637,6 +1723,69 @@ export interface City {
     'border_with'?: Array<string>;
 }
 /**
+ * Serializer for Condition model.
+ * @export
+ * @interface Condition
+ */
+export interface Condition {
+    /**
+     * 
+     * @type {string}
+     * @memberof Condition
+     */
+    'id': string;
+    /**
+     * 
+     * @type {ConditionTypeEnum}
+     * @memberof Condition
+     */
+    'type'?: ConditionTypeEnum;
+    /**
+     * 
+     * @type {Array<Trigger>}
+     * @memberof Condition
+     */
+    'triggers': Array<Trigger>;
+}
+
+
+/**
+ * Serializer for Condition model.
+ * @export
+ * @interface ConditionRequest
+ */
+export interface ConditionRequest {
+    /**
+     * 
+     * @type {ConditionTypeEnum}
+     * @memberof ConditionRequest
+     */
+    'type'?: ConditionTypeEnum;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof ConditionRequest
+     */
+    'trigger_ids'?: Array<string>;
+}
+
+
+/**
+ * * `all` - All * `any` - Any * `none` - None
+ * @export
+ * @enum {string}
+ */
+
+export const ConditionTypeEnum = {
+    All: 'all',
+    Any: 'any',
+    None: 'none'
+} as const;
+
+export type ConditionTypeEnum = typeof ConditionTypeEnum[keyof typeof ConditionTypeEnum];
+
+
+/**
  * \"client\": \"435f309f-32f4-485d-9b88-6c2daca71555\", \"transport\": \"websocket\", \"protocol\": \"json\", \"encoding\": \"json\", \"name\": \"js\"
  * @export
  * @interface ConnectRequest
@@ -1877,13 +2026,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -2149,10 +2298,10 @@ export interface Dimension {
 export interface Effect {
     /**
      * 
-     * @type {EffectIdEnum}
+     * @type {IdD3bEnum}
      * @memberof Effect
      */
-    'id'?: EffectIdEnum;
+    'id'?: IdD3bEnum;
     /**
      * 
      * @type {string}
@@ -2180,7 +2329,7 @@ export interface Effect {
  * @enum {string}
  */
 
-export const EffectIdEnum = {
+export const EffectEnum = {
     KnockedOut: 'Knocked out',
     Coma: 'Coma',
     None: 'None',
@@ -2201,7 +2350,67 @@ export const EffectIdEnum = {
     Marked: 'Marked'
 } as const;
 
-export type EffectIdEnum = typeof EffectIdEnum[keyof typeof EffectIdEnum];
+export type EffectEnum = typeof EffectEnum[keyof typeof EffectEnum];
+
+
+/**
+ * Serializer for EffectReward model.
+ * @export
+ * @interface EffectReward
+ */
+export interface EffectReward {
+    /**
+     * 
+     * @type {string}
+     * @memberof EffectReward
+     */
+    'id': string;
+    /**
+     * 
+     * @type {EffectEnum}
+     * @memberof EffectReward
+     */
+    'effect': EffectEnum;
+    /**
+     * Duration of the effect in turns
+     * @type {number}
+     * @memberof EffectReward
+     */
+    'duration'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EffectReward
+     */
+    'reward'?: string | null;
+}
+
+
+/**
+ * Serializer for EffectReward model.
+ * @export
+ * @interface EffectRewardRequest
+ */
+export interface EffectRewardRequest {
+    /**
+     * 
+     * @type {EffectEnum}
+     * @memberof EffectRewardRequest
+     */
+    'effect': EffectEnum;
+    /**
+     * Duration of the effect in turns
+     * @type {number}
+     * @memberof EffectRewardRequest
+     */
+    'duration'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EffectRewardRequest
+     */
+    'reward'?: string | null;
+}
 
 
 /**
@@ -3261,6 +3470,36 @@ export type Id82bEnum = typeof Id82bEnum[keyof typeof Id82bEnum];
 
 
 /**
+ * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold * `Cursed` - Cursed * `Blindness` - Blindness * `Haste` - Haste * `Regeneration` - Regeneration * `Blessed` - Blessed * `Arcane Surge` - Arcane Surge * `Marked` - Marked
+ * @export
+ * @enum {string}
+ */
+
+export const IdD3bEnum = {
+    KnockedOut: 'Knocked out',
+    Coma: 'Coma',
+    None: 'None',
+    Burning: 'Burning',
+    Poisoned: 'Poisoned',
+    Sleeping: 'Sleeping',
+    Confused: 'Confused',
+    Paralyzed: 'Paralyzed',
+    Fear: 'Fear',
+    Slowness: 'Slowness',
+    Cold: 'Cold',
+    Cursed: 'Cursed',
+    Blindness: 'Blindness',
+    Haste: 'Haste',
+    Regeneration: 'Regeneration',
+    Blessed: 'Blessed',
+    ArcaneSurge: 'Arcane Surge',
+    Marked: 'Marked'
+} as const;
+
+export type IdD3bEnum = typeof IdD3bEnum[keyof typeof IdD3bEnum];
+
+
+/**
  * Serializer for Impact DTO.
  * @export
  * @interface Impact
@@ -3575,6 +3814,62 @@ export interface ItemRequest {
 }
 
 
+/**
+ * Serializer for ItemReward model.
+ * @export
+ * @interface ItemReward
+ */
+export interface ItemReward {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemReward
+     */
+    'id': string;
+    /**
+     * Amount of items to reward
+     * @type {number}
+     * @memberof ItemReward
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemReward
+     */
+    'item': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemReward
+     */
+    'reward'?: string | null;
+}
+/**
+ * Serializer for ItemReward model.
+ * @export
+ * @interface ItemRewardRequest
+ */
+export interface ItemRewardRequest {
+    /**
+     * Amount of items to reward
+     * @type {number}
+     * @memberof ItemRewardRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemRewardRequest
+     */
+    'item': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemRewardRequest
+     */
+    'reward'?: string | null;
+}
 /**
  * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
  * @export
@@ -4307,6 +4602,74 @@ export interface NewCoordinatesRequest {
      * @memberof NewCoordinatesRequest
      */
     'labels'?: Array<string>;
+}
+/**
+ * Serializer for Note model.
+ * @export
+ * @interface Note
+ */
+export interface Note {
+    /**
+     * 
+     * @type {string}
+     * @memberof Note
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Note
+     */
+    'quest': string;
+    /**
+     * Optional URL to an image representing the note
+     * @type {string}
+     * @memberof Note
+     */
+    'image'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Note
+     */
+    'content': string;
+    /**
+     * Order of the note within the quest
+     * @type {number}
+     * @memberof Note
+     */
+    'order'?: number;
+}
+/**
+ * Serializer for Note model.
+ * @export
+ * @interface NoteRequest
+ */
+export interface NoteRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof NoteRequest
+     */
+    'quest': string;
+    /**
+     * Optional URL to an image representing the note
+     * @type {File}
+     * @memberof NoteRequest
+     */
+    'image'?: File | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NoteRequest
+     */
+    'content': string;
+    /**
+     * Order of the note within the quest
+     * @type {number}
+     * @memberof NoteRequest
+     */
+    'order'?: number;
 }
 /**
  * 
@@ -5294,6 +5657,64 @@ export interface PaginatedLearnedSkillList {
     'results': Array<LearnedSkill>;
 }
 /**
+ * Serializer for Chapter model.
+ * @export
+ * @interface PatchedChapterRequest
+ */
+export interface PatchedChapterRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedChapterRequest
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedChapterRequest
+     */
+    'description'?: string;
+    /**
+     * Optional URL to an image representing the chapter
+     * @type {File}
+     * @memberof PatchedChapterRequest
+     */
+    'image'?: File | null;
+    /**
+     * Order of the chapter within the story
+     * @type {number}
+     * @memberof PatchedChapterRequest
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedChapterRequest
+     */
+    'story'?: string;
+}
+/**
+ * Serializer for Condition model.
+ * @export
+ * @interface PatchedConditionRequest
+ */
+export interface PatchedConditionRequest {
+    /**
+     * 
+     * @type {ConditionTypeEnum}
+     * @memberof PatchedConditionRequest
+     */
+    'type'?: ConditionTypeEnum;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PatchedConditionRequest
+     */
+    'trigger_ids'?: Array<string>;
+}
+
+
+/**
  * 
  * @export
  * @interface PatchedCurrencyTokenRequest
@@ -5318,6 +5739,33 @@ export interface PatchedCurrencyTokenRequest {
      */
     'icon'?: File | null;
 }
+/**
+ * Serializer for EffectReward model.
+ * @export
+ * @interface PatchedEffectRewardRequest
+ */
+export interface PatchedEffectRewardRequest {
+    /**
+     * 
+     * @type {EffectEnum}
+     * @memberof PatchedEffectRewardRequest
+     */
+    'effect'?: EffectEnum;
+    /**
+     * Duration of the effect in turns
+     * @type {number}
+     * @memberof PatchedEffectRewardRequest
+     */
+    'duration'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedEffectRewardRequest
+     */
+    'reward'?: string | null;
+}
+
+
 /**
  * 
  * @export
@@ -5395,6 +5843,31 @@ export interface PatchedGameObjectRequest {
     'campaign'?: string;
 }
 /**
+ * Serializer for ItemReward model.
+ * @export
+ * @interface PatchedItemRewardRequest
+ */
+export interface PatchedItemRewardRequest {
+    /**
+     * Amount of items to reward
+     * @type {number}
+     * @memberof PatchedItemRewardRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedItemRewardRequest
+     */
+    'item'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedItemRewardRequest
+     */
+    'reward'?: string | null;
+}
+/**
  * 
  * @export
  * @interface PatchedModificatorRequest
@@ -5440,6 +5913,37 @@ export interface PatchedNPCBehaviorRequest {
 }
 
 
+/**
+ * Serializer for Note model.
+ * @export
+ * @interface PatchedNoteRequest
+ */
+export interface PatchedNoteRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNoteRequest
+     */
+    'quest'?: string;
+    /**
+     * Optional URL to an image representing the note
+     * @type {File}
+     * @memberof PatchedNoteRequest
+     */
+    'image'?: File | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNoteRequest
+     */
+    'content'?: string;
+    /**
+     * Order of the note within the quest
+     * @type {number}
+     * @memberof PatchedNoteRequest
+     */
+    'order'?: number;
+}
 /**
  * 
  * @export
@@ -5605,6 +6109,193 @@ export interface PatchedPositionRequest {
      */
     'image'?: File | null;
 }
+/**
+ * Serializer for Quest model.
+ * @export
+ * @interface PatchedQuestRequest
+ */
+export interface PatchedQuestRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedQuestRequest
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedQuestRequest
+     */
+    'description'?: string;
+    /**
+     * Optional URL to an image representing the quest
+     * @type {File}
+     * @memberof PatchedQuestRequest
+     */
+    'image'?: File | null;
+    /**
+     * Time limit in cycles (1 cycle = 1 turn)
+     * @type {number}
+     * @memberof PatchedQuestRequest
+     */
+    'cycle_limit'?: number | null;
+    /**
+     * Order of the quest within the chapter
+     * @type {number}
+     * @memberof PatchedQuestRequest
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedQuestRequest
+     */
+    'chapter'?: string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PatchedQuestRequest
+     */
+    'starter_ids'?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof PatchedQuestRequest
+     */
+    'objective_ids'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedQuestRequest
+     */
+    'success_reward_id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedQuestRequest
+     */
+    'failure_reward_id'?: string | null;
+}
+/**
+ * Serializer for Reward model.
+ * @export
+ * @interface PatchedRewardRequest
+ */
+export interface PatchedRewardRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedRewardRequest
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedRewardRequest
+     */
+    'experience'?: number;
+}
+/**
+ * Serializer for Story model.
+ * @export
+ * @interface PatchedStoryRequest
+ */
+export interface PatchedStoryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedStoryRequest
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedStoryRequest
+     */
+    'description'?: string;
+    /**
+     * List of tags for the story
+     * @type {any}
+     * @memberof PatchedStoryRequest
+     */
+    'tags'?: any;
+    /**
+     * Optional URL to an image representing the story
+     * @type {File}
+     * @memberof PatchedStoryRequest
+     */
+    'image'?: File | null;
+    /**
+     * Default to false, need review by the Owner
+     * @type {boolean}
+     * @memberof PatchedStoryRequest
+     */
+    'canonical'?: boolean;
+}
+/**
+ * Serializer for TokenReward model.
+ * @export
+ * @interface PatchedTokenRewardRequest
+ */
+export interface PatchedTokenRewardRequest {
+    /**
+     * Amount of tokens to reward
+     * @type {number}
+     * @memberof PatchedTokenRewardRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedTokenRewardRequest
+     */
+    'token'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedTokenRewardRequest
+     */
+    'reward'?: string | null;
+}
+/**
+ * Serializer for Trigger model.
+ * @export
+ * @interface PatchedTriggerRequest
+ */
+export interface PatchedTriggerRequest {
+    /**
+     * 
+     * @type {TriggerTypeEnum}
+     * @memberof PatchedTriggerRequest
+     */
+    'type'?: TriggerTypeEnum;
+    /**
+     * Item, NPC, Anomaly
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'game_object'?: string | null;
+    /**
+     * Position in the game world
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'position'?: string | null;
+    /**
+     * Description of the trigger
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'description'?: string;
+    /**
+     * Optional limit trigger to a specific location
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'location'?: string | null;
+}
+
+
 /**
  * 
  * @export
@@ -6008,6 +6699,152 @@ export type ProviderEnum = typeof ProviderEnum[keyof typeof ProviderEnum];
 
 
 /**
+ * Serializer for Quest model.
+ * @export
+ * @interface Quest
+ */
+export interface Quest {
+    /**
+     * 
+     * @type {string}
+     * @memberof Quest
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Quest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Quest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {Array<Condition>}
+     * @memberof Quest
+     */
+    'starters': Array<Condition>;
+    /**
+     * 
+     * @type {Array<Condition>}
+     * @memberof Quest
+     */
+    'objectives': Array<Condition>;
+    /**
+     * 
+     * @type {Reward}
+     * @memberof Quest
+     */
+    'on_success': Reward;
+    /**
+     * 
+     * @type {Reward}
+     * @memberof Quest
+     */
+    'on_failure': Reward;
+    /**
+     * Optional URL to an image representing the quest
+     * @type {string}
+     * @memberof Quest
+     */
+    'image'?: string | null;
+    /**
+     * Time limit in cycles (1 cycle = 1 turn)
+     * @type {number}
+     * @memberof Quest
+     */
+    'cycle_limit'?: number | null;
+    /**
+     * Order of the quest within the chapter
+     * @type {number}
+     * @memberof Quest
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Quest
+     */
+    'chapter': string;
+    /**
+     * 
+     * @type {Array<Note>}
+     * @memberof Quest
+     */
+    'notes': Array<Note>;
+}
+/**
+ * Serializer for Quest model.
+ * @export
+ * @interface QuestRequest
+ */
+export interface QuestRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof QuestRequest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof QuestRequest
+     */
+    'description': string;
+    /**
+     * Optional URL to an image representing the quest
+     * @type {File}
+     * @memberof QuestRequest
+     */
+    'image'?: File | null;
+    /**
+     * Time limit in cycles (1 cycle = 1 turn)
+     * @type {number}
+     * @memberof QuestRequest
+     */
+    'cycle_limit'?: number | null;
+    /**
+     * Order of the quest within the chapter
+     * @type {number}
+     * @memberof QuestRequest
+     */
+    'order'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof QuestRequest
+     */
+    'chapter': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof QuestRequest
+     */
+    'starter_ids'?: Array<string>;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof QuestRequest
+     */
+    'objective_ids'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof QuestRequest
+     */
+    'success_reward_id'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof QuestRequest
+     */
+    'failure_reward_id'?: string | null;
+}
+/**
  * 
  * @export
  * @interface Rank
@@ -6172,6 +7009,68 @@ export interface RegistrationFormRequest {
      * @memberof RegistrationFormRequest
      */
     'password': string;
+}
+/**
+ * Serializer for Reward model.
+ * @export
+ * @interface Reward
+ */
+export interface Reward {
+    /**
+     * 
+     * @type {string}
+     * @memberof Reward
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Reward
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Reward
+     */
+    'experience'?: number;
+    /**
+     * 
+     * @type {Array<TokenReward>}
+     * @memberof Reward
+     */
+    'tokens': Array<TokenReward>;
+    /**
+     * 
+     * @type {Array<ItemReward>}
+     * @memberof Reward
+     */
+    'items': Array<ItemReward>;
+    /**
+     * 
+     * @type {Array<EffectReward>}
+     * @memberof Reward
+     */
+    'effects': Array<EffectReward>;
+}
+/**
+ * Serializer for Reward model.
+ * @export
+ * @interface RewardRequest
+ */
+export interface RewardRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof RewardRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RewardRequest
+     */
+    'experience'?: number;
 }
 /**
  * 
@@ -6523,6 +7422,141 @@ export interface StatRequirement {
 
 
 /**
+ * Serializer for Story model.
+ * @export
+ * @interface Story
+ */
+export interface Story {
+    /**
+     * 
+     * @type {string}
+     * @memberof Story
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Story
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Story
+     */
+    'description': string;
+    /**
+     * List of tags for the story
+     * @type {any}
+     * @memberof Story
+     */
+    'tags'?: any;
+    /**
+     * Optional URL to an image representing the story
+     * @type {string}
+     * @memberof Story
+     */
+    'image'?: string | null;
+    /**
+     * Default to false, need review by the Owner
+     * @type {boolean}
+     * @memberof Story
+     */
+    'canonical'?: boolean;
+    /**
+     * 
+     * @type {Array<Chapter>}
+     * @memberof Story
+     */
+    'chapters': Array<Chapter>;
+}
+/**
+ * Detailed serializer for Story model with nested chapters and quests.
+ * @export
+ * @interface StoryDetail
+ */
+export interface StoryDetail {
+    /**
+     * 
+     * @type {string}
+     * @memberof StoryDetail
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoryDetail
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoryDetail
+     */
+    'description': string;
+    /**
+     * List of tags for the story
+     * @type {any}
+     * @memberof StoryDetail
+     */
+    'tags'?: any;
+    /**
+     * Optional URL to an image representing the story
+     * @type {string}
+     * @memberof StoryDetail
+     */
+    'image'?: string | null;
+    /**
+     * Default to false, need review by the Owner
+     * @type {boolean}
+     * @memberof StoryDetail
+     */
+    'canonical'?: boolean;
+    /**
+     * 
+     * @type {Array<Chapter>}
+     * @memberof StoryDetail
+     */
+    'chapters': Array<Chapter>;
+}
+/**
+ * Serializer for Story model.
+ * @export
+ * @interface StoryRequest
+ */
+export interface StoryRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof StoryRequest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof StoryRequest
+     */
+    'description': string;
+    /**
+     * List of tags for the story
+     * @type {any}
+     * @memberof StoryRequest
+     */
+    'tags'?: any;
+    /**
+     * Optional URL to an image representing the story
+     * @type {File}
+     * @memberof StoryRequest
+     */
+    'image'?: File | null;
+    /**
+     * Default to false, need review by the Owner
+     * @type {boolean}
+     * @memberof StoryRequest
+     */
+    'canonical'?: boolean;
+}
+/**
  * Serializer for SubLocation model.
  * @export
  * @interface SubLocation
@@ -6823,6 +7857,62 @@ export interface TokenRefreshRequest {
     'refresh': string;
 }
 /**
+ * Serializer for TokenReward model.
+ * @export
+ * @interface TokenReward
+ */
+export interface TokenReward {
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenReward
+     */
+    'id': string;
+    /**
+     * Amount of tokens to reward
+     * @type {number}
+     * @memberof TokenReward
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenReward
+     */
+    'token': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenReward
+     */
+    'reward'?: string | null;
+}
+/**
+ * Serializer for TokenReward model.
+ * @export
+ * @interface TokenRewardRequest
+ */
+export interface TokenRewardRequest {
+    /**
+     * Amount of tokens to reward
+     * @type {number}
+     * @memberof TokenRewardRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenRewardRequest
+     */
+    'token': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TokenRewardRequest
+     */
+    'reward'?: string | null;
+}
+/**
  * 
  * @export
  * @interface TokenVerifyRequest
@@ -6835,6 +7925,108 @@ export interface TokenVerifyRequest {
      */
     'token': string;
 }
+/**
+ * Serializer for Trigger model.
+ * @export
+ * @interface Trigger
+ */
+export interface Trigger {
+    /**
+     * 
+     * @type {string}
+     * @memberof Trigger
+     */
+    'id': string;
+    /**
+     * 
+     * @type {TriggerTypeEnum}
+     * @memberof Trigger
+     */
+    'type': TriggerTypeEnum;
+    /**
+     * Item, NPC, Anomaly
+     * @type {string}
+     * @memberof Trigger
+     */
+    'game_object'?: string | null;
+    /**
+     * Position in the game world
+     * @type {string}
+     * @memberof Trigger
+     */
+    'position'?: string | null;
+    /**
+     * Description of the trigger
+     * @type {string}
+     * @memberof Trigger
+     */
+    'description': string;
+    /**
+     * Optional limit trigger to a specific location
+     * @type {string}
+     * @memberof Trigger
+     */
+    'location'?: string | null;
+}
+
+
+/**
+ * Serializer for Trigger model.
+ * @export
+ * @interface TriggerRequest
+ */
+export interface TriggerRequest {
+    /**
+     * 
+     * @type {TriggerTypeEnum}
+     * @memberof TriggerRequest
+     */
+    'type': TriggerTypeEnum;
+    /**
+     * Item, NPC, Anomaly
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'game_object'?: string | null;
+    /**
+     * Position in the game world
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'position'?: string | null;
+    /**
+     * Description of the trigger
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'description': string;
+    /**
+     * Optional limit trigger to a specific location
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'location'?: string | null;
+}
+
+
+/**
+ * * `search` - search * `kill` - kill * `interaction` - interaction * `position` - position * `useItem` - useItem * `useSkill` - useSkill
+ * @export
+ * @enum {string}
+ */
+
+export const TriggerTypeEnum = {
+    Search: 'search',
+    Kill: 'kill',
+    Interaction: 'interaction',
+    Position: 'position',
+    UseItem: 'useItem',
+    UseSkill: 'useSkill'
+} as const;
+
+export type TriggerTypeEnum = typeof TriggerTypeEnum[keyof typeof TriggerTypeEnum];
+
+
 /**
  * 
  * @export
@@ -21757,6 +22949,5072 @@ export class SkillsApi extends BaseAPI {
     }
 }
 
+
+
+/**
+ * StoryApi - axios parameter creator
+ * @export
+ */
+export const StoryApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersCreate: async (chapterRequest: ChapterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'chapterRequest' is not null or undefined
+            assertParamExists('storyChaptersCreate', 'chapterRequest', chapterRequest)
+            const localVarPath = `/api/story/chapters/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(chapterRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyChaptersDestroy', 'id', id)
+            const localVarPath = `/api/story/chapters/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [story] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersList: async (ordering?: string, story?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/chapters/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (story !== undefined) {
+                localVarQueryParameter['story'] = story;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {PatchedChapterRequest} [patchedChapterRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersPartialUpdate: async (id: string, patchedChapterRequest?: PatchedChapterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyChaptersPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/chapters/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedChapterRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyChaptersRetrieve', 'id', id)
+            const localVarPath = `/api/story/chapters/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersUpdate: async (id: string, chapterRequest: ChapterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyChaptersUpdate', 'id', id)
+            // verify required parameter 'chapterRequest' is not null or undefined
+            assertParamExists('storyChaptersUpdate', 'chapterRequest', chapterRequest)
+            const localVarPath = `/api/story/chapters/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(chapterRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsCreate: async (conditionRequest?: ConditionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/conditions/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(conditionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyConditionsDestroy', 'id', id)
+            const localVarPath = `/api/story/conditions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {StoryConditionsListTypeEnum} [type] * &#x60;all&#x60; - All * &#x60;any&#x60; - Any * &#x60;none&#x60; - None
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsList: async (type?: StoryConditionsListTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/conditions/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {PatchedConditionRequest} [patchedConditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsPartialUpdate: async (id: string, patchedConditionRequest?: PatchedConditionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyConditionsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/conditions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedConditionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyConditionsRetrieve', 'id', id)
+            const localVarPath = `/api/story/conditions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsUpdate: async (id: string, conditionRequest?: ConditionRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyConditionsUpdate', 'id', id)
+            const localVarPath = `/api/story/conditions/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(conditionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsCreate: async (effectRewardRequest: EffectRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'effectRewardRequest' is not null or undefined
+            assertParamExists('storyEffectRewardsCreate', 'effectRewardRequest', effectRewardRequest)
+            const localVarPath = `/api/story/effect-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(effectRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyEffectRewardsDestroy', 'id', id)
+            const localVarPath = `/api/story/effect-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {StoryEffectRewardsListEffectEnum} [effect] * &#x60;Knocked out&#x60; - Knocked out * &#x60;Coma&#x60; - Coma * &#x60;None&#x60; - None * &#x60;Burning&#x60; - Burning * &#x60;Poisoned&#x60; - Poisoned * &#x60;Sleeping&#x60; - Sleeping * &#x60;Confused&#x60; - Confused * &#x60;Paralyzed&#x60; - Paralyzed * &#x60;Fear&#x60; - Fear * &#x60;Slowness&#x60; - Slowness * &#x60;Cold&#x60; - Cold * &#x60;Cursed&#x60; - Cursed * &#x60;Blindness&#x60; - Blindness * &#x60;Haste&#x60; - Haste * &#x60;Regeneration&#x60; - Regeneration * &#x60;Blessed&#x60; - Blessed * &#x60;Arcane Surge&#x60; - Arcane Surge * &#x60;Marked&#x60; - Marked
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsList: async (effect?: StoryEffectRewardsListEffectEnum, ordering?: string, reward?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/effect-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (effect !== undefined) {
+                localVarQueryParameter['effect'] = effect;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (reward !== undefined) {
+                localVarQueryParameter['reward'] = reward;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {PatchedEffectRewardRequest} [patchedEffectRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsPartialUpdate: async (id: string, patchedEffectRewardRequest?: PatchedEffectRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyEffectRewardsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/effect-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedEffectRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyEffectRewardsRetrieve', 'id', id)
+            const localVarPath = `/api/story/effect-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsUpdate: async (id: string, effectRewardRequest: EffectRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyEffectRewardsUpdate', 'id', id)
+            // verify required parameter 'effectRewardRequest' is not null or undefined
+            assertParamExists('storyEffectRewardsUpdate', 'effectRewardRequest', effectRewardRequest)
+            const localVarPath = `/api/story/effect-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(effectRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsCreate: async (itemRewardRequest: ItemRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemRewardRequest' is not null or undefined
+            assertParamExists('storyItemRewardsCreate', 'itemRewardRequest', itemRewardRequest)
+            const localVarPath = `/api/story/item-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyItemRewardsDestroy', 'id', id)
+            const localVarPath = `/api/story/item-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} [item] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsList: async (item?: string, ordering?: string, reward?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/item-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (item !== undefined) {
+                localVarQueryParameter['item'] = item;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (reward !== undefined) {
+                localVarQueryParameter['reward'] = reward;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {PatchedItemRewardRequest} [patchedItemRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsPartialUpdate: async (id: string, patchedItemRewardRequest?: PatchedItemRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyItemRewardsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/item-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedItemRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyItemRewardsRetrieve', 'id', id)
+            const localVarPath = `/api/story/item-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsUpdate: async (id: string, itemRewardRequest: ItemRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyItemRewardsUpdate', 'id', id)
+            // verify required parameter 'itemRewardRequest' is not null or undefined
+            assertParamExists('storyItemRewardsUpdate', 'itemRewardRequest', itemRewardRequest)
+            const localVarPath = `/api/story/item-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesCreate: async (noteRequest: NoteRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'noteRequest' is not null or undefined
+            assertParamExists('storyNotesCreate', 'noteRequest', noteRequest)
+            const localVarPath = `/api/story/notes/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(noteRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyNotesDestroy', 'id', id)
+            const localVarPath = `/api/story/notes/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [quest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesList: async (ordering?: string, quest?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/notes/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (quest !== undefined) {
+                localVarQueryParameter['quest'] = quest;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {PatchedNoteRequest} [patchedNoteRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesPartialUpdate: async (id: string, patchedNoteRequest?: PatchedNoteRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyNotesPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/notes/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedNoteRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyNotesRetrieve', 'id', id)
+            const localVarPath = `/api/story/notes/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesUpdate: async (id: string, noteRequest: NoteRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyNotesUpdate', 'id', id)
+            // verify required parameter 'noteRequest' is not null or undefined
+            assertParamExists('storyNotesUpdate', 'noteRequest', noteRequest)
+            const localVarPath = `/api/story/notes/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(noteRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsCreate: async (questRequest: QuestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'questRequest' is not null or undefined
+            assertParamExists('storyQuestsCreate', 'questRequest', questRequest)
+            const localVarPath = `/api/story/quests/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(questRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyQuestsDestroy', 'id', id)
+            const localVarPath = `/api/story/quests/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} [chapter] 
+         * @param {string} [chapterStory] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsList: async (chapter?: string, chapterStory?: string, ordering?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/quests/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (chapter !== undefined) {
+                localVarQueryParameter['chapter'] = chapter;
+            }
+
+            if (chapterStory !== undefined) {
+                localVarQueryParameter['chapter__story'] = chapterStory;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {PatchedQuestRequest} [patchedQuestRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsPartialUpdate: async (id: string, patchedQuestRequest?: PatchedQuestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyQuestsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/quests/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedQuestRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyQuestsRetrieve', 'id', id)
+            const localVarPath = `/api/story/quests/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsUpdate: async (id: string, questRequest: QuestRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyQuestsUpdate', 'id', id)
+            // verify required parameter 'questRequest' is not null or undefined
+            assertParamExists('storyQuestsUpdate', 'questRequest', questRequest)
+            const localVarPath = `/api/story/quests/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(questRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsCreate: async (rewardRequest: RewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'rewardRequest' is not null or undefined
+            assertParamExists('storyRewardsCreate', 'rewardRequest', rewardRequest)
+            const localVarPath = `/api/story/rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(rewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyRewardsDestroy', 'id', id)
+            const localVarPath = `/api/story/rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsList: async (ordering?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {PatchedRewardRequest} [patchedRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsPartialUpdate: async (id: string, patchedRewardRequest?: PatchedRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyRewardsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyRewardsRetrieve', 'id', id)
+            const localVarPath = `/api/story/rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsUpdate: async (id: string, rewardRequest: RewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyRewardsUpdate', 'id', id)
+            // verify required parameter 'rewardRequest' is not null or undefined
+            assertParamExists('storyRewardsUpdate', 'rewardRequest', rewardRequest)
+            const localVarPath = `/api/story/rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(rewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesCreate: async (storyRequest: StoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'storyRequest' is not null or undefined
+            assertParamExists('storyStoriesCreate', 'storyRequest', storyRequest)
+            const localVarPath = `/api/story/stories/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(storyRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesDestroy', 'id', id)
+            const localVarPath = `/api/story/stories/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {boolean} [canonical] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesList: async (canonical?: boolean, ordering?: string, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/stories/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (canonical !== undefined) {
+                localVarQueryParameter['canonical'] = canonical;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {PatchedStoryRequest} [patchedStoryRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesPartialUpdate: async (id: string, patchedStoryRequest?: PatchedStoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/stories/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedStoryRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesRetrieve', 'id', id)
+            const localVarPath = `/api/story/stories/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Set a story as canonical (requires owner review).
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesSetCanonicalCreate: async (id: string, storyRequest: StoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesSetCanonicalCreate', 'id', id)
+            // verify required parameter 'storyRequest' is not null or undefined
+            assertParamExists('storyStoriesSetCanonicalCreate', 'storyRequest', storyRequest)
+            const localVarPath = `/api/story/stories/{id}/set_canonical/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(storyRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Remove canonical status from a story.
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesUnsetCanonicalCreate: async (id: string, storyRequest: StoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesUnsetCanonicalCreate', 'id', id)
+            // verify required parameter 'storyRequest' is not null or undefined
+            assertParamExists('storyStoriesUnsetCanonicalCreate', 'storyRequest', storyRequest)
+            const localVarPath = `/api/story/stories/{id}/unset_canonical/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(storyRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesUpdate: async (id: string, storyRequest: StoryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyStoriesUpdate', 'id', id)
+            // verify required parameter 'storyRequest' is not null or undefined
+            assertParamExists('storyStoriesUpdate', 'storyRequest', storyRequest)
+            const localVarPath = `/api/story/stories/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(storyRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsCreate: async (tokenRewardRequest: TokenRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tokenRewardRequest' is not null or undefined
+            assertParamExists('storyTokenRewardsCreate', 'tokenRewardRequest', tokenRewardRequest)
+            const localVarPath = `/api/story/token-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tokenRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTokenRewardsDestroy', 'id', id)
+            const localVarPath = `/api/story/token-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsList: async (ordering?: string, reward?: string, token?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/token-rewards/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (reward !== undefined) {
+                localVarQueryParameter['reward'] = reward;
+            }
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {PatchedTokenRewardRequest} [patchedTokenRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsPartialUpdate: async (id: string, patchedTokenRewardRequest?: PatchedTokenRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTokenRewardsPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/token-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedTokenRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTokenRewardsRetrieve', 'id', id)
+            const localVarPath = `/api/story/token-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsUpdate: async (id: string, tokenRewardRequest: TokenRewardRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTokenRewardsUpdate', 'id', id)
+            // verify required parameter 'tokenRewardRequest' is not null or undefined
+            assertParamExists('storyTokenRewardsUpdate', 'tokenRewardRequest', tokenRewardRequest)
+            const localVarPath = `/api/story/token-rewards/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tokenRewardRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersCreate: async (triggerRequest: TriggerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'triggerRequest' is not null or undefined
+            assertParamExists('storyTriggersCreate', 'triggerRequest', triggerRequest)
+            const localVarPath = `/api/story/triggers/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(triggerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTriggersDestroy', 'id', id)
+            const localVarPath = `/api/story/triggers/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} [gameObject] 
+         * @param {string} [location] 
+         * @param {string} [position] 
+         * @param {string} [search] A search term.
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersList: async (gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/story/triggers/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (gameObject !== undefined) {
+                localVarQueryParameter['game_object'] = gameObject;
+            }
+
+            if (location !== undefined) {
+                localVarQueryParameter['location'] = location;
+            }
+
+            if (position !== undefined) {
+                localVarQueryParameter['position'] = position;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (type !== undefined) {
+                localVarQueryParameter['type'] = type;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {PatchedTriggerRequest} [patchedTriggerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersPartialUpdate: async (id: string, patchedTriggerRequest?: PatchedTriggerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTriggersPartialUpdate', 'id', id)
+            const localVarPath = `/api/story/triggers/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedTriggerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTriggersRetrieve', 'id', id)
+            const localVarPath = `/api/story/triggers/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersUpdate: async (id: string, triggerRequest: TriggerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('storyTriggersUpdate', 'id', id)
+            // verify required parameter 'triggerRequest' is not null or undefined
+            assertParamExists('storyTriggersUpdate', 'triggerRequest', triggerRequest)
+            const localVarPath = `/api/story/triggers/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(triggerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StoryApi - functional programming interface
+ * @export
+ */
+export const StoryApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StoryApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersCreate(chapterRequest: ChapterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Chapter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersCreate(chapterRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [story] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersList(ordering?: string, story?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Chapter>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersList(ordering, story, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {PatchedChapterRequest} [patchedChapterRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersPartialUpdate(id: string, patchedChapterRequest?: PatchedChapterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Chapter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersPartialUpdate(id, patchedChapterRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Chapter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyChaptersUpdate(id: string, chapterRequest: ChapterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Chapter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyChaptersUpdate(id, chapterRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyChaptersUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsCreate(conditionRequest?: ConditionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Condition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsCreate(conditionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {StoryConditionsListTypeEnum} [type] * &#x60;all&#x60; - All * &#x60;any&#x60; - Any * &#x60;none&#x60; - None
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsList(type?: StoryConditionsListTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Condition>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsList(type, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {PatchedConditionRequest} [patchedConditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsPartialUpdate(id: string, patchedConditionRequest?: PatchedConditionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Condition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsPartialUpdate(id, patchedConditionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Condition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyConditionsUpdate(id: string, conditionRequest?: ConditionRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Condition>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyConditionsUpdate(id, conditionRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyConditionsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsCreate(effectRewardRequest: EffectRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EffectReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsCreate(effectRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {StoryEffectRewardsListEffectEnum} [effect] * &#x60;Knocked out&#x60; - Knocked out * &#x60;Coma&#x60; - Coma * &#x60;None&#x60; - None * &#x60;Burning&#x60; - Burning * &#x60;Poisoned&#x60; - Poisoned * &#x60;Sleeping&#x60; - Sleeping * &#x60;Confused&#x60; - Confused * &#x60;Paralyzed&#x60; - Paralyzed * &#x60;Fear&#x60; - Fear * &#x60;Slowness&#x60; - Slowness * &#x60;Cold&#x60; - Cold * &#x60;Cursed&#x60; - Cursed * &#x60;Blindness&#x60; - Blindness * &#x60;Haste&#x60; - Haste * &#x60;Regeneration&#x60; - Regeneration * &#x60;Blessed&#x60; - Blessed * &#x60;Arcane Surge&#x60; - Arcane Surge * &#x60;Marked&#x60; - Marked
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsList(effect?: StoryEffectRewardsListEffectEnum, ordering?: string, reward?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<EffectReward>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsList(effect, ordering, reward, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {PatchedEffectRewardRequest} [patchedEffectRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsPartialUpdate(id: string, patchedEffectRewardRequest?: PatchedEffectRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EffectReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsPartialUpdate(id, patchedEffectRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EffectReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyEffectRewardsUpdate(id: string, effectRewardRequest: EffectRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EffectReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyEffectRewardsUpdate(id, effectRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyEffectRewardsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsCreate(itemRewardRequest: ItemRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsCreate(itemRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} [item] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsList(item?: string, ordering?: string, reward?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ItemReward>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsList(item, ordering, reward, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {PatchedItemRewardRequest} [patchedItemRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsPartialUpdate(id: string, patchedItemRewardRequest?: PatchedItemRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsPartialUpdate(id, patchedItemRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyItemRewardsUpdate(id: string, itemRewardRequest: ItemRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyItemRewardsUpdate(id, itemRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyItemRewardsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesCreate(noteRequest: NoteRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Note>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesCreate(noteRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [quest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesList(ordering?: string, quest?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Note>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesList(ordering, quest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {PatchedNoteRequest} [patchedNoteRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesPartialUpdate(id: string, patchedNoteRequest?: PatchedNoteRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Note>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesPartialUpdate(id, patchedNoteRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Note>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyNotesUpdate(id: string, noteRequest: NoteRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Note>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyNotesUpdate(id, noteRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyNotesUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsCreate(questRequest: QuestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsCreate(questRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} [chapter] 
+         * @param {string} [chapterStory] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsList(chapter?: string, chapterStory?: string, ordering?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Quest>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsList(chapter, chapterStory, ordering, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {PatchedQuestRequest} [patchedQuestRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsPartialUpdate(id: string, patchedQuestRequest?: PatchedQuestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsPartialUpdate(id, patchedQuestRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyQuestsUpdate(id: string, questRequest: QuestRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Quest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyQuestsUpdate(id, questRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyQuestsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsCreate(rewardRequest: RewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Reward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsCreate(rewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsList(ordering?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Reward>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsList(ordering, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {PatchedRewardRequest} [patchedRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsPartialUpdate(id: string, patchedRewardRequest?: PatchedRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Reward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsPartialUpdate(id, patchedRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Reward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyRewardsUpdate(id: string, rewardRequest: RewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Reward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyRewardsUpdate(id, rewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyRewardsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesCreate(storyRequest: StoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Story>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesCreate(storyRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {boolean} [canonical] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesList(canonical?: boolean, ordering?: string, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Story>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesList(canonical, ordering, search, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {PatchedStoryRequest} [patchedStoryRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesPartialUpdate(id: string, patchedStoryRequest?: PatchedStoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Story>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesPartialUpdate(id, patchedStoryRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StoryDetail>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Set a story as canonical (requires owner review).
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesSetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Story>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesSetCanonicalCreate(id, storyRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesSetCanonicalCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Remove canonical status from a story.
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesUnsetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Story>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesUnsetCanonicalCreate(id, storyRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesUnsetCanonicalCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyStoriesUpdate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Story>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyStoriesUpdate(id, storyRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyStoriesUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsCreate(tokenRewardRequest: TokenRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsCreate(tokenRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsList(ordering?: string, reward?: string, token?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TokenReward>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsList(ordering, reward, token, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {PatchedTokenRewardRequest} [patchedTokenRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsPartialUpdate(id: string, patchedTokenRewardRequest?: PatchedTokenRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsPartialUpdate(id, patchedTokenRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTokenRewardsUpdate(id: string, tokenRewardRequest: TokenRewardRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenReward>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTokenRewardsUpdate(id, tokenRewardRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTokenRewardsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersCreate(triggerRequest: TriggerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Trigger>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersCreate(triggerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} [gameObject] 
+         * @param {string} [location] 
+         * @param {string} [position] 
+         * @param {string} [search] A search term.
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Trigger>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersList(gameObject, location, position, search, type, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {PatchedTriggerRequest} [patchedTriggerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersPartialUpdate(id: string, patchedTriggerRequest?: PatchedTriggerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Trigger>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersPartialUpdate(id, patchedTriggerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Trigger>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async storyTriggersUpdate(id: string, triggerRequest: TriggerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Trigger>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersUpdate(id, triggerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StoryApi - factory interface
+ * @export
+ */
+export const StoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StoryApiFp(configuration)
+    return {
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersCreate(chapterRequest: ChapterRequest, options?: any): AxiosPromise<Chapter> {
+            return localVarFp.storyChaptersCreate(chapterRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyChaptersDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [story] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersList(ordering?: string, story?: string, options?: any): AxiosPromise<Array<Chapter>> {
+            return localVarFp.storyChaptersList(ordering, story, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {PatchedChapterRequest} [patchedChapterRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersPartialUpdate(id: string, patchedChapterRequest?: PatchedChapterRequest, options?: any): AxiosPromise<Chapter> {
+            return localVarFp.storyChaptersPartialUpdate(id, patchedChapterRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersRetrieve(id: string, options?: any): AxiosPromise<Chapter> {
+            return localVarFp.storyChaptersRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage chapters within stories.
+         * @param {string} id A UUID string identifying this chapter.
+         * @param {ChapterRequest} chapterRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyChaptersUpdate(id: string, chapterRequest: ChapterRequest, options?: any): AxiosPromise<Chapter> {
+            return localVarFp.storyChaptersUpdate(id, chapterRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsCreate(conditionRequest?: ConditionRequest, options?: any): AxiosPromise<Condition> {
+            return localVarFp.storyConditionsCreate(conditionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyConditionsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {StoryConditionsListTypeEnum} [type] * &#x60;all&#x60; - All * &#x60;any&#x60; - Any * &#x60;none&#x60; - None
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsList(type?: StoryConditionsListTypeEnum, options?: any): AxiosPromise<Array<Condition>> {
+            return localVarFp.storyConditionsList(type, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {PatchedConditionRequest} [patchedConditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsPartialUpdate(id: string, patchedConditionRequest?: PatchedConditionRequest, options?: any): AxiosPromise<Condition> {
+            return localVarFp.storyConditionsPartialUpdate(id, patchedConditionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsRetrieve(id: string, options?: any): AxiosPromise<Condition> {
+            return localVarFp.storyConditionsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage conditions for quest starters and objectives.
+         * @param {string} id A UUID string identifying this condition.
+         * @param {ConditionRequest} [conditionRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyConditionsUpdate(id: string, conditionRequest?: ConditionRequest, options?: any): AxiosPromise<Condition> {
+            return localVarFp.storyConditionsUpdate(id, conditionRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsCreate(effectRewardRequest: EffectRewardRequest, options?: any): AxiosPromise<EffectReward> {
+            return localVarFp.storyEffectRewardsCreate(effectRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyEffectRewardsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {StoryEffectRewardsListEffectEnum} [effect] * &#x60;Knocked out&#x60; - Knocked out * &#x60;Coma&#x60; - Coma * &#x60;None&#x60; - None * &#x60;Burning&#x60; - Burning * &#x60;Poisoned&#x60; - Poisoned * &#x60;Sleeping&#x60; - Sleeping * &#x60;Confused&#x60; - Confused * &#x60;Paralyzed&#x60; - Paralyzed * &#x60;Fear&#x60; - Fear * &#x60;Slowness&#x60; - Slowness * &#x60;Cold&#x60; - Cold * &#x60;Cursed&#x60; - Cursed * &#x60;Blindness&#x60; - Blindness * &#x60;Haste&#x60; - Haste * &#x60;Regeneration&#x60; - Regeneration * &#x60;Blessed&#x60; - Blessed * &#x60;Arcane Surge&#x60; - Arcane Surge * &#x60;Marked&#x60; - Marked
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsList(effect?: StoryEffectRewardsListEffectEnum, ordering?: string, reward?: string, options?: any): AxiosPromise<Array<EffectReward>> {
+            return localVarFp.storyEffectRewardsList(effect, ordering, reward, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {PatchedEffectRewardRequest} [patchedEffectRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsPartialUpdate(id: string, patchedEffectRewardRequest?: PatchedEffectRewardRequest, options?: any): AxiosPromise<EffectReward> {
+            return localVarFp.storyEffectRewardsPartialUpdate(id, patchedEffectRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsRetrieve(id: string, options?: any): AxiosPromise<EffectReward> {
+            return localVarFp.storyEffectRewardsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage effect rewards.
+         * @param {string} id A UUID string identifying this effect reward.
+         * @param {EffectRewardRequest} effectRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyEffectRewardsUpdate(id: string, effectRewardRequest: EffectRewardRequest, options?: any): AxiosPromise<EffectReward> {
+            return localVarFp.storyEffectRewardsUpdate(id, effectRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsCreate(itemRewardRequest: ItemRewardRequest, options?: any): AxiosPromise<ItemReward> {
+            return localVarFp.storyItemRewardsCreate(itemRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyItemRewardsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} [item] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsList(item?: string, ordering?: string, reward?: string, options?: any): AxiosPromise<Array<ItemReward>> {
+            return localVarFp.storyItemRewardsList(item, ordering, reward, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {PatchedItemRewardRequest} [patchedItemRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsPartialUpdate(id: string, patchedItemRewardRequest?: PatchedItemRewardRequest, options?: any): AxiosPromise<ItemReward> {
+            return localVarFp.storyItemRewardsPartialUpdate(id, patchedItemRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsRetrieve(id: string, options?: any): AxiosPromise<ItemReward> {
+            return localVarFp.storyItemRewardsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage item rewards.
+         * @param {string} id A UUID string identifying this item reward.
+         * @param {ItemRewardRequest} itemRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyItemRewardsUpdate(id: string, itemRewardRequest: ItemRewardRequest, options?: any): AxiosPromise<ItemReward> {
+            return localVarFp.storyItemRewardsUpdate(id, itemRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesCreate(noteRequest: NoteRequest, options?: any): AxiosPromise<Note> {
+            return localVarFp.storyNotesCreate(noteRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyNotesDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [quest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesList(ordering?: string, quest?: string, options?: any): AxiosPromise<Array<Note>> {
+            return localVarFp.storyNotesList(ordering, quest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {PatchedNoteRequest} [patchedNoteRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesPartialUpdate(id: string, patchedNoteRequest?: PatchedNoteRequest, options?: any): AxiosPromise<Note> {
+            return localVarFp.storyNotesPartialUpdate(id, patchedNoteRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesRetrieve(id: string, options?: any): AxiosPromise<Note> {
+            return localVarFp.storyNotesRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quest notes.
+         * @param {string} id A UUID string identifying this note.
+         * @param {NoteRequest} noteRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyNotesUpdate(id: string, noteRequest: NoteRequest, options?: any): AxiosPromise<Note> {
+            return localVarFp.storyNotesUpdate(id, noteRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsCreate(questRequest: QuestRequest, options?: any): AxiosPromise<Quest> {
+            return localVarFp.storyQuestsCreate(questRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyQuestsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} [chapter] 
+         * @param {string} [chapterStory] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsList(chapter?: string, chapterStory?: string, ordering?: string, options?: any): AxiosPromise<Array<Quest>> {
+            return localVarFp.storyQuestsList(chapter, chapterStory, ordering, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {PatchedQuestRequest} [patchedQuestRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsPartialUpdate(id: string, patchedQuestRequest?: PatchedQuestRequest, options?: any): AxiosPromise<Quest> {
+            return localVarFp.storyQuestsPartialUpdate(id, patchedQuestRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsRetrieve(id: string, options?: any): AxiosPromise<Quest> {
+            return localVarFp.storyQuestsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage quests within chapters.
+         * @param {string} id A UUID string identifying this quest.
+         * @param {QuestRequest} questRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyQuestsUpdate(id: string, questRequest: QuestRequest, options?: any): AxiosPromise<Quest> {
+            return localVarFp.storyQuestsUpdate(id, questRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsCreate(rewardRequest: RewardRequest, options?: any): AxiosPromise<Reward> {
+            return localVarFp.storyRewardsCreate(rewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyRewardsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsList(ordering?: string, options?: any): AxiosPromise<Array<Reward>> {
+            return localVarFp.storyRewardsList(ordering, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {PatchedRewardRequest} [patchedRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsPartialUpdate(id: string, patchedRewardRequest?: PatchedRewardRequest, options?: any): AxiosPromise<Reward> {
+            return localVarFp.storyRewardsPartialUpdate(id, patchedRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsRetrieve(id: string, options?: any): AxiosPromise<Reward> {
+            return localVarFp.storyRewardsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage rewards for quest success/failure.
+         * @param {string} id A UUID string identifying this reward.
+         * @param {RewardRequest} rewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyRewardsUpdate(id: string, rewardRequest: RewardRequest, options?: any): AxiosPromise<Reward> {
+            return localVarFp.storyRewardsUpdate(id, rewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesCreate(storyRequest: StoryRequest, options?: any): AxiosPromise<Story> {
+            return localVarFp.storyStoriesCreate(storyRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyStoriesDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {boolean} [canonical] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesList(canonical?: boolean, ordering?: string, search?: string, options?: any): AxiosPromise<Array<Story>> {
+            return localVarFp.storyStoriesList(canonical, ordering, search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {PatchedStoryRequest} [patchedStoryRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesPartialUpdate(id: string, patchedStoryRequest?: PatchedStoryRequest, options?: any): AxiosPromise<Story> {
+            return localVarFp.storyStoriesPartialUpdate(id, patchedStoryRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesRetrieve(id: string, options?: any): AxiosPromise<StoryDetail> {
+            return localVarFp.storyStoriesRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Set a story as canonical (requires owner review).
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesSetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: any): AxiosPromise<Story> {
+            return localVarFp.storyStoriesSetCanonicalCreate(id, storyRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Remove canonical status from a story.
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesUnsetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: any): AxiosPromise<Story> {
+            return localVarFp.storyStoriesUnsetCanonicalCreate(id, storyRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+         * @param {string} id A UUID string identifying this story.
+         * @param {StoryRequest} storyRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyStoriesUpdate(id: string, storyRequest: StoryRequest, options?: any): AxiosPromise<Story> {
+            return localVarFp.storyStoriesUpdate(id, storyRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsCreate(tokenRewardRequest: TokenRewardRequest, options?: any): AxiosPromise<TokenReward> {
+            return localVarFp.storyTokenRewardsCreate(tokenRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyTokenRewardsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [reward] 
+         * @param {string} [token] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsList(ordering?: string, reward?: string, token?: string, options?: any): AxiosPromise<Array<TokenReward>> {
+            return localVarFp.storyTokenRewardsList(ordering, reward, token, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {PatchedTokenRewardRequest} [patchedTokenRewardRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsPartialUpdate(id: string, patchedTokenRewardRequest?: PatchedTokenRewardRequest, options?: any): AxiosPromise<TokenReward> {
+            return localVarFp.storyTokenRewardsPartialUpdate(id, patchedTokenRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsRetrieve(id: string, options?: any): AxiosPromise<TokenReward> {
+            return localVarFp.storyTokenRewardsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage token rewards.
+         * @param {string} id A UUID string identifying this token reward.
+         * @param {TokenRewardRequest} tokenRewardRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTokenRewardsUpdate(id: string, tokenRewardRequest: TokenRewardRequest, options?: any): AxiosPromise<TokenReward> {
+            return localVarFp.storyTokenRewardsUpdate(id, tokenRewardRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersCreate(triggerRequest: TriggerRequest, options?: any): AxiosPromise<Trigger> {
+            return localVarFp.storyTriggersCreate(triggerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.storyTriggersDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} [gameObject] 
+         * @param {string} [location] 
+         * @param {string} [position] 
+         * @param {string} [search] A search term.
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: any): AxiosPromise<Array<Trigger>> {
+            return localVarFp.storyTriggersList(gameObject, location, position, search, type, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {PatchedTriggerRequest} [patchedTriggerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersPartialUpdate(id: string, patchedTriggerRequest?: PatchedTriggerRequest, options?: any): AxiosPromise<Trigger> {
+            return localVarFp.storyTriggersPartialUpdate(id, patchedTriggerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersRetrieve(id: string, options?: any): AxiosPromise<Trigger> {
+            return localVarFp.storyTriggersRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to manage triggers for quest conditions.
+         * @param {string} id A UUID string identifying this trigger.
+         * @param {TriggerRequest} triggerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        storyTriggersUpdate(id: string, triggerRequest: TriggerRequest, options?: any): AxiosPromise<Trigger> {
+            return localVarFp.storyTriggersUpdate(id, triggerRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StoryApi - object-oriented interface
+ * @export
+ * @class StoryApi
+ * @extends {BaseAPI}
+ */
+export class StoryApi extends BaseAPI {
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {ChapterRequest} chapterRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersCreate(chapterRequest: ChapterRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersCreate(chapterRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {string} id A UUID string identifying this chapter.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [story] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersList(ordering?: string, story?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersList(ordering, story, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {string} id A UUID string identifying this chapter.
+     * @param {PatchedChapterRequest} [patchedChapterRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersPartialUpdate(id: string, patchedChapterRequest?: PatchedChapterRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersPartialUpdate(id, patchedChapterRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {string} id A UUID string identifying this chapter.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage chapters within stories.
+     * @param {string} id A UUID string identifying this chapter.
+     * @param {ChapterRequest} chapterRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyChaptersUpdate(id: string, chapterRequest: ChapterRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyChaptersUpdate(id, chapterRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {ConditionRequest} [conditionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsCreate(conditionRequest?: ConditionRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsCreate(conditionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {string} id A UUID string identifying this condition.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {StoryConditionsListTypeEnum} [type] * &#x60;all&#x60; - All * &#x60;any&#x60; - Any * &#x60;none&#x60; - None
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsList(type?: StoryConditionsListTypeEnum, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsList(type, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {string} id A UUID string identifying this condition.
+     * @param {PatchedConditionRequest} [patchedConditionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsPartialUpdate(id: string, patchedConditionRequest?: PatchedConditionRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsPartialUpdate(id, patchedConditionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {string} id A UUID string identifying this condition.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage conditions for quest starters and objectives.
+     * @param {string} id A UUID string identifying this condition.
+     * @param {ConditionRequest} [conditionRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyConditionsUpdate(id: string, conditionRequest?: ConditionRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyConditionsUpdate(id, conditionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {EffectRewardRequest} effectRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsCreate(effectRewardRequest: EffectRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsCreate(effectRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {string} id A UUID string identifying this effect reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {StoryEffectRewardsListEffectEnum} [effect] * &#x60;Knocked out&#x60; - Knocked out * &#x60;Coma&#x60; - Coma * &#x60;None&#x60; - None * &#x60;Burning&#x60; - Burning * &#x60;Poisoned&#x60; - Poisoned * &#x60;Sleeping&#x60; - Sleeping * &#x60;Confused&#x60; - Confused * &#x60;Paralyzed&#x60; - Paralyzed * &#x60;Fear&#x60; - Fear * &#x60;Slowness&#x60; - Slowness * &#x60;Cold&#x60; - Cold * &#x60;Cursed&#x60; - Cursed * &#x60;Blindness&#x60; - Blindness * &#x60;Haste&#x60; - Haste * &#x60;Regeneration&#x60; - Regeneration * &#x60;Blessed&#x60; - Blessed * &#x60;Arcane Surge&#x60; - Arcane Surge * &#x60;Marked&#x60; - Marked
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [reward] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsList(effect?: StoryEffectRewardsListEffectEnum, ordering?: string, reward?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsList(effect, ordering, reward, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {string} id A UUID string identifying this effect reward.
+     * @param {PatchedEffectRewardRequest} [patchedEffectRewardRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsPartialUpdate(id: string, patchedEffectRewardRequest?: PatchedEffectRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsPartialUpdate(id, patchedEffectRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {string} id A UUID string identifying this effect reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage effect rewards.
+     * @param {string} id A UUID string identifying this effect reward.
+     * @param {EffectRewardRequest} effectRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyEffectRewardsUpdate(id: string, effectRewardRequest: EffectRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyEffectRewardsUpdate(id, effectRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {ItemRewardRequest} itemRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsCreate(itemRewardRequest: ItemRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsCreate(itemRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {string} id A UUID string identifying this item reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {string} [item] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [reward] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsList(item?: string, ordering?: string, reward?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsList(item, ordering, reward, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {string} id A UUID string identifying this item reward.
+     * @param {PatchedItemRewardRequest} [patchedItemRewardRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsPartialUpdate(id: string, patchedItemRewardRequest?: PatchedItemRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsPartialUpdate(id, patchedItemRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {string} id A UUID string identifying this item reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage item rewards.
+     * @param {string} id A UUID string identifying this item reward.
+     * @param {ItemRewardRequest} itemRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyItemRewardsUpdate(id: string, itemRewardRequest: ItemRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyItemRewardsUpdate(id, itemRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {NoteRequest} noteRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesCreate(noteRequest: NoteRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesCreate(noteRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {string} id A UUID string identifying this note.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [quest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesList(ordering?: string, quest?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesList(ordering, quest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {string} id A UUID string identifying this note.
+     * @param {PatchedNoteRequest} [patchedNoteRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesPartialUpdate(id: string, patchedNoteRequest?: PatchedNoteRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesPartialUpdate(id, patchedNoteRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {string} id A UUID string identifying this note.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quest notes.
+     * @param {string} id A UUID string identifying this note.
+     * @param {NoteRequest} noteRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyNotesUpdate(id: string, noteRequest: NoteRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyNotesUpdate(id, noteRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {QuestRequest} questRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsCreate(questRequest: QuestRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsCreate(questRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {string} id A UUID string identifying this quest.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {string} [chapter] 
+     * @param {string} [chapterStory] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsList(chapter?: string, chapterStory?: string, ordering?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsList(chapter, chapterStory, ordering, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {string} id A UUID string identifying this quest.
+     * @param {PatchedQuestRequest} [patchedQuestRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsPartialUpdate(id: string, patchedQuestRequest?: PatchedQuestRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsPartialUpdate(id, patchedQuestRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {string} id A UUID string identifying this quest.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage quests within chapters.
+     * @param {string} id A UUID string identifying this quest.
+     * @param {QuestRequest} questRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyQuestsUpdate(id: string, questRequest: QuestRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyQuestsUpdate(id, questRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {RewardRequest} rewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsCreate(rewardRequest: RewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsCreate(rewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {string} id A UUID string identifying this reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsList(ordering?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsList(ordering, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {string} id A UUID string identifying this reward.
+     * @param {PatchedRewardRequest} [patchedRewardRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsPartialUpdate(id: string, patchedRewardRequest?: PatchedRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsPartialUpdate(id, patchedRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {string} id A UUID string identifying this reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage rewards for quest success/failure.
+     * @param {string} id A UUID string identifying this reward.
+     * @param {RewardRequest} rewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyRewardsUpdate(id: string, rewardRequest: RewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyRewardsUpdate(id, rewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {StoryRequest} storyRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesCreate(storyRequest: StoryRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesCreate(storyRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {string} id A UUID string identifying this story.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {boolean} [canonical] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [search] A search term.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesList(canonical?: boolean, ordering?: string, search?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesList(canonical, ordering, search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {string} id A UUID string identifying this story.
+     * @param {PatchedStoryRequest} [patchedStoryRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesPartialUpdate(id: string, patchedStoryRequest?: PatchedStoryRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesPartialUpdate(id, patchedStoryRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {string} id A UUID string identifying this story.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Set a story as canonical (requires owner review).
+     * @param {string} id A UUID string identifying this story.
+     * @param {StoryRequest} storyRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesSetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesSetCanonicalCreate(id, storyRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Remove canonical status from a story.
+     * @param {string} id A UUID string identifying this story.
+     * @param {StoryRequest} storyRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesUnsetCanonicalCreate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesUnsetCanonicalCreate(id, storyRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage stories.  This viewset provides operations for: - Listing, retrieving, creating, updating, and deleting stories - Managing story canonical status - Filtering stories by tags and canonical status
+     * @param {string} id A UUID string identifying this story.
+     * @param {StoryRequest} storyRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyStoriesUpdate(id: string, storyRequest: StoryRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyStoriesUpdate(id, storyRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {TokenRewardRequest} tokenRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsCreate(tokenRewardRequest: TokenRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsCreate(tokenRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {string} id A UUID string identifying this token reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [reward] 
+     * @param {string} [token] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsList(ordering?: string, reward?: string, token?: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsList(ordering, reward, token, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {string} id A UUID string identifying this token reward.
+     * @param {PatchedTokenRewardRequest} [patchedTokenRewardRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsPartialUpdate(id: string, patchedTokenRewardRequest?: PatchedTokenRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsPartialUpdate(id, patchedTokenRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {string} id A UUID string identifying this token reward.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage token rewards.
+     * @param {string} id A UUID string identifying this token reward.
+     * @param {TokenRewardRequest} tokenRewardRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTokenRewardsUpdate(id: string, tokenRewardRequest: TokenRewardRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTokenRewardsUpdate(id, tokenRewardRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {TriggerRequest} triggerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersCreate(triggerRequest: TriggerRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersCreate(triggerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {string} id A UUID string identifying this trigger.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {string} [gameObject] 
+     * @param {string} [location] 
+     * @param {string} [position] 
+     * @param {string} [search] A search term.
+     * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersList(gameObject, location, position, search, type, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {string} id A UUID string identifying this trigger.
+     * @param {PatchedTriggerRequest} [patchedTriggerRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersPartialUpdate(id: string, patchedTriggerRequest?: PatchedTriggerRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersPartialUpdate(id, patchedTriggerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {string} id A UUID string identifying this trigger.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to manage triggers for quest conditions.
+     * @param {string} id A UUID string identifying this trigger.
+     * @param {TriggerRequest} triggerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StoryApi
+     */
+    public storyTriggersUpdate(id: string, triggerRequest: TriggerRequest, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersUpdate(id, triggerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+/**
+ * @export
+ */
+export const StoryConditionsListTypeEnum = {
+    All: 'all',
+    Any: 'any',
+    None: 'none'
+} as const;
+export type StoryConditionsListTypeEnum = typeof StoryConditionsListTypeEnum[keyof typeof StoryConditionsListTypeEnum];
+/**
+ * @export
+ */
+export const StoryEffectRewardsListEffectEnum = {
+    ArcaneSurge: 'Arcane Surge',
+    Blessed: 'Blessed',
+    Blindness: 'Blindness',
+    Burning: 'Burning',
+    Cold: 'Cold',
+    Coma: 'Coma',
+    Confused: 'Confused',
+    Cursed: 'Cursed',
+    Fear: 'Fear',
+    Haste: 'Haste',
+    KnockedOut: 'Knocked out',
+    Marked: 'Marked',
+    None: 'None',
+    Paralyzed: 'Paralyzed',
+    Poisoned: 'Poisoned',
+    Regeneration: 'Regeneration',
+    Sleeping: 'Sleeping',
+    Slowness: 'Slowness'
+} as const;
+export type StoryEffectRewardsListEffectEnum = typeof StoryEffectRewardsListEffectEnum[keyof typeof StoryEffectRewardsListEffectEnum];
+/**
+ * @export
+ */
+export const StoryTriggersListTypeEnum = {
+    Interaction: 'interaction',
+    Kill: 'kill',
+    Position: 'position',
+    Search: 'search',
+    UseItem: 'useItem',
+    UseSkill: 'useSkill'
+} as const;
+export type StoryTriggersListTypeEnum = typeof StoryTriggersListTypeEnum[keyof typeof StoryTriggersListTypeEnum];
 
 
 /**
