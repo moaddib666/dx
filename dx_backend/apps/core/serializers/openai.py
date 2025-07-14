@@ -286,6 +286,8 @@ class Serializer(PythonSerializer):
         "Rank": RankPresenter,
         "Item": ItemPresenter,
         "Character": CharacterPresenter,
+        "CharacterTemplate": CharacterPresenter,
+
     }
     default_presentor = ModelPresenter
 
