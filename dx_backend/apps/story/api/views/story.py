@@ -4,7 +4,7 @@ from rest_framework import viewsets, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.story.models import Story, Chapter, Quest, Condition, Reward
+from apps.story.models import Story, Chapter, Quest, Condition, Reward, TokenReward, ItemReward, EffectReward, Note
 from apps.core.models import Trigger
 from apps.story.api.serializers import (
     StorySerializer,
@@ -13,7 +13,11 @@ from apps.story.api.serializers import (
     QuestSerializer,
     ConditionSerializer,
     RewardSerializer,
-    TriggerSerializer
+    TriggerSerializer,
+    TokenRewardSerializer,
+    ItemRewardSerializer,
+    EffectRewardSerializer,
+    NoteSerializer
 )
 
 
@@ -123,3 +127,55 @@ class TriggerViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['type', 'game_object', 'position', 'location']
     search_fields = ['description']
+
+
+class TokenRewardViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for game masters to manage token rewards.
+    """
+    queryset = TokenReward.objects.all()
+    serializer_class = TokenRewardSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['reward', 'token']
+    ordering_fields = ['amount', 'created_at']
+    ordering = ['-created_at']
+
+
+class ItemRewardViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for game masters to manage item rewards.
+    """
+    queryset = ItemReward.objects.all()
+    serializer_class = ItemRewardSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['reward', 'item']
+    ordering_fields = ['amount', 'created_at']
+    ordering = ['-created_at']
+
+
+class EffectRewardViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for game masters to manage effect rewards.
+    """
+    queryset = EffectReward.objects.all()
+    serializer_class = EffectRewardSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['reward', 'effect']
+    ordering_fields = ['duration', 'created_at']
+    ordering = ['-created_at']
+
+
+class NoteViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for game masters to manage quest notes.
+    """
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['quest']
+    ordering_fields = ['order', 'created_at']
+    ordering = ['order']

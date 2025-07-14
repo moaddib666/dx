@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.story.models import Story, Chapter, Quest, Condition, Reward
+from apps.story.models import Story, Chapter, Quest, Condition, Reward, TokenReward, ItemReward, EffectReward, Note
 from apps.core.models import Trigger
 
 
@@ -45,14 +45,57 @@ class ConditionSerializer(serializers.ModelSerializer):
         return instance
 
 
+class TokenRewardSerializer(serializers.ModelSerializer):
+    """
+    Serializer for TokenReward model.
+    """
+
+    class Meta:
+        model = TokenReward
+        fields = ['id', 'amount', 'token', 'reward']
+
+
+class ItemRewardSerializer(serializers.ModelSerializer):
+    """
+    Serializer for ItemReward model.
+    """
+
+    class Meta:
+        model = ItemReward
+        fields = ['id', 'amount', 'item', 'reward']
+
+
+class EffectRewardSerializer(serializers.ModelSerializer):
+    """
+    Serializer for EffectReward model.
+    """
+
+    class Meta:
+        model = EffectReward
+        fields = ['id', 'effect', 'duration', 'reward']
+
+
 class RewardSerializer(serializers.ModelSerializer):
     """
     Serializer for Reward model.
     """
+    tokens = TokenRewardSerializer(many=True, read_only=True)
+    items = ItemRewardSerializer(many=True, read_only=True)
+    effects = EffectRewardSerializer(many=True, read_only=True)
 
     class Meta:
         model = Reward
-        fields = ['id', 'description', 'items', 'tokens', 'experience']
+        fields = ['id', 'description', 'experience', 'tokens', 'items', 'effects']
+
+
+class NoteSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Note model.
+    """
+
+    class Meta:
+        model = Note
+        fields = ['id', 'quest', 'image', 'content', 'order']
 
 
 class QuestSerializer(serializers.ModelSerializer):
@@ -63,6 +106,7 @@ class QuestSerializer(serializers.ModelSerializer):
     objectives = ConditionSerializer(many=True, read_only=True)
     on_success = RewardSerializer(read_only=True)
     on_failure = RewardSerializer(read_only=True)
+    notes = NoteSerializer(many=True, read_only=True)
 
     starter_ids = serializers.ListField(
         child=serializers.UUIDField(),
@@ -81,7 +125,7 @@ class QuestSerializer(serializers.ModelSerializer):
         model = Quest
         fields = [
             'id', 'title', 'description', 'starters', 'objectives', 'on_success', 'on_failure',
-            'image', 'cycle_limit', 'order', 'chapter',
+            'image', 'cycle_limit', 'order', 'chapter', 'notes',
             'starter_ids', 'objective_ids', 'success_reward_id', 'failure_reward_id'
         ]
 

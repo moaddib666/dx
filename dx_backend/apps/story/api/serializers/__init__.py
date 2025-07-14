@@ -5,7 +5,11 @@ from .story import (
     QuestSerializer,
     ConditionSerializer,
     RewardSerializer,
-    TriggerSerializer
+    TriggerSerializer,
+    TokenRewardSerializer,
+    ItemRewardSerializer,
+    EffectRewardSerializer,
+    NoteSerializer
 )
 
 __all__ = [
@@ -15,5 +19,9 @@ __all__ = [
     'QuestSerializer',
     'ConditionSerializer',
     'RewardSerializer',
-    'TriggerSerializer'
+    'TriggerSerializer',
+    'TokenRewardSerializer',
+    'ItemRewardSerializer',
+    'EffectRewardSerializer',
+    'NoteSerializer'
 ]

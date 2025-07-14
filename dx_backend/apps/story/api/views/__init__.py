@@ -4,7 +4,11 @@ from .story import (
     QuestViewSet,
     ConditionViewSet,
     RewardViewSet,
-    TriggerViewSet
+    TriggerViewSet,
+    TokenRewardViewSet,
+    ItemRewardViewSet,
+    EffectRewardViewSet,
+    NoteViewSet
 )
 
 __all__ = [
@@ -13,5 +17,9 @@ __all__ = [
     'QuestViewSet',
     'ConditionViewSet',
     'RewardViewSet',
-    'TriggerViewSet'
+    'TriggerViewSet',
+    'TokenRewardViewSet',
+    'ItemRewardViewSet',
+    'EffectRewardViewSet',
+    'NoteViewSet'
 ]

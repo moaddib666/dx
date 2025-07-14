@@ -10,7 +10,7 @@ The Game Master Tool that helps you build your own stories and quests.
     "description": "string",
     "tags": ["string", "string", "string"],
     "chapters": []
-    "image": "string", // Optional, URL to an image representing the story
+    "image": "ImageField", // Optional, image file representing the story
     "canonical": true, // Default to false, need review by the Owner
 }
 ```
@@ -22,7 +22,7 @@ The Game Master Tool that helps you build your own stories and quests.
     "title": "Chapter 1: The Call to Adventure",
     "description": "The hero receives a mysterious letter that leads them to the first clue of the treasure.",
     "quests": []
-    "image": "string", // Optional, URL to an image representing the chapter
+    "image": "ImageField", // Optional, image file representing the chapter
 }
 ```
 
@@ -40,7 +40,7 @@ The Game Master Tool that helps you build your own stories and quests.
     ],
     "onSuccess": Reward{},
     "onFailure": Reward{},
-    "image": "string", // Optional, URL to an image representing the quest
+    "image": "ImageField", // Optional, image file representing the quest
     "cycleLimit": 50, // Optional, time limit in cycles (1 cycle = 1 turn)
 }
 ```
@@ -73,19 +73,43 @@ The Game Master Tool that helps you build your own stories and quests.
 ```
 {
     description: "string",
+    experience: 100,
     items: [
         {
-            "itemId": "uuid",
-            "quantity": 1
+            "id": "uuid",
+            "amount": 1,
+            "item": "uuid", // Item reference
+            "reward": "uuid" // Reward reference
         }
     ],
     tokens: [
         {
-            "tokenId": "uuid",
-            "quantity": 1
+            "id": "uuid",
+            "amount": 1,
+            "token": "uuid", // Token reference
+            "reward": "uuid" // Reward reference
         }
     ],
-    experience: 100,
+    effects: [
+        {
+            "id": "uuid",
+            "effect": "uuid", // Effect reference
+            "duration": 5, // Duration in turns
+            "reward": "uuid" // Reward reference
+        }
+    ]
+}
+```
+
+## Note
+
+```
+{
+    "id": "uuid",
+    "quest": "uuid", // Quest reference
+    "image": "ImageField", // Optional image file
+    "content": "string",
+    "order": 0 // Order within the quest
 }
 ```
 
