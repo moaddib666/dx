@@ -31,7 +31,17 @@
             @create="handleCreateChapter"
             @edit="handleEditChapter"
             @delete="handleDeleteChapter"
+            @moveUp="handleMoveChapterUp"
+            @moveDown="handleMoveChapterDown"
             :editMode="editMode"
+          />
+
+          <ChapterEditor
+            v-if="isChapterEditorVisible && chapterBeingEdited"
+            :chapter="chapterBeingEdited"
+            :editMode="true"
+            @update="handleChapterUpdate"
+            @cancel="closeChapterEditor"
           />
 
           <QuestList
@@ -98,6 +108,7 @@ import Loader from '@/components/Loader.vue';
 import StorySelector from './components/StorySelector.vue';
 import ModeToggle from './components/ModeToggle.vue';
 import ChapterTimeline from './components/LeftPanel/ChapterTimeline.vue';
+import ChapterEditor from './components/LeftPanel/ChapterEditor.vue';
 import QuestList from './components/LeftPanel/QuestList.vue';
 import QuestDetails from './components/LeftPanel/QuestDetails.vue';
 import ChapterSummary from './components/RightPanel/ChapterSummary.vue';
@@ -113,6 +124,8 @@ const selectedChapter = ref<Chapter | null>(null);
 const selectedQuest = ref<Quest | null>(null);
 const currentNotes = ref<Note[]>([]);
 const currentImages = ref<string[]>([]);
+const isChapterEditorVisible = ref(false);
+const chapterBeingEdited = ref<Chapter | null>(null);
 
 // Computed properties
 const extractCharacters = (chapter: Chapter) => {
@@ -229,9 +242,24 @@ const handleChapterSelect = (chapter) => {
   loadChapterImages(chapter.id);
 };
 
-const handleCreateChapter = async (chapterData) => {
+const handleCreateChapter = async () => {
   try {
     loading.value = true;
+
+    // Find the maximum order value from existing chapters
+    let maxOrder = 0;
+    if (currentStory.value?.chapters && currentStory.value.chapters.length > 0) {
+      maxOrder = Math.max(...currentStory.value.chapters.map(c => c.order || 0));
+    }
+
+    // Create a new chapter with required fields and incremented order
+    const chapterData = {
+      title: "New Chapter",
+      description: "Chapter description",
+      story: currentStory.value?.id,
+      order: maxOrder + 1
+    };
+
     const chapter = await storyService.createChapter({
       ...chapterData,
       storyId: currentStory.value?.id
@@ -253,10 +281,16 @@ const handleCreateChapter = async (chapterData) => {
   }
 };
 
-const handleEditChapter = async (chapterData) => {
+const handleEditChapter = (chapter) => {
+  // Set the chapter being edited and show the editor
+  chapterBeingEdited.value = { ...chapter };
+  isChapterEditorVisible.value = true;
+};
+
+const handleChapterUpdate = async (updatedChapter) => {
   try {
     loading.value = true;
-    const chapter = await storyService.updateChapter(chapterData.id, chapterData);
+    const chapter = await storyService.updateChapter(updatedChapter.id, updatedChapter);
 
     // Update the chapter in the current story
     if (currentStory.value && currentStory.value.chapters) {
@@ -269,8 +303,104 @@ const handleEditChapter = async (chapterData) => {
     if (selectedChapter.value?.id === chapter.id) {
       selectedChapter.value = chapter;
     }
+
+    // Close the editor
+    closeChapterEditor();
   } catch (error) {
     console.error('Failed to update chapter:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const closeChapterEditor = () => {
+  isChapterEditorVisible.value = false;
+  chapterBeingEdited.value = null;
+};
+
+const handleMoveChapterUp = async (chapter) => {
+  try {
+    loading.value = true;
+
+    if (!currentStory.value?.chapters || currentStory.value.chapters.length <= 1) {
+      return;
+    }
+
+    // Find the chapter's current index
+    const chapters = currentStory.value.chapters;
+    const currentIndex = chapters.findIndex(c => c.id === chapter.id);
+
+    if (currentIndex <= 0) {
+      return; // Already at the top
+    }
+
+    // Get the chapter above
+    const prevChapter = chapters[currentIndex - 1];
+
+    // Swap orders
+    const tempOrder = chapter.order;
+    chapter.order = prevChapter.order;
+    prevChapter.order = tempOrder;
+
+    // Update both chapters in the backend
+    await Promise.all([
+      storyService.updateChapter(chapter.id, chapter),
+      storyService.updateChapter(prevChapter.id, prevChapter)
+    ]);
+
+    // Refresh the current story to get updated chapters
+    if (currentStory.value) {
+      const updatedStory = await storyService.loadStory(currentStory.value.id);
+      if (updatedStory) {
+        currentStory.value = updatedStory;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to move chapter up:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleMoveChapterDown = async (chapter) => {
+  try {
+    loading.value = true;
+
+    if (!currentStory.value?.chapters || currentStory.value.chapters.length <= 1) {
+      return;
+    }
+
+    // Find the chapter's current index
+    const chapters = currentStory.value.chapters;
+    const currentIndex = chapters.findIndex(c => c.id === chapter.id);
+
+    if (currentIndex >= chapters.length - 1 || currentIndex < 0) {
+      return; // Already at the bottom or not found
+    }
+
+    // Get the chapter below
+    const nextChapter = chapters[currentIndex + 1];
+
+    // Swap orders
+    const tempOrder = chapter.order;
+    chapter.order = nextChapter.order;
+    nextChapter.order = tempOrder;
+
+    // Update both chapters in the backend
+    await Promise.all([
+      storyService.updateChapter(chapter.id, chapter),
+      storyService.updateChapter(nextChapter.id, nextChapter)
+    ]);
+
+    // Refresh the current story to get updated chapters
+    if (currentStory.value) {
+      const updatedStory = await storyService.loadStory(currentStory.value.id);
+      if (updatedStory) {
+        currentStory.value = updatedStory;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to move chapter down:', error);
   } finally {
     loading.value = false;
   }

@@ -45,6 +45,12 @@
             <button @click.stop="$emit('delete', chapter.id)" class="action-button">
               <span class="icon">🗑️</span>
             </button>
+            <button @click.stop="$emit('moveUp', chapter)" class="action-button" :disabled="index === 0">
+              <span class="icon">⬆️</span>
+            </button>
+            <button @click.stop="$emit('moveDown', chapter)" class="action-button" :disabled="index === chapters.length - 1">
+              <span class="icon">⬇️</span>
+            </button>
           </div>
         </div>
       </div>
@@ -67,6 +73,8 @@ defineEmits<{
   (e: 'create'): void;
   (e: 'edit', chapter: Chapter): void;
   (e: 'delete', chapterId: string): void;
+  (e: 'moveUp', chapter: Chapter): void;
+  (e: 'moveDown', chapter: Chapter): void;
 }>();
 </script>
 
