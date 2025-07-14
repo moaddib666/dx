@@ -3,7 +3,7 @@ import io
 from django.core.serializers.base import Serializer as PythonSerializer
 
 
-class ModelPresentor:
+class ModelPresenter:
     def __init__(self, model, stream):
         self.model = model
         self.stream = stream
@@ -19,7 +19,7 @@ class ModelPresentor:
         self.stream.write(f"Instance: {self.model.__name__}\nValues: {', '.join(field_values)}\n")
 
 
-class PathPresenter(ModelPresentor):
+class PathPresenter(ModelPresenter):
     def describe_model(self):
         """
         Provide a description of the Path model.
@@ -44,7 +44,7 @@ class PathPresenter(ModelPresentor):
         self.stream.write(line + "\n")
 
 
-class SchoolPresentor(ModelPresentor):
+class SchoolPresenter(ModelPresenter):
     def describe_model(self):
         """
         Provide a description of the School model.
@@ -78,7 +78,7 @@ class SchoolPresentor(ModelPresentor):
         self.stream.write(line + "\n")
 
 
-class SkillPresentor(ModelPresentor):
+class SkillPresenter(ModelPresenter):
     def describe_model(self):
         """
         Provide a description of the Skill model.
@@ -143,7 +143,7 @@ class SkillPresentor(ModelPresentor):
         self.stream.write(line + "\n")
 
 
-class ModificatorPresentor(ModelPresentor):
+class ModificatorPresenter(ModelPresenter):
     def describe_model(self):
         """
         Provide a description of the Modificator model.
@@ -181,7 +181,8 @@ class ModificatorPresentor(ModelPresentor):
         )
         self.stream.write(line + "\n")
 
-class RankPresentor(ModelPresentor):
+
+class RankPresenter(ModelPresenter):
     def describe_model(self):
         """
         Provide a description of the Rank model.
@@ -209,17 +210,84 @@ class RankPresentor(ModelPresentor):
         self.stream.write(line + "\n")
 
 
+class ItemPresenter(ModelPresenter):
+    def describe_model(self):
+        """
+        Provide a description of the Item model.
+        """
+        self.stream.write(
+            f"Model: {self.model.__name__}. Represents game items with properties like type, charges, weight, and effects.\n"
+        )
+
+    def describe_instance(self, instance):
+        """
+        Provide a single-line detailed description of the item, including all required fields for LLM mapping.
+        """
+        # Core fields for LLM mapping
+        item_id = getattr(instance, "id", "unknown")
+        name = getattr(instance, "name", "Unnamed Item")
+        description = getattr(instance, "description", "No description available")
+        canonical = "Yes" if getattr(instance, "canonical", False) else "No"
+        # Additional item properties
+        item_type = getattr(instance, "type", "Unknown")
+
+        # Build single-line description with all essential fields for LLM mapping
+        line = (
+            f"Item ID: {item_id} -> {name} (Type: {item_type}, Canonical: {canonical}) - "
+            f"Description: {description};"
+        )
+        self.stream.write(line + "\n")
+
+
+class CharacterPresenter(ModelPresenter):
+    def describe_model(self):
+        """
+        Provide a description of the Character model.
+        """
+        self.stream.write(
+            f"Model: {self.model.__name__}. Represents short character information like id, name, tags, "
+            f"organization.id, organization.name\n"
+        )
+
+    def describe_instance(self, instance):
+        """
+        Provide a single-line detailed description of the character.
+        """
+        # Core fields for character information
+        character_id = getattr(instance, "id", "unknown")
+        name = getattr(instance, "name", "Unnamed Character")
+        tags = getattr(instance, "tags", [])
+        tags_str = ", ".join(tags) if tags else "No tags"
+
+        # Organization information
+        organization = getattr(instance, "organization", None)
+        if organization:
+            org_id = getattr(organization, "id", "unknown")
+            org_name = getattr(organization, "name", "Unknown Organization")
+            org_info = f"Organization ID: {org_id}, Name: {org_name}"
+        else:
+            org_info = "No organization"
+
+        # Build single-line description
+        line = (
+            f"Character ID: {character_id} -> {name} (Tags: {tags_str}) - {org_info};"
+        )
+        self.stream.write(line + "\n")
+
+
 
 class Serializer(PythonSerializer):
     repository = {
-        "Model": ModelPresentor,
-        "Skill": SkillPresentor,
-        "Modificator": ModificatorPresentor,
-        "School": SchoolPresentor,
+        "Model": ModelPresenter,
+        "Skill": SkillPresenter,
+        "Modificator": ModificatorPresenter,
+        "School": SchoolPresenter,
         "ThePath": PathPresenter,
-        "Rank": RankPresentor,
+        "Rank": RankPresenter,
+        "Item": ItemPresenter,
+        "Character": CharacterPresenter,
     }
-    default_presentor = ModelPresentor
+    default_presentor = ModelPresenter
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -256,4 +324,3 @@ class Serializer(PythonSerializer):
         Return the serialized output as a string if the stream supports it.
         """
         pass
-
