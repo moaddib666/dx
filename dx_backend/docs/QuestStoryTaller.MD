@@ -65,6 +65,7 @@ The Game Master Tool that helps you build your own stories and quests.
     "position": "uuid", // Position in the game world
     "description": "string",
     "location": "uuid", // Optionaly Limit trigger to a specific location
+    "npc": "uuid", // Optional, if the trigger is related to an CharacterTemplate (all NPCs that belong to this template will be considered)
 }
 ```
 
@@ -280,7 +281,6 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "valid_arbiter_npc",
                                     "description": "Speak with Valid Arbiter about the world",
                                     "location": "monument_area"
                                 }
@@ -310,8 +310,8 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "punk_npc",
-                                    "description": "Follow the punk who claims to know about the Ale of Eternity"
+                                    "npc": "02119255-181b-48ce-a7c0-e1c255f7db06",
+                                    "description": "Follow Brick 'The Boulder' Malone who claims to know about the Ale of Eternity"
                                 }
                             ]
                         }
@@ -322,13 +322,13 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "kill",
-                                    "gameObject": "jimmy_brick_npc",
-                                    "description": "Defeat Jimmy Brick in the ambush"
+                                    "npc": "0ee89929-2246-4d56-b598-e53fb3e979a0",
+                                    "description": "Defeat Jimmy 'Sparky' Sparks in the ambush"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "zigge_npc",
-                                    "description": "Defeat Zigge in the ambush"
+                                    "npc": "09bdcdcb-c642-43c0-8dc7-5894315a6257",
+                                    "description": "Defeat Ziggy 'Madcap' Malone in the ambush"
                                 }
                             ]
                         }
@@ -338,7 +338,7 @@ The character have a party with or vithout Cablo.
                         "experience": 100,
                         "items": [
                             {
-                                "itemId": "punk_information_token",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -373,12 +373,11 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "axel_security_npc",
-                                    "description": "Convince Axel to let you into restricted areas"
+                                    "npc": "a24fa4a7-a1b5-4800-abc0-1d264adfa657",
+                                    "description": "Convince Axel Steelguard to let you into restricted areas"
                                 },
                                 {
                                     "type": "useItem",
-                                    "gameObject": "misfits_pub_key",
                                     "description": "Use a key obtained from Nancy, Alex, or Axel"
                                 }
                             ]
@@ -389,7 +388,7 @@ The character have a party with or vithout Cablo.
                         "experience": 75,
                         "items": [
                             {
-                                "itemId": "basement_access_token",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -412,7 +411,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "calvin_drift_npc",
+                                    "npc": "703a8933-42c5-419e-b720-5c4a491a52f2",
                                     "description": "Speak with Calvin Drift about accessing the basement"
                                 }
                             ]
@@ -424,7 +423,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "useItem",
-                                    "gameObject": "misfits_best_ale",
+                                    "item": "36c78e46-26bb-41ee-a060-d602b1333939",
                                     "description": "Give Calvin 2 cups of Misfits Best Ale",
                                     "location": "misfits_pub"
                                 }
@@ -436,7 +435,7 @@ The character have a party with or vithout Cablo.
                         "experience": 60,
                         "items": [
                             {
-                                "itemId": "basement_cryptor",
+                                "itemId": "da4d21cc-35cd-448f-9792-142dc6fab715",
                                 "quantity": 1
                             }
                         ],
@@ -459,8 +458,8 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "finn_npc",
-                                    "description": "Examine the drunk adventurer Finn"
+                                    "npc": "75fa20bf-7b1c-4754-aaf4-e11d70600a18",
+                                    "description": "Examine the drunk adventurer Finn Barrelstride"
                                 }
                             ]
                         }
@@ -470,13 +469,12 @@ The character have a party with or vithout Cablo.
                             "type": "any",
                             "triggers": [
                                 {
-                                    "type": "useItem",
-                                    "gameObject": "stealth_skill",
+                                    "type": "useSkill",
                                     "description": "Steal Finn's mug without waking him"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "finn_npc",
+                                    "npc": "75fa20bf-7b1c-4754-aaf4-e11d70600a18",
                                     "description": "Wake Finn and ask about the mug"
                                 }
                             ]
@@ -487,7 +485,7 @@ The character have a party with or vithout Cablo.
                         "experience": 40,
                         "items": [
                             {
-                                "itemId": "finns_mug",
+                                "itemId": "41a70083-7403-4e65-83fb-5ca286f758c3",
                                 "quantity": 1
                             }
                         ],
@@ -510,12 +508,11 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "useItem",
-                                    "gameObject": "basement_cryptor",
+                                    "item": "da4d21cc-35cd-448f-9792-142dc6fab715",
                                     "description": "Use the cryptor to unlock the basement door"
                                 },
                                 {
                                     "type": "useSkill",
-                                    "gameObject": "lock_picking_skill",
                                     "description": "Pick the lock (requires dice roll 15+ with power)"
                                 }
                             ]
@@ -539,7 +536,7 @@ The character have a party with or vithout Cablo.
                         "items": [],
                         "tokens": [
                             {
-                                "tokenId": "chapter_1_completion",
+                                "tokenId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ]
@@ -561,15 +558,15 @@ The character have a party with or vithout Cablo.
             "quests": [
                 {
                     "title": "Rescue Dr. Thorne's Team",
-                    "description": "Help Dr. Elies Thorne find his scattered research team members who were attacked by mercenaries.",
+                    "description": "Help Dr. Elias Thorne find his scattered research team members who were attacked by mercenaries.",
                     "starters": [
                         {
                             "type": "all",
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "dr_elies_thorne_npc",
-                                    "description": "Meet Dr. Elies Thorne and learn about his missing team"
+                                    "npc": "a1a5929f-d562-41e6-a95e-3fc7ee080fe1",
+                                    "description": "Meet Dr. Elias Thorne and learn about his missing team"
                                 }
                             ]
                         }
@@ -580,23 +577,23 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "victor_raines_npc",
+                                    "npc": "085e0195-895f-44a0-85a8-e7c1704df709",
                                     "description": "Find and rescue Victor Raines"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "lucian_vaile_npc",
-                                    "description": "Find and rescue Lucian Vaile"
+                                    "npc": "2ad47bca-647c-4131-8b2b-eaf71af22479",
+                                    "description": "Find and rescue Lucian Vale"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "isabelle_orwin_npc",
+                                    "npc": "030ae251-5c93-4dc5-9bb4-f75be07b52fd",
                                     "description": "Find and help wounded Isabelle Orwin"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "sofia_caster_npc",
-                                    "description": "Rescue Sofia Caster from the mercenaries"
+                                    "npc": "398f2346-47b2-493b-9112-7d3ae640a8dc",
+                                    "description": "Rescue Sophia Castor from the mercenaries"
                                 }
                             ]
                         }
@@ -606,11 +603,11 @@ The character have a party with or vithout Cablo.
                         "experience": 200,
                         "items": [
                             {
-                                "itemId": "team_gratitude_token",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             },
                             {
-                                "itemId": "research_notes",
+                                "itemId": "2f50efc5-ea95-4527-bc56-cb2c0b63e0d5",
                                 "quantity": 1
                             }
                         ],
@@ -633,8 +630,8 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "captain_aria_npc",
-                                    "description": "Speak with Captain Aria about the incident"
+                                    "npc": "9dbca4ce-d5c3-4cad-a512-16baa68b60e3",
+                                    "description": "Speak with Captain Aria Steelborne about the incident"
                                 }
                             ]
                         }
@@ -645,22 +642,22 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "kill",
-                                    "gameObject": "mad_merk_1",
+                                    "npc": "1790c68e-e4cd-400d-8c8e-c3d02fdfa583",
                                     "description": "Eliminate infected mercenaries"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "mad_merk_2",
+                                    "npc": "2dc53aaa-1775-45f8-9a1b-cb16e47adddf",
                                     "description": "Eliminate infected mercenaries"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "mad_merk_3",
+                                    "npc": "a55266bc-3b26-4a58-8077-1cebf2259c47",
                                     "description": "Eliminate infected mercenaries"
                                 },
                                 {
                                     "type": "search",
-                                    "gameObject": "damaged_weapon_evidence",
+                                    "item": "f7f61214-5251-4992-9a57-26593a826435",
                                     "description": "Collect at least 5 pieces of evidence"
                                 }
                             ]
@@ -671,7 +668,7 @@ The character have a party with or vithout Cablo.
                         "experience": 150,
                         "items": [
                             {
-                                "itemId": "passage_permission",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -694,7 +691,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "rynak_npc",
+                                    "npc": "3311a634-adcc-46c0-91e8-2fb2a43fe497",
                                     "description": "Meet the glowing rat creature Rynak"
                                 }
                             ]
@@ -706,7 +703,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "rynak_npc",
+                                    "npc": "3311a634-adcc-46c0-91e8-2fb2a43fe497",
                                     "description": "Listen to Rynak's warning about danger"
                                 }
                             ]
@@ -717,7 +714,7 @@ The character have a party with or vithout Cablo.
                         "experience": 50,
                         "items": [
                             {
-                                "itemId": "rynaks_warning",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -733,15 +730,15 @@ The character have a party with or vithout Cablo.
                 },
                 {
                     "title": "Maximys and the Lost Cyberhound",
-                    "description": "Help the eccentric Flow Guardian Maximys find his lost cyber dog in the dangerous underground.",
+                    "description": "Help the eccentric Flow Guardian Maximus find his lost cyber dog in the dangerous underground.",
                     "starters": [
                         {
                             "type": "all",
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "maximys_npc",
-                                    "description": "Meet Maximys, the eccentric Flow Guardian"
+                                    "npc": "f5533468-0552-470f-a4c8-007c242071df",
+                                    "description": "Meet Maximus, the eccentric Flow Guardian"
                                 }
                             ]
                         }
@@ -752,30 +749,29 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "cyberhound_npc",
+                                    "npc": "15020329-1d9a-4050-af2e-f1eae348cde9",
                                     "description": "Find and safely approach the Cyberhound"
                                 },
                                 {
                                     "type": "useSkill",
-                                    "gameObject": "animal_handling_skill",
                                     "description": "Use animal handling skills to calm the Cyberhound"
                                 }
                             ]
                         }
                     ],
                     "onSuccess": {
-                        "description": "You've successfully reunited Maximys with his Cyberhound. The grateful Flow Guardian offers his protection.",
+                        "description": "You've successfully reunited Maximus with his Cyberhound. The grateful Flow Guardian offers his protection.",
                         "experience": 100,
                         "items": [
                             {
-                                "itemId": "maximys_blessing",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
                         "tokens": []
                     },
                     "onFailure": {
-                        "description": "The Cyberhound remains hostile or lost. Maximys is disappointed but not angry.",
+                        "description": "The Cyberhound remains hostile or lost. Maximus is disappointed but not angry.",
                         "experience": 25,
                         "items": [],
                         "tokens": []
@@ -784,15 +780,15 @@ The character have a party with or vithout Cablo.
                 },
                 {
                     "title": "Drake's Mysterious Mission",
-                    "description": "Meet with Drake Ironhande, the mercenary leader, and learn about the mysterious expedition that caused the infection.",
+                    "description": "Meet with Drake Ironshade, the mercenary leader, and learn about the mysterious expedition that caused the infection.",
                     "starters": [
                         {
                             "type": "all",
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "drake_ironhande_npc",
-                                    "description": "Meet Drake Ironhande after passing Captain Aria"
+                                    "npc": "c9e6b8e7-51d4-4579-ba9a-fb1af87da038",
+                                    "description": "Meet Drake Ironshade after passing Captain Aria"
                                 }
                             ]
                         }
@@ -803,7 +799,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "drake_ironhande_npc",
+                                    "npc": "c9e6b8e7-51d4-4579-ba9a-fb1af87da038",
                                     "description": "Learn about the expedition to the lower levels"
                                 }
                             ]
@@ -814,7 +810,7 @@ The character have a party with or vithout Cablo.
                         "experience": 75,
                         "items": [
                             {
-                                "itemId": "drakes_mission",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -830,15 +826,15 @@ The character have a party with or vithout Cablo.
                 },
                 {
                     "title": "Kael the Soul Reaper",
-                    "description": "Encounter Kael, one of the dangerous Soul Reapers, and avoid conflict if possible.",
+                    "description": "Encounter Kael 'Frostfang' Venir, one of the dangerous Soul Reapers, and avoid conflict if possible.",
                     "starters": [
                         {
                             "type": "all",
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "kael_soul_reaper_npc",
-                                    "description": "Encounter Kael the Soul Reaper"
+                                    "npc": "7434d0db-4790-4406-bfe7-be6d08fdd8f2",
+                                    "description": "Encounter Kael 'Frostfang' Venir the Soul Reaper"
                                 }
                             ]
                         }
@@ -849,12 +845,12 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "kael_soul_reaper_npc",
+                                    "npc": "7434d0db-4790-4406-bfe7-be6d08fdd8f2",
                                     "description": "Avoid conflict by having no artifacts"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "kael_soul_reaper_npc",
+                                    "npc": "7434d0db-4790-4406-bfe7-be6d08fdd8f2",
                                     "description": "Defeat Kael if he attacks"
                                 }
                             ]
@@ -890,18 +886,18 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "vito_merchant_npc",
-                                    "description": "Meet Vito the rich merchant"
+                                    "npc": "d531b1a0-07fb-455b-9342-b2045bd28ef2",
+                                    "description": "Meet Vito Ashenvale the rich merchant"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "ember_flame_hart_npc",
-                                    "description": "Meet Ember Flame Hart of the Blood Hunters"
+                                    "npc": "b89d6d5d-76f1-4769-8d9a-ec46e48268c7",
+                                    "description": "Meet Ember Flareheart of the Blood Hunters"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "selena_magician_npc",
-                                    "description": "Meet the Magician trio"
+                                    "npc": "b0d90aa6-4d34-46ac-ad1b-f5211d708d75",
+                                    "description": "Meet Selena Veilforge of the Magician trio"
                                 }
                             ]
                         }
@@ -912,17 +908,17 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "vito_merchant_npc",
+                                    "npc": "d531b1a0-07fb-455b-9342-b2045bd28ef2",
                                     "description": "Choose to help Vito escape safely"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "vito_merchant_npc",
+                                    "npc": "d531b1a0-07fb-455b-9342-b2045bd28ef2",
                                     "description": "Choose to eliminate Vito for the Blood Hunters"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "ember_flame_hart_npc",
+                                    "npc": "b89d6d5d-76f1-4769-8d9a-ec46e48268c7",
                                     "description": "Choose to fight the Blood Hunters"
                                 }
                             ]
@@ -933,7 +929,7 @@ The character have a party with or vithout Cablo.
                         "experience": 150,
                         "items": [
                             {
-                                "itemId": "faction_standing_token",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -956,8 +952,8 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "zeus_prime_01_npc",
-                                    "description": "Meet Zeus Prime 01, the friendly android"
+                                    "npc": "f1d85cd6-9793-491c-9e3c-dca44dbf701b",
+                                    "description": "Meet Aegis Prime, the friendly android"
                                 }
                             ]
                         }
@@ -968,32 +964,31 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "kill",
-                                    "gameObject": "zeus_prime_00_1",
-                                    "description": "Eliminate hostile androids"
+                                    "npc": "9b9a6710-6cf8-4ab0-86bc-f93b5b97de56",
+                                    "description": "Eliminate hostile Zeus Prime androids"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "zeus_prime_00_2",
-                                    "description": "Eliminate hostile androids"
+                                    "npc": "2be12ccb-96df-4bd1-9a2a-6db0a728bac0",
+                                    "description": "Eliminate hostile Zeus Prime androids"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "mainframe_terminal",
                                     "description": "Reach the mainframe and stop the Mother AI"
                                 }
                             ]
                         }
                     ],
                     "onSuccess": {
-                        "description": "You've successfully stopped the Mother AI with Zeus Prime 01's help. The android threat is neutralized.",
+                        "description": "You've successfully stopped the Mother AI with Aegis Prime's help. The android threat is neutralized.",
                         "experience": 200,
                         "items": [
                             {
-                                "itemId": "ai_core_fragment",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             },
                             {
-                                "itemId": "zeus_alliance_token",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -1028,17 +1023,17 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "useItem",
-                                    "gameObject": "protection_runes",
-                                    "description": "Use protection runes from Drake Ironhande"
+                                    "item": "ec43868c-7318-4563-bf1a-8909fd09e6a3",
+                                    "description": "Use protection runes from Drake Ironshade"
                                 },
                                 {
                                     "type": "useItem",
-                                    "gameObject": "scuba_gear_repaired",
+                                    "item": "e6e9dd8b-ba1b-44f4-9df7-e2bc0567da57",
                                     "description": "Use repaired scuba gear from Dr. Thorne"
                                 },
                                 {
                                     "type": "search",
-                                    "gameObject": "underwater_artifact",
+                                    "item": "2f50efc5-ea95-4527-bc56-cb2c0b63e0d5",
                                     "description": "Find the ancient artifact underwater"
                                 }
                             ]
@@ -1049,11 +1044,11 @@ The character have a party with or vithout Cablo.
                         "experience": 180,
                         "items": [
                             {
-                                "itemId": "ancient_underwater_artifact",
+                                "itemId": "2f50efc5-ea95-4527-bc56-cb2c0b63e0d5",
                                 "quantity": 1
                             },
                             {
-                                "itemId": "hidden_hall_access",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
@@ -1076,7 +1071,6 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "library_gate_mechanism",
                                     "description": "Examine the ancient Library Gate"
                                 }
                             ]
@@ -1088,12 +1082,12 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "useItem",
-                                    "gameObject": "ancient_underwater_artifact",
+                                    "item": "2f50efc5-ea95-4527-bc56-cb2c0b63e0d5",
                                     "description": "Use the ancient artifact with the gate"
                                 },
                                 {
                                     "type": "interaction",
-                                    "gameObject": "dr_elies_thorne_npc",
+                                    "npc": "a1a5929f-d562-41e6-a95e-3fc7ee080fe1",
                                     "description": "Have Dr. Thorne's team operate the gate"
                                 }
                             ]
@@ -1104,13 +1098,13 @@ The character have a party with or vithout Cablo.
                         "experience": 120,
                         "items": [
                             {
-                                "itemId": "library_gate_key",
+                                "itemId": "e1a76f41-2688-465f-89a6-2b6f45a87045",
                                 "quantity": 1
                             }
                         ],
                         "tokens": [
                             {
-                                "tokenId": "chapter_3_completion",
+                                "tokenId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ]
@@ -1151,12 +1145,12 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "cablo_npc",
+                                    "npc": "41a9ff41-214b-43a8-bc84-27792162dd52",
                                     "description": "Successfully negotiate with Cablo for a portion of the Ale"
                                 },
                                 {
                                     "type": "kill",
-                                    "gameObject": "cablo_npc",
+                                    "npc": "41a9ff41-214b-43a8-bc84-27792162dd52",
                                     "description": "Defeat Cablo in combat and claim the Ale by force"
                                 }
                             ]
@@ -1167,13 +1161,13 @@ The character have a party with or vithout Cablo.
                         "experience": 500,
                         "items": [
                             {
-                                "itemId": "ale_of_eternity",
+                                "itemId": "36c78e46-26bb-41ee-a060-d602b1333939",
                                 "quantity": 1
                             }
                         ],
                         "tokens": [
                             {
-                                "tokenId": "quest_completion_ale_of_eternity",
+                                "tokenId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ]
@@ -1195,7 +1189,7 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "useItem",
-                                    "gameObject": "ale_of_eternity",
+                                    "item": "36c78e46-26bb-41ee-a060-d602b1333939",
                                     "description": "Use the Ale of Eternity to begin the celebration"
                                 }
                             ]
@@ -1207,7 +1201,6 @@ The character have a party with or vithout Cablo.
                             "triggers": [
                                 {
                                     "type": "interaction",
-                                    "gameObject": "party_celebration",
                                     "description": "Participate in the victory celebration"
                                 }
                             ]
@@ -1218,13 +1211,13 @@ The character have a party with or vithout Cablo.
                         "experience": 300,
                         "items": [
                             {
-                                "itemId": "eternal_blessing",
+                                "itemId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ],
                         "tokens": [
                             {
-                                "tokenId": "legendary_hero_status",
+                                "tokenId": "33b71c99-53b1-4759-81a3-39312e3794eb",
                                 "quantity": 1
                             }
                         ]
