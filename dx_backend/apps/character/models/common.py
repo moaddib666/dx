@@ -6,10 +6,8 @@ from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Organization(BaseModel):
-    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    campaign = models.ForeignKey('game.Campaign', on_delete=models.CASCADE, related_name='organizations')
     behavior = models.CharField(choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE, max_length=20)
 
     def __str__(self):

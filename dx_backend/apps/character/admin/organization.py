@@ -7,8 +7,8 @@ from ..models import Organization
 
 @admin.register(Organization)
 class OrganizationAdmin(CampaignModelAdmin):
-    list_display = ('name', 'behavior_badge', 'description_short', 'campaign')
-    list_filter = ('behavior', 'campaign')
+    list_display = ('name', 'behavior_badge', 'description_short')
+    list_filter = ('behavior',)
     search_fields = ('name', 'description')
     list_per_page = 25
     ordering = ('name',)

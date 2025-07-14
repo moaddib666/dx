@@ -311,10 +311,10 @@ class CampaignFilter(SimpleListFilter):
 
 @admin.register(CharacterTemplate)
 class CharacterTemplateAdmin(CampaignModelAdmin):
-    list_display = ('name', 'avatar_thumbnail', 'organization', 'rank', 'behavior', 'campaign', 'clone_template', 'create_npc')
-    list_filter = ('behavior', CampaignFilter, 'organization')
+    list_display = ('name', 'avatar_thumbnail', 'organization', 'rank', 'behavior', 'clone_template', 'create_npc')
+    list_filter = ('behavior', 'organization')
     search_fields = ('name', 'description', 'tags')
-    autocomplete_fields = ['rank', 'organization', 'path', 'stats_template', 'biography_template', 'campaign', 'dimension']
+    autocomplete_fields = ['rank', 'organization', 'path', 'stats_template', 'biography_template', 'dimension']
 
     class Media:
         css = {
@@ -345,8 +345,6 @@ class CharacterTemplateAdmin(CampaignModelAdmin):
             form.base_fields['behavior'].widget.attrs['style'] = 'width: 300px; min-width: 300px;'
         if form.base_fields.get('dimension'):
             form.base_fields['dimension'].widget.attrs['style'] = 'width: 300px; min-width: 300px;'
-        if form.base_fields.get('campaign'):
-            form.base_fields['campaign'].widget.attrs['style'] = 'width: 300px; min-width: 300px;'
         if form.base_fields.get('stats_template'):
             form.base_fields['stats_template'].widget.attrs['style'] = 'width: 300px; min-width: 300px;'
         if form.base_fields.get('biography_template'):
@@ -359,7 +357,7 @@ class CharacterTemplateAdmin(CampaignModelAdmin):
             'description': 'Basic information about this character template.'
         }),
         ('Basic Properties', {
-            'fields': ('rank', 'organization', 'path', 'behavior', 'dimension', 'campaign'),
+            'fields': ('rank', 'organization', 'path', 'behavior', 'dimension'),
             'description': 'Define the character\'s role, affiliation, and behavior patterns.'
         }),
         ('Template Components', {

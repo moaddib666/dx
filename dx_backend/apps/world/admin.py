@@ -239,7 +239,7 @@ class MapAdmin(CampaignModelAdmin):
 @admin.register(MapPosition)
 class MapPositionAdmin(CampaignModelAdmin):
     list_display = ('id', 'map', 'position', 'is_active')
-    list_filter = ('is_active', 'map__name', 'map__organization__campaign')
+    list_filter = ('is_active', 'map__name')
     search_fields = ('map__name', 'position__sub_location__name', 'position__coordinates')
     ordering = ('map', 'position')
 

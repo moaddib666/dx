@@ -8,22 +8,12 @@ from ..models import OrganizationRelation, CharacterRelation
 @admin.register(OrganizationRelation)
 class OrganizationRelationAdmin(CampaignModelAdmin):
     list_display = ('organization_from', 'type', 'organization_to', 'immutable')
-    list_filter = ('type', 'immutable', 'organization_from__campaign', 'organization_to__campaign')
+    list_filter = ('type', 'immutable')
     search_fields = ('organization_from__name', 'organization_to__name', 'type')
     autocomplete_fields = ('organization_from', 'organization_to')
     list_per_page = 25
     ordering = ('organization_from__name', 'organization_to__name')
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        campaign_id = request.session.get('campaign_id')
-        if campaign_id:
-            return qs.filter(
-                # Include relations where either organization is from the current campaign
-                organization_from__campaign_id=campaign_id) | qs.filter(
-                organization_to__campaign_id=campaign_id
-            )
-        return qs
 
 
 @admin.register(CharacterRelation)
