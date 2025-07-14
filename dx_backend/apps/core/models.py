@@ -744,6 +744,7 @@ class TriggerType(DjangoChoicesMixin, StrEnum):
     POSITION = "position"
     USE_ITEM = "useItem"
     USE_SKILL = "useSkill"
+    CUSTOM = "custom"
 
 
 class Trigger(DjangoBaseModel):
@@ -752,7 +753,7 @@ class Trigger(DjangoBaseModel):
     """
     type = django_models.CharField(max_length=20, choices=TriggerType.choices())
     game_object = django_models.ForeignKey(GameObject, on_delete=django_models.CASCADE, null=True, blank=True,
-                                           help_text="Item, Character, Anomaly")
+                                           help_text="Concreate - Item, Character, Anomaly")
     position = django_models.ForeignKey("world.Position", on_delete=django_models.CASCADE, null=True, blank=True,
                                         help_text="Position in the game world")
     description = django_models.TextField(help_text="Description of the trigger")
@@ -761,8 +762,86 @@ class Trigger(DjangoBaseModel):
     npc = django_models.ForeignKey("character.CharacterTemplate", on_delete=django_models.CASCADE, null=True,
                                    blank=True,
                                    help_text="All NPCs that been created from this template will have this trigger")
-
+    skill = django_models.ForeignKey("school.Skill", on_delete=django_models.CASCADE, null=True, blank=True,
+                                     help_text="Optional skill that is required to trigger the action")
+    item = django_models.ForeignKey("items.Item", on_delete=django_models.CASCADE, null=True, blank=True,
+                                    help_text="Optional item that is required to trigger the action")
     # TODO: When implementing the automatic triggers execution, add fitls, active, oneOff, etc.
 
     def __str__(self):
         return f"{self.type}: {self.description}"
+
+
+class TriggerData(BaseModel):
+    """Pydantic model for Trigger JSON serialization."""
+    type: str
+    gameObject: Optional[str] = None
+    position: Optional[str] = None
+    description: str
+    location: Optional[str] = None
+    npc: Optional[str] = None
+    skill: Optional[str] = None
+    item: Optional[str] = None
+
+
+class ConditionData(BaseModel):
+    """Pydantic model for Condition JSON serialization."""
+    type: str  # all, any, none
+    triggers: List[TriggerData]
+
+
+class ItemRewardData(BaseModel):
+    """Pydantic model for ItemReward JSON serialization."""
+    itemId: str
+    quantity: int
+
+
+class TokenRewardData(BaseModel):
+    """Pydantic model for TokenReward JSON serialization."""
+    tokenId: str
+    quantity: int
+
+
+class EffectRewardData(BaseModel):
+    """Pydantic model for EffectReward JSON serialization."""
+    effectId: str
+    duration: int
+
+
+class RewardData(BaseModel):
+    """Pydantic model for Reward JSON serialization."""
+    description: str
+    experience: int = 0
+    items: List[ItemRewardData] = Field(default_factory=list)
+    tokens: List[TokenRewardData] = Field(default_factory=list)
+    effects: List[EffectRewardData] = Field(default_factory=list)
+
+
+class QuestData(BaseModel):
+    """Pydantic model for Quest JSON serialization."""
+    title: str
+    description: str
+    starters: List[ConditionData] = Field(default_factory=list)
+    objectives: List[ConditionData] = Field(default_factory=list)
+    onSuccess: Optional[RewardData] = None
+    onFailure: Optional[RewardData] = None
+    image: Optional[str] = None
+    cycleLimit: Optional[int] = None
+
+
+class ChapterData(BaseModel):
+    """Pydantic model for Chapter JSON serialization."""
+    title: str
+    description: str
+    quests: List[QuestData] = Field(default_factory=list)
+    image: Optional[str] = None
+
+
+class StoryData(BaseModel):
+    """Pydantic model for Story JSON serialization."""
+    title: str
+    description: str
+    tags: List[str] = Field(default_factory=list)
+    chapters: List[ChapterData] = Field(default_factory=list)
+    image: Optional[str] = None
+    canonical: bool = False
