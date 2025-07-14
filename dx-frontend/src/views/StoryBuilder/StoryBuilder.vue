@@ -9,86 +9,65 @@
         message="Preparing your storytelling tools..."
       />
 
-      <!-- Header -->
-      <div class="story-builder__header">
-        <StorySelector
-          v-model:selectedStory="currentStory"
-          :stories="stories"
-          @create="handleCreateStory"
-          @delete="handleDeleteStory"
-        />
-        <ModeToggle v-model="editMode" />
-      </div>
+      <!-- Header (3.75rem) -->
+      <header class="story-builder__header">
+        <div class="header-left">
+          <StorySelector
+            v-model:selectedStory="currentStory"
+            :stories="stories"
+            @create="handleCreateStory"
+            @delete="handleDeleteStory"
+          />
+          <div class="header-actions">
+            <button class="header-btn" @click="handleNewStory">New</button>
+            <button class="header-btn" @click="handleSaveStory">Save</button>
+            <button class="header-btn" @click="handleExportStory">Export</button>
+          </div>
+        </div>
+        <div class="header-right">
+          <ModeToggle v-model="editMode" />
+        </div>
+      </header>
 
-      <!-- Main Content -->
+      <!-- Main Content Area -->
       <div class="story-builder__content">
-        <!-- Left Panel: Quest Management -->
-        <div class="story-builder__left-panel">
-          <ChapterTimeline
-            :chapters="currentStory?.chapters || []"
-            :selectedChapter="selectedChapter"
-            @select="handleChapterSelect"
-            @create="handleCreateChapter"
-            @edit="handleEditChapter"
-            @delete="handleDeleteChapter"
-            @moveUp="handleMoveChapterUp"
-            @moveDown="handleMoveChapterDown"
+        <!-- Left Column: Timeline Navigation (25rem) -->
+        <aside class="story-builder__left-column">
+          <TreeNavigation
+            :story="currentStory"
+            :selectedItem="selectedItem"
             :editMode="editMode"
+            @select="handleItemSelect"
+            @create="handleCreateItem"
+            @edit="handleEditItem"
+            @delete="handleDeleteItem"
+            @reorder="handleReorderItem"
           />
+        </aside>
 
-          <ChapterEditor
-            v-if="isChapterEditorVisible && chapterBeingEdited"
-            :chapter="chapterBeingEdited"
-            :editMode="true"
-            @update="handleChapterUpdate"
-            @cancel="closeChapterEditor"
-          />
-
-          <QuestList
-            v-if="selectedChapter"
-            :quests="selectedChapter.quests || []"
-            :selectedQuest="selectedQuest"
-            @select="handleQuestSelect"
-            @create="handleCreateQuest"
-            @edit="handleEditQuest"
-            @delete="handleDeleteQuest"
+        <!-- Right Column: Main Content/Editor (flexible) -->
+        <main class="story-builder__right-column">
+          <ContentEditor
+            :selectedItem="selectedItem"
             :editMode="editMode"
+            :entityMap="entityMap"
+            @update="handleItemUpdate"
+            @toggle-edit="handleToggleEdit"
+            @entity-highlight="handleEntityHighlight"
           />
-
-          <QuestDetails
-            v-if="selectedQuest"
-            :quest="selectedQuest"
-            @update="handleQuestUpdate"
-            :editMode="editMode"
-          />
-        </div>
-
-        <!-- Right Panel: Summary & Media -->
-        <div class="story-builder__right-panel">
-          <ChapterSummary
-            v-if="selectedChapter"
-            :chapter="selectedChapter"
-            :characters="extractCharacters(selectedChapter)"
-            :items="extractItems(selectedChapter)"
-            :gameObjects="extractGameObjects(selectedChapter)"
-          />
-
-          <ImageGallery
-            :images="currentImages"
-            @upload="handleImageUpload"
-            @delete="handleImageDelete"
-            :editMode="editMode"
-          />
-
-          <NotesPanel
-            :notes="currentNotes"
-            @create="handleCreateNote"
-            @update="handleUpdateNote"
-            @delete="handleDeleteNote"
-            :editMode="editMode"
-          />
-        </div>
+        </main>
       </div>
+
+      <!-- Footer: Quick Reference Panel (7.5rem) -->
+      <footer class="story-builder__footer">
+        <QuickReference
+          :entities="allEntities"
+          :highlightedEntity="highlightedEntity"
+          @search="handleEntitySearch"
+          @highlight="handleEntityHighlight"
+          @clear="handleClearHighlight"
+        />
+      </footer>
     </div>
   </div>
 </template>
@@ -107,25 +86,19 @@ import {
 import Loader from '@/components/Loader.vue';
 import StorySelector from './components/StorySelector.vue';
 import ModeToggle from './components/ModeToggle.vue';
-import ChapterTimeline from './components/LeftPanel/ChapterTimeline.vue';
-import ChapterEditor from './components/LeftPanel/ChapterEditor.vue';
-import QuestList from './components/LeftPanel/QuestList.vue';
-import QuestDetails from './components/LeftPanel/QuestDetails.vue';
-import ChapterSummary from './components/RightPanel/ChapterSummary.vue';
-import ImageGallery from './components/RightPanel/ImageGallery.vue';
-import NotesPanel from './components/RightPanel/NotesPanel.vue';
+import TreeNavigation from './components/TreeNavigation.vue';
+import ContentEditor from './components/ContentEditor.vue';
+import QuickReference from './components/QuickReference.vue';
 
 // State
 const loading = ref(true);
 const editMode = ref(false);
 const stories = ref<Story[]>([]);
 const currentStory = ref<Story | null>(null);
-const selectedChapter = ref<Chapter | null>(null);
-const selectedQuest = ref<Quest | null>(null);
-const currentNotes = ref<Note[]>([]);
-const currentImages = ref<string[]>([]);
-const isChapterEditorVisible = ref(false);
-const chapterBeingEdited = ref<Chapter | null>(null);
+const selectedItem = ref<any>(null); // Can be Story, Chapter, or Quest
+const highlightedEntity = ref<string | null>(null);
+const entityMap = ref<Map<string, any>>(new Map());
+const allEntities = ref<any[]>([]);
 
 // Computed properties
 const extractCharacters = (chapter: Chapter) => {
@@ -232,14 +205,8 @@ const handleDeleteStory = async (storyId) => {
 };
 
 const handleChapterSelect = (chapter) => {
-  selectedChapter.value = chapter;
-  selectedQuest.value = null;
-
-  // Load notes for this chapter
-  loadChapterNotes(chapter.id);
-
-  // Load images for this chapter
-  loadChapterImages(chapter.id);
+  // This is now handled by handleItemSelect
+  handleItemSelect('chapter', chapter);
 };
 
 const handleCreateChapter = async () => {
@@ -273,7 +240,7 @@ const handleCreateChapter = async () => {
       }
     }
 
-    selectedChapter.value = chapter;
+    selectedItem.value = { ...chapter, type: 'chapter' };
   } catch (error) {
     console.error('Failed to create chapter:', error);
   } finally {
@@ -282,9 +249,9 @@ const handleCreateChapter = async () => {
 };
 
 const handleEditChapter = (chapter) => {
-  // Set the chapter being edited and show the editor
-  chapterBeingEdited.value = { ...chapter };
-  isChapterEditorVisible.value = true;
+  // Enable edit mode for the selected chapter
+  selectedItem.value = { ...chapter, type: 'chapter' };
+  editMode.value = true;
 };
 
 const handleChapterUpdate = async (updatedChapter) => {
@@ -300,22 +267,17 @@ const handleChapterUpdate = async (updatedChapter) => {
       }
     }
 
-    if (selectedChapter.value?.id === chapter.id) {
-      selectedChapter.value = chapter;
+    if (selectedItem.value?.id === chapter.id) {
+      selectedItem.value = { ...chapter, type: 'chapter' };
     }
 
-    // Close the editor
-    closeChapterEditor();
+    // Exit edit mode
+    editMode.value = false;
   } catch (error) {
     console.error('Failed to update chapter:', error);
   } finally {
     loading.value = false;
   }
-};
-
-const closeChapterEditor = () => {
-  isChapterEditorVisible.value = false;
-  chapterBeingEdited.value = null;
 };
 
 const handleMoveChapterUp = async (chapter) => {
@@ -419,9 +381,8 @@ const handleDeleteChapter = async (chapterId) => {
       }
     }
 
-    if (selectedChapter.value?.id === chapterId) {
-      selectedChapter.value = null;
-      selectedQuest.value = null;
+    if (selectedItem.value?.id === chapterId) {
+      selectedItem.value = null;
     }
   } catch (error) {
     console.error('Failed to delete chapter:', error);
@@ -431,7 +392,7 @@ const handleDeleteChapter = async (chapterId) => {
 };
 
 const handleQuestSelect = (quest) => {
-  selectedQuest.value = quest;
+  handleItemSelect('quest', quest);
 };
 
 const handleCreateQuest = async () => {
@@ -440,30 +401,29 @@ const handleCreateQuest = async () => {
 
     // Find the maximum order value from existing quests
     let maxOrder = 0;
-    if (selectedChapter.value?.quests && selectedChapter.value.quests.length > 0) {
-      maxOrder = Math.max(...selectedChapter.value.quests.map(q => q.order || 0));
+    if (selectedItem.value?.type === 'chapter' && selectedItem.value?.quests && selectedItem.value.quests.length > 0) {
+      maxOrder = Math.max(...selectedItem.value.quests.map(q => q.order || 0));
     }
 
     // Create a new quest with required fields
     const questData = {
       title: "New Quest",
       description: "Quest description",
-      chapter: selectedChapter.value?.id,
+      chapter: selectedItem.value?.id,
       order: maxOrder + 1
     };
 
     const quest = await storyService.createQuest(questData);
 
-    // Refresh the selected chapter to get updated quests
-    if (selectedChapter.value) {
-      const updatedChapter = await storyService.loadChapters(currentStory.value?.id || '');
-      const chapter = updatedChapter.find(c => c.id === selectedChapter.value?.id);
-      if (chapter) {
-        selectedChapter.value = chapter;
+    // Refresh the current story to get updated data
+    if (currentStory.value) {
+      const updatedStory = await storyService.loadStory(currentStory.value.id);
+      if (updatedStory) {
+        currentStory.value = updatedStory;
       }
     }
 
-    selectedQuest.value = quest;
+    selectedItem.value = { ...quest, type: 'quest' };
   } catch (error) {
     console.error('Failed to create quest:', error);
   } finally {
@@ -476,16 +436,20 @@ const handleEditQuest = async (questData) => {
     loading.value = true;
     const quest = await storyService.updateQuest(questData.id, questData);
 
-    // Update the quest in the selected chapter
-    if (selectedChapter.value && selectedChapter.value.quests) {
-      const index = selectedChapter.value.quests.findIndex(q => q.id === quest.id);
-      if (index >= 0) {
-        selectedChapter.value.quests[index] = quest;
-      }
+    // Update the quest in the current story
+    if (currentStory.value?.chapters) {
+      currentStory.value.chapters.forEach(chapter => {
+        if (chapter.quests) {
+          const index = chapter.quests.findIndex(q => q.id === quest.id);
+          if (index >= 0) {
+            chapter.quests[index] = quest;
+          }
+        }
+      });
     }
 
-    if (selectedQuest.value?.id === quest.id) {
-      selectedQuest.value = quest;
+    if (selectedItem.value?.id === quest.id) {
+      selectedItem.value = { ...quest, type: 'quest' };
     }
   } catch (error) {
     console.error('Failed to update quest:', error);
@@ -499,17 +463,16 @@ const handleDeleteQuest = async (questId) => {
     loading.value = true;
     await storyService.deleteQuest(questId);
 
-    // Refresh the selected chapter to get updated quests
-    if (selectedChapter.value) {
-      const updatedChapter = await storyService.loadChapters(currentStory.value?.id || '');
-      const chapter = updatedChapter.find(c => c.id === selectedChapter.value?.id);
-      if (chapter) {
-        selectedChapter.value = chapter;
+    // Refresh the current story to get updated data
+    if (currentStory.value) {
+      const updatedStory = await storyService.loadStory(currentStory.value.id);
+      if (updatedStory) {
+        currentStory.value = updatedStory;
       }
     }
 
-    if (selectedQuest.value?.id === questId) {
-      selectedQuest.value = null;
+    if (selectedItem.value?.id === questId) {
+      selectedItem.value = null;
     }
   } catch (error) {
     console.error('Failed to delete quest:', error);
@@ -523,15 +486,19 @@ const handleQuestUpdate = async (questData) => {
     loading.value = true;
     const quest = await storyService.updateQuest(questData.id, questData);
 
-    // Update the quest in the selected chapter
-    if (selectedChapter.value && selectedChapter.value.quests) {
-      const index = selectedChapter.value.quests.findIndex(q => q.id === quest.id);
-      if (index >= 0) {
-        selectedChapter.value.quests[index] = quest;
-      }
+    // Update the quest in the current story
+    if (currentStory.value?.chapters) {
+      currentStory.value.chapters.forEach(chapter => {
+        if (chapter.quests) {
+          const index = chapter.quests.findIndex(q => q.id === quest.id);
+          if (index >= 0) {
+            chapter.quests[index] = quest;
+          }
+        }
+      });
     }
 
-    selectedQuest.value = quest;
+    selectedItem.value = { ...quest, type: 'quest' };
   } catch (error) {
     console.error('Failed to update quest:', error);
   } finally {
@@ -544,10 +511,11 @@ const handleCreateNote = async (noteData) => {
     loading.value = true;
     const note = await storyService.createNote({
       ...noteData,
-      chapterId: selectedChapter.value?.id
+      chapterId: selectedItem.value?.type === 'chapter' ? selectedItem.value.id : null
     });
 
-    currentNotes.value.push(note);
+    // Notes functionality would be implemented here
+    console.log('Note created:', note);
   } catch (error) {
     console.error('Failed to create note:', error);
   } finally {
@@ -560,10 +528,8 @@ const handleUpdateNote = async (noteData) => {
     loading.value = true;
     const note = await storyService.updateNote(noteData.id, noteData);
 
-    const index = currentNotes.value.findIndex(n => n.id === note.id);
-    if (index >= 0) {
-      currentNotes.value[index] = note;
-    }
+    // Notes functionality would be implemented here
+    console.log('Note updated:', note);
   } catch (error) {
     console.error('Failed to update note:', error);
   } finally {
@@ -576,7 +542,8 @@ const handleDeleteNote = async (noteId) => {
     loading.value = true;
     await storyService.deleteNote(noteId);
 
-    currentNotes.value = currentNotes.value.filter(note => note.id !== noteId);
+    // Notes functionality would be implemented here
+    console.log('Note deleted:', noteId);
   } catch (error) {
     console.error('Failed to delete note:', error);
   } finally {
@@ -585,24 +552,212 @@ const handleDeleteNote = async (noteId) => {
 };
 
 const handleImageUpload = (imageUrl) => {
-  currentImages.value.push(imageUrl);
+  // Image functionality would be implemented here
+  console.log('Image uploaded:', imageUrl);
 };
 
 const handleImageDelete = (imageUrl) => {
-  currentImages.value = currentImages.value.filter(url => url !== imageUrl);
+  // Image functionality would be implemented here
+  console.log('Image deleted:', imageUrl);
+};
+
+// New event handlers for the restructured components
+const handleItemSelect = (type: string, item: any) => {
+  selectedItem.value = { ...item, type };
+  updateEntityMap();
+};
+
+const handleCreateItem = async (type: string, parentId?: string) => {
+  try {
+    loading.value = true;
+    
+    if (type === 'chapter') {
+      await handleCreateChapter();
+    } else if (type === 'quest') {
+      await handleCreateQuest();
+    }
+  } catch (error) {
+    console.error(`Failed to create ${type}:`, error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleEditItem = (type: string, item: any) => {
+  // Enable edit mode for the selected item
+  selectedItem.value = { ...item, type };
+  editMode.value = true;
+};
+
+const handleDeleteItem = async (type: string, item: any) => {
+  try {
+    loading.value = true;
+    
+    if (type === 'chapter') {
+      await handleDeleteChapter(item.id);
+    } else if (type === 'quest') {
+      await handleDeleteQuest(item.id);
+    }
+  } catch (error) {
+    console.error(`Failed to delete ${type}:`, error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleReorderItem = (type: string, item: any, direction: 'up' | 'down') => {
+  if (type === 'chapter') {
+    if (direction === 'up') {
+      handleMoveChapterUp(item);
+    } else {
+      handleMoveChapterDown(item);
+    }
+  }
+};
+
+const handleItemUpdate = async (updatedItem: any) => {
+  try {
+    loading.value = true;
+    
+    if (updatedItem.type === 'story') {
+      // Update story logic would go here
+      currentStory.value = { ...currentStory.value, ...updatedItem };
+    } else if (updatedItem.type === 'chapter') {
+      await handleChapterUpdate(updatedItem);
+    } else if (updatedItem.type === 'quest') {
+      await handleQuestUpdate(updatedItem);
+    }
+    
+    // Update the selected item
+    selectedItem.value = updatedItem;
+    editMode.value = false;
+  } catch (error) {
+    console.error('Failed to update item:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleToggleEdit = () => {
+  editMode.value = !editMode.value;
+};
+
+const handleEntityHighlight = (entityId: string) => {
+  highlightedEntity.value = entityId;
+};
+
+const handleEntitySearch = (query: string) => {
+  // Filter entities based on search query
+  // This would be implemented with more sophisticated search logic
+  console.log('Searching for:', query);
+};
+
+const handleClearHighlight = () => {
+  highlightedEntity.value = null;
+};
+
+const handleNewStory = async () => {
+  const storyData = {
+    title: 'New Story',
+    description: 'A new story description'
+  };
+  await handleCreateStory(storyData);
+};
+
+const handleSaveStory = async () => {
+  if (currentStory.value) {
+    try {
+      loading.value = true;
+      await storyService.updateStory(currentStory.value.id, currentStory.value);
+      console.log('Story saved successfully');
+    } catch (error) {
+      console.error('Failed to save story:', error);
+    } finally {
+      loading.value = false;
+    }
+  }
+};
+
+const handleExportStory = () => {
+  if (currentStory.value) {
+    const dataStr = JSON.stringify(currentStory.value, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `${currentStory.value.title || 'story'}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  }
+};
+
+const updateEntityMap = () => {
+  // Extract entities from the current story for the quick reference
+  const entities: any[] = [];
+  
+  if (currentStory.value?.chapters) {
+    currentStory.value.chapters.forEach(chapter => {
+      chapter.quests?.forEach(quest => {
+        // Extract NPCs from interactions
+        quest.starters?.forEach(condition => {
+          condition.triggers?.forEach(trigger => {
+            if (trigger.type === 'interaction' && trigger.gameObject) {
+              entities.push({
+                id: trigger.gameObject,
+                name: trigger.gameObject,
+                type: 'npc',
+                description: trigger.description
+              });
+            }
+          });
+        });
+        
+        quest.objectives?.forEach(condition => {
+          condition.triggers?.forEach(trigger => {
+            if (trigger.type === 'interaction' && trigger.gameObject) {
+              entities.push({
+                id: trigger.gameObject,
+                name: trigger.gameObject,
+                type: 'npc',
+                description: trigger.description
+              });
+            }
+          });
+        });
+        
+        // Extract items from rewards
+        quest.onSuccess?.items?.forEach(item => {
+          entities.push({
+            id: item.itemId,
+            name: item.itemId,
+            type: 'item',
+            description: item.description
+          });
+        });
+      });
+    });
+  }
+  
+  // Remove duplicates
+  const uniqueEntities = entities.filter((entity, index, self) => 
+    index === self.findIndex(e => e.id === entity.id && e.type === entity.type)
+  );
+  
+  allEntities.value = uniqueEntities;
 };
 
 // Helper functions
 const loadChapterNotes = async (chapterId) => {
   // This would be implemented with a real API call
   // For now, we'll use placeholder data
-  currentNotes.value = [];
+  console.log('Loading notes for chapter:', chapterId);
 };
 
 const loadChapterImages = async (chapterId) => {
   // This would be implemented with a real API call
   // For now, we'll use placeholder data
-  currentImages.value = [];
+  console.log('Loading images for chapter:', chapterId);
 };
 
 // Lifecycle hooks
@@ -630,6 +785,11 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* CSS Units Strategy based on StoryScreen.MD */
+html {
+  font-size: 16px;
+}
+
 /* Page Container and Background */
 .page-container {
   position: relative;
@@ -659,14 +819,14 @@ onMounted(async () => {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
 }
 
+/* Main Story Builder Container */
 .story-builder {
   height: 100vh;
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 90vw;
+  max-width: 100vw;
   margin: 0 auto;
-  padding: 20px;
   position: relative;
   color: white;
   z-index: 1;
@@ -674,79 +834,197 @@ onMounted(async () => {
   backdrop-filter: blur(1px);
 }
 
+/* Header (3.75rem) */
 .story-builder__header {
-  height: 60px;
+  height: 3.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--border-color, rgba(255, 215, 0, 0.2));
-  margin-bottom: 20px;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.header-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 6px;
+  color: #ffd700;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.header-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Main Content Area */
 .story-builder__content {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 20px;
-  padding: 20px;
+  display: flex;
   overflow: hidden;
+  min-height: 0;
 }
 
-.story-builder__left-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow-y: auto;
+/* Left Column: Timeline Navigation (25rem) */
+.story-builder__left-column {
+  width: 25rem;
+  min-width: 20rem;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  padding: 20px;
-}
-
-.story-builder__right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  border-right: 1px solid rgba(255, 215, 0, 0.2);
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  padding: 20px;
+  padding: 1.5rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
+/* Right Column: Main Content/Editor (flexible) */
+.story-builder__right-column {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* Footer: Quick Reference Panel (7.5rem) */
+.story-builder__footer {
+  height: 7.5rem;
+  min-height: 6rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(8px);
+}
+
+/* Typography */
+.quest-title {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.metadata {
+  font-size: 0.875rem;
+  color: #b0b0b0;
+}
+
+/* Spacing utilities */
+.section-gap {
+  margin-bottom: 1.5rem;
+}
+
+.trigger-padding {
+  padding: 1rem;
+}
+
+.form-field-spacing {
+  margin-bottom: 0.75rem;
+}
+
+/* Responsive Breakpoints */
+/* Large (>75rem): Full layout as shown */
+@media (min-width: 75rem) {
+  .story-builder__left-column {
+    width: 25rem;
+  }
+}
+
+/* Medium (48-75rem): Reduce left panel to 20rem */
+@media (min-width: 48rem) and (max-width: 75rem) {
+  .story-builder__left-column {
+    width: 20rem;
+    min-width: 18rem;
+  }
+}
+
+/* Small (<48rem): Collapsible left panel, full-width right panel */
+@media (max-width: 48rem) {
   .story-builder__content {
-    grid-template-columns: 1fr 350px;
+    flex-direction: column;
   }
-}
-
-@media (max-width: 900px) {
-  .story-builder__content {
-    grid-template-columns: 1fr;
+  
+  .story-builder__left-column {
+    width: 100%;
+    height: auto;
+    min-width: unset;
+    max-height: 40vh;
   }
-
-  .story-builder__right-panel {
-    display: none;
+  
+  .story-builder__right-column {
+    flex: 1;
+    min-height: 0;
   }
-}
-
-@media (max-width: 768px) {
-  .story-builder {
-    padding: 10px;
-    max-width: 100vw;
+  
+  .story-builder__footer {
+    height: auto;
+    min-height: 5rem;
   }
-
+  
   .story-builder__header {
     height: auto;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
+    gap: 0.75rem;
+    padding: 1rem;
   }
+  
+  .header-left {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .header-actions {
+    justify-content: center;
+  }
+}
 
-  .story-builder__content {
-    padding: 10px;
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .story-builder {
+    padding: 0;
+  }
+  
+  .story-builder__header {
+    padding: 0.75rem;
+  }
+  
+  .story-builder__left-column,
+  .story-builder__right-column {
+    padding: 1rem;
+  }
+  
+  .story-builder__footer {
+    padding: 0.75rem;
+  }
+  
+  .header-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
   }
 }
 </style>
