@@ -44,6 +44,11 @@ const searchQuery = ref('');
 const selectedType = ref('');
 const itemTypes = Type496Enum;
 
+// Dragging state
+const position = ref({ x: 0, y: 0 });
+const isDragging = ref(false);
+const dragOffset = ref({ x: 0, y: 0 });
+
 // Computed properties
 const filteredItems = computed(() => {
   let result = items.value;
@@ -257,6 +262,88 @@ const createDragImage = (item) => {
   return dragImage;
 };
 
+// Dragging functionality
+const startDrag = (event) => {
+  if (!props.isDraggable) return;
+
+  // Don't start drag if we're clicking on an interactive element
+  const interactiveElements = ['INPUT', 'SELECT', 'BUTTON', 'A'];
+  if (interactiveElements.includes(event.target.tagName)) {
+    return;
+  }
+
+  isDragging.value = true;
+
+  // Calculate the offset between mouse position and element's top-left corner
+  // Use the RPGContainer element (first element with gm-rpg-items class)
+  const container = document.querySelector('.gm-rpg-items');
+  const rect = container ? container.getBoundingClientRect() : event.currentTarget.getBoundingClientRect();
+
+  dragOffset.value = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  };
+
+  // Set initial position if not already set
+  if (position.value.x === 0 && position.value.y === 0) {
+    position.value = {
+      x: rect.left,
+      y: rect.top
+    };
+  }
+
+  // Add event listeners for drag and end drag
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', endDrag);
+
+  // Prevent default behavior
+  event.preventDefault();
+};
+
+const onDrag = (event) => {
+  if (!isDragging.value) return;
+
+  // Get the container element to calculate its dimensions
+  const container = document.querySelector('.gm-rpg-items');
+  const containerWidth = container ? container.offsetWidth : 300; // Default fallback width
+  const containerHeight = container ? container.offsetHeight : 400; // Default fallback height
+
+  // Get viewport dimensions
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  // Calculate new position based on mouse movement and offset
+  let newX = event.clientX - dragOffset.value.x;
+  let newY = event.clientY - dragOffset.value.y;
+
+  // Apply boundary constraints to keep the component within the viewport
+  // Left boundary
+  newX = Math.max(0, newX);
+  // Right boundary (subtract container width to prevent it from going off-screen)
+  newX = Math.min(viewportWidth - containerWidth, newX);
+  // Top boundary
+  newY = Math.max(0, newY);
+  // Bottom boundary (subtract container height to prevent it from going off-screen)
+  newY = Math.min(viewportHeight - containerHeight, newY);
+
+  // Update position
+  position.value = {
+    x: newX,
+    y: newY
+  };
+
+  // Prevent default behavior
+  event.preventDefault();
+};
+
+const endDrag = () => {
+  isDragging.value = false;
+
+  // Remove event listeners
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', endDrag);
+};
+
 // Lifecycle hooks
 onMounted(async () => {
   try {
@@ -279,11 +366,20 @@ onBeforeUnmount(() => {
   itemsService.off('loadingStarted', onLoadingStarted);
   itemsService.off('itemsLoaded', onItemsLoaded);
   itemsService.off('loadingFailed', onLoadingFailed);
+
+  // Clean up drag event listeners if they're still active
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', endDrag);
 });
 </script>
 
 <template>
-  <RPGContainer class="gm-rpg-items" :class="{ 'draggable': isDraggable }">
+  <RPGContainer
+    class="gm-rpg-items"
+    :class="{ 'draggable': isDraggable }"
+    :style="isDraggable ? { position: 'absolute', left: position.x + 'px', top: position.y + 'px', zIndex: isDragging ? 1000 : 10 } : {}"
+    @mousedown="startDrag"
+  >
     <div class="items-list-header">
       <h3>Items</h3>
       <div class="items-filter">
@@ -351,8 +447,6 @@ onBeforeUnmount(() => {
 .gm-rpg-items {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: #2d2d2d;
   color: #ffffff;
   border-radius: 4px;
   overflow: hidden;
