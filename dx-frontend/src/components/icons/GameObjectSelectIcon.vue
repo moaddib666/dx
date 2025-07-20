@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
-import gameObjectIcon from '@/assets/icons/gameobject.PNG';
+import gameObjectIcon from '@/assets/icons/gameobject.png';
 import { worldEditorService } from '@/services/WorldEditorService.js';
 
 // Define props for the component

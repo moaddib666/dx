@@ -3,11 +3,11 @@ import { defineProps, computed } from 'vue';
 import GMIconType from '@/models/GMIconTypes';
 
 // Import all icon images
-import characterIcon from '@/assets/icons/character.PNG';
-import gameObjectIcon from '@/assets/icons/gameobject.PNG';
-import itemsIcon from '@/assets/icons/items.PNG';
-import mapIcon from '@/assets/icons/map.PNG';
-import skillIcon from '@/assets/icons/skill.PNG';
+import characterIcon from '@/assets/icons/character.png';
+import gameObjectIcon from '@/assets/icons/gameobject.png';
+import itemsIcon from '@/assets/icons/items.png';
+import mapIcon from '@/assets/icons/map.png';
+import skillIcon from '@/assets/icons/skill.png';
 
 // Define props for the component
 const props = defineProps<{

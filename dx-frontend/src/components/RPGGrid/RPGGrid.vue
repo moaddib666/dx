@@ -70,7 +70,11 @@ const gridStyle = computed(() => {
 
 <template>
   <div class="rpg-grid" :style="gridStyle">
-    <RPGCell v-for="(item, index) in gridCells" :key="index">
+    <RPGCell
+      v-for="(item, index) in gridCells"
+      :key="index"
+      :title="item ? (item.name || item.title || `Grid Item ${index + 1}`) : 'Empty Cell'"
+    >
       <slot v-if="item" :item="item" @click="$emit('gridItemPicked', item)" />
       <div v-else class="empty-cell"></div>
     </RPGCell>

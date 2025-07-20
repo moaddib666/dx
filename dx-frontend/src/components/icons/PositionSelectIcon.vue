@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
-import mapIcon from '@/assets/icons/map.PNG';
+import mapIcon from '@/assets/icons/position-selection-icon.png';
 import { worldMapEditorService } from '@/services/WorldMapEditorService.js';
 
 // Define props for the component

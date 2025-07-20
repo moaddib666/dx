@@ -1,32 +1,32 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
-import skillIcon from '@/assets/icons/skill.png';
-import skillService from '@/services/skillService.js';
+import locationIcon from '@/assets/icons/location-icon.png';
+import { worldMapEditorService } from '@/services/WorldMapEditorService.js';
 
 // Define props for the component
 const props = defineProps<{
-  id?: string | number; // Optional ID of the skill
+  id?: string | number; // Optional ID of the location
   alt?: string; // Optional alt text for the image
 }>();
 
-// State for the skill data
-const skill = ref(null);
+// State for the location data
+const location = ref(null);
 const loading = ref(false);
 const error = ref(null);
 
 // Compute the icon source based on whether an ID is provided
 const iconSrc = computed(() => {
-  if (!props.id || !skill.value) {
-    return skillIcon; // Use placeholder icon if no ID or skill not found
+  if (!props.id || !location.value) {
+    return locationIcon; // Use placeholder icon if no ID or location not found
   }
 
-  // If skill has an image, use it
-  if (skill.value.image) {
-    return skill.value.image;
+  // If location has an image, use it
+  if (location.value.image) {
+    return location.value.image;
   }
 
   // Fallback to placeholder icon
-  return skillIcon;
+  return locationIcon;
 });
 
 // Compute the alt text based on the alt prop or default to a descriptive text
@@ -35,17 +35,17 @@ const altText = computed(() => {
     return props.alt;
   }
 
-  if (skill.value && skill.value.name) {
-    return `Skill: ${skill.value.name}`;
+  if (location.value && location.value.name) {
+    return `Location: ${location.value.name}`;
   }
 
-  return 'Skill';
+  return 'Location';
 });
 
-// Fetch skill data when the component is mounted or when the ID changes
-const fetchSkill = async () => {
+// Fetch location data when the component is mounted or when the ID changes
+const fetchLocation = async () => {
   if (!props.id) {
-    skill.value = null;
+    location.value = null;
     return;
   }
 
@@ -53,17 +53,22 @@ const fetchSkill = async () => {
   error.value = null;
 
   try {
-    // Get skill by ID
-    const skillData = skillService.getSkill(props.id);
-    skill.value = skillData;
+    // Find location by ID in the locations array
+    // Assuming worldMapEditorService has a locations array or a method to get locations
+    if (worldMapEditorService.locations) {
+      const locationData = worldMapEditorService.locations.find(loc => loc.id === props.id);
+      location.value = locationData;
 
-    if (!skillData) {
-      console.warn(`Skill with ID ${props.id} not found`);
+      if (!locationData) {
+        console.warn(`Location with ID ${props.id} not found`);
+      }
+    } else {
+      console.warn('worldMapEditorService.locations is not available');
     }
   } catch (err) {
-    console.error('Error fetching skill:', err);
+    console.error('Error fetching location:', err);
     error.value = err;
-    skill.value = null;
+    location.value = null;
   } finally {
     loading.value = false;
   }
@@ -71,19 +76,19 @@ const fetchSkill = async () => {
 
 // Watch for changes to the ID prop
 onMounted(() => {
-  fetchSkill();
+  fetchLocation();
 });
 </script>
 
 <template>
-  <div class="skill-select-icon">
+  <div class="location-selector-icon">
     <img :src="iconSrc" class="icon" :alt="altText" :class="{ 'is-loading': loading }"/>
     <div v-if="error" class="error-message">!</div>
   </div>
 </template>
 
 <style scoped>
-.skill-select-icon {
+.location-selector-icon {
   position: relative;
   width: 100%;
   height: 100%;
