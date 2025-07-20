@@ -14,7 +14,7 @@ const props = defineProps({
   },
   cols: {
     type: Number,
-    default: 5
+    default: 8
   },
   cellSize: {
     type: Number,
@@ -538,7 +538,15 @@ onBeforeUnmount(() => {
             @dragstart="onDragStart($event, item)"
             @click="selectSkill(item)"
           >
-            <div class="skill-cell">
+            <div
+              class="skill-cell"
+              :class="{
+                'skill-type-border': item.type,
+                [`skill-type-${item.type}`]: item.type,
+                'skill-grade-border': item.grade,
+                [`skill-grade-${item.grade}`]: item.grade
+              }"
+            >
               <div class="skill-icon">
                 <img
                   v-if="item.icon"
@@ -553,9 +561,8 @@ onBeforeUnmount(() => {
               </div>
               <div class="skill-info">
                 <div class="skill-name">{{ item.name }}</div>
-                <div v-if="item.school" class="skill-school">{{ formatSchoolName(item.school) }}</div>
-                <div v-if="item.grade" class="skill-grade">Grade: {{ item.grade }}</div>
-                <div v-if="item.type" class="skill-type">Type: {{ item.type }}</div>
+                <div v-if="item.school" class="skill-school-label">{{ formatSchoolName(item.school) }}</div>
+                <div v-if="item.grade" class="skill-grade-number">{{ item.grade }}</div>
               </div>
             </div>
           </div>
@@ -650,8 +657,17 @@ onBeforeUnmount(() => {
   font-size: 0.9rem;
 }
 
-.school-filter, .grade-filter, .type-filter {
-  /* Specific styles for each filter if needed */
+.school-filter {
+  min-width: 120px;
+}
+
+.grade-filter {
+  min-width: 60px; /* More compact since it only contains numbers 0-9 */
+  flex: 0.5; /* Take less space than other filters */
+}
+
+.type-filter {
+  min-width: 100px;
 }
 
 .skills-grid-container {
@@ -710,10 +726,71 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #3a3a3a;
-  border: 1px solid #555;
   border-radius: 4px;
   padding: 0.3rem;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Type border styles */
+.skill-type-border {
+  border-left: 3px solid transparent;
+}
+
+.skill-type-attack {
+  border-left-color: #ff1744;
+  box-shadow: -2px 0 5px rgba(255, 23, 68, 0.4);
+}
+
+.skill-type-defense {
+  border-left-color: #00e5ff;
+  box-shadow: -2px 0 5px rgba(0, 229, 255, 0.4);
+}
+
+.skill-type-heal {
+  border-left-color: #00ff00;
+  box-shadow: -2px 0 5px rgba(0, 255, 0, 0.4);
+}
+
+.skill-type-Buff {
+  border-left-color: #ffc107;
+  box-shadow: -2px 0 5px rgba(255, 193, 7, 0.4);
+}
+
+.skill-type-debuff {
+  border-left-color: #b71c1c;
+  box-shadow: -2px 0 5px rgba(183, 28, 28, 0.4);
+}
+
+.skill-type-utility {
+  border-left-color: #9e9e9e;
+  box-shadow: -2px 0 5px rgba(158, 158, 158, 0.4);
+}
+
+.skill-type-special {
+  border-left-color: #673ab7;
+  box-shadow: -2px 0 5px rgba(103, 58, 183, 0.4);
+}
+
+/* Grade border styles */
+.skill-grade-border {
+  border-top: 3px solid transparent;
+}
+
+/* Hover effects */
+.skill-wrapper:hover .skill-cell {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.skill-wrapper:hover .skill-type-border {
+  border-left-width: 5px;
+}
+
+.skill-wrapper:hover .skill-grade-border {
+  border-top-width: 5px;
 }
 
 .skill-icon {
@@ -734,7 +811,6 @@ onBeforeUnmount(() => {
 .skill-placeholder {
   width: 100%;
   height: 100%;
-  background: #555;
   color: #ddd;
   display: flex;
   align-items: center;
@@ -810,6 +886,10 @@ onBeforeUnmount(() => {
 .skill-info {
   width: 100%;
   text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .skill-name {
@@ -818,19 +898,34 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  margin-bottom: 0.2rem;
 }
 
-.skill-school, .skill-grade, .skill-type {
-  font-size: 0.7rem;
+.skill-school-label {
+  font-size: 0.65rem;
   color: #aaa;
   text-transform: capitalize;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+  margin-top: 0.1rem;
 }
 
-.skill-grade {
-  color: #88c0ff;
-}
-
-.skill-type {
-  color: #ffb280;
+.skill-grade-number {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  font-size: 0.7rem;
+  font-weight: bold;
+  background: #333;
+  color: white;
+  width: 1.2rem;
+  height: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 </style>
