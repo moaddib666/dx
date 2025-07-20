@@ -44,36 +44,6 @@ const showSettings = ref(false);
 const toggleSettings = () => {
   showSettings.value = !showSettings.value;
 };
-
-const handleSettingClick = (settingType: string) => {
-  console.log(`Setting clicked: ${settingType}`);
-
-  // Get the corresponding ID based on the setting type
-  let id = null;
-  switch(settingType) {
-    case 'gameObject':
-      id = props.gameObjectId;
-      break;
-    case 'position':
-      id = props.positionId;
-      break;
-    case 'location':
-      id = props.locationId;
-      break;
-    case 'npc':
-      id = props.characterId;
-      break;
-    case 'skill':
-      id = props.skillId;
-      break;
-    case 'item':
-      id = props.itemId;
-      break;
-  }
-
-  // Emit the setting click event with type and ID
-  emit('settingClick', { type: settingType, id });
-};
 </script>
 <template>
   <div class="trigger-container">
@@ -87,7 +57,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__gameObject"
           :class="{ 'has-id': gameObjectId }"
-          @click="handleSettingClick('gameObject')"
           title="Select Game Object"
           :data-id="gameObjectId"
         >
@@ -97,7 +66,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__position"
           :class="{ 'has-id': positionId }"
-          @click="handleSettingClick('position')"
           title="Select Position"
           :data-id="positionId"
         >
@@ -107,7 +75,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__location"
           :class="{ 'has-id': locationId }"
-          @click="handleSettingClick('location')"
           title="Select Location"
           :data-id="locationId"
         >
@@ -119,7 +86,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__npc"
           :class="{ 'has-id': characterId }"
-          @click="handleSettingClick('npc')"
           title="Select Character"
           :data-id="characterId"
         >
@@ -129,7 +95,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__skill"
           :class="{ 'has-id': skillId }"
-          @click="handleSettingClick('skill')"
           title="Select Skill"
           :data-id="skillId"
         >
@@ -139,7 +104,6 @@ const handleSettingClick = (settingType: string) => {
         <RPGCell
           class="trigger--settings--icon trigger--settings__item"
           :class="{ 'has-id': itemId }"
-          @click="handleSettingClick('item')"
           title="Select Item"
           :data-id="itemId"
         >
