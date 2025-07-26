@@ -31,7 +31,7 @@
     <!-- Add Items Section -->
     <div v-if="template.data.items.length < template.validation.max_items_count" class="add-items-section">
       <h4>Available Items</h4>
-      
+
       <!-- Search and Filter Controls -->
       <div class="controls-row">
         <div class="search-container">
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { itemsService } from '@/services/ItemsService.js';
+import { itemsService } from '@/services/ItemsService';
 
 export default {
   name: 'EquipmentTab',
@@ -193,7 +193,7 @@ export default {
         const type = item.type || 'Unknown';
         typeCounts[type] = (typeCounts[type] || 0) + 1;
       });
-      
+
       return Object.entries(typeCounts)
         .map(([type, count]) => `${type} (${count})`)
         .join(', ') || 'None';
@@ -201,7 +201,7 @@ export default {
   },
   async created() {
     await this.loadItems();
-    
+
     // Set up event listeners for items service
     this.itemsService.on('itemsLoaded', this.onItemsLoaded);
     this.itemsService.on('loadingStarted', this.onLoadingStarted);
@@ -248,11 +248,11 @@ export default {
       if (this.template.data.items.length >= this.template.validation.max_items_count) {
         return;
       }
-      
+
       if (this.isItemSelected(item.id)) {
         return; // Already selected
       }
-      
+
       this.service.addItem(item.id);
       this.$emit('update');
     },
@@ -746,12 +746,12 @@ h3 {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .items-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
   }
-  
+
   .current-item-card {
     flex-direction: column;
     align-items: flex-start;

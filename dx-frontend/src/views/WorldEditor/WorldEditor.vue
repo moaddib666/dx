@@ -763,7 +763,7 @@ export default {
         };
 
         // Use the character templates service to create the NPC
-        const { characterTemplatesService } = await import('@/services/CharacterTemplatesService.js');
+        const { characterTemplatesService } = await import('@/services/CharacterTemplatesService.ts');
         const npc = await characterTemplatesService.createNpcFromTemplate(template.id, position);
 
         this.setLastAction(`Created NPC from template: ${template.name}`);

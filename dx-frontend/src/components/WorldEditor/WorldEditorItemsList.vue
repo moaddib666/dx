@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {itemsService} from '@/services/ItemsService.js';
+import {itemsService} from '@/services/ItemsService';
 import {dragDropService} from '@/services/DragDropService.js';
 import {Type496Enum} from '@/api/dx-backend/api.ts';
 

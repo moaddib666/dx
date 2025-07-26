@@ -147,7 +147,7 @@
 <script>
 import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import {CharacterInfoGameService} from '@/services/characterInfoService.js';
-import {itemsService} from '@/services/ItemsService.js';
+import {itemsService} from '@/services/ItemsService';
 
 export default {
   name: 'Entities',

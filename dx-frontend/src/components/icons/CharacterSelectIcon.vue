@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
 import characterIcon from '@/assets/icons/character.png';
-import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
+import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
 
 // Define props for the component
 const props = defineProps<{

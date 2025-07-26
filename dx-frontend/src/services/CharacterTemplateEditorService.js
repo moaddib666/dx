@@ -1,6 +1,6 @@
 import { GameMasterApi } from '@/api/backendService.js';
 import { createEmptyCharacterTemplate } from '@/models/CharacterTemplateFull.js';
-import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
+import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
 import skillService from '@/services/skillService.js';
 
 /**

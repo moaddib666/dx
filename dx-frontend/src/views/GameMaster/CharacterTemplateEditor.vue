@@ -49,14 +49,14 @@
           <div class="template-editor" v-if="template">
             <!-- Tab Navigation -->
             <div class="tab-navigation">
-              <button 
+              <button
                 :class="{ active: activeTab === 'template' }"
                 @click="activeTab = 'template'"
                 class="tab-button"
               >
                 Template Details
               </button>
-              <button 
+              <button
                 :class="{ active: activeTab === 'limits' }"
                 @click="activeTab = 'limits'"
                 class="tab-button"
@@ -105,7 +105,7 @@
 
 <script>
 import { characterTemplateEditorService } from '@/services/CharacterTemplateEditorService.js';
-import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
+import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
 import { createSampleCharacterTemplate } from '@/models/CharacterTemplateFull.js';
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import CharacterTemplateDetail from '@/components/GameMaster/CharacterTemplateDetail.vue';

@@ -2,6 +2,7 @@
 import {GameObject, Trigger, TriggerTypeEnum} from "@/api/dx-backend";
 import DXCell from "@/components/DXCell.vue";
 import {computed, ref} from "vue";
+import {itemsService} from '@/services/ItemsService';
 
 // Import trigger icons
 interface Props {
@@ -19,94 +20,42 @@ interface TriggerTarget {
 const props = defineProps<Props>();
 
 interface triggerTargetResolver {
-  (id: any): TriggerTarget;
+  (t: Trigger): TriggerTarget | null;
 }
 
-// Character TemplateResolver - Placeholder for actual character template resolver
-// TODO: implement real one useing the GMCharacterTemplateService
-const characterTemplateResolver: triggerTargetResolver = (id) => {
+const itemTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
+  if (!trigger.item) {
+    return null;
+  }
+
+  const itemInstance = itemsService.getItemById(trigger.item);
+  if (!itemInstance) {
+    return null;
+  }
   return {
-    id,
-    title: `Target ${id}`,
-    image: `https://example.com/target-${id}.png`,
-    name: `Target Name ${id}`,
-    description: `Description for target ${id}`
-  };
-};
+    id: trigger.item,
+    title: itemInstance.name,
+    image: itemInstance.icon,
+    description: itemInstance.description,
+  } as TriggerTarget;
+}
 
-// GameObject Resolver - Placeholder for actual game object resolver
-const gameObjectResolver: triggerTargetResolver = (id) => {
-  // TODO: not implemented yet on backend side skip for now
+const npcTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
+  if (!trigger.npc) {
+    return null;
+  }
+
+  const npcInstance = itemsService.getNPCById(trigger.npc);
+  if (!npcInstance) {
+    return null;
+  }
   return {
-    id,
-    title: `GameObject ${id}`,
-    image: `https://example.com/gameobject-${id}.png`,
-    name: `GameObject Name ${id}`,
-    description: `Description for GameObject ${id}`
-  };
-};
-
-// Item Resolver - Placeholder for actual item resolver
-// FIXME: implement real one using the ItemsService
-const itemResolver: triggerTargetResolver = (id) => {
-  return {
-    id,
-    title: `Item ${id}`,
-    image: `https://example.com/item-${id}.png`,
-    name: `Item Name ${id}`,
-    description: `Description for Item ${id}`
-  };
-};
-
-// Skill Resolver - Placeholder for actual skill resolver
-const skillResolver: triggerTargetResolver = (id) => {
-  return {
-    id,
-    title: `Skill ${id}`,
-    image: `https://example.com/skill-${id}.png`,
-    name: `Skill Name ${id}`,
-    description: `Description for Skill ${id}`
-  };
-};
-
-// Position Resolver - Placeholder for actual position resolver
-const positionResolver: triggerTargetResolver = (id) => {
-  return {
-    id,
-    title: `Position ${id}`,
-    image: `https://example.com/position-${id}.png`,
-    name: `Position Name ${id}`,
-    description: `Description for Position ${id}`
-  };
-};
-
-// Location Resolver - Placeholder for actual location resolver
-const locationResolver: triggerTargetResolver = (id) => {
-  return {
-    id,
-    title: `Location ${id}`,
-    image: `https://example.com/location-${id}.png`,
-    name: `Location Name ${id}`,
-    description: `Description for Location ${id}`
-  };
-};
-
-const triggerResolvers: Record<TriggerTypeEnum, triggerTargetResolver> = {
-  [TriggerTypeEnum.Kill]: characterTemplateResolver,
-  [TriggerTypeEnum.Search]: gameObjectResolver,
-  [TriggerTypeEnum.UseItem]: itemResolver,
-  [TriggerTypeEnum.UseSkill]: skillResolver,
-  [TriggerTypeEnum.Position]: positionResolver,
-  [TriggerTypeEnum.Interaction]: characterTemplateResolver,
-  [TriggerTypeEnum.Custom]: (id) => ({
-    id,
-    title: `Custom Trigger ${id}`,
-    image: `https://example.com/custom-${id}.png`,
-    name: `Custom Name ${id}`,
-    description: `Description for Custom Trigger ${id}`
-  })
-};
-
+    id: trigger.npc,
+    title: npcInstance.name,
+    image: npcInstance.icon,
+    description: npcInstance.description,
+  } as TriggerTarget;
+}
 
 </script>
 

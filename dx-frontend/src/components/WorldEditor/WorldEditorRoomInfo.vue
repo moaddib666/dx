@@ -100,7 +100,7 @@ import WorldEditorConnectionInfo from '@/components/WorldEditor/WorldEditorConne
 import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
 import {dragDropService} from '@/services/DragDropService.js';
-import {characterTemplatesService} from '@/services/CharacterTemplatesService.js';
+import {characterTemplatesService} from '@/services/CharacterTemplatesService.ts';
 
 // Import the new components
 import BasicInformation from '@/components/WorldEditor/WorldEditorRoomInfo/BasicInformation.vue';

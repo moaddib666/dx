@@ -1,10 +1,27 @@
 import {GameMasterApi} from '@/api/backendService.js';
+import {GameMasterItem} from "@/api/dx-backend";
+import {AxiosResponse} from 'axios';
+
+/**
+ * Event types for the ItemsService
+ */
+type ItemsServiceEventType = 'loadingStarted' | 'itemsLoaded' | 'loadingFailed' | 'refreshed' | 'refreshFailed' | 'reset';
+
+/**
+ * Event callback function type
+ */
+type EventCallback = (data?: any) => void;
 
 /**
  * Items Service
  * Handles fetching, caching, and managing items for the WorldEditor
  */
 export class ItemsService {
+    private items: GameMasterItem[];
+    private isLoading: boolean;
+    private lastLoaded: Date | null;
+    private eventListeners: Map<ItemsServiceEventType, EventCallback[]>;
+
     constructor() {
         this.items = [];
         this.isLoading = false;
@@ -15,7 +32,7 @@ export class ItemsService {
     /**
      * Initialize the service and load items
      */
-    async initialize() {
+    async initialize(): Promise<GameMasterItem[]> {
         try {
             console.log('Initializing ItemsService...');
             await this.loadItems();
@@ -29,7 +46,7 @@ export class ItemsService {
     /**
      * Load items from the backend
      */
-    async loadItems() {
+    async loadItems(): Promise<GameMasterItem[]> {
         if (this.isLoading) {
             console.log('Items already loading, waiting for completion...');
             return this.items;
@@ -40,7 +57,7 @@ export class ItemsService {
             this.emit('loadingStarted');
 
             console.log('Loading items from server...');
-            const response = await GameMasterApi.gamemasterItemsList();
+            const response: AxiosResponse = await GameMasterApi.gamemasterItemsList();
 
             if (!response.data) {
                 console.warn('Items API response is empty');
@@ -49,7 +66,7 @@ export class ItemsService {
             }
 
             // Handle response format (array or object with results)
-            let items = [];
+            let items: GameMasterItem[] = [];
             if (Array.isArray(response.data)) {
                 items = response.data;
             } else if (response.data.results) {
@@ -83,28 +100,28 @@ export class ItemsService {
     /**
      * Get all items
      */
-    getItems() {
+    getItems(): GameMasterItem[] {
         return this.items;
     }
 
     /**
      * Get item by ID
      */
-    getItemById(id) {
+    getItemById(id: string): GameMasterItem | undefined {
         return this.items.find(item => item.id === id);
     }
 
     /**
      * Get items by type
      */
-    getItemsByType(type) {
+    getItemsByType(type: string): GameMasterItem[] {
         return this.items.filter(item => item.type === type);
     }
 
     /**
      * Search items by name
      */
-    searchItems(query) {
+    searchItems(query: string): GameMasterItem[] {
         if (!query) return this.items;
 
         const lowerQuery = query.toLowerCase();
@@ -117,7 +134,7 @@ export class ItemsService {
     /**
      * Refresh items from the server
      */
-    async refresh() {
+    async refresh(): Promise<GameMasterItem[]> {
         try {
             console.log('Refreshing items...');
             await this.loadItems();
@@ -133,22 +150,24 @@ export class ItemsService {
     /**
      * Event system for components to listen to changes
      */
-    on(event, callback) {
+    on(event: ItemsServiceEventType, callback: EventCallback): void {
         if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, []);
         }
-        this.eventListeners.get(event).push(callback);
+        this.eventListeners.get(event)?.push(callback);
     }
 
     /**
      * Remove event listener
      */
-    off(event, callback) {
+    off(event: ItemsServiceEventType, callback: EventCallback): void {
         if (this.eventListeners.has(event)) {
             const listeners = this.eventListeners.get(event);
-            const index = listeners.indexOf(callback);
-            if (index > -1) {
-                listeners.splice(index, 1);
+            if (listeners) {
+                const index = listeners.indexOf(callback);
+                if (index > -1) {
+                    listeners.splice(index, 1);
+                }
             }
         }
     }
@@ -156,9 +175,9 @@ export class ItemsService {
     /**
      * Emit event to listeners
      */
-    emit(event, data) {
+    private emit(event: ItemsServiceEventType, data?: any): void {
         if (this.eventListeners.has(event)) {
-            this.eventListeners.get(event).forEach(callback => {
+            this.eventListeners.get(event)?.forEach(callback => {
                 try {
                     callback(data);
                 } catch (error) {
@@ -171,7 +190,7 @@ export class ItemsService {
     /**
      * Reset the service to initial state
      */
-    reset() {
+    reset(): void {
         this.items = [];
         this.isLoading = false;
         this.lastLoaded = null;

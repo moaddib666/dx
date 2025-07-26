@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import {characterTemplatesService} from '@/services/CharacterTemplatesService.js';
+import {characterTemplatesService} from '@/services/CharacterTemplatesService.ts';
 import {dragDropService} from '@/services/DragDropService.js';
 
 export default {

@@ -1,10 +1,43 @@
 import {GameMasterApi} from '@/api/backendService.js';
+import {AxiosResponse} from 'axios';
+import {CharacterTemplate} from "@/api/dx-backend";
+
+/**
+ * Event types for the CharacterTemplatesService
+ */
+type CharacterTemplatesServiceEventType =
+  | 'loadingStarted'
+  | 'templatesLoaded'
+  | 'loadingFailed'
+  | 'refreshed'
+  | 'refreshFailed'
+  | 'reset'
+  | 'npcCreated'
+  | 'npcCreationFailed';
+
+/**
+ * Event callback function type
+ */
+type EventCallback = (data?: any) => void;
+
+/**
+ * Position interface for NPC creation
+ */
+interface Position {
+  id: string | number;
+  [key: string]: any;
+}
 
 /**
  * Character Templates Service
  * Handles fetching, caching, and managing character templates for the WorldEditor
  */
 export class CharacterTemplatesService {
+    private templates: CharacterTemplate[];
+    private isLoading: boolean;
+    private lastLoaded: Date | null;
+    private eventListeners: Map<CharacterTemplatesServiceEventType, EventCallback[]>;
+
     constructor() {
         this.templates = [];
         this.isLoading = false;
@@ -15,7 +48,7 @@ export class CharacterTemplatesService {
     /**
      * Initialize the service and load character templates
      */
-    async initialize() {
+    async initialize(): Promise<CharacterTemplate[]> {
         try {
             console.log('Initializing CharacterTemplatesService...');
             await this.loadTemplates();
@@ -29,7 +62,7 @@ export class CharacterTemplatesService {
     /**
      * Load character templates from the backend
      */
-    async loadTemplates() {
+    async loadTemplates(): Promise<CharacterTemplate[]> {
         if (this.isLoading) {
             console.log('Character templates already loading, waiting for completion...');
             return this.templates;
@@ -40,7 +73,7 @@ export class CharacterTemplatesService {
             this.emit('loadingStarted');
 
             console.log('Loading character templates from server...');
-            const response = await GameMasterApi.gamemasterCharacterTemplatesList();
+            const response: AxiosResponse = await GameMasterApi.gamemasterCharacterTemplatesList();
 
             if (!response.data) {
                 console.warn('Character Templates API response is empty');
@@ -49,7 +82,7 @@ export class CharacterTemplatesService {
             }
 
             // Handle response format (array or object with results)
-            let templates = [];
+            let templates: CharacterTemplate[] = [];
             if (Array.isArray(response.data)) {
                 templates = response.data;
             } else if (response.data.results) {
@@ -83,28 +116,28 @@ export class CharacterTemplatesService {
     /**
      * Get all character templates
      */
-    getTemplates() {
+    getTemplates(): CharacterTemplate[] {
         return this.templates;
     }
 
     /**
      * Get character template by ID
      */
-    getTemplateById(id) {
+    getTemplateById(id: string): CharacterTemplate | undefined {
         return this.templates.find(template => template.id === id);
     }
 
     /**
      * Get character templates by behavior type
      */
-    getTemplatesByBehavior(behavior) {
+    getTemplatesByBehavior(behavior: string): CharacterTemplate[] {
         return this.templates.filter(template => template.behavior === behavior);
     }
 
     /**
      * Search character templates by name
      */
-    searchTemplates(query) {
+    searchTemplates(query: string): CharacterTemplate[] {
         if (!query) return this.templates;
 
         const lowerQuery = query.toLowerCase();
@@ -117,7 +150,7 @@ export class CharacterTemplatesService {
     /**
      * Create a new NPC from a template at a specific position
      */
-    async createNpcFromTemplate(templateId, position) {
+    async createNpcFromTemplate(templateId: string, position: Position): Promise<any> {
         try {
             console.log(`Creating NPC from template ${templateId} at position ${JSON.stringify(position)}`);
             const createNPCFromTemplateRequest = {
@@ -125,7 +158,7 @@ export class CharacterTemplatesService {
                 position_id: position.id.toString() // Ensure position_id is a string UUID
             };
 
-            const response = await GameMasterApi.gamemasterCharacterTemplatesCreateNpcCreate(
+            const response: AxiosResponse = await GameMasterApi.gamemasterCharacterTemplatesCreateNpcCreate(
                 createNPCFromTemplateRequest
             );
 
@@ -142,7 +175,7 @@ export class CharacterTemplatesService {
     /**
      * Refresh character templates from the server
      */
-    async refresh() {
+    async refresh(): Promise<CharacterTemplate[]> {
         try {
             console.log('Refreshing character templates...');
             await this.loadTemplates();
@@ -158,22 +191,24 @@ export class CharacterTemplatesService {
     /**
      * Event system for components to listen to changes
      */
-    on(event, callback) {
+    on(event: CharacterTemplatesServiceEventType, callback: EventCallback): void {
         if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, []);
         }
-        this.eventListeners.get(event).push(callback);
+        this.eventListeners.get(event)?.push(callback);
     }
 
     /**
      * Remove event listener
      */
-    off(event, callback) {
+    off(event: CharacterTemplatesServiceEventType, callback: EventCallback): void {
         if (this.eventListeners.has(event)) {
             const listeners = this.eventListeners.get(event);
-            const index = listeners.indexOf(callback);
-            if (index > -1) {
-                listeners.splice(index, 1);
+            if (listeners) {
+                const index = listeners.indexOf(callback);
+                if (index > -1) {
+                    listeners.splice(index, 1);
+                }
             }
         }
     }
@@ -181,9 +216,9 @@ export class CharacterTemplatesService {
     /**
      * Emit event to listeners
      */
-    emit(event, data) {
+    private emit(event: CharacterTemplatesServiceEventType, data?: any): void {
         if (this.eventListeners.has(event)) {
-            this.eventListeners.get(event).forEach(callback => {
+            this.eventListeners.get(event)?.forEach(callback => {
                 try {
                     callback(data);
                 } catch (error) {
@@ -196,7 +231,7 @@ export class CharacterTemplatesService {
     /**
      * Reset the service to initial state
      */
-    reset() {
+    reset(): void {
         this.templates = [];
         this.isLoading = false;
         this.lastLoaded = null;
@@ -207,3 +242,4 @@ export class CharacterTemplatesService {
 
 // Export singleton instance
 export const characterTemplatesService = new CharacterTemplatesService();
+export default characterTemplatesService;

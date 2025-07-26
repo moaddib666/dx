@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import RPGGridWithScroller from "@/components/RPGGrid/RPGGridWithScroller.vue";
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
-import { characterTemplatesService } from '@/services/CharacterTemplatesService.js';
+import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
 import { dragDropService } from '@/services/DragDropService.js';
 
 // Props definition

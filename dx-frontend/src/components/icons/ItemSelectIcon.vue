@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
 import itemsIcon from '@/assets/icons/items.png';
-import { itemsService } from '@/services/ItemsService.js';
+import { itemsService } from '@/services/ItemsService';
 
 // Define props for the component
 const props = defineProps<{

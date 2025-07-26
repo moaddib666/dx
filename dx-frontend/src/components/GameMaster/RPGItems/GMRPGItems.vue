@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import RPGGridWithScroller from "@/components/RPGGrid/RPGGridWithScroller.vue";
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import ItemCell from "@/components/Item/ItemCell.vue";
-import { itemsService } from '@/services/ItemsService.js';
+import { itemsService } from '@/services/ItemsService';
 import { dragDropService } from '@/services/DragDropService.js';
 import { Type496Enum } from '@/api/dx-backend';
 
