@@ -301,8 +301,6 @@ const isActive = computed(() => {
 
 .chapter-quests {
   margin-top: 0.5rem;
-  padding-left: 0.8rem;
-  border-left: 0.1rem solid rgba(0, 196, 255, 0.4);
   box-shadow: -0.1rem 0 0.2rem rgba(0, 196, 255, 0.1);
   position: relative;
 }

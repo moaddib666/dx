@@ -41,18 +41,18 @@ const isActive = computed(() => {
 
 .list-item:hover {
   background: transparent;
-  border-color: #00d4ff;
+  border-color: #00e6ff;
   transform: translateY(-2px);
   box-shadow:
-      0 0 0 1px rgba(0, 212, 255, 0.1);
+      0 0 0 1px rgba(0, 230, 255, 0.1);
 }
 
 .list-item.selected {
-  background: rgba(0, 212, 255, 0.05);
-  border-color: #00d4ff;
+  background: rgba(0, 230, 255, 0.05);
+  border-color: #00e6ff;
   box-shadow:
-      0 0 10px rgba(0, 212, 255, 0.15),
-      0 0 0 1px rgba(0, 212, 255, 0.2);
+      0 0 10px rgba(0, 230, 255, 0.15),
+      0 0 0 1px rgba(0, 230, 255, 0.2);
 }
 
 .orb {
@@ -61,10 +61,11 @@ const isActive = computed(() => {
   border-radius: 50%;
   margin-right: 10px;
   position: relative;
-  background: radial-gradient(circle at 35% 35%, #3a3a3a, #1a1a1a);
-  border: 1px solid #444;
+  background: radial-gradient(circle at 35% 35%, #1a2a3a, #0d1825);
+  border: 1px solid rgba(0, 196, 255, 0.4);
   transition: all 0.3s ease;
   flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 3px rgba(0, 196, 255, 0.2);
 }
 
 .orb::before {
@@ -75,7 +76,7 @@ const isActive = computed(() => {
   width: 35%;
   height: 35%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.8), transparent 70%);
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.7), transparent 70%);
   transition: all 0.4s ease;
 }
 
@@ -87,18 +88,20 @@ const isActive = computed(() => {
   right: -2px;
   bottom: -2px;
   border-radius: 50%;
-  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.0), transparent);
-  opacity: 0;
+  background:
+    linear-gradient(45deg, transparent, rgba(0, 196, 255, 0.1), transparent),
+    linear-gradient(135deg, transparent, rgba(0, 255, 127, 0.05), transparent);
+  opacity: 0.6;
   transition: all 0.4s ease;
   z-index: -1;
 }
 
 .list-item:hover .orb {
-  background: radial-gradient(circle at 35% 35%, #00d4ff, #0099cc);
-  border-color: #00d4ff;
+  background: radial-gradient(circle at 35% 35%, #00e6ff, #0088aa);
+  border-color: #00ff7f;
   box-shadow:
-      0 0 10px rgba(0, 212, 255, 0.5),
-      0 0 20px rgba(0, 212, 255, 0.2);
+      0 0 10px rgba(0, 230, 255, 0.5),
+      0 0 20px rgba(0, 230, 255, 0.2);
   transform: scale(1.05);
 }
 
@@ -108,20 +111,29 @@ const isActive = computed(() => {
 }
 
 .list-item:hover .orb::after {
-  opacity: 0.8;
-  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  opacity: 0.9;
+  background:
+    linear-gradient(45deg, transparent, rgba(0, 230, 255, 0.4), transparent),
+    linear-gradient(135deg, transparent, rgba(0, 255, 127, 0.2), transparent);
 }
 
 .list-item.selected .orb {
-  background: radial-gradient(circle at 35% 35%, #00d4ff, #0099cc);
-  border-color: #00d4ff;
+  background: radial-gradient(circle at 35% 35%, #00e6ff, #0088aa);
+  border-color: #00e6ff;
   box-shadow:
-      0 0 15px rgba(0, 212, 255, 0.8),
-      0 0 30px rgba(0, 212, 255, 0.4);
+      0 0 15px rgba(0, 230, 255, 0.8),
+      0 0 30px rgba(0, 230, 255, 0.4);
 }
 
 .list-item.selected .orb::before {
-  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  background: radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+}
+
+.list-item.selected .orb::after {
+  opacity: 1;
+  background:
+    linear-gradient(45deg, transparent, rgba(0, 230, 255, 0.5), transparent),
+    linear-gradient(135deg, transparent, rgba(0, 255, 127, 0.1), transparent);
 }
 
 .item-text {
@@ -137,14 +149,14 @@ const isActive = computed(() => {
 .list-item:hover .item-text {
   color: #ffffff;
   text-shadow:
-      0 0 6px rgba(0, 212, 255, 0.3),
+      0 0 6px rgba(0, 230, 255, 0.3),
       0 1px 1px rgba(0, 0, 0, 0.6);
 }
 
 .list-item.selected .item-text {
   color: #ffffff;
   text-shadow:
-      0 0 5px rgba(0, 212, 255, 0.4),
+      0 0 5px rgba(0, 230, 255, 0.4),
       0 1px 1px rgba(0, 0, 0, 0.6);
 }
 
@@ -156,13 +168,14 @@ const isActive = computed(() => {
 @keyframes pulse {
   0%, 100% {
       box-shadow:
-          0 0 8px rgba(0, 212, 255, 0.6),
-          0 0 15px rgba(0, 212, 255, 0.3);
+          0 0 8px rgba(0, 230, 255, 0.6),
+          0 0 15px rgba(0, 230, 255, 0.3);
   }
   50% {
       box-shadow:
-          0 0 10px rgba(0, 212, 255, 0.8),
-          0 0 20px rgba(0, 212, 255, 0.4);
+          0 0 10px rgba(0, 230, 255, 0.8),
+          0 0 20px rgba(0, 230, 255, 0.4),
+          0 0 30px rgba(0, 230, 255, 0.2);
   }
 }
 
@@ -174,7 +187,10 @@ const isActive = computed(() => {
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle,
+    rgba(0, 230, 255, 0.15) 0%,
+    rgba(0, 255, 127, 0.05) 40%,
+    transparent 70%);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.4s ease-out;
