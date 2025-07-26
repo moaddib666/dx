@@ -150,7 +150,6 @@ const unresolvedTriggerText = computed((): string => {
 
 .trigger-item {
   position: relative;
-  margin: 0.3rem 0;
   font-family: 'Cinzel', serif;
   color: #d6b97b;
   display: flex;
@@ -187,8 +186,8 @@ const unresolvedTriggerText = computed((): string => {
 }
 
 .trigger-content {
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   border: 0.15rem solid transparent;
   border-image-slice: 60 60 60 60;
   border-image-width: 10px 10px 10px 10px;
