@@ -1,7 +1,7 @@
 import { GameMasterApi } from '@/api/backendService.js';
 import { createEmptyCharacterTemplate } from '@/models/CharacterTemplateFull.js';
 import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
-import skillService from '@/services/skillService.js';
+import skillService from '@/services/skillService';
 
 /**
  * Character Template Editor Service

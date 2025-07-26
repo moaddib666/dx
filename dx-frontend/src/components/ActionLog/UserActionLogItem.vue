@@ -60,7 +60,7 @@ import SmallCharPreview from "@/components/GameMaster/ActionLog/SmallCharPreview
 import DiceComponent from "@/components/Dice/DiceComponent.vue";
 import InspectionResult from "@/components/GameMaster/ActionLog/InspectionResult.vue";
 import ActionIconMini from "@/components/Action/ActionIconMini.vue";
-import defaultSkillServiceInstance from "@/services/skillService.js";
+import defaultSkillServiceInstance from "@/services/skillService";
 
 export default {
   name: "UserActionLogItem",

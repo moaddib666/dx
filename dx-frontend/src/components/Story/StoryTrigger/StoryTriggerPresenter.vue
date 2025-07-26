@@ -3,6 +3,7 @@ import {Trigger} from "@/api/dx-backend";
 import DXCell from "@/components/DXCell.vue";
 import {itemsService} from '@/services/ItemsService';
 import {characterTemplatesService} from '@/services/CharacterTemplatesService';
+import skillService from "@/services/skillService";
 
 // Import trigger icons
 interface Props {
@@ -57,11 +58,27 @@ const npcTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
   } as TriggerTarget;
 }
 
+const skillTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
+  if (!trigger.skill) {
+    return null;
+  }
+
+  const skillInstance = skillService.getSkill(trigger.skill);
+  if (!skillInstance) {
+    return null;
+  }
+  return {
+    id: trigger.skill,
+    title: skillInstance.name,
+    image: skillInstance.icon,
+    description: skillInstance.description,
+  } as TriggerTarget;
+}
 </script>
 
 <template>
   <div class="trigger-item">
-    <div class="trigger-type-label">{{ formattedTriggerType }}</div>
+    <div class="trigger-type-label">{{ props.trigger.type }}</div>
     <div class="trigger-content">
       <DXCell
           :image="triggerImage"

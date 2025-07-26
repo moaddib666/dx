@@ -1,6 +1,8 @@
 import {SkillsGameApi, SchoolGameApi} from "@/api/backendService.js";
 import {CacheService} from "@/services/cacheService.js";
 import { reactive } from "vue";
+import { OpenaiSkill, OpenaiSchool, OpenaiPathWithSchools } from "@/api/dx-backend";
+import { AxiosResponse } from "axios";
 
 const SkillServiceCache = new CacheService("skills");
 const SchoolServiceCache = new CacheService("schools");
@@ -10,17 +12,28 @@ const PathServiceCache = new CacheService("paths");
  * Service to manage skills, schools, and their business logic including base/non-base categorization.
  */
 export class SkillService {
+    private skillsApi: typeof SkillsGameApi;
+    private schoolApi: typeof SchoolGameApi;
+    private skillCache: CacheService;
+    private schoolCache: CacheService;
+    private pathCache: CacheService;
+    public state: {
+        skillsUpdated: boolean;
+        schoolsUpdated: boolean;
+        pathsUpdated: boolean;
+    };
+
     /**
      * Creates an instance of SkillService.
-     * @param {SkillsGameApi} [skillsApi=SkillsGameApi] - The Skills API instance.
-     * @param {SchoolGameApi} [schoolApi=SchoolGameApi] - The School API instance.
-     * @param {CacheService} [skillCache=SkillServiceCache] - The skills cache service instance.
-     * @param {CacheService} [schoolCache=SchoolServiceCache] - The schools cache service instance.
-     * @param {CacheService} [pathCache=PathServiceCache] - The paths cache service instance.
+     * @param skillsApi - The Skills API instance.
+     * @param schoolApi - The School API instance.
+     * @param skillCache - The skills cache service instance.
+     * @param schoolCache - The schools cache service instance.
+     * @param pathCache - The paths cache service instance.
      */
     constructor(
-        skillsApi = SkillsGameApi, 
-        schoolApi = SchoolGameApi, 
+        skillsApi = SkillsGameApi,
+        schoolApi = SchoolGameApi,
         skillCache = SkillServiceCache,
         schoolCache = SchoolServiceCache,
         pathCache = PathServiceCache
@@ -30,7 +43,7 @@ export class SkillService {
         this.skillCache = skillCache;
         this.schoolCache = schoolCache;
         this.pathCache = pathCache;
-        this.state = reactive({ 
+        this.state = reactive({
             skillsUpdated: false,
             schoolsUpdated: false,
             pathsUpdated: false
@@ -39,13 +52,13 @@ export class SkillService {
 
     /**
      * Updates the skills cache with the latest data from the School API.
-     * @returns {Promise<void>}
+     * @returns Promise<void>
      * @throws Will throw an error if the API call fails or the data is invalid.
      */
-    async updateSkillsCache() {
+    async updateSkillsCache(): Promise<void> {
         try {
-            const response = await this.schoolApi.schoolSchoolsGetAllSkillsRetrieve();
-            const skills = response.data;
+            const response: AxiosResponse = await this.schoolApi.schoolSchoolsGetAllSkillsRetrieve();
+            const skills: OpenaiSkill[] = response.data;
             console.debug("Retrieved skills data:", {skills});
 
             if (!Array.isArray(skills)) {
@@ -56,16 +69,16 @@ export class SkillService {
             await this.skillCache.acquire('__all__');
             await this.skillCache.set('__all__', skills);
             await this.skillCache.release('__all__');
-            
+
             // Populate the cache with each skill
             for (const skill of skills) {
-                await this.skillCache.acquire(skill.id);
+                await this.skillCache.acquire(skill.id.toString());
                 if (skill && skill.id) {
-                    await this.skillCache.set(skill.id, skill);
+                    await this.skillCache.set(skill.id.toString(), skill);
                 } else {
                     console.warn("Encountered invalid skill data:", skill);
                 }
-                await this.skillCache.release(skill.id);
+                await this.skillCache.release(skill.id.toString());
             }
             this.state.skillsUpdated = true;
         } catch (error) {
@@ -76,12 +89,12 @@ export class SkillService {
 
     /**
      * Updates the schools cache with the latest data from the School API.
-     * @returns {Promise<void>}
+     * @returns Promise<void>
      */
-    async updateSchoolsCache() {
+    async updateSchoolsCache(): Promise<void> {
         try {
-            const response = await this.schoolApi.schoolSchoolsGetAllSchoolsRetrieve();
-            const schools = response.data;
+            const response: AxiosResponse = await this.schoolApi.schoolSchoolsGetAllSchoolsRetrieve();
+            const schools: OpenaiSchool[] = response.data;
             console.debug("Retrieved schools data:", {schools});
 
             if (!Array.isArray(schools)) {
@@ -92,7 +105,7 @@ export class SkillService {
             await this.schoolCache.acquire('__all__');
             await this.schoolCache.set('__all__', schools);
             await this.schoolCache.release('__all__');
-            
+
             for (const school of schools) {
                 await this.schoolCache.acquire(school.id);
                 if (school && school.id) {
@@ -111,12 +124,12 @@ export class SkillService {
 
     /**
      * Updates the paths cache with the latest data from the School API.
-     * @returns {Promise<void>}
+     * @returns Promise<void>
      */
-    async updatePathsCache() {
+    async updatePathsCache(): Promise<void> {
         try {
-            const response = await this.schoolApi.schoolPathsGetAllPathsRetrieve();
-            const paths = response.data;
+            const response: AxiosResponse = await this.schoolApi.schoolPathsGetAllPathsRetrieve();
+            const paths: OpenaiPathWithSchools[] = response.data;
             console.debug("Retrieved paths data:", {paths});
 
             if (!Array.isArray(paths)) {
@@ -127,7 +140,7 @@ export class SkillService {
             await this.pathCache.acquire('__all__');
             await this.pathCache.set('__all__', paths);
             await this.pathCache.release('__all__');
-            
+
             for (const path of paths) {
                 await this.pathCache.acquire(path.id);
                 if (path && path.id) {
@@ -146,9 +159,9 @@ export class SkillService {
 
     /**
      * Updates all caches (skills, schools, paths).
-     * @returns {Promise<void>}
+     * @returns Promise<void>
      */
-    async updateAllCaches() {
+    async updateAllCaches(): Promise<void> {
         await Promise.all([
             this.updateSkillsCache(),
             this.updateSchoolsCache(),
@@ -159,21 +172,21 @@ export class SkillService {
     /**
      * Backward compatibility method - updates skills cache only.
      * @deprecated Use updateSkillsCache() or updateAllCaches() instead.
-     * @returns {Promise<void>}
+     * @returns Promise<void>
      */
-    async updateCache() {
+    async updateCache(): Promise<void> {
         console.warn('updateCache() is deprecated. Use updateSkillsCache() or updateAllCaches() instead.');
         await this.updateSkillsCache();
     }
 
     /**
      * Get a skill by its ID.
-     * @param {Number} skillId - The ID of the skill.
-     * @returns {Object|null} The skill data or null if not found.
+     * @param skillId - The ID of the skill.
+     * @returns The skill data or null if not found.
      */
-    getSkill(skillId) {
+    getSkill(skillId: number): OpenaiSkill | null {
         console.debug(`Getting skill ${skillId}...`);
-        const skill = this.skillCache.getInternally(skillId);
+        const skill = this.skillCache.getInternally(skillId.toString());
         if (!skill) {
             console.warn(`Skill ${skillId} not found in cache.`);
             return null;
@@ -184,10 +197,10 @@ export class SkillService {
 
     /**
      * Get a school by its ID.
-     * @param {Number} schoolId - The ID of the school.
-     * @returns {Object|null} The school data or null if not found.
+     * @param schoolId - The ID of the school.
+     * @returns The school data or null if not found.
      */
-    getSchool(schoolId) {
+    getSchool(schoolId: string): OpenaiSchool | null {
         console.debug(`Getting school ${schoolId}...`);
         const school = this.schoolCache.getInternally(schoolId);
         if (!school) {
@@ -200,10 +213,10 @@ export class SkillService {
 
     /**
      * Get a path by its ID.
-     * @param {String} pathId - The ID of the path.
-     * @returns {Object|null} The path data or null if not found.
+     * @param pathId - The ID of the path.
+     * @returns The path data or null if not found.
      */
-    getPath(pathId) {
+    getPath(pathId: string): OpenaiPathWithSchools | null {
         console.debug(`Getting path ${pathId}...`);
         const path = this.pathCache.getInternally(pathId);
         if (!path) {
@@ -216,9 +229,9 @@ export class SkillService {
 
     /**
      * Get all skills from cache.
-     * @returns {Array} Array of all skills.
+     * @returns Array of all skills.
      */
-    getAllSkills() {
+    getAllSkills(): OpenaiSkill[] {
         // Since we don't have getAllInternally, we'll store a master list
         const masterList = this.skillCache.getInternally('__all__');
         return masterList || [];
@@ -226,68 +239,76 @@ export class SkillService {
 
     /**
      * Get all schools from cache.
-     * @returns {Array} Array of all schools.
+     * @returns Array of all schools.
      */
-    getAllSchools() {
+    getAllSchools(): OpenaiSchool[] {
         const masterList = this.schoolCache.getInternally('__all__');
         return masterList || [];
     }
 
     /**
      * Get all paths from cache.
-     * @returns {Array} Array of all paths.
+     * @returns Array of all paths.
      */
-    getAllPaths() {
+    getAllPaths(): OpenaiPathWithSchools[] {
         const masterList = this.pathCache.getInternally('__all__');
         return masterList || [];
     }
 
     /**
      * Check if a school is a base school.
-     * @param {Object} school - The school object.
-     * @returns {Boolean} True if the school is a base school.
+     * @param school - The school object.
+     * @returns True if the school is a base school.
      */
-    isBaseSchool(school) {
+    isBaseSchool(school: OpenaiSchool | null): boolean {
         if (!school) return false;
-        return Boolean(school.is_base || school.is_default || school.is_mandatory);
+        return Boolean(school.is_base);
     }
 
     /**
      * Check if a spell/skill is a base spell.
-     * @param {Object} spell - The spell object.
-     * @returns {Boolean} True if the spell is a base spell.
+     * @param spell - The spell object.
+     * @returns True if the spell is a base spell.
      */
-    isBaseSpell(spell) {
+    isBaseSpell(spell: OpenaiSkill | null): boolean {
         if (!spell) return false;
-        if (Boolean(spell.is_base || spell.is_default || spell.is_mandatory)) return true;
-        
+
+        // Check if spell has is_base property (not in the interface but might be in the data)
+        if ('is_base' in spell && Boolean(spell['is_base'])) return true;
+        if ('is_default' in spell && Boolean(spell['is_default'])) return true;
+        if ('is_mandatory' in spell && Boolean(spell['is_mandatory'])) return true;
+
         // Check if spell belongs to a base school
-        const spellSchool = this.getSchool(spell.school);
-        return this.isBaseSchool(spellSchool);
+        if (spell.school) {
+            const spellSchool = this.getSchool(spell.school);
+            return this.isBaseSchool(spellSchool);
+        }
+
+        return false;
     }
 
     /**
      * Get base schools.
-     * @returns {Array} Array of base schools.
+     * @returns Array of base schools.
      */
-    getBaseSchools() {
+    getBaseSchools(): OpenaiSchool[] {
         return this.getAllSchools().filter(school => this.isBaseSchool(school));
     }
 
     /**
      * Get base skills/spells.
-     * @returns {Array} Array of base skills.
+     * @returns Array of base skills.
      */
-    getBaseSkills() {
+    getBaseSkills(): OpenaiSkill[] {
         return this.getAllSkills().filter(spell => this.isBaseSpell(spell));
     }
 
     /**
      * Get non-base schools from a list of school IDs.
-     * @param {Array} schoolIds - Array of school IDs.
-     * @returns {Array} Array of non-base school IDs.
+     * @param schoolIds - Array of school IDs.
+     * @returns Array of non-base school IDs.
      */
-    getNonBaseSchoolIds(schoolIds) {
+    getNonBaseSchoolIds(schoolIds: string[]): string[] {
         return schoolIds.filter(schoolId => {
             const school = this.getSchool(schoolId);
             return school && !this.isBaseSchool(school);
@@ -296,10 +317,10 @@ export class SkillService {
 
     /**
      * Get non-base spells from a list of spell IDs.
-     * @param {Array} spellIds - Array of spell IDs.
-     * @returns {Array} Array of non-base spell IDs.
+     * @param spellIds - Array of spell IDs.
+     * @returns Array of non-base spell IDs.
      */
-    getNonBaseSpellIds(spellIds) {
+    getNonBaseSpellIds(spellIds: number[]): number[] {
         return spellIds.filter(spellId => {
             const spell = this.getSkill(spellId);
             return spell && !this.isBaseSpell(spell);
@@ -308,45 +329,45 @@ export class SkillService {
 
     /**
      * Get available schools for a specific path (excluding base schools and already selected ones).
-     * @param {String} pathId - The path ID.
-     * @param {Array} selectedSchoolIds - Array of already selected school IDs.
-     * @returns {Array} Array of available schools.
+     * @param pathId - The path ID.
+     * @param selectedSchoolIds - Array of already selected school IDs.
+     * @returns Array of available schools.
      */
-    getAvailableSchoolsForPath(pathId, selectedSchoolIds = []) {
+    getAvailableSchoolsForPath(pathId: string, selectedSchoolIds: string[] = []): OpenaiSchool[] {
         if (!pathId) return [];
-        
+
         return this.getAllSchools().filter(school => {
             const isFromPath = school.path && school.path.includes(pathId);
             const notSelected = !selectedSchoolIds.includes(school.id);
             const notBase = !this.isBaseSchool(school);
-            
+
             return isFromPath && notSelected && notBase;
         });
     }
 
     /**
      * Get available spells for a specific school (excluding already selected ones).
-     * @param {Number} schoolId - The school ID.
-     * @param {Array} selectedSpellIds - Array of already selected spell IDs.
-     * @returns {Array} Array of available spells.
+     * @param schoolId - The school ID.
+     * @param selectedSpellIds - Array of already selected spell IDs.
+     * @returns Array of available spells.
      */
-    getAvailableSpellsForSchool(schoolId, selectedSpellIds = []) {
+    getAvailableSpellsForSchool(schoolId: string, selectedSpellIds: number[] = []): OpenaiSkill[] {
         if (!schoolId) return [];
-        
+
         return this.getAllSkills().filter(spell => {
             const isFromSchool = spell.school === schoolId;
             const notSelected = !selectedSpellIds.includes(spell.id);
-            
+
             return isFromSchool && notSelected;
         });
     }
 
     /**
      * Get the count of base skills from a list of spell IDs.
-     * @param {Array} spellIds - Array of spell IDs.
-     * @returns {Number} Count of base skills.
+     * @param spellIds - Array of spell IDs.
+     * @returns Count of base skills.
      */
-    getBaseSkillsCount(spellIds) {
+    getBaseSkillsCount(spellIds: number[]): number {
         return spellIds.filter(spellId => {
             const spell = this.getSkill(spellId);
             return spell && this.isBaseSpell(spell);

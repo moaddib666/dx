@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import skillService from '@/services/skillService.js';
+import skillService from '@/services/skillService';
 
 export default {
   name: 'TemplateLimitsEditor',
@@ -288,7 +288,7 @@ export default {
         expert: 'Very high limits for veteran characters',
         unlimited: 'No practical limits - use with caution'
       };
-      
+
       // Try to detect which preset is currently active
       const current = this.validation;
       for (const [presetName, description] of Object.entries(descriptions)) {
@@ -297,7 +297,7 @@ export default {
           return description;
         }
       }
-      
+
       return 'Custom limits configuration';
     }
   }
@@ -457,11 +457,11 @@ export default {
   .presets-buttons {
     flex-direction: column;
   }
-  
+
   .preset-btn {
     width: 100%;
   }
-  
+
   .limit-input {
     max-width: 100%;
   }

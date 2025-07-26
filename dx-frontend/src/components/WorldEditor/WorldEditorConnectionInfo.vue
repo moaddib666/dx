@@ -236,7 +236,7 @@ import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import { worldMapEditorService } from '@/services/WorldMapEditorService.js';
 import WorldItemsGameMasterService from '@/services/worldItemsService.js';
 import { gameMasterCharacterService } from '@/services/GameMasterCharacterService.js';
-import defaultSkillServiceInstance from '@/services/skillService.js';
+import defaultSkillServiceInstance from '@/services/skillService';
 
 export default {
   name: 'WorldEditorConnectionInfo',

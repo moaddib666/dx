@@ -60,7 +60,7 @@ import RPGActionImpactItem from "./RPGActionImpactItem.vue";
 import SmallCharPreview from "@/components/GameMaster/ActionLog/SmallCharPreview.vue";
 import DiceComponent from "@/components/Dice/DiceComponent.vue";
 import ActionIconMini from "@/components/Action/ActionIconMini.vue";
-import defaultSkillServiceInstance from "@/services/skillService.js";
+import defaultSkillServiceInstance from "@/services/skillService";
 import { CharacterLogActionImpact } from '@/api/dx-backend/api';
 
 const props = withDefaults(defineProps<{

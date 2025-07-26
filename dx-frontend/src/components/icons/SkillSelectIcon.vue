@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
 import skillIcon from '@/assets/icons/skill.png';
-import skillService from '@/services/skillService.js';
+import skillService from '@/services/skillService';
 
 // Define props for the component
 const props = defineProps<{
