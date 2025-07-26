@@ -40,12 +40,21 @@ const story = computed<Story | undefined>(() => {
       <div class="main-content">
         <p v-if="props.quest.description">{{ props.quest.description }}</p>
       </div>
-      <div class="quest-starters">
-        <h4 v-if="props.quest.starters && props.quest.starters.length > 0">Quest Starters:</h4>
-        <StoryConditionPresenter v-for="starter in props.quest.starters"
-                                 :key="starter.id"
-                                 :condition="starter">
-        </StoryConditionPresenter>
+      <div class="quest-conditions">
+        <div class="quest-starters">
+          <h4 v-if="props.quest.starters && props.quest.starters.length > 0">Quest Starters:</h4>
+          <StoryConditionPresenter v-for="starter in props.quest.starters"
+                                   :key="starter.id"
+                                   :condition="starter">
+          </StoryConditionPresenter>
+        </div>
+        <div class="quest-objectives">
+          <h4 v-if="props.quest.objectives && props.quest.objectives.length > 0">Quest Objectives:</h4>
+          <StoryConditionPresenter v-for="objective in props.quest.objectives"
+                                   :key="objective.id"
+                                   :condition="objective">
+          </StoryConditionPresenter>
+        </div>
       </div>
     </div>
   </RPGContainer>
@@ -125,6 +134,43 @@ const story = computed<Story | undefined>(() => {
   color: #bcbbbb;
   font-family: 'Inter', sans-serif;
   font-size: 1.2rem;
+  width: 100%;
+}
+
+.main-content {
+  margin-bottom: 2rem;
+}
+
+.quest-conditions {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  width: 100%;
+}
+
+.quest-starters, .quest-objectives {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+}
+
+.quest-starters h4, .quest-objectives h4 {
+  font-family: 'Cinzel', serif;
+  color: #d6b97b;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 4px rgba(214, 185, 123, 0.3);
+}
+
+/* Responsive layout - stack columns on smaller screens */
+@media (max-width: 768px) {
+  .quest-conditions {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .quest-starters, .quest-objectives {
+    width: 100%;
+  }
 }
 
 </style>
