@@ -10,7 +10,7 @@ class TriggerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Trigger
-        fields = ['id', 'type', 'game_object', 'position', 'description', 'location', 'npc']
+        exclude = ("created_at", "updated_at")
 
 
 class ConditionSerializer(serializers.ModelSerializer):
