@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Story} from "@/api/dx-backend";
-import RPGStoryTreeChapterItem from "@/components/Story/RPGStoryTreeChapterItem.vue";
+import RPGStoryTreeChapterItem from "@/components/Story/StoryTree/RPGStoryTreeChapterItem.vue";
 import { ref } from 'vue';
 
 interface Props {

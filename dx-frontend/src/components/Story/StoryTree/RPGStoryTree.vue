@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import type {Story} from "@/api/dx-backend";
-import RpgStoryTreeItem from "@/components/Story/RPGStoryTreeItem.vue";
+import RpgStoryTreeItem from "@/components/Story/StoryTree/RPGStoryTreeItem.vue";
 
 interface Props {
   writtenStories: Story[];

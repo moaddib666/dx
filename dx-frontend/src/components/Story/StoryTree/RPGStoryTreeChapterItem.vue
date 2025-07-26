@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineProps, ref, computed} from 'vue';
 import {Chapter} from '@/api/dx-backend';
-import RPGStoryTreeQuestItem from "@/components/Story/RPGStoryTreeQuestItem.vue";
+import RPGStoryTreeQuestItem from "@/components/Story/StoryTree/RPGStoryTreeQuestItem.vue";
 
 interface Props {
   chapter: Chapter;
