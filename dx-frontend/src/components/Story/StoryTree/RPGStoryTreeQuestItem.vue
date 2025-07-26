@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, computed} from 'vue';
+import {defineProps, defineEmits, computed} from 'vue';
 import {Quest} from '@/api/dx-backend';
 
 interface Props {
@@ -10,15 +10,21 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['select-quest']);
 
 // Determine if this quest is active
 const isActive = computed(() => {
   return props.selectedItem === props.quest.id;
 });
+
+// Handle quest selection
+const handleQuestSelect = () => {
+  emit('select-quest', props.quest);
+};
 </script>
 
 <template>
-  <div class="list-item" :class="{ 'selected': isActive }">
+  <div class="list-item" :class="{ 'selected': isActive }" @click="handleQuestSelect">
     <div class="orb"></div>
     <span class="item-text">{{ props.quest.title }}</span>
   </div>

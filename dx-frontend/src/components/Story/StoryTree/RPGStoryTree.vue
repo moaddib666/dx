@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
-import type {Story} from "@/api/dx-backend";
+import type {Story, Quest} from "@/api/dx-backend";
 import RpgStoryTreeItem from "@/components/Story/StoryTree/RPGStoryTreeItem.vue";
 
 interface Props {
@@ -8,6 +8,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['select-quest']);
+
+// Forward the select-quest event from child story items
+const handleQuestSelect = (quest: Quest) => {
+  emit('select-quest', quest);
+};
 
 </script>
 
@@ -22,6 +28,7 @@ const props = defineProps<Props>();
             :selectedItem="''"
             :selected="false"
             :collapsed="true"
+            @select-quest="handleQuestSelect"
         >
         </RpgStoryTreeItem>
     </div>

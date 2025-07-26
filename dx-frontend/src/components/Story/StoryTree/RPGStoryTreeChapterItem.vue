@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {defineProps, ref, computed} from 'vue';
-import {Chapter} from '@/api/dx-backend';
+import {defineProps, defineEmits, ref, computed} from 'vue';
+import {Chapter, Quest} from '@/api/dx-backend';
 import RPGStoryTreeQuestItem from "@/components/Story/StoryTree/RPGStoryTreeQuestItem.vue";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['select-quest']);
 const isCollapsed = ref(props.collapsed);
 
 // Toggle collapse state
@@ -22,6 +23,11 @@ const toggleCollapse = () => {
 const isActive = computed(() => {
   return props.selectedItem === props.chapter.id;
 });
+
+// Forward the select-quest event from child quest items
+const handleQuestSelect = (quest: Quest) => {
+  emit('select-quest', quest);
+};
 
 </script>
 
@@ -45,6 +51,7 @@ const isActive = computed(() => {
           :selectedItem="props.selectedItem"
           :selected="props.selected"
           :collapsed="props.collapsed"
+          @select-quest="handleQuestSelect"
       >
       </RPGStoryTreeQuestItem>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Story} from "@/api/dx-backend";
+import type {Story, Quest} from "@/api/dx-backend";
 import RPGStoryTreeChapterItem from "@/components/Story/StoryTree/RPGStoryTreeChapterItem.vue";
 import { ref } from 'vue';
 
@@ -11,11 +11,17 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(['select-quest']);
 const isCollapsed = ref(props.collapsed);
 
 // Toggle collapse state
 const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value;
+};
+
+// Forward the select-quest event from child chapter items
+const handleQuestSelect = (quest: Quest) => {
+  emit('select-quest', quest);
 };
 
 </script>
@@ -37,6 +43,7 @@ const toggleCollapse = () => {
           :selected="props.selected"
           :collapsed="props.collapsed"
           :selectedItem="props.selectedItem"
+          @select-quest="handleQuestSelect"
       >
       </RPGStoryTreeChapterItem>
     </div>
