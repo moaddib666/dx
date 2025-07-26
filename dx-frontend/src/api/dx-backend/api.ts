@@ -2026,13 +2026,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -3002,6 +3002,12 @@ export interface GameMasterCharacterInfo {
      * @memberof GameMasterCharacterInfo
      */
     'place_of_birth'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'template'?: string | null;
     /**
      * 
      * @type {string}
@@ -4433,6 +4439,12 @@ export interface Nested {
      * @type {string}
      * @memberof Nested
      */
+    'template'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Nested
+     */
     'last_safe_position'?: string | null;
 }
 
@@ -4563,6 +4575,12 @@ export interface NestedRequest {
      * @memberof NestedRequest
      */
     'place_of_birth'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NestedRequest
+     */
+    'template'?: string | null;
     /**
      * 
      * @type {string}
@@ -6270,7 +6288,13 @@ export interface PatchedTriggerRequest {
      */
     'type'?: TriggerTypeEnum;
     /**
-     * Item, NPC, Anomaly
+     * Description of the trigger
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'description'?: string;
+    /**
+     * Concreate - Item, Character, Anomaly
      * @type {string}
      * @memberof PatchedTriggerRequest
      */
@@ -6282,17 +6306,29 @@ export interface PatchedTriggerRequest {
      */
     'position'?: string | null;
     /**
-     * Description of the trigger
-     * @type {string}
-     * @memberof PatchedTriggerRequest
-     */
-    'description'?: string;
-    /**
      * Optional limit trigger to a specific location
      * @type {string}
      * @memberof PatchedTriggerRequest
      */
     'location'?: string | null;
+    /**
+     * All NPCs that been created from this template will have this trigger
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'npc'?: string | null;
+    /**
+     * Optional skill that is required to trigger the action
+     * @type {number}
+     * @memberof PatchedTriggerRequest
+     */
+    'skill'?: number | null;
+    /**
+     * Optional item that is required to trigger the action
+     * @type {string}
+     * @memberof PatchedTriggerRequest
+     */
+    'item'?: string | null;
 }
 
 
@@ -7944,7 +7980,13 @@ export interface Trigger {
      */
     'type': TriggerTypeEnum;
     /**
-     * Item, NPC, Anomaly
+     * Description of the trigger
+     * @type {string}
+     * @memberof Trigger
+     */
+    'description': string;
+    /**
+     * Concreate - Item, Character, Anomaly
      * @type {string}
      * @memberof Trigger
      */
@@ -7956,17 +7998,29 @@ export interface Trigger {
      */
     'position'?: string | null;
     /**
-     * Description of the trigger
-     * @type {string}
-     * @memberof Trigger
-     */
-    'description': string;
-    /**
      * Optional limit trigger to a specific location
      * @type {string}
      * @memberof Trigger
      */
     'location'?: string | null;
+    /**
+     * All NPCs that been created from this template will have this trigger
+     * @type {string}
+     * @memberof Trigger
+     */
+    'npc'?: string | null;
+    /**
+     * Optional skill that is required to trigger the action
+     * @type {number}
+     * @memberof Trigger
+     */
+    'skill'?: number | null;
+    /**
+     * Optional item that is required to trigger the action
+     * @type {string}
+     * @memberof Trigger
+     */
+    'item'?: string | null;
 }
 
 
@@ -7983,7 +8037,13 @@ export interface TriggerRequest {
      */
     'type': TriggerTypeEnum;
     /**
-     * Item, NPC, Anomaly
+     * Description of the trigger
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'description': string;
+    /**
+     * Concreate - Item, Character, Anomaly
      * @type {string}
      * @memberof TriggerRequest
      */
@@ -7995,22 +8055,34 @@ export interface TriggerRequest {
      */
     'position'?: string | null;
     /**
-     * Description of the trigger
-     * @type {string}
-     * @memberof TriggerRequest
-     */
-    'description': string;
-    /**
      * Optional limit trigger to a specific location
      * @type {string}
      * @memberof TriggerRequest
      */
     'location'?: string | null;
+    /**
+     * All NPCs that been created from this template will have this trigger
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'npc'?: string | null;
+    /**
+     * Optional skill that is required to trigger the action
+     * @type {number}
+     * @memberof TriggerRequest
+     */
+    'skill'?: number | null;
+    /**
+     * Optional item that is required to trigger the action
+     * @type {string}
+     * @memberof TriggerRequest
+     */
+    'item'?: string | null;
 }
 
 
 /**
- * * `search` - search * `kill` - kill * `interaction` - interaction * `position` - position * `useItem` - useItem * `useSkill` - useSkill
+ * * `search` - search * `kill` - kill * `interaction` - interaction * `position` - position * `useItem` - useItem * `useSkill` - useSkill * `custom` - custom
  * @export
  * @enum {string}
  */
@@ -8021,7 +8093,8 @@ export const TriggerTypeEnum = {
     Interaction: 'interaction',
     Position: 'position',
     UseItem: 'useItem',
-    UseSkill: 'useSkill'
+    UseSkill: 'useSkill',
+    Custom: 'custom'
 } as const;
 
 export type TriggerTypeEnum = typeof TriggerTypeEnum[keyof typeof TriggerTypeEnum];
@@ -16610,7 +16683,6 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
         /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {GamemasterCharacterTemplatesListBehaviorEnum} [behavior] * &#x60;Passive&#x60; - Passive * &#x60;Aggressive&#x60; - Aggressive * &#x60;Friendly&#x60; - Friendly
-         * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {string} [name] 
          * @param {string} [organization] 
@@ -16621,7 +16693,7 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterCharacterTemplatesList: async (behavior?: GamemasterCharacterTemplatesListBehaviorEnum, campaign?: string, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterCharacterTemplatesList: async (behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/gamemaster/character-templates/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -16646,10 +16718,6 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
 
             if (behavior !== undefined) {
                 localVarQueryParameter['behavior'] = behavior;
-            }
-
-            if (campaign !== undefined) {
-                localVarQueryParameter['campaign'] = campaign;
             }
 
             if (dimension !== undefined) {
@@ -18349,7 +18417,6 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
         /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {GamemasterCharacterTemplatesListBehaviorEnum} [behavior] * &#x60;Passive&#x60; - Passive * &#x60;Aggressive&#x60; - Aggressive * &#x60;Friendly&#x60; - Friendly
-         * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {string} [name] 
          * @param {string} [organization] 
@@ -18360,8 +18427,8 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, campaign?: string, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedCharacterTemplateList>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharacterTemplatesList(behavior, campaign, dimension, name, organization, page, pageSize, path, rank, options);
+        async gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedCharacterTemplateList>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharacterTemplatesList(behavior, dimension, name, organization, page, pageSize, path, rank, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharacterTemplatesList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -18838,7 +18905,6 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
         /**
          * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
          * @param {GamemasterCharacterTemplatesListBehaviorEnum} [behavior] * &#x60;Passive&#x60; - Passive * &#x60;Aggressive&#x60; - Aggressive * &#x60;Friendly&#x60; - Friendly
-         * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {string} [name] 
          * @param {string} [organization] 
@@ -18849,8 +18915,8 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, campaign?: string, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: any): AxiosPromise<PaginatedCharacterTemplateList> {
-            return localVarFp.gamemasterCharacterTemplatesList(behavior, campaign, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(axios, basePath));
+        gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: any): AxiosPromise<PaginatedCharacterTemplateList> {
+            return localVarFp.gamemasterCharacterTemplatesList(behavior, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(axios, basePath));
         },
         /**
          * Allow to se what NPC will be created from the template.
@@ -19223,7 +19289,6 @@ export class GamemasterApi extends BaseAPI {
     /**
      * ViewSet for game masters to view character templates and create NPCs from them.  This viewset provides read-only operations for character templates and an action to create NPCs from templates.
      * @param {GamemasterCharacterTemplatesListBehaviorEnum} [behavior] * &#x60;Passive&#x60; - Passive * &#x60;Aggressive&#x60; - Aggressive * &#x60;Friendly&#x60; - Friendly
-     * @param {string} [campaign] 
      * @param {number} [dimension] 
      * @param {string} [name] 
      * @param {string} [organization] 
@@ -19235,8 +19300,8 @@ export class GamemasterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, campaign?: string, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig) {
-        return GamemasterApiFp(this.configuration).gamemasterCharacterTemplatesList(behavior, campaign, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(this.axios, this.basePath));
+    public gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterCharacterTemplatesList(behavior, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -25642,13 +25707,14 @@ export const StoryApiAxiosParamCreator = function (configuration?: Configuration
          * ViewSet for game masters to manage triggers for quest conditions.
          * @param {string} [gameObject] 
          * @param {string} [location] 
+         * @param {string} [npc] 
          * @param {string} [position] 
          * @param {string} [search] A search term.
-         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill * &#x60;custom&#x60; - custom
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        storyTriggersList: async (gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        storyTriggersList: async (gameObject?: string, location?: string, npc?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/story/triggers/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -25677,6 +25743,10 @@ export const StoryApiAxiosParamCreator = function (configuration?: Configuration
 
             if (location !== undefined) {
                 localVarQueryParameter['location'] = location;
+            }
+
+            if (npc !== undefined) {
+                localVarQueryParameter['npc'] = npc;
             }
 
             if (position !== undefined) {
@@ -26583,14 +26653,15 @@ export const StoryApiFp = function(configuration?: Configuration) {
          * ViewSet for game masters to manage triggers for quest conditions.
          * @param {string} [gameObject] 
          * @param {string} [location] 
+         * @param {string} [npc] 
          * @param {string} [position] 
          * @param {string} [search] A search term.
-         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill * &#x60;custom&#x60; - custom
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Trigger>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersList(gameObject, location, position, search, type, options);
+        async storyTriggersList(gameObject?: string, location?: string, npc?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Trigger>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.storyTriggersList(gameObject, location, npc, position, search, type, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StoryApi.storyTriggersList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -27201,14 +27272,15 @@ export const StoryApiFactory = function (configuration?: Configuration, basePath
          * ViewSet for game masters to manage triggers for quest conditions.
          * @param {string} [gameObject] 
          * @param {string} [location] 
+         * @param {string} [npc] 
          * @param {string} [position] 
          * @param {string} [search] A search term.
-         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+         * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill * &#x60;custom&#x60; - custom
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: any): AxiosPromise<Array<Trigger>> {
-            return localVarFp.storyTriggersList(gameObject, location, position, search, type, options).then((request) => request(axios, basePath));
+        storyTriggersList(gameObject?: string, location?: string, npc?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: any): AxiosPromise<Array<Trigger>> {
+            return localVarFp.storyTriggersList(gameObject, location, npc, position, search, type, options).then((request) => request(axios, basePath));
         },
         /**
          * ViewSet for game masters to manage triggers for quest conditions.
@@ -27923,15 +27995,16 @@ export class StoryApi extends BaseAPI {
      * ViewSet for game masters to manage triggers for quest conditions.
      * @param {string} [gameObject] 
      * @param {string} [location] 
+     * @param {string} [npc] 
      * @param {string} [position] 
      * @param {string} [search] A search term.
-     * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill
+     * @param {StoryTriggersListTypeEnum} [type] * &#x60;search&#x60; - search * &#x60;kill&#x60; - kill * &#x60;interaction&#x60; - interaction * &#x60;position&#x60; - position * &#x60;useItem&#x60; - useItem * &#x60;useSkill&#x60; - useSkill * &#x60;custom&#x60; - custom
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof StoryApi
      */
-    public storyTriggersList(gameObject?: string, location?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig) {
-        return StoryApiFp(this.configuration).storyTriggersList(gameObject, location, position, search, type, options).then((request) => request(this.axios, this.basePath));
+    public storyTriggersList(gameObject?: string, location?: string, npc?: string, position?: string, search?: string, type?: StoryTriggersListTypeEnum, options?: RawAxiosRequestConfig) {
+        return StoryApiFp(this.configuration).storyTriggersList(gameObject, location, npc, position, search, type, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -28007,6 +28080,7 @@ export type StoryEffectRewardsListEffectEnum = typeof StoryEffectRewardsListEffe
  * @export
  */
 export const StoryTriggersListTypeEnum = {
+    Custom: 'custom',
     Interaction: 'interaction',
     Kill: 'kill',
     Position: 'position',
