@@ -5,6 +5,7 @@ import RpgStoryTreeItem from "@/components/Story/StoryTree/RPGStoryTreeItem.vue"
 
 interface Props {
   writtenStories: Story[];
+  selectedQuestId?: string;
 }
 
 const props = defineProps<Props>();
@@ -25,7 +26,7 @@ const handleQuestSelect = (quest: Quest) => {
             v-for="story in props.writtenStories"
             :key="story.id"
             :story="story"
-            :selectedItem="''"
+            :selectedItem="props.selectedQuestId || ''"
             :selected="false"
             :collapsed="true"
             @select-quest="handleQuestSelect"

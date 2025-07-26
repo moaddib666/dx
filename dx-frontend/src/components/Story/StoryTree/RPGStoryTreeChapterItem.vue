@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, defineEmits, ref, computed} from 'vue';
+import {defineProps, defineEmits, ref, computed, watch} from 'vue';
 import {Chapter, Quest} from '@/api/dx-backend';
 import RPGStoryTreeQuestItem from "@/components/Story/StoryTree/RPGStoryTreeQuestItem.vue";
 
@@ -19,15 +19,35 @@ const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value;
 };
 
-// Determine if this chapter is active
+// Determine if this chapter is active or contains the active quest
 const isActive = computed(() => {
-  return props.selectedItem === props.chapter.id;
+  // Check if this chapter is directly selected
+  if (props.selectedItem === props.chapter.id) {
+    return true;
+  }
+
+  // Check if any of this chapter's quests are selected
+  return props.chapter.quests.some(quest => quest.id === props.selectedItem);
 });
 
 // Forward the select-quest event from child quest items
 const handleQuestSelect = (quest: Quest) => {
   emit('select-quest', quest);
 };
+
+// Auto-expand chapter when it contains the selected quest
+watch(() => props.selectedItem, (newSelectedItem) => {
+  if (newSelectedItem) {
+    // Check if this chapter is selected or contains the selected quest
+    const isChapterSelected = newSelectedItem === props.chapter.id;
+    const isQuestSelected = props.chapter.quests.some(quest => quest.id === newSelectedItem);
+
+    // If this chapter or any of its quests are selected, expand it
+    if (isChapterSelected || isQuestSelected) {
+      isCollapsed.value = false;
+    }
+  }
+}, { immediate: true });
 
 </script>
 

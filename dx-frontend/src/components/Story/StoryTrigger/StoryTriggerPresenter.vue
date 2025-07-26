@@ -52,7 +52,6 @@ const npcTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
     return null;
   }
 
-  console.warn('NPC Trigger Target Resolver', {npcInstance});
   return {
     id: trigger.npc,
     title: npcInstance.name,

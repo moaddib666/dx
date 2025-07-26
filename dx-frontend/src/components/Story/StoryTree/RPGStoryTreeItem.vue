@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Story, Quest} from "@/api/dx-backend";
 import RPGStoryTreeChapterItem from "@/components/Story/StoryTree/RPGStoryTreeChapterItem.vue";
-import { ref } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 interface Props {
   story: Story | null;
@@ -19,15 +19,67 @@ const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value;
 };
 
+// Determine if this story is active or contains the active chapter/quest
+const isActive = computed(() => {
+  if (!props.story) return false;
+
+  // Check if this story is directly selected
+  if (props.selectedItem === props.story.id) {
+    return true;
+  }
+
+  // Check if any of this story's chapters are selected
+  for (const chapter of props.story.chapters) {
+    if (props.selectedItem === chapter.id) {
+      return true;
+    }
+
+    // Check if any of this chapter's quests are selected
+    for (const quest of chapter.quests) {
+      if (props.selectedItem === quest.id) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+});
+
 // Forward the select-quest event from child chapter items
 const handleQuestSelect = (quest: Quest) => {
   emit('select-quest', quest);
 };
 
+// Auto-expand story when it contains the selected chapter or quest
+watch(() => props.selectedItem, (newSelectedItem) => {
+  if (newSelectedItem && props.story) {
+    // Check if this story is selected
+    if (newSelectedItem === props.story.id) {
+      isCollapsed.value = false;
+      return;
+    }
+
+    // Check if any of this story's chapters or their quests are selected
+    for (const chapter of props.story.chapters) {
+      if (newSelectedItem === chapter.id) {
+        isCollapsed.value = false;
+        return;
+      }
+
+      for (const quest of chapter.quests) {
+        if (newSelectedItem === quest.id) {
+          isCollapsed.value = false;
+          return;
+        }
+      }
+    }
+  }
+}, { immediate: true });
+
 </script>
 
 <template>
-  <div class="story-item">
+  <div class="story-item" :class="{ 'active': isActive }">
     <div class="story-header" @click="toggleCollapse">
       <div class="story-header-content">
         <img v-if="props.story.image" :src="props.story.image" alt="Story image" class="story-image" />
@@ -57,6 +109,15 @@ const handleQuestSelect = (quest: Quest) => {
   background-color: rgba(0, 0, 0, 0.3);
   padding: 0.75rem;
   border: 1px solid rgba(216, 187, 124, 0.3);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.story-item.active {
+  border-color: rgba(216, 187, 124, 0.8);
+  background-color: rgba(0, 0, 0, 0.4);
+  box-shadow:
+      0 0 15px rgba(216, 187, 124, 0.2),
+      0 0 5px rgba(216, 187, 124, 0.1);
 }
 
 .story-header {
@@ -89,7 +150,14 @@ const handleQuestSelect = (quest: Quest) => {
   color: var(--color-gold);
   margin: 0;
   text-shadow: 0 0 8px rgba(216, 187, 124, 0.5);
-  transition: text-shadow 0.3s ease;
+  transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.active .story-title {
+  color: #fada95;
+  text-shadow:
+      0 0 12px rgba(216, 187, 124, 0.8),
+      0 0 20px rgba(216, 187, 124, 0.4);
 }
 
 /* Responsive design for smaller containers (30% width) */

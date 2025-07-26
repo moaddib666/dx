@@ -86,9 +86,10 @@ const resolvedItems = computed(() => {
           />
         </div>
         <!-- Fallback for unresolved items -->
+
         <div v-for="(item, index) in props.reward.items" :key="`unresolved-${index}`" class="item-reward"
-             v-if="!resolvedItems.some(resolved => resolved && resolved.id === item.item)">
-          <div class="placeholder-item">
+           >
+          <div class="placeholder-item"   v-if="item && !resolvedItems.some(resolved => resolved && resolved.id && item.item && resolved.id === item.item)">
             <div class="placeholder-icon">?</div>
             <div class="placeholder-text">Item ID: {{ item.item }}</div>
             <div class="placeholder-text">Qty: {{ item.quantity || 1 }}</div>
