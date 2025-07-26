@@ -30,9 +30,11 @@ const story = computed<Story | undefined>(() => {
         <img v-else-if="chapter?.image" :src="chapter.image" alt="Chapter background" class="background-image"/>
         <img v-else-if="story?.image" :src="story.image" alt="Story background" class="background-image"/>
       </div>
+      <h3 v-if="chapter?.title"> {{ chapter.title }}</h3>
       <h2>
-        {{ props.quest.title }}
+         {{ props.quest.title }}
       </h2>
+
     </div>
   </RPGContainer>
 </template>
@@ -50,7 +52,7 @@ const story = computed<Story | undefined>(() => {
 .hero-section {
   position: relative;
   width: 100%;
-  height: 40vh;
+  height: 25vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,6 +60,7 @@ const story = computed<Story | undefined>(() => {
   overflow: hidden;
   border-radius: 8px;
   margin-bottom: 2rem;
+  flex-direction: column;
 }
 
 .background--holder {
@@ -74,16 +77,36 @@ const story = computed<Story | undefined>(() => {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  filter: shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }
 
 .hero-section h2 {
   position: relative;
   z-index: 1;
-  color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #fada95;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(216, 187, 124, 0.5);
+  filter: drop-shadow(0 0.2rem rgba(0, 0, 0, 0.6))
+          drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
+  transition: text-shadow 0.3s ease;
+}
+.hero-section h3,
+.hero-section h4 {
+  position: relative;
+  z-index: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0.5rem 0;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(0 0.1rem rgba(0, 0, 0, 0.6))
+          drop-shadow(0 0.05rem rgba(0, 0, 0, 0.4));
 }
 
 </style>

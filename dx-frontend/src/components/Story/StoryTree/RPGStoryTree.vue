@@ -54,6 +54,10 @@ const handleQuestSelect = (quest: Quest) => {
   text-transform: uppercase;
   margin-bottom: 1rem;
   text-align: center;
+  text-shadow: 0 0 8px rgba(216, 187, 124, 0.5);
+  filter: drop-shadow(0 0.2rem rgba(0, 0, 0, 0.6))
+  drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
+  transition: text-shadow 0.3s ease;
 }
 
 .scrollable-content {
