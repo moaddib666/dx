@@ -5,7 +5,7 @@ from apps.character.api.serializers.openapi import ThePathSerializer
 from apps.character.models import Rank
 
 
-class CharacterTemplateSerializer(serializers.ModelSerializer):
+class CharacterTemplateGameMasterSerializer(serializers.ModelSerializer):
     """
     Serializer for CharacterTemplate model.
 

@@ -14,7 +14,7 @@ from apps.game.services.npc.factory import NPCFactory
 from apps.game.services.npc.factory.interface import NPCFactoryConfig
 from apps.gamemaster.api.filters import CharacterTemplateFilter
 from apps.gamemaster.api.serializers.character import GameMasterCharacterInfoSerializer
-from apps.gamemaster.api.serializers.character_template import CharacterTemplateSerializer, \
+from apps.gamemaster.api.serializers.character_template import CharacterTemplateGameMasterSerializer, \
     CreateNPCFromTemplateSerializer
 from apps.world.models import Position
 
@@ -33,7 +33,7 @@ class CharacterTemplateViewSet(CampaignFilterMixin, viewsets.ReadOnlyModelViewSe
         max_page_size = 200
 
     queryset = CharacterTemplate.objects.all()
-    serializer_class = CharacterTemplateSerializer
+    serializer_class = CharacterTemplateGameMasterSerializer
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]
     filterset_class = CharacterTemplateFilter
