@@ -349,6 +349,41 @@ const isActive = computed(() => {
   }
 }
 
+/* Additional responsive design for smaller containers (30% width) */
+@media (max-width: 480px), (max-width: 30vw) {
+  .chapter-item {
+    margin-bottom: 0.5rem;
+    padding: 0.4rem;
+    border-width: 0.05rem;
+  }
+
+  .chapter-container {
+    gap: 0.5rem;
+    padding: 0.3rem 0;
+  }
+
+  .chapter-number-frame {
+    width: 2rem;
+    height: 2.5rem;
+    border-width: 0.1rem;
+  }
+
+  .chapter-number {
+    font-size: 1rem;
+  }
+
+  .chapter-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .chapter-quests {
+    margin-top: 0.3rem;
+    padding-left: 0.4rem;
+    border-left-width: 0.05rem;
+  }
+}
+
 /* Additional animation for Flow energy effect */
 @keyframes flowPulse {
   0%, 100% { opacity: 0.6; }

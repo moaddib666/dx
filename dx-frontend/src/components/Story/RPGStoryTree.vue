@@ -55,6 +55,18 @@ const props = defineProps<Props>();
   padding: 0 1rem;
 }
 
+/* Responsive design for smaller containers (30% width) */
+@media (max-width: 480px), (max-width: 30vw) {
+  .global-header {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .scrollable-content {
+    padding: 0 0.5rem;
+  }
+}
+
 /* Global font variables */
 :root {
   --font-header: 'Cinzel', 'Trajan Pro', serif;

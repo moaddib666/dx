@@ -67,6 +67,22 @@ const toggleCollapse = () => {
   transition: text-shadow 0.3s ease;
 }
 
+/* Responsive design for smaller containers (30% width) */
+@media (max-width: 480px), (max-width: 30vw) {
+  .story-item {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+  }
+
+  .story-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .story-title {
+    font-size: 1.25rem;
+  }
+}
+
 .story-header:hover .story-title {
   text-shadow: 0 0 12px rgba(216, 187, 124, 0.8);
 }

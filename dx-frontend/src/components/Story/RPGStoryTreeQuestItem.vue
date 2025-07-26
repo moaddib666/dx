@@ -72,4 +72,25 @@ const isActive = computed(() => {
   font-size: 0.75rem;
   color: #aaa;
 }
+
+/* Responsive design for smaller containers (30% width) */
+@media (max-width: 480px), (max-width: 30vw) {
+  .quest-item {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .quest-item:hover {
+    transform: translateX(1px);
+  }
+
+  .quest-title {
+    font-size: 0.85rem;
+    margin: 0 0 0.15rem 0;
+  }
+
+  .quest-subtext {
+    font-size: 0.65rem;
+  }
+}
 </style>
