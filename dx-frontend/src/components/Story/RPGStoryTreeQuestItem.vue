@@ -28,15 +28,15 @@ const isActive = computed(() => {
 .list-item {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: transparent;
   border: 1px solid rgba(42, 42, 42, 0.5);
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .list-item:hover {
@@ -56,16 +56,16 @@ const isActive = computed(() => {
 }
 
 .orb {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 8px;
   position: relative;
   background: radial-gradient(circle at 35% 35%, #1a2a3a, #0d1825);
   border: 1px solid rgba(0, 196, 255, 0.4);
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 3px rgba(0, 196, 255, 0.2);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 2px rgba(0, 196, 255, 0.2);
 }
 
 .orb::before {
@@ -138,9 +138,9 @@ const isActive = computed(() => {
 
 .item-text {
   color: #e5e5e5;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
   transition: all 0.3s ease;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
   font-family: var(--font-body);
@@ -205,18 +205,18 @@ const isActive = computed(() => {
 /* Responsive design for smaller containers */
 @media (max-width: 480px), (max-width: 30vw) {
   .list-item {
-    padding: 6px 10px;
-    margin-bottom: 3px;
+    padding: 4px 8px;
+    margin-bottom: 2px;
   }
 
   .orb {
-    width: 12px;
-    height: 12px;
-    margin-right: 8px;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
   }
 
   .item-text {
-    font-size: 12px;
+    font-size: 10px;
   }
 }
 </style>

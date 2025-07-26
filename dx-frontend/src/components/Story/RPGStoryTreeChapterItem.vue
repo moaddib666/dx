@@ -53,13 +53,13 @@ const isActive = computed(() => {
 
 <style scoped>
 .chapter-item {
-  margin-bottom: 0.75rem;
-  border-radius: 0.4rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.3rem;
   background: linear-gradient(145deg, rgba(13, 25, 35, 0.8), rgba(20, 35, 50, 0.6));
-  padding: 0.6rem;
-  border: 0.1rem solid rgba(0, 196, 255, 0.3);
+  padding: 0.4rem;
+  border: 1px solid rgba(0, 196, 255, 0.3);
   box-shadow:
-      0 0.25rem 0.75rem rgba(0, 0, 0, 0.4),
+      0 0.15rem 0.5rem rgba(0, 0, 0, 0.4),
       inset 0 0.05rem 0 rgba(0, 196, 255, 0.1);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   position: relative;
@@ -94,10 +94,10 @@ const isActive = computed(() => {
 .chapter-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   position: relative;
   cursor: pointer;
-  padding: 0.4rem 0;
+  padding: 0.3rem 0;
   overflow: hidden;
 }
 
@@ -163,18 +163,18 @@ const isActive = computed(() => {
 
 .chapter-number-frame {
   position: relative;
-  width: 3.2rem;
-  height: 4rem;
+  width: 2.4rem;
+  height: 3rem;
   background: linear-gradient(145deg, #1a2a3a, #0d1825);
-  border: 0.15rem solid #00c4ff;
-  border-radius: 0.4rem;
+  border: 1px solid #00c4ff;
+  border-radius: 0.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-      0 0.3rem 0.8rem rgba(0, 0, 0, 0.6),
-      inset 0 0.1rem 0.3rem rgba(0, 0, 0, 0.4),
-      0 0 0.4rem rgba(0, 196, 255, 0.3);
+      0 0.2rem 0.5rem rgba(0, 0, 0, 0.6),
+      inset 0 0.1rem 0.2rem rgba(0, 0, 0, 0.4),
+      0 0 0.3rem rgba(0, 196, 255, 0.3);
   flex-shrink: 0;
   overflow: hidden;
   z-index: 2; /* Ensure it appears above the image */
@@ -213,13 +213,13 @@ const isActive = computed(() => {
 }
 
 .chapter-number {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #00f0ff;
   text-shadow:
-      0 0 0.5rem rgba(0, 240, 255, 0.9),
-      0 0 1rem rgba(0, 240, 255, 0.5),
-      0.05rem 0.05rem 0.2rem rgba(0, 0, 0, 0.8);
+      0 0 0.3rem rgba(0, 240, 255, 0.9),
+      0 0 0.6rem rgba(0, 240, 255, 0.5),
+      0.05rem 0.05rem 0.1rem rgba(0, 0, 0, 0.8);
   z-index: 2;
   font-family: var(--font-header);
   position: relative;
@@ -228,15 +228,15 @@ const isActive = computed(() => {
 
 .chapter-title {
   font-family: var(--font-header);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: #b8e0ff;
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-shadow:
-      0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.8),
-      0 0 0.2rem rgba(184, 224, 255, 0.3);
+      0.05rem 0.05rem 0.2rem rgba(0, 0, 0, 0.8),
+      0 0 0.15rem rgba(184, 224, 255, 0.3);
   line-height: 1.1;
   position: relative;
   z-index: 2; /* Ensure it appears above the image */
@@ -300,8 +300,8 @@ const isActive = computed(() => {
 }
 
 .chapter-quests {
-  margin-top: 0.5rem;
-  box-shadow: -0.1rem 0 0.2rem rgba(0, 196, 255, 0.1);
+  margin-top: 0.3rem;
+  box-shadow: -0.05rem 0 0.1rem rgba(0, 196, 255, 0.1);
   position: relative;
 }
 
@@ -336,35 +336,35 @@ const isActive = computed(() => {
 /* Additional responsive design for smaller containers (30% width) */
 @media (max-width: 480px), (max-width: 30vw) {
   .chapter-item {
-    margin-bottom: 0.5rem;
-    padding: 0.4rem;
-    border-width: 0.05rem;
+    margin-bottom: 0.4rem;
+    padding: 0.3rem;
+    border-width: 1px;
   }
 
   .chapter-container {
-    gap: 0.5rem;
-    padding: 0.3rem 0;
+    gap: 0.25rem;
+    padding: 0.2rem 0;
   }
 
   .chapter-number-frame {
-    width: 2rem;
-    height: 2.5rem;
-    border-width: 0.1rem;
+    width: 1.8rem;
+    height: 2.2rem;
+    border-width: 1px;
   }
 
   .chapter-number {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .chapter-title {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 0.05em;
   }
 
   .chapter-quests {
-    margin-top: 0.3rem;
-    padding-left: 0.4rem;
-    border-left-width: 0.05rem;
+    margin-top: 0.25rem;
+    padding-left: 0.3rem;
+    border-left-width: 1px;
   }
 }
 

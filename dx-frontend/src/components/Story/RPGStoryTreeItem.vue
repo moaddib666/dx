@@ -45,10 +45,10 @@ const toggleCollapse = () => {
 
 <style scoped>
 .story-item {
-  margin-bottom: 2rem;
-  border-radius: 8px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
   background-color: rgba(0, 0, 0, 0.3);
-  padding: 1.5rem;
+  padding: 0.75rem;
   border: 1px solid rgba(216, 187, 124, 0.3);
 }
 
@@ -56,28 +56,28 @@ const toggleCollapse = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
 .story-header-content {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .story-image {
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1px solid rgba(216, 187, 124, 0.5);
   box-shadow: 0 0 8px rgba(216, 187, 124, 0.3);
 }
 
 .story-title {
   font-family: var(--font-header);
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-gold);
   margin: 0;
@@ -88,25 +88,25 @@ const toggleCollapse = () => {
 /* Responsive design for smaller containers (30% width) */
 @media (max-width: 480px), (max-width: 30vw) {
   .story-item {
-    margin-bottom: 1rem;
-    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
   }
 
   .story-header {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .story-header-content {
-    gap: 0.5rem;
+    gap: 0.25rem;
   }
 
   .story-image {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
   }
 
   .story-title {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 }
 
@@ -116,40 +116,40 @@ const toggleCollapse = () => {
 
 .story-status {
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: #f1c96a;
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
   background-color: rgba(241, 201, 106, 0.1);
 }
 
 .story-progress {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .progress-bar {
-  height: 6px;
+  height: 4px;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .progress-fill {
   height: 100%;
   background-color: var(--color-gold);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .progress-label {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #ccc;
   text-align: right;
 }
 
 .story-chapters {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 </style>
