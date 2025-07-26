@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {GameObject, Trigger, TriggerTypeEnum} from "@/api/dx-backend";
+import {Trigger} from "@/api/dx-backend";
 import DXCell from "@/components/DXCell.vue";
-import {computed, ref} from "vue";
 import {itemsService} from '@/services/ItemsService';
+import {characterTemplatesService} from '@/services/CharacterTemplatesService';
 
 // Import trigger icons
 interface Props {
@@ -45,15 +45,15 @@ const npcTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
     return null;
   }
 
-  const npcInstance = itemsService.getNPCById(trigger.npc);
+  const npcInstance = characterTemplatesService.getTemplateById(trigger.npc);
   if (!npcInstance) {
     return null;
   }
   return {
     id: trigger.npc,
     title: npcInstance.name,
-    image: npcInstance.icon,
-    description: npcInstance.description,
+    image: npcInstance.bio.avatar,
+    description: npcInstance.bio.background,
   } as TriggerTarget;
 }
 
