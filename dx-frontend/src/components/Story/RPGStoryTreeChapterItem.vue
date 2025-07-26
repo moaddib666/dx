@@ -119,7 +119,6 @@ const isActive = computed(() => {
   height: 100%;
   background-size: cover;
   background-position: center;
-  opacity: 0.6;
 }
 
 /* Gradient mask overlay */

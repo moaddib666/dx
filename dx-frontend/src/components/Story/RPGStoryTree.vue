@@ -21,7 +21,7 @@ const props = defineProps<Props>();
             :story="story"
             :selectedItem="''"
             :selected="false"
-            :collapsed="false"
+            :collapsed="true"
         >
         </RpgStoryTreeItem>
     </div>
