@@ -28,7 +28,9 @@ const isActive = computed(() => {
 <template>
   <div class="chapter-item" :class="{ 'active': isActive }">
     <div class="chapter-container" @click="toggleCollapse">
-      <img :src="props.chapter.image" alt="Chapter Image" class="chapter-image" v-if="props.chapter.image" />
+      <div class="chapter-image-container">
+        <div class="chapter-image-gradient" :style="props.chapter.image ? { backgroundImage: `url(${props.chapter.image})` } : {}"></div>
+      </div>
       <div class="chapter-number-frame">
         <div class="chapter-number">{{ props.chapter.order || 1 }}</div>
       </div>
@@ -96,6 +98,49 @@ const isActive = computed(() => {
   position: relative;
   cursor: pointer;
   padding: 0.4rem 0;
+  overflow: hidden;
+}
+
+.chapter-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.chapter-image-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+}
+
+/* Gradient mask overlay */
+.chapter-image-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(13, 25, 35, 0.9) 100%);
+}
+
+/* Fallback gradient when no image is available */
+.chapter-image-gradient:not([style*="background-image"]) {
+  background: linear-gradient(to right,
+    rgba(0, 196, 255, 0.2),
+    rgba(0, 255, 127, 0.1),
+    rgba(138, 43, 226, 0.05),
+    transparent
+  );
 }
 
 .chapter-container::before {
@@ -112,7 +157,7 @@ const isActive = computed(() => {
   width: 100%;
   top: 50%;
   left: 0;
-  z-index: -1;
+  z-index: 1; /* Above the image but below the text */
   box-shadow: 0 0 0.1rem rgba(0, 196, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -133,6 +178,7 @@ const isActive = computed(() => {
       0 0 0.4rem rgba(0, 196, 255, 0.3);
   flex-shrink: 0;
   overflow: hidden;
+  z-index: 2; /* Ensure it appears above the image */
 }
 
 .chapter-number-frame::before {
@@ -193,6 +239,8 @@ const isActive = computed(() => {
       0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.8),
       0 0 0.2rem rgba(184, 224, 255, 0.3);
   line-height: 1.1;
+  position: relative;
+  z-index: 2; /* Ensure it appears above the image */
 }
 
 .active .chapter-title {

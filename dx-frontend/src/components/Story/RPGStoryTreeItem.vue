@@ -24,14 +24,6 @@ const toggleCollapse = () => {
   <div class="story-item">
     <div class="story-header" @click="toggleCollapse">
       <h2 class="story-title">{{ props.story.title }}</h2>
-      <div class="story-status">{{ storyStatus }}</div>
-    </div>
-
-    <div class="story-progress">
-      <div class="progress-bar">
-        <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
-      </div>
-      <div class="progress-label">{{ progress }}% Complete</div>
     </div>
 
     <div class="story-chapters" v-if="!isCollapsed">
@@ -116,7 +108,5 @@ const toggleCollapse = () => {
 
 .story-chapters {
   margin-top: 1rem;
-  padding-left: 1.25rem;
-  border-left: 2px solid rgba(216, 187, 124, 0.2);
 }
 </style>
