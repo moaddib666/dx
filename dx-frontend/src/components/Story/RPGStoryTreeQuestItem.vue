@@ -38,6 +38,28 @@ const isActive = computed(() => {
   padding: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: border-color 0.3s ease, transform 0.2s ease;
+  position: relative;
+}
+
+/* Gradient line effect for quest items */
+.quest-item::before {
+  content: '';
+  position: absolute;
+  left: -0.85rem;
+  top: 0;
+  bottom: 0;
+  width: 0.05rem;
+  background: linear-gradient(180deg,
+    rgba(0, 255, 127, 0.6),
+    rgba(0, 196, 255, 0.6),
+    rgba(138, 43, 226, 0.4)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.quest-item:hover::before {
+  opacity: 1;
 }
 
 .quest-item:hover {
@@ -82,6 +104,10 @@ const isActive = computed(() => {
 
   .quest-item:hover {
     transform: translateX(1px);
+  }
+
+  .quest-item::before {
+    left: -0.45rem;
   }
 
   .quest-title {

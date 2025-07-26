@@ -307,20 +307,6 @@ const isActive = computed(() => {
   position: relative;
 }
 
-.chapter-quests::before {
-  content: '';
-  position: absolute;
-  left: -0.05rem;
-  top: 0;
-  bottom: 0;
-  width: 0.05rem;
-  background: linear-gradient(180deg,
-  rgba(0, 255, 127, 0.6),
-  rgba(0, 196, 255, 0.6),
-  rgba(138, 43, 226, 0.4)
-  );
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
   .chapter-container {
