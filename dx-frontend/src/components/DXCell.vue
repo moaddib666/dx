@@ -53,19 +53,12 @@ const handleImageError = () => {
   /* Base styling */
   width: 100%;
   height: 100%;
-  background-color: #0d0f11;
-  border: 0.0625em solid #2a2d31;
-  box-shadow: 0 0 0.625em #000;
-  border-radius: 0.25em;
   text-align: center;
 
   /* Flex layout for better responsiveness */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  /* Make the component adapt to its container */
-  box-sizing: border-box;
 
   /* Color */
   color: #d6b97b;
@@ -77,10 +70,19 @@ const handleImageError = () => {
 .image-container {
   width: 100%;
   height: 100%; /* Take up full height of the card */
-  border: 0.0625em solid #2a2d31;
   overflow: hidden; /* Prevent image from overflowing container */
-  box-sizing: border-box;
   position: relative; /* For absolute positioning of the text overlay */
+
+  border: 0.3rem solid transparent;
+  border-image-slice:
+      60 60 60 60;
+  border-image-width:
+      10px 10px 10px 10px;
+  border-image-outset:
+      0px 0px 0px 0px;
+  border-image-repeat:
+      stretch stretch;
+  border-image-source: url("@/assets/images/border/borderassets.png");
 }
 
 /* Image styling */
