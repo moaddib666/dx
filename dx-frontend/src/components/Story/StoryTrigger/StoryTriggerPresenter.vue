@@ -179,9 +179,9 @@ const unresolvedTriggerText = computed((): string => {
   font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
   color: #bcbbbb;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
 }
 
 .trigger-content {
