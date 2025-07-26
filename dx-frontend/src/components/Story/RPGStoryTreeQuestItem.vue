@@ -22,9 +22,6 @@ const isActive = computed(() => {
     <div class="quest-header">
       <div class="quest-content">
         <h4 class="quest-title">{{ props.quest.title }}</h4>
-        <div class="quest-subtext" v-if="props.quest.description">
-          {{ props.quest.description }}
-        </div>
       </div>
     </div>
   </div>
@@ -89,11 +86,6 @@ const isActive = computed(() => {
   color: #ffffff;
 }
 
-.quest-subtext {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: #aaa;
-}
 
 /* Responsive design for smaller containers (30% width) */
 @media (max-width: 480px), (max-width: 30vw) {
