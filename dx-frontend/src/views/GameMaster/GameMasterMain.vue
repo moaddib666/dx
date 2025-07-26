@@ -65,7 +65,7 @@ import CharacterCardHolder from "@/components/GameMaster/Character/CharacterCard
 import GameObjectRawSelector from "@/components/GameMaster/GameObjectRawSelector.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
-import {LocationInfoGameService} from "@/services/locationInfoService.js";
+import {LocationInfoGameService} from "@/services/locationInfoService";
 import DynamicBackground from "@/components/Background/DynamicBackground.vue";
 import VerticalPlayerList from "@/components/GameMaster/PlayerList/VerticalPlayerList.vue";
 import TeleportComponent from "@/components/GameMaster/TeleportComponent.vue";

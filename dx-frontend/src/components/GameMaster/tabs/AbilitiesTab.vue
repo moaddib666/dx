@@ -164,7 +164,7 @@
 
 <script>
 import SkillIcon from "@/components/Action/ActionIcon.vue";
-import skillService from "@/services/skillService.js";
+import skillService from "@/services/skillService";
 
 export default {
   name: 'AbilitiesTab',

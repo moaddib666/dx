@@ -4,6 +4,7 @@ import DXCell from "@/components/DXCell.vue";
 import {itemsService} from '@/services/ItemsService';
 import {characterTemplatesService} from '@/services/CharacterTemplatesService';
 import skillService from "@/services/skillService";
+import {computed} from "vue";
 
 // Import trigger icons
 interface Props {
@@ -37,7 +38,7 @@ const itemTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
     id: trigger.item,
     title: itemInstance.name,
     image: itemInstance.icon,
-    description: itemInstance.description,
+    description: "",
   } as TriggerTarget;
 }
 
@@ -50,11 +51,13 @@ const npcTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
   if (!npcInstance) {
     return null;
   }
+
+  console.warn('NPC Trigger Target Resolver', {npcInstance});
   return {
     id: trigger.npc,
     title: npcInstance.name,
-    image: npcInstance.bio.avatar,
-    description: npcInstance.bio.background,
+    image: npcInstance.avatar || "",
+    description: "",
   } as TriggerTarget;
 }
 
@@ -65,8 +68,10 @@ const skillTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
 
   const skillInstance = skillService.getSkill(trigger.skill);
   if (!skillInstance) {
+    console.warn('Skill Trigger Target Resolver: Skill not found', {skillId: trigger.skill});
     return null;
   }
+  console.debug('Skill Trigger Target Resolver', {skillInstance});
   return {
     id: trigger.skill,
     title: skillInstance.name,
@@ -74,17 +79,39 @@ const skillTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
     description: skillInstance.description,
   } as TriggerTarget;
 }
+
+const resolvers: triggerTargetResolver[] = [
+  itemTargetResolver,
+  npcTargetResolver,
+  skillTargetResolver,
+];
+
+const triggerTarget = computed((): TriggerTarget | null => {
+  for (const resolver of resolvers) {
+    const target = resolver(props.trigger);
+    if (target) {
+      return target;
+    }
+  }
+  return null;
+});
+
 </script>
 
 <template>
   <div class="trigger-item">
     <div class="trigger-type-label">{{ props.trigger.type }}</div>
+    <div class="trigger-description"> {{ props.trigger.description }} </div>
     <div class="trigger-content">
-      <DXCell
-          :image="triggerImage"
-          :title="triggerTitle"
-          :subtitle="triggerSubtitle"
+      <DXCell  v-if="triggerTarget !== null"
+          :image="triggerTarget.image"
+          :title="triggerTarget.title"
+          :subtitle="triggerTarget.description"
+
       />
+      <div v-else class="trigger-content-placeholder">
+<!--          FIXME: represent trigger targets in text if they exists byt we just can't resolve it well -->
+      </div>
     </div>
   </div>
 </template>
@@ -92,16 +119,12 @@ const skillTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
 <style scoped>
 .trigger-item {
   position: relative;
-  width: 100%;
-  max-width: 300px;
   margin: 0 auto;
 }
 
 .trigger-type-label {
   position: absolute;
   top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
   background-color: #1a1c1f;
   color: #d6b97b;
   padding: 2px 8px;
@@ -112,8 +135,7 @@ const skillTargetResolver: triggerTargetResolver = (trigger: Trigger) => {
 }
 
 .trigger-content {
-  width: 100%;
-  height: 100%;
-  min-height: 120px;
+  width: 5rem;
+  height: 5rem;
 }
 </style>

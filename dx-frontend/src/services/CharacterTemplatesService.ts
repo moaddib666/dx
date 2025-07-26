@@ -1,6 +1,6 @@
-import {GameMasterApi} from '@/api/backendService.js';
+import {GameMasterApi} from '@/api/backendService';
 import {AxiosResponse} from 'axios';
-import {CharacterTemplate} from "@/api/dx-backend";
+import {GameMasterCharacterTemplate} from "@/api/dx-backend";
 
 /**
  * Event types for the CharacterTemplatesService
@@ -33,7 +33,7 @@ interface Position {
  * Handles fetching, caching, and managing character templates for the WorldEditor
  */
 export class CharacterTemplatesService {
-    private templates: CharacterTemplate[];
+    private templates: GameMasterCharacterTemplate[];
     private isLoading: boolean;
     private lastLoaded: Date | null;
     private eventListeners: Map<CharacterTemplatesServiceEventType, EventCallback[]>;
@@ -48,7 +48,7 @@ export class CharacterTemplatesService {
     /**
      * Initialize the service and load character templates
      */
-    async initialize(): Promise<CharacterTemplate[]> {
+    async initialize(): Promise<GameMasterCharacterTemplate[]> {
         try {
             console.log('Initializing CharacterTemplatesService...');
             await this.loadTemplates();
@@ -62,7 +62,7 @@ export class CharacterTemplatesService {
     /**
      * Load character templates from the backend
      */
-    async loadTemplates(): Promise<CharacterTemplate[]> {
+    async loadTemplates(): Promise<GameMasterCharacterTemplate[]> {
         if (this.isLoading) {
             console.log('Character templates already loading, waiting for completion...');
             return this.templates;
@@ -73,7 +73,7 @@ export class CharacterTemplatesService {
             this.emit('loadingStarted');
 
             console.log('Loading character templates from server...');
-            const response: AxiosResponse = await GameMasterApi.gamemasterCharacterTemplatesList();
+            const response = await GameMasterApi.gamemasterCharacterTemplatesList();
 
             if (!response.data) {
                 console.warn('Character Templates API response is empty');
@@ -82,7 +82,7 @@ export class CharacterTemplatesService {
             }
 
             // Handle response format (array or object with results)
-            let templates: CharacterTemplate[] = [];
+            let templates: GameMasterCharacterTemplate[] = [];
             if (Array.isArray(response.data)) {
                 templates = response.data;
             } else if (response.data.results) {
@@ -116,28 +116,28 @@ export class CharacterTemplatesService {
     /**
      * Get all character templates
      */
-    getTemplates(): CharacterTemplate[] {
+    getTemplates(): GameMasterCharacterTemplate[] {
         return this.templates;
     }
 
     /**
      * Get character template by ID
      */
-    getTemplateById(id: string): CharacterTemplate | undefined {
+    getTemplateById(id: string): GameMasterCharacterTemplate | undefined {
         return this.templates.find(template => template.id === id);
     }
 
     /**
      * Get character templates by behavior type
      */
-    getTemplatesByBehavior(behavior: string): CharacterTemplate[] {
+    getTemplatesByBehavior(behavior: string): GameMasterCharacterTemplate[] {
         return this.templates.filter(template => template.behavior === behavior);
     }
 
     /**
      * Search character templates by name
      */
-    searchTemplates(query: string): CharacterTemplate[] {
+    searchTemplates(query: string): GameMasterCharacterTemplate[] {
         if (!query) return this.templates;
 
         const lowerQuery = query.toLowerCase();
@@ -175,7 +175,7 @@ export class CharacterTemplatesService {
     /**
      * Refresh character templates from the server
      */
-    async refresh(): Promise<CharacterTemplate[]> {
+    async refresh(): Promise<GameMasterCharacterTemplate[]> {
         try {
             console.log('Refreshing character templates...');
             await this.loadTemplates();

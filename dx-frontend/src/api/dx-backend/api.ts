@@ -1619,6 +1619,63 @@ export interface CharacterTemplateFull {
     'validation': CharacterTemplateValidation;
 }
 /**
+ * Serializer for CharacterTemplate model.  This serializer provides the necessary data for listing character templates, including template name, id, behavior, organization, avatar, grade, and path.
+ * @export
+ * @interface CharacterTemplateGameMaster
+ */
+export interface CharacterTemplateGameMaster {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'name': string;
+    /**
+     * 
+     * @type {BehaviorEnum}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'behavior': BehaviorEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'organization': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'organization_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'avatar': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'grade': string;
+    /**
+     * 
+     * @type {ThePath}
+     * @memberof CharacterTemplateGameMaster
+     */
+    'path': ThePath;
+}
+
+
+/**
  * 
  * @export
  * @interface CharacterTemplateValidation
@@ -5584,33 +5641,33 @@ export interface PaginatedCharacterActionLogList {
 /**
  * 
  * @export
- * @interface PaginatedCharacterTemplateList
+ * @interface PaginatedCharacterTemplateGameMasterList
  */
-export interface PaginatedCharacterTemplateList {
+export interface PaginatedCharacterTemplateGameMasterList {
     /**
      * 
      * @type {number}
-     * @memberof PaginatedCharacterTemplateList
+     * @memberof PaginatedCharacterTemplateGameMasterList
      */
     'count': number;
     /**
      * 
      * @type {string}
-     * @memberof PaginatedCharacterTemplateList
+     * @memberof PaginatedCharacterTemplateGameMasterList
      */
     'next'?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof PaginatedCharacterTemplateList
+     * @memberof PaginatedCharacterTemplateGameMasterList
      */
     'previous'?: string | null;
     /**
      * 
-     * @type {Array<CharacterTemplate>}
-     * @memberof PaginatedCharacterTemplateList
+     * @type {Array<CharacterTemplateGameMaster>}
+     * @memberof PaginatedCharacterTemplateGameMasterList
      */
-    'results': Array<CharacterTemplate>;
+    'results': Array<CharacterTemplateGameMaster>;
 }
 /**
  * 
@@ -18427,7 +18484,7 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedCharacterTemplateList>> {
+        async gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedCharacterTemplateGameMasterList>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharacterTemplatesList(behavior, dimension, name, organization, page, pageSize, path, rank, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharacterTemplatesList']?.[localVarOperationServerIndex]?.url;
@@ -18452,7 +18509,7 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterCharacterTemplatesRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterTemplate>> {
+        async gamemasterCharacterTemplatesRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterTemplateGameMaster>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterCharacterTemplatesRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterCharacterTemplatesRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -18915,7 +18972,7 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: any): AxiosPromise<PaginatedCharacterTemplateList> {
+        gamemasterCharacterTemplatesList(behavior?: GamemasterCharacterTemplatesListBehaviorEnum, dimension?: number, name?: string, organization?: string, page?: number, pageSize?: number, path?: string, rank?: string, options?: any): AxiosPromise<PaginatedCharacterTemplateGameMasterList> {
             return localVarFp.gamemasterCharacterTemplatesList(behavior, dimension, name, organization, page, pageSize, path, rank, options).then((request) => request(axios, basePath));
         },
         /**
@@ -18934,7 +18991,7 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterCharacterTemplatesRetrieve(id: string, options?: any): AxiosPromise<CharacterTemplate> {
+        gamemasterCharacterTemplatesRetrieve(id: string, options?: any): AxiosPromise<CharacterTemplateGameMaster> {
             return localVarFp.gamemasterCharacterTemplatesRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
