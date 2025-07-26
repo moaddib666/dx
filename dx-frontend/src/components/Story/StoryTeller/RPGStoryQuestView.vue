@@ -34,7 +34,9 @@ const story = computed<Story | undefined>(() => {
       <h2>
          {{ props.quest.title }}
       </h2>
-
+    </div>
+    <div class="content">
+      <p v-if="props.quest.description">{{ props.quest.description }}</p>
     </div>
   </RPGContainer>
 </template>
@@ -107,6 +109,13 @@ const story = computed<Story | undefined>(() => {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
   filter: drop-shadow(0 0.1rem rgba(0, 0, 0, 0.6))
           drop-shadow(0 0.05rem rgba(0, 0, 0, 0.4));
+}
+
+.content {
+  padding: 1.5rem;
+  color: #bcbbbb;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
 }
 
 </style>
