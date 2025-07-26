@@ -36,9 +36,12 @@ const handleImageError = () => {
         <div class="placeholder-icon">?</div>
         <div class="placeholder-text">Image not found</div>
       </div>
+      <!-- Text overlay -->
+      <div class="text-overlay">
+        <div class="name">{{ title }}</div>
+        <div class="subtitle">{{ subtitle }}</div>
+      </div>
     </div>
-    <div class="name">{{ title }}</div>
-    <div class="subtitle">{{ subtitle }}</div>
   </div>
 </template>
 
@@ -52,7 +55,6 @@ const handleImageError = () => {
   height: 100%;
   background-color: #0d0f11;
   border: 0.0625em solid #2a2d31;
-  padding: 0.75em;
   box-shadow: 0 0 0.625em #000;
   border-radius: 0.25em;
   text-align: center;
@@ -74,11 +76,11 @@ const handleImageError = () => {
 /* Image container to ensure consistent sizing */
 .image-container {
   width: 100%;
-  aspect-ratio: 1 / 1.12; /* Approximates the original ratio */
-  margin-bottom: 0.5em;
+  height: 100%; /* Take up full height of the card */
   border: 0.0625em solid #2a2d31;
   overflow: hidden; /* Prevent image from overflowing container */
   box-sizing: border-box;
+  position: relative; /* For absolute positioning of the text overlay */
 }
 
 /* Image styling */
@@ -87,7 +89,16 @@ const handleImageError = () => {
   height: 100%;
   object-fit: cover;
   display: block; /* Remove any default spacing */
-  aspect-ratio: 1
+}
+
+/* Text overlay styling */
+.text-overlay {
+  position: absolute;
+  bottom: 0; /* Position 10% from the bottom */
+  left: 0;
+  width: 100%;
+  background-color: rgba(13, 15, 17, 0.7); /* Semi-transparent background */
+  z-index: 1;
 }
 
 /* Placeholder styling */
@@ -109,19 +120,21 @@ const handleImageError = () => {
 }
 
 .placeholder-text {
-  font-size: 0.75em;
+  font-size: 10cqw;
   opacity: 0.7;
 }
 
 .subtitle {
   font-family: 'Source Code Pro', monospace;
-  opacity: 0.4;
+  opacity: 0.7; /* Increased opacity for better visibility on image */
   font-size: 7cqw;
+  margin-top: 0.2em;
 }
 
 .name {
   font-weight: bold;
   font-size: 11cqw;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Add shadow for better readability */
 }
 
 </style>
