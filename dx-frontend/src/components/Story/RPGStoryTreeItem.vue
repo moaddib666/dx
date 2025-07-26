@@ -23,7 +23,10 @@ const toggleCollapse = () => {
 <template>
   <div class="story-item">
     <div class="story-header" @click="toggleCollapse">
-      <h2 class="story-title">{{ props.story.title }}</h2>
+      <div class="story-header-content">
+        <img v-if="props.story.image" :src="props.story.image" alt="Story image" class="story-image" />
+        <h2 class="story-title">{{ props.story.title }}</h2>
+      </div>
     </div>
 
     <div class="story-chapters" v-if="!isCollapsed">
@@ -57,6 +60,21 @@ const toggleCollapse = () => {
   cursor: pointer;
 }
 
+.story-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.story-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(216, 187, 124, 0.5);
+  box-shadow: 0 0 8px rgba(216, 187, 124, 0.3);
+}
+
 .story-title {
   font-family: var(--font-header);
   font-size: 1.75rem;
@@ -76,6 +94,15 @@ const toggleCollapse = () => {
 
   .story-header {
     margin-bottom: 0.5rem;
+  }
+
+  .story-header-content {
+    gap: 0.5rem;
+  }
+
+  .story-image {
+    width: 40px;
+    height: 40px;
   }
 
   .story-title {
