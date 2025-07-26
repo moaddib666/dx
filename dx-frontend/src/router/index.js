@@ -74,6 +74,8 @@ const routes = [
     {path: '/game-master/character-template-editor', name: 'CharacterTemplateEditor', component: CharacterTemplateEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/story-builder', name: 'StoryBuilder', component: StoryBuilder, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
 
+    // Test routes
+    {path: '/test', name: "TestScreen", component: () => import('@/views/TestScreen.vue'), meta: {requiresAuth: false}},
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},
 ];
