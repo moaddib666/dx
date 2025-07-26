@@ -4,6 +4,7 @@ import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import {computed} from "vue";
 import {gmStories} from "@/services/GMStories";
 import StoryConditionPresenter from "@/components/Story/StoryTrigger/StoryConditionPresenter.vue";
+import StoryQuestReward from "@/components/Story/StoryReward/StoryQuestReward.vue";
 
 interface Props {
   quest: Quest;
@@ -54,6 +55,18 @@ const story = computed<Story | undefined>(() => {
                                    :key="objective.id"
                                    :condition="objective">
           </StoryConditionPresenter>
+        </div>
+
+      </div>
+      <div class="quest-rewards">
+        <h4>Rewards</h4>
+        <div v-if="props.quest.on_success !== null" class="quest-reward-on-success">
+          <h5>On Success:</h5>
+          <StoryQuestReward :reward="props.quest.on_success"></StoryQuestReward>
+        </div>
+        <div v-if="props.quest.on_failure !== null" class="quest-reward-on-failure">
+          <h5>On Failure:</h5>
+          <StoryQuestReward :reward="props.quest.on_failure"></StoryQuestReward>
         </div>
       </div>
     </div>
@@ -135,6 +148,7 @@ const story = computed<Story | undefined>(() => {
   font-family: 'Inter', sans-serif;
   font-size: 1.2rem;
   width: 100%;
+  overflow-y: auto;
 }
 
 .main-content {
@@ -161,6 +175,34 @@ const story = computed<Story | undefined>(() => {
   text-shadow: 0 0 4px rgba(214, 185, 123, 0.3);
 }
 
+/* Styling for rewards section */
+.quest-rewards {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.quest-rewards h4 {
+  font-family: 'Cinzel', serif;
+  color: #d6b97b;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 4px rgba(214, 185, 123, 0.3);
+}
+
+.quest-rewards h5 {
+  font-family: 'Inter', sans-serif;
+  color: #d6b97b;
+  margin: 0.8rem 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.quest-reward-on-success, .quest-reward-on-failure {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #d6b97b;
+}
+
 /* Responsive layout - stack columns on smaller screens */
 @media (max-width: 768px) {
   .quest-conditions {
@@ -172,5 +214,7 @@ const story = computed<Story | undefined>(() => {
     width: 100%;
   }
 }
+
+
 
 </style>
