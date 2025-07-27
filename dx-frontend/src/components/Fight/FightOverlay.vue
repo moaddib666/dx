@@ -30,9 +30,9 @@ import FightSide from "@/components/Fight/FightSide.vue";
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   z-index: 1000; /* Ensure it appears above other content */
   backdrop-filter: blur(5px); /* Optional: adds a blur effect to the background */
 }
@@ -41,7 +41,7 @@ import FightSide from "@/components/Fight/FightSide.vue";
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 80%;
+  max-height: 80%;
   flex: 4;
 }
 
@@ -54,9 +54,6 @@ import FightSide from "@/components/Fight/FightSide.vue";
 }
 
 .fight-overlay-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   display: flex;
   flex: 1;
   align-items: center;
@@ -64,7 +61,6 @@ import FightSide from "@/components/Fight/FightSide.vue";
   background: url('@/assets/fight/crowd.png') repeat-x center center;
   background-size: contain;
   width: 100%;
-  height: 100%;
 }
 
 .header {
