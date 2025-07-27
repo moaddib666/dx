@@ -189,91 +189,6 @@ const emit = defineEmits(['select'])
   50% { opacity: 0; }
 }
 
-/* Responsive Design for different viewport sizes */
-@media (max-width: 75em) { /* 1200px */
-  .character-card {
-    width: clamp(5.5rem, 9vw, 7rem);
-    height: clamp(11rem, 18vw, 14rem);
-  }
-
-  .card-content {
-    padding: 0.4rem;
-  }
-
-  .character-name {
-    font-size: clamp(0.6rem, 1.3vw, 0.75rem);
-    margin-bottom: 0.25rem;
-  }
-
-  .rank-badge {
-    font-size: 0.55rem;
-    padding: 0.125rem 0.35rem;
-  }
-}
-
-@media (max-width: 48em) { /* 768px */
-  .character-card {
-    width: clamp(5rem, 12vw, 6.5rem);
-    height: clamp(10rem, 24vw, 13rem);
-  }
-
-  .card-content {
-    padding: 0.35rem;
-  }
-
-  .character-name {
-    font-size: clamp(0.55rem, 1.5vw, 0.7rem);
-    margin-bottom: 0.2rem;
-  }
-
-  .rank-badge {
-    font-size: 0.5rem;
-    padding: 0.1rem 0.3rem;
-  }
-}
-
-@media (max-width: 30em) { /* 480px */
-  .character-card {
-    width: clamp(3.5rem, 12vw, 5rem);
-    height: clamp(7rem, 24vw, 10rem);
-  }
-
-  .card-content {
-    padding: 0.25rem;
-  }
-
-  .character-name {
-    font-size: clamp(0.45rem, 1.6vw, 0.6rem);
-    margin-bottom: 0.15rem;
-  }
-
-  .rank-badge {
-    font-size: 0.4rem;
-    padding: 0.08rem 0.25rem;
-  }
-}
-
-@media (max-width: 20em) { /* 320px - for very small screens */
-  .character-card {
-    width: clamp(3rem, 10vw, 4rem);
-    height: clamp(6rem, 20vw, 8rem);
-  }
-
-  .card-content {
-    padding: 0.2rem;
-  }
-
-  .character-name {
-    font-size: clamp(0.4rem, 1.4vw, 0.55rem);
-    margin-bottom: 0.1rem;
-  }
-
-  .rank-badge {
-    font-size: 0.35rem;
-    padding: 0.06rem 0.2rem;
-  }
-}
-
 .selection-indicator {
   position: absolute;
   bottom: -2rem;
@@ -287,30 +202,6 @@ const emit = defineEmits(['select'])
   transition: all 0.3s ease;
   filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.3));
   animation: pulse-selector 4s infinite ease-in-out;
-}
-
-@media (max-width: 48em) {
-  .selection-indicator {
-    width: 4.5rem;
-    height: 4.5rem;
-    bottom: -1.5rem;
-  }
-}
-
-@media (max-width: 30em) {
-  .selection-indicator {
-    width: 3.5rem;
-    height: 3.5rem;
-    bottom: -1.2rem;
-  }
-}
-
-@media (max-width: 20em) {
-  .selection-indicator {
-    width: 3rem;
-    height: 3rem;
-    bottom: -1rem;
-  }
 }
 
 @keyframes pulse-selector {
