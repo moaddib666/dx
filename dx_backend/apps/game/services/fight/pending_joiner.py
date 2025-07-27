@@ -181,11 +181,12 @@ class FightPendingJoiner:
             # Remove from pending joiners
             fight.pending_join.remove(character)
 
-            # For now, we don't need to explicitly add them anywhere else
-            # as the fight system will recognize them as participants
-            # based on their position and the fight being active
+            # Set Character.fight field to mark them as active participant
+            character.fight = fight
+            character.save(update_fields=['fight'])
 
             self.logger.info(f"Converted {character} from pending to active participant in fight {fight.id}")
+            self.logger.debug(f"Set fight field for character {character.id}")
             return True
 
         except Exception as e:

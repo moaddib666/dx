@@ -236,6 +236,9 @@ class FightCloser:
             fight.ended_at = self.cycle
             fight.save()
 
+            # Clear Character.fight field for all participants
+            self._clear_character_fight_fields(fight)
+
             # Clear pending joiners
             fight.pending_join.clear()
 
@@ -248,6 +251,37 @@ class FightCloser:
         except Exception as e:
             self.logger.error(f"Failed to close fight {fight.id}: {e}")
             return False
+
+    def _clear_character_fight_fields(self, fight: Fight):
+        """
+        Clear Character.fight field for all participants in the fight.
+        
+        Args:
+            fight: Fight instance being closed
+        """
+        try:
+            characters_to_clear = []
+
+            # Collect main participants
+            if fight.attacker:
+                characters_to_clear.append(fight.attacker)
+            if fight.defender:
+                characters_to_clear.append(fight.defender)
+
+            # Collect pending joiners
+            characters_to_clear.extend(fight.pending_join.all())
+
+            # Clear fight field for all participants
+            for character in characters_to_clear:
+                if character.fight == fight:
+                    character.fight = None
+                    character.save(update_fields=['fight'])
+                    self.logger.debug(f"Cleared fight field for character {character.id}")
+
+            self.logger.info(f"Cleared fight fields for {len(characters_to_clear)} characters in fight {fight.id}")
+
+        except Exception as e:
+            self.logger.error(f"Failed to clear character fight fields for fight {fight.id}: {e}")
 
     def _update_fight_actions(self, fight: Fight):
         """

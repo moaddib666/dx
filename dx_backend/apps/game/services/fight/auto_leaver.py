@@ -69,8 +69,11 @@ class FightAutoLeaver:
         # Check main participants (attacker and defender)
         main_participants = [fight.attacker, fight.defender]
         for character in main_participants:
-            if self._should_character_leave(fight, character):
+            if character and self._should_character_leave(fight, character):
                 if self._remove_main_participant(fight, character):
+                    # Clear Character.fight field
+                    character.fight = None
+                    character.save(update_fields=['fight'])
                     leavers.append(character)
                     self._emit_leave_events(fight, character)
 
@@ -79,6 +82,10 @@ class FightAutoLeaver:
         for character in pending_joiners:
             if self._should_character_leave(fight, character):
                 self._remove_pending_joiner(fight, character)
+                # Clear Character.fight field if it matches this fight
+                if character.fight == fight:
+                    character.fight = None
+                    character.save(update_fields=['fight'])
                 leavers.append(character)
                 self._emit_leave_events(fight, character)
 

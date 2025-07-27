@@ -88,7 +88,8 @@ class FightAutoJoiner:
         """
         return list(Character.objects.filter(
             position=fight.position,
-            is_active=True
+            is_active=True,
+            fight__isnull=True  # Not already in any fight
         ).exclude(
             Q(id=fight.attacker.id) | Q(id=fight.defender.id)
         ).exclude(
@@ -106,14 +107,9 @@ class FightAutoJoiner:
         Returns:
             bool: True if character should be added to pending joiners
         """
-        # Check if character is already in a different fight
-        current_fights = Fight.objects.filter(
-            Q(attacker=character) | Q(defender=character) | Q(pending_join=character),
-            open=True
-        ).exclude(id=fight.id)
-
-        if current_fights.exists():
-            self.logger.debug(f"Character {character} is already in another fight")
+        # Check if character is already in a fight using the fight field
+        if character.fight and character.fight != fight:
+            self.logger.debug(f"Character {character} is already in fight {character.fight.id}")
             return False
 
         # Check if character has enough health to participate

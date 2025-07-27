@@ -1,8 +1,6 @@
 import logging
 import typing as t
 
-from django.db.models import Q
-
 from apps.action.models import CharacterAction
 from apps.core.models import CharacterActionType
 from apps.fight.models import Fight
@@ -10,7 +8,6 @@ from apps.fight.models import Fight
 if t.TYPE_CHECKING:
     from apps.action.models import Cycle
     from apps.game.services.notifier.base import BaseNotifier
-    from apps.character.models import Character
 
 
 class FightDetector:
@@ -31,6 +28,7 @@ class FightDetector:
 
     AGGRESSIVE_ACTION_TYPES = {
         CharacterActionType.USE_SKILL,
+        CharacterActionType.USE_ITEM,
         CharacterActionType.START_FIGHT,
     }
 
@@ -77,20 +75,76 @@ class FightDetector:
 
     def _get_aggressive_actions(self, previous_cycle) -> list[CharacterAction]:
         """Get aggressive actions from the previous cycle that aren't already in fights."""
-        return list(CharacterAction.objects.filter(
+        from django.db.models import Q
+        from apps.core.models import ImpactType
+
+        # Get aggressive impact types for efficient querying
+        aggressive_impact_types = [
+            impact_type for impact_type in ImpactType
+            if impact_type.is_aggressive()
+        ]
+
+        # Build query conditions
+        base_conditions = Q(
             cycle=previous_cycle,
             performed=True,
             action_type__in=self.AGGRESSIVE_ACTION_TYPES,
             fight__isnull=True  # Not already in a fight
-        ).select_related('initiator', 'position').prefetch_related('targets'))
+        )
+
+        # Actions are aggressive if they either:
+        # 1. Have aggressive impacts, OR
+        # 2. Are START_FIGHT actions (always aggressive)
+        aggressive_conditions = Q(
+            impacts__type__in=aggressive_impact_types
+        ) | Q(
+            action_type=CharacterActionType.START_FIGHT
+        )
+
+        # Combine conditions and optimize query
+        return list(CharacterAction.objects.filter(
+            base_conditions & aggressive_conditions
+        ).distinct().select_related(
+            'initiator', 'position'
+        ).prefetch_related(
+            'targets',
+            'impacts__target'
+        ))
+
+    def _is_action_aggressive(self, action: CharacterAction) -> bool:
+        """
+        Check CharacterAction -> ActionImpact and if ActionImpact.type is aggressive return True.
+        Uses apps.core.models.ImpactType.is_aggressive()
+        
+        Args:
+            action: CharacterAction to check for aggressiveness
+            
+        Returns:
+            bool: True if any of the action's impacts are aggressive
+        """
+        from apps.core.models import ImpactType
+
+        # Check if action has any aggressive impacts
+        for impact in action.impacts.all():
+            impact_type = ImpactType(impact.type)
+            if impact_type.is_aggressive():
+                self.logger.debug(f"Action {action.id} has aggressive impact: {impact.type}")
+                return True
+
+        # Special case: START_FIGHT actions are always aggressive
+        if action.action_type == CharacterActionType.START_FIGHT:
+            self.logger.debug(f"Action {action.id} is START_FIGHT type, considered aggressive")
+            return True
+
+        return False
 
     def _should_create_fight(self, action: CharacterAction) -> bool:
         """
         Determine if an action should create a fight.
-        
+
         Args:
             action: The CharacterAction to evaluate
-            
+
         Returns:
             bool: True if a fight should be created
         """
@@ -118,10 +172,10 @@ class FightDetector:
     def _create_fight_from_action(self, action: CharacterAction) -> Fight:
         """
         Create a Fight instance from an aggressive action.
-        
+
         Args:
             action: The CharacterAction that triggered the fight
-            
+
         Returns:
             Fight instance or None if creation failed
         """
@@ -144,7 +198,15 @@ class FightDetector:
             action.fight = fight
             action.save()
 
+            # Set Character.fight field for participants
+            action.initiator.fight = fight
+            action.initiator.save(update_fields=['fight'])
+
+            defender.fight = fight
+            defender.save(update_fields=['fight'])
+
             self.logger.info(f"Created fight {fight.id} between {action.initiator} and {defender}")
+            self.logger.debug(f"Set fight field for characters {action.initiator.id} and {defender.id}")
             return fight
 
         except Exception as e:
@@ -154,7 +216,7 @@ class FightDetector:
     def _emit_fight_started_event(self, fight: Fight):
         """
         Emit a FightStarted event to all characters at the fight position.
-        
+
         Args:
             fight: The Fight instance that was started
         """

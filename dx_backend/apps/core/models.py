@@ -162,6 +162,35 @@ class ImpactType(DjangoChoicesMixin, StrEnum):
     REGENERATION = "Regeneration"
     LIFESTEAL = "Lifesteal"
 
+    def is_aggressive(self) -> bool:
+        """
+        Check if the impact type is aggressive (causes harm or negative effects).
+
+        Returns:
+            bool: True if the impact type is aggressive, False otherwise.
+        """
+        aggressive_types = {
+            ImpactType.DAMAGE,
+            ImpactType.DEBUFF,
+            ImpactType.STUN,
+            ImpactType.SLEEP,
+            ImpactType.CONFUSION,
+            ImpactType.PARALYSIS,
+            ImpactType.FEAR,
+            ImpactType.FREEZE,
+            ImpactType.BURN,
+            ImpactType.POISON,
+            ImpactType.SLOW,
+            ImpactType.BLIND,
+            ImpactType.SILENCE,
+            ImpactType.BLEED,
+            ImpactType.DISARM,
+            ImpactType.ROOT,
+            ImpactType.ENERGY_DECREASE,
+            ImpactType.LIFESTEAL,
+        }
+        return self in aggressive_types
+
 
 class ImpactViolationType(DjangoChoicesMixin, StrEnum):
     PHYSICAL = "Physical"  # Basic impact, e.g., hit in the face with a ball
@@ -766,6 +795,7 @@ class Trigger(DjangoBaseModel):
                                      help_text="Optional skill that is required to trigger the action")
     item = django_models.ForeignKey("items.Item", on_delete=django_models.CASCADE, null=True, blank=True,
                                     help_text="Optional item that is required to trigger the action")
+
     # TODO: When implementing the automatic triggers execution, add fitls, active, oneOff, etc.
 
     def __str__(self):
