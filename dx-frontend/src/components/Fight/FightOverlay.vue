@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import FightSide from "@/components/Fight/FightSide.vue";
+import FightFooter from "@/components/Fight/FightFooter.vue";
 </script>
 
 <template>
@@ -17,8 +18,7 @@ import FightSide from "@/components/Fight/FightSide.vue";
         <FightSide direction="left" side="mage"></FightSide>
       </div>
     </div>
-    <div class="fight-overlay-footer">
-    </div>
+    <FightFooter class="fight-overlay-footer" />
   </div>
 </template>
 
@@ -54,12 +54,7 @@ import FightSide from "@/components/Fight/FightSide.vue";
 }
 
 .fight-overlay-footer {
-  display: flex;
   flex: 1;
-  align-items: center;
-  justify-content: center;
-  background: url('@/assets/fight/crowd.png') repeat-x center center;
-  background-size: contain;
   width: 100%;
 }
 
