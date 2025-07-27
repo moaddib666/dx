@@ -5,14 +5,16 @@ import FightSide from "@/components/Fight/FightSide.vue";
 
 <template>
   <div class="fight-overlay">
+   <div class="header">
+     <h1>Misfits Pub</h1>
+     <h2> Round 1</h2>
+   </div>
     <div class="fight-overlay-content">
       <div class="attacker">
-        <h2>Attacker</h2>
-        <FightSide></FightSide>
+        <FightSide direction="right" side="tech"></FightSide>
       </div>
       <div class="defender">
-        <h2>Defender</h2>
-        <FightSide></FightSide>
+        <FightSide direction="left" side="mage"></FightSide>
       </div>
     </div>
     <div class="fight-overlay-footer">
@@ -38,11 +40,9 @@ import FightSide from "@/components/Fight/FightSide.vue";
 .fight-overlay-content {
   display: flex;
   flex-direction: row;
-  width: 80%;
+  width: 100%;
   height: 80%;
-  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 4;
 }
 
 .attacker, .defender {
@@ -53,25 +53,42 @@ import FightSide from "@/components/Fight/FightSide.vue";
   justify-content: center;
 }
 
-.attacker {
-  background-color: rgba(255, 0, 0, 0.1); /* Light red for attacker */
-}
-
-.defender {
-  background-color: rgba(0, 0, 255, 0.1); /* Light blue for defender */
-}
-
 .fight-overlay-footer {
-  width: 100%;
-  height: 50px;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent footer */
   position: absolute;
   bottom: 0;
   left: 0;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
+  background: url('@/assets/fight/crowd.png') repeat-x center center;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
 }
 
+.header {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.header h1, .header h2 {
+  z-index: 1;
+  font-family: 'Cinzel', serif;
+  color: #fada95;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 0 0 8px rgba(216, 187, 124, 0.5);
+  filter: drop-shadow(0 0.1rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
+  transition: text-shadow 0.3s ease;
+}
 
 </style>

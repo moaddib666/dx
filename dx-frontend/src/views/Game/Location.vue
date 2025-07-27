@@ -1,6 +1,11 @@
 <template>
   <div class="location-view">
-    <div class="rpg-action-holder">
+    <FightOverlay>
+    </FightOverlay>
+
+    <div class="rpg-action-holder"
+    v-if="false"
+    >
     <ActionHolder
         :items="availableItems"
         :skills="availableActions"
@@ -148,10 +153,12 @@ import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/Actio
 import CompassRPG from "@/components/Compass/CompassRPG.vue";
 import MapColumn from "@/components/MapColumn/MapColumn.vue";
 import RPGActionLog from "@/components/RPGActionLog/RPGActionLog.vue";
+import FightOverlay from "@/components/Fight/FightOverlay.vue";
 
 export default {
   name: 'LocationView',
   components: {
+    FightOverlay,
     RPGActionLog,
     MapColumn,
     CompassRPG,
