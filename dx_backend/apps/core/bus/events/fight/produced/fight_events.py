@@ -6,7 +6,7 @@ from apps.core.bus.base import GameEventData, FightEvent, ProducedMixin
 # Fight State Events
 
 class FightStartedEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     position_id: uuid.UUID
     attacker_id: uuid.UUID
     defender_id: uuid.UUID
@@ -17,7 +17,7 @@ class FightStartedEvent(ProducedMixin, FightEvent):
     name: str = "fight_started"
 
     @classmethod
-    def create_event(cls, fight_id: int, position_id: uuid.UUID, attacker_id: uuid.UUID,
+    def create_event(cls, fight_id: uuid.UUID, position_id: uuid.UUID, attacker_id: uuid.UUID,
                      defender_id: uuid.UUID) -> "FightStartedEvent":
         return cls(
             data=FightStartedEventData(
@@ -30,7 +30,7 @@ class FightStartedEvent(ProducedMixin, FightEvent):
 
 
 class FightEndedEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     position_id: uuid.UUID
     cycle_id: int
 
@@ -40,7 +40,7 @@ class FightEndedEvent(ProducedMixin, FightEvent):
     name: str = "fight_ended"
 
     @classmethod
-    def create_event(cls, fight_id: int, position_id: uuid.UUID, cycle_id: int) -> "FightEndedEvent":
+    def create_event(cls, fight_id: uuid.UUID, position_id: uuid.UUID, cycle_id: int) -> "FightEndedEvent":
         return cls(
             data=FightEndedEventData(
                 fight_id=fight_id,
@@ -53,7 +53,7 @@ class FightEndedEvent(ProducedMixin, FightEvent):
 # Character Join Events
 
 class CharacterPendingJoinFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
     position_id: uuid.UUID
 
@@ -63,7 +63,7 @@ class CharacterPendingJoinFightEvent(ProducedMixin, FightEvent):
     name: str = "character_pending_join_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID,
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID,
                      position_id: uuid.UUID) -> "CharacterPendingJoinFightEvent":
         return cls(
             data=CharacterPendingJoinFightEventData(
@@ -75,7 +75,7 @@ class CharacterPendingJoinFightEvent(ProducedMixin, FightEvent):
 
 
 class PendingJoinFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
 
 
@@ -84,7 +84,7 @@ class PendingJoinFightEvent(ProducedMixin, FightEvent):
     name: str = "pending_join_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID) -> "PendingJoinFightEvent":
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID) -> "PendingJoinFightEvent":
         return cls(
             data=PendingJoinFightEventData(
                 fight_id=fight_id,
@@ -94,7 +94,7 @@ class PendingJoinFightEvent(ProducedMixin, FightEvent):
 
 
 class CharacterJoinFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
     position_id: uuid.UUID
 
@@ -104,7 +104,8 @@ class CharacterJoinFightEvent(ProducedMixin, FightEvent):
     name: str = "character_join_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID, position_id: uuid.UUID) -> "CharacterJoinFightEvent":
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID,
+                     position_id: uuid.UUID) -> "CharacterJoinFightEvent":
         return cls(
             data=CharacterJoinFightEventData(
                 fight_id=fight_id,
@@ -115,7 +116,7 @@ class CharacterJoinFightEvent(ProducedMixin, FightEvent):
 
 
 class JoinedFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
 
 
@@ -124,7 +125,7 @@ class JoinedFightEvent(ProducedMixin, FightEvent):
     name: str = "joined_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID) -> "JoinedFightEvent":
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID) -> "JoinedFightEvent":
         return cls(
             data=JoinedFightEventData(
                 fight_id=fight_id,
@@ -136,7 +137,7 @@ class JoinedFightEvent(ProducedMixin, FightEvent):
 # Character Leave Events
 
 class CharacterLeaveFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
     position_id: uuid.UUID
 
@@ -146,7 +147,8 @@ class CharacterLeaveFightEvent(ProducedMixin, FightEvent):
     name: str = "character_leave_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID, position_id: uuid.UUID) -> "CharacterLeaveFightEvent":
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID,
+                     position_id: uuid.UUID) -> "CharacterLeaveFightEvent":
         return cls(
             data=CharacterLeaveFightEventData(
                 fight_id=fight_id,
@@ -157,7 +159,7 @@ class CharacterLeaveFightEvent(ProducedMixin, FightEvent):
 
 
 class LeftFightEventData(GameEventData):
-    fight_id: int
+    fight_id: uuid.UUID
     character_id: uuid.UUID
 
 
@@ -166,7 +168,7 @@ class LeftFightEvent(ProducedMixin, FightEvent):
     name: str = "left_fight"
 
     @classmethod
-    def create_event(cls, fight_id: int, character_id: uuid.UUID) -> "LeftFightEvent":
+    def create_event(cls, fight_id: uuid.UUID, character_id: uuid.UUID) -> "LeftFightEvent":
         return cls(
             data=LeftFightEventData(
                 fight_id=fight_id,
