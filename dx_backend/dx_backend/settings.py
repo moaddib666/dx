@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     'apps.shields',
     'apps.character',
     'apps.game',
-    # 'apps.fight',
+    'apps.fight',
     'apps.action',
     'apps.skills',
     'apps.items',

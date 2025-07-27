@@ -66,6 +66,8 @@ class CharacterAction(BaseModel):
     item = models.ForeignKey('items.WorldItem', on_delete=models.CASCADE, null=True, blank=True)
     position = models.ForeignKey('world.Position', on_delete=models.CASCADE, null=True, blank=True)
 
+    fight = models.ForeignKey("fight.Fight", on_delete=models.CASCADE, null=True, blank=True,
+                              related_name='actions')
     order = models.FloatField(default=1)
 
     def accept(self, order: float):
