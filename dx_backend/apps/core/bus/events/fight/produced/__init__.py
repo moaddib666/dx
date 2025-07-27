@@ -47,3 +47,6 @@ class FightTurnActionResultGameEvent(ProducedMixin, FightEvent):
             )
         )
 
+
+# Import the new fight events
+from .fight_events import *
