@@ -65,6 +65,14 @@ const character = props.character || {
 </template>
 
 <style scoped>
+/*
+ * Responsive Text Implementation:
+ * - Using CSS clamp() for fluid responsive sizing that scales with viewport width
+ * - Font sizes scale between minimum and maximum values based on viewport width
+ * - Letter spacing is also responsive to improve readability on smaller screens
+ * - Margins and spacing use responsive units to maintain proper proportions
+ * - Media queries handle layout adjustments while clamp() handles text sizing
+ */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&display=swap');
 
 .holder {
@@ -83,7 +91,7 @@ const character = props.character || {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 1rem auto;
+  margin: clamp(0.5rem, 2vw, 1rem) auto;
 }
 
 /* Left direction specific styles */
@@ -124,8 +132,8 @@ const character = props.character || {
 .character-name {
   font-family: 'Cinzel', serif;
   font-weight: 200;
-  font-size: 2.1rem;
-  letter-spacing: 0.1em;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  letter-spacing: clamp(0.05em, 0.5vw, 0.1em);
   text-transform: uppercase;
   color: #d6b97b;
 }
@@ -134,7 +142,7 @@ const character = props.character || {
 .character-name-alt {
   color: #d6b97b;
   font-family: 'Pirata One', 'Metamorphous', 'Creepster', cursive;
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 2vw, 1.5rem);
   text-align: center;
 }
 
@@ -149,14 +157,6 @@ const character = props.character || {
 @media (max-width: 768px) {
   .holder {
     max-width: 100%;
-  }
-
-  .character-name {
-    font-size: 1.8rem;
-  }
-
-  .character-name-alt {
-    font-size: 1.2rem;
   }
 
   .left-avatar, .right-avatar {
@@ -181,14 +181,6 @@ const character = props.character || {
 }
 
 @media (max-width: 480px) {
-  .character-name {
-    font-size: 1.5rem;
-  }
-
-  .character-name-alt {
-    font-size: 1rem;
-  }
-
   .left-avatar, .right-avatar {
     width: 6rem;
   }
