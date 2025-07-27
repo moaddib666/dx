@@ -8,7 +8,7 @@ from .core import (
     FightFactory,
     FightDetector,
     FightAutoJoiner,
-    FightAuthLeaver,
+    FightAutoLeaver,
     FightPendingJoiner,
     FightCloser,
     FightCoordinator
@@ -20,7 +20,7 @@ __all__ = [
     'FightFactory',
     'FightDetector',
     'FightAutoJoiner',
-    'FightAuthLeaver',
+    'FightAutoLeaver',
     'FightPendingJoiner',
     'FightCloser',
     'FightCoordinator',

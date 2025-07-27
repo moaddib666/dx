@@ -9,7 +9,7 @@ if t.TYPE_CHECKING:
 # Import the refactored classes
 from .detector import FightDetector
 from .auto_joiner import FightAutoJoiner
-from .auth_leaver import FightAuthLeaver
+from .auto_leaver import FightAutoLeaver
 from .pending_joiner import FightPendingJoiner
 from .fight_closer import FightCloser
 from .coordinator import FightCoordinator
@@ -49,7 +49,7 @@ __all__ = [
     'FightFactory',
     'FightDetector',
     'FightAutoJoiner',
-    'FightAuthLeaver',
+    'FightAutoLeaver',
     'FightPendingJoiner',
     'FightCloser',
     'FightCoordinator'

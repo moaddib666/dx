@@ -10,7 +10,7 @@ if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
 
 
-class FightAuthLeaver:
+class FightAutoLeaver:
     """
     Detaches characters from fights that are not active anymore, or if characters change their position 
     from the fight position.

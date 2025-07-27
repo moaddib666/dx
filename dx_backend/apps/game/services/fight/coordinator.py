@@ -3,7 +3,7 @@ import typing as t
 
 from .detector import FightDetector
 from .auto_joiner import FightAutoJoiner
-from .auth_leaver import FightAuthLeaver
+from .auto_leaver import FightAutoLeaver
 from .pending_joiner import FightPendingJoiner
 from .fight_closer import FightCloser
 
@@ -32,7 +32,7 @@ class FightCoordinator:
         # Initialize all fight services
         self.detector = FightDetector(notifier, cycle)
         self.auto_joiner = FightAutoJoiner(notifier)
-        self.auth_leaver = FightAuthLeaver(notifier)
+        self.auth_leaver = FightAutoLeaver(notifier)
         self.pending_joiner = FightPendingJoiner(notifier)
         self.fight_closer = FightCloser(notifier, cycle)
 
