@@ -4,6 +4,11 @@ from apps.core.utils.models import BaseModel
 
 
 class Fight(BaseModel):
+    campaign = models.ForeignKey(
+        'game.Campaign',
+        on_delete=models.CASCADE,
+        related_name='fights'
+    )
     position = models.ForeignKey(
         'world.Position',
         on_delete=models.CASCADE,

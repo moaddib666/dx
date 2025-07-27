@@ -187,6 +187,7 @@ class FightDetector:
                 return None
 
             fight = Fight.objects.create(
+                campaign=self.cycle.campaign,
                 position=action.position,
                 attacker=action.initiator,
                 defender=defender,

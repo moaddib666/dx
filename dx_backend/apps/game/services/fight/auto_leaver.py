@@ -51,7 +51,7 @@ class FightAutoLeaver:
     def _get_all_fights(self, campaign) -> list[Fight]:
         """Get all fights in the campaign (both active and inactive)."""
         return list(Fight.objects.filter(
-            Q(attacker__campaign=campaign) | Q(defender__campaign=campaign)
+            campaign=campaign
         ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
 
     def _process_fight_leavers(self, fight: Fight) -> list[Character]:
