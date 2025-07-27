@@ -15,7 +15,15 @@ const side = props.side || 'mage';
 <template>
 <div class="fight-side">
   <FightSideImage :direction="direction" :side="side"></FightSideImage>
-  <FightCharacter class="character-info"></FightCharacter>
+  <FightCharacter
+    class="character-info"
+    :direction="direction"
+    :character="{
+      name: 'The Arbiter',
+      title: 'The God of the Arena',
+      avatar: undefined
+    }"
+  ></FightCharacter>
 </div>
 </template>
 
