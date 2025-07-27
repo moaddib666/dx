@@ -42,7 +42,7 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-height: 80%;
+  max-height: 70%;
   flex: 4;
 }
 
