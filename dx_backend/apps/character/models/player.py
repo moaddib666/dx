@@ -19,7 +19,8 @@ class CharacterBiography(BaseModel):
 
 class Character(GameObject):
     game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
-    owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters', null=True, blank=True)
+    owner = models.ForeignKey('client.Client', on_delete=models.CASCADE, related_name='available_characters', null=True,
+                              blank=True)
     name = models.CharField(max_length=255)
     organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True)
     tags = models.JSONField(default=list)
@@ -51,6 +52,8 @@ class Character(GameObject):
                                            related_name='characters_in_safe')
 
     resetting_base_stats = models.BooleanField(default=False)
+
+    fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
