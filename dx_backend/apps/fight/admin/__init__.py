@@ -137,12 +137,12 @@ class FightAdmin(CampaignModelAdmin):
         """Display a link to the position admin."""
         if obj.position:
             url = reverse('admin:world_position_change', args=[obj.position.pk])
-            position_name = obj.position.name or f"Position {obj.position.id}"
+            position_name = f"{obj.position.sub_location.name} - {obj.position.coordinates}"
             return format_html('<a href="{}">{}</a>', url, position_name)
         return '-'
 
     position_link.short_description = 'Position'
-    position_link.admin_order_field = 'position__name'
+    position_link.admin_order_field = 'position__sub_location__name'
 
     def attacker_link(self, obj):
         """Display a link to the attacker's character admin."""
