@@ -5,8 +5,9 @@
 <template>
   <div class="fight-footer">
     <div class="background-container">
-      <div class="png-background-effect"></div>
+      <div class="png-background-effect-bg"></div>
       <div class="png-background"></div>
+      <div class="png-background-effect"></div>
     </div>
   </div>
 </template>
@@ -46,15 +47,24 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    rgb(22, 234, 255),
-    rgb(253, 167, 53)
-  );
-  background-size: contain;
-  opacity: 0.3; /* Adjust opacity for the effect */
+  background: url('@/assets/fight/texture.png') repeat-x bottom center;
+  background-size: calc(100% - 20rem) 100%;
   mask: url('@/assets/fight/crowd.png') repeat-x center center;
   mask-size: contain;
-  transform: scale(1.003);
+  opacity: 0.7;
 }
 
+.png-background-effect-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('@/assets/fight/texture.png') repeat-x bottom center;
+  background-size: calc(100% - 20rem) 100%;
+  mask: url('@/assets/fight/crowd.png') repeat-x center center;
+  mask-size: contain;
+  scale: 1.005;
+  filter: blur(2rem);
+}
 </style>

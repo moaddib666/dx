@@ -89,12 +89,12 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
   width: 100%;
   height: 100%;
   background: url('@/assets/fight/texture.png') repeat-x bottom center;
-  background-size: contain;
+  background-size: calc(100% - 20rem) 100%;
   z-index: -1;
   mask: linear-gradient(
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.6),
-    rgba(0, 0, 0, 1)
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 1)
   );
 }
 
