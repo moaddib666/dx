@@ -16,6 +16,7 @@ from ..character.core import CharacterService
 from ..follow.mover import WorldFollowService
 from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
+from ..fight.integration import FightGameLoopIntegration
 
 if typing.TYPE_CHECKING:
     from ..notifier.base import BaseNotifier
@@ -50,10 +51,19 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.bargain_cleanup_svc = bargain_cleanup_svc
         self.notify = notify
         self.follow_and_chase = WorldFollowService()
+        self.fight_integration = FightGameLoopIntegration(notify)
 
     def prepare(self):
+        # Apply base stats changes first
         self.base_stats_applier.apply()
+
+        # Process fight preparation early to detect new fights from previous cycle
+        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(self.cycle)
+
+        # Schedule NPC actions (may be affected by new fights)
         self.npc_actions_scheduler.schedule_actions(self.cycle)
+
+        # Map characters and handle movement
         self.auto_map_svc.map_characters()
         self.perform_follow_chase()
 
@@ -61,6 +71,9 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.update_characters()
         self.active_shields_cls(self.get_active_shields()).decrease_cycles()
         self.bargain_cleanup_svc.cleanup()
+
+        # Process fight post-cycle activities (closing inactive fights, etc.)
+        self.fight_integration.post_cycle_fights(self.cycle)
 
     def play(self) -> Cycle:
         self._play()
