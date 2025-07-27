@@ -6,10 +6,11 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
 
 <template>
   <div class="fight-overlay">
-   <div class="header">
-     <h1>Misfits Pub</h1>
-     <h2> Round 1</h2>
-   </div>
+    <div class="bg-texture"></div>
+    <div class="header">
+      <h1>Misfits Pub</h1>
+      <h2> Round 1</h2>
+    </div>
     <div class="fight-overlay-content">
       <div class="attacker">
         <FightSide direction="right" side="tech"></FightSide>
@@ -18,7 +19,7 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
         <FightSide direction="left" side="mage"></FightSide>
       </div>
     </div>
-    <FightFooter class="fight-overlay-footer" />
+    <FightFooter class="fight-overlay-footer"/>
   </div>
 </template>
 
@@ -80,6 +81,21 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
   text-shadow: 0 0 8px rgba(216, 187, 124, 0.5);
   filter: drop-shadow(0 0.1rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
   transition: text-shadow 0.3s ease;
+}
+.bg-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('@/assets/fight/texture.png') repeat-x bottom center;
+  background-size: contain;
+  z-index: -1;
+  mask: linear-gradient(
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 1)
+  );
 }
 
 </style>

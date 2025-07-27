@@ -51,25 +51,10 @@
     rgb(253, 167, 53)
   );
   background-size: contain;
-  opacity: 0.5; /* Adjust opacity for the effect */
+  opacity: 0.3; /* Adjust opacity for the effect */
   mask: url('@/assets/fight/crowd.png') repeat-x center center;
   mask-size: contain;
-  transform: scale(1.005);
-  filter: blur(3rem) drop-shadow(0 0.2rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
-  backdrop-filter: blur(3rem);
-  animation: gradientAnimation 5s linear infinite;
-  transition: all 0.3s ease;
+  transform: scale(1.003);
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background: linear-gradient(rgb(22, 234, 255), rgb(253, 167, 53));
-  }
-  50% {
-    background: linear-gradient(rgb(253, 167, 53), rgb(22, 234, 255));
-  }
-  100% {
-    background: linear-gradient(rgb(22, 234, 255), rgb(253, 167, 53));
-  }
-}
 </style>
