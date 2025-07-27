@@ -19,7 +19,7 @@ class Fight(BaseModel):
     open = models.BooleanField(default=True)
 
     created = models.ForeignKey(
-        'game.Cycle',
+        'action.Cycle',
         on_delete=models.CASCADE,
         related_name='fights_started',
         null=True,
@@ -27,7 +27,7 @@ class Fight(BaseModel):
     )
 
     ended_at = models.ForeignKey(
-        'game.Cycle',
+        'action.Cycle',
         on_delete=models.CASCADE,
         related_name='fights_ended',
         null=True,
