@@ -39,7 +39,7 @@ urlpatterns = [
     path('api/effects/', include('apps.effects.urls')),
     path('api/school/', include('apps.school.urls')),
     path('api/world/', include('apps.world.urls')),
-    # path('api/fight/', include('apps.fight.urls')),
+    path('api/fight/', include('apps.fight.urls')),
     path('api/shields/', include('apps.shields.urls')),
     path('api/skills/', include('apps.skills.urls')),
     path('api/action/', include('apps.action.urls')),
