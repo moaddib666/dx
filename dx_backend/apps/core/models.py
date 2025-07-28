@@ -497,8 +497,7 @@ class FullCharacterInfo(BaseModel):
     # location: uuid.UUID
     position: Optional[uuid.UUID]
     coordinates: Optional[Coordinate]
-    # fight: Optional[uuid.UUID]
-    # duel_invitations: list[uuid.UUID]
+    fight: Optional[uuid.UUID]
 
 
 class RollOutcome(DjangoChoicesMixin, StrEnum):

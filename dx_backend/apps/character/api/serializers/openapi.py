@@ -73,7 +73,8 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
             "tags",
             "resetting_base_stats",
             "is_active",
-            "campaign"
+            "campaign",
+            "fight",
         ]
 
 
@@ -111,7 +112,6 @@ class CharacterInfoSerializer(serializers.Serializer):
     dimension = serializers.IntegerField()
     location = serializers.UUIDField()
     fight = serializers.UUIDField(allow_null=True)
-    duel_invitations = serializers.ListField(child=serializers.UUIDField())
 
 
 class StatModelSerializer(serializers.ModelSerializer):

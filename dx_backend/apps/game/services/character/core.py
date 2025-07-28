@@ -182,11 +182,7 @@ class CharacterService:
             ],
             dimension=self.character.dimension_id,
             rank_grade=self.character.rank.grade,
-            # fight=None,
-            # duel_invitations=self.character.duel_invitations_received.exclude(
-            #     is_accepted=True, is_rejected=True, created_at__gte=timezone.now() - timedelta(minutes=5)
-            # ).values_list('id', flat=True),
-
+            fight=self.character.fight_id,
         )
 
     def notify(self, message: GameEvent):
@@ -361,3 +357,12 @@ class CharacterService:
 
     def has_item(self, item_id: uuid.UUID) -> bool:
         return has_item(self.character, item=Item(id=item_id))
+
+    def is_fighting(self) -> bool:
+        """
+        Check if the character is currently in a fight.
+
+        Returns:
+            bool: True if the character is in a fight, False otherwise.
+        """
+        return self.character.fight
