@@ -1289,12 +1289,6 @@ export interface CharacterInfo {
      * @memberof CharacterInfo
      */
     'fight': string | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof CharacterInfo
-     */
-    'duel_invitations': Array<string>;
 }
 /**
  * 
@@ -1320,6 +1314,134 @@ export interface CharacterItem {
      * @memberof CharacterItem
      */
     'character': string;
+}
+/**
+ * 
+ * @export
+ * @interface CharacterJoinFightEvent
+ */
+export interface CharacterJoinFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterJoinFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterJoinFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterJoinFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof CharacterJoinFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {CharacterJoinFightEventData}
+     * @memberof CharacterJoinFightEvent
+     */
+    'data': CharacterJoinFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CharacterJoinFightEventData
+ */
+export interface CharacterJoinFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterJoinFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterJoinFightEventData
+     */
+    'character_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterJoinFightEventData
+     */
+    'position_id': string;
+}
+/**
+ * 
+ * @export
+ * @interface CharacterLeaveFightEvent
+ */
+export interface CharacterLeaveFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterLeaveFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterLeaveFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterLeaveFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof CharacterLeaveFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {CharacterLeaveFightEventData}
+     * @memberof CharacterLeaveFightEvent
+     */
+    'data': CharacterLeaveFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CharacterLeaveFightEventData
+ */
+export interface CharacterLeaveFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterLeaveFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterLeaveFightEventData
+     */
+    'character_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterLeaveFightEventData
+     */
+    'position_id': string;
 }
 /**
  * 
@@ -1474,6 +1596,70 @@ export interface CharacterPathRequest {
      * @memberof CharacterPathRequest
      */
     'path'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface CharacterPendingJoinFightEvent
+ */
+export interface CharacterPendingJoinFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterPendingJoinFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterPendingJoinFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterPendingJoinFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof CharacterPendingJoinFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {CharacterPendingJoinFightEventData}
+     * @memberof CharacterPendingJoinFightEvent
+     */
+    'data': CharacterPendingJoinFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface CharacterPendingJoinFightEventData
+ */
+export interface CharacterPendingJoinFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterPendingJoinFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterPendingJoinFightEventData
+     */
+    'character_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterPendingJoinFightEventData
+     */
+    'position_id': string;
 }
 /**
  * 
@@ -2083,13 +2269,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -2490,6 +2676,219 @@ export type EventCategory = typeof EventCategory[keyof typeof EventCategory];
 /**
  * 
  * @export
+ * @interface FightEndedEvent
+ */
+export interface FightEndedEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof FightEndedEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightEndedEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightEndedEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof FightEndedEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {FightEndedEventData}
+     * @memberof FightEndedEvent
+     */
+    'data': FightEndedEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface FightEndedEventData
+ */
+export interface FightEndedEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof FightEndedEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightEndedEventData
+     */
+    'position_id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightEndedEventData
+     */
+    'cycle_id': number;
+}
+/**
+ * 
+ * @export
+ * @interface FightGeneric
+ */
+export interface FightGeneric {
+    /**
+     * 
+     * @type {string}
+     * @memberof FightGeneric
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof FightGeneric
+     */
+    'joined': Array<string>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FightGeneric
+     */
+    'duel'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightGeneric
+     */
+    'current_round'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof FightGeneric
+     */
+    'open'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightGeneric
+     */
+    'campaign': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightGeneric
+     */
+    'position': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightGeneric
+     */
+    'attacker': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightGeneric
+     */
+    'defender': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightGeneric
+     */
+    'created'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightGeneric
+     */
+    'ended_at'?: number | null;
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof FightGeneric
+     */
+    'pending_join'?: Array<string>;
+}
+/**
+ * 
+ * @export
+ * @interface FightStartedEvent
+ */
+export interface FightStartedEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof FightStartedEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof FightStartedEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {FightStartedEventData}
+     * @memberof FightStartedEvent
+     */
+    'data': FightStartedEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface FightStartedEventData
+ */
+export interface FightStartedEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEventData
+     */
+    'position_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEventData
+     */
+    'attacker_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof FightStartedEventData
+     */
+    'defender_id': string;
+}
+/**
+ * 
+ * @export
  * @interface FightTurnActionResultGameEvent
  */
 export interface FightTurnActionResultGameEvent {
@@ -2611,6 +3010,12 @@ export interface FullCharacterInfo {
      * @memberof FullCharacterInfo
      */
     'coordinates': Coordinate | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof FullCharacterInfo
+     */
+    'fight': string | null;
 }
 /**
  * 
@@ -3071,6 +3476,12 @@ export interface GameMasterCharacterInfo {
      * @memberof GameMasterCharacterInfo
      */
     'last_safe_position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'fight'?: string | null;
 }
 
 
@@ -3934,6 +4345,64 @@ export interface ItemRewardRequest {
     'reward'?: string | null;
 }
 /**
+ * 
+ * @export
+ * @interface JoinedFightEvent
+ */
+export interface JoinedFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof JoinedFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof JoinedFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JoinedFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof JoinedFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {JoinedFightEventData}
+     * @memberof JoinedFightEvent
+     */
+    'data': JoinedFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface JoinedFightEventData
+ */
+export interface JoinedFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof JoinedFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof JoinedFightEventData
+     */
+    'character_id': string;
+}
+/**
  * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
  * @export
  * @enum {string}
@@ -4023,6 +4492,64 @@ export interface LearnedSkillRequest {
      * @memberof LearnedSkillRequest
      */
     'skill': OpenaiSkillRequest;
+}
+/**
+ * 
+ * @export
+ * @interface LeftFightEvent
+ */
+export interface LeftFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof LeftFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LeftFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeftFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof LeftFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {LeftFightEventData}
+     * @memberof LeftFightEvent
+     */
+    'data': LeftFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface LeftFightEventData
+ */
+export interface LeftFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof LeftFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LeftFightEventData
+     */
+    'character_id': string;
 }
 /**
  * 
@@ -4503,6 +5030,12 @@ export interface Nested {
      * @memberof Nested
      */
     'last_safe_position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Nested
+     */
+    'fight'?: string | null;
 }
 
 
@@ -4644,6 +5177,12 @@ export interface NestedRequest {
      * @memberof NestedRequest
      */
     'last_safe_position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NestedRequest
+     */
+    'fight'?: string | null;
 }
 
 
@@ -5077,6 +5616,12 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'campaign': Campaign;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacter
+     */
+    'fight'?: string | null;
 }
 /**
  * 
@@ -5258,6 +5803,12 @@ export interface OpenaiCharacterRequest {
      * @memberof OpenaiCharacterRequest
      */
     'campaign': CampaignRequest;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterRequest
+     */
+    'fight'?: string | null;
 }
 /**
  * 
@@ -6437,6 +6988,64 @@ export interface PatchedWorldItemRequest {
      * @memberof PatchedWorldItemRequest
      */
     'campaign'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PendingJoinFightEvent
+ */
+export interface PendingJoinFightEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingJoinFightEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PendingJoinFightEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingJoinFightEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof PendingJoinFightEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {PendingJoinFightEventData}
+     * @memberof PendingJoinFightEvent
+     */
+    'data': PendingJoinFightEventData;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface PendingJoinFightEventData
+ */
+export interface PendingJoinFightEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingJoinFightEventData
+     */
+    'fight_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingJoinFightEventData
+     */
+    'character_id': string;
 }
 /**
  * Serializer for Position model.
@@ -14504,6 +15113,120 @@ export class EffectsApi extends BaseAPI {
      */
     public effectsActiveRetrieve(id: string, options?: RawAxiosRequestConfig) {
         return EffectsApiFp(this.configuration).effectsActiveRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * FightApi - axios parameter creator
+ * @export
+ */
+export const FightApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} id A UUID string identifying this fight.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        fightFightRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('fightFightRetrieve', 'id', id)
+            const localVarPath = `/api/fight/fight/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * FightApi - functional programming interface
+ * @export
+ */
+export const FightApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = FightApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} id A UUID string identifying this fight.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async fightFightRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FightGeneric>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.fightFightRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['FightApi.fightFightRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * FightApi - factory interface
+ * @export
+ */
+export const FightApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = FightApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} id A UUID string identifying this fight.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        fightFightRetrieve(id: string, options?: any): AxiosPromise<FightGeneric> {
+            return localVarFp.fightFightRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * FightApi - object-oriented interface
+ * @export
+ * @class FightApi
+ * @extends {BaseAPI}
+ */
+export class FightApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} id A UUID string identifying this fight.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FightApi
+     */
+    public fightFightRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return FightApiFp(this.configuration).fightFightRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
