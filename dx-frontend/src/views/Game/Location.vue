@@ -1,6 +1,11 @@
 <template>
   <div class="location-view">
-    <FightStartOverlay v-if="hasPendingFight"/>
+    <FightStartOverlay
+      v-if="hasPendingFight"
+      :attacker="fightAttacker"
+      :defender="fightDefender"
+      :joined="fightParticipants"
+    />
     <FightOverlay :side="playerGeneralInfo?.path?.name" v-if="isInFight"/>
 
     <div class="rpg-action-holder"
@@ -227,6 +232,9 @@ export default {
       fightService: new FightService(),
       isInFight: false,
       hasPendingFight: false,
+      fightAttacker: null,
+      fightDefender: null,
+      fightParticipants: [],
     };
   },
   async mounted() {
@@ -347,6 +355,7 @@ export default {
       if (!this.playerInfo) {
         this.isInFight = false;
         this.hasPendingFight = false;
+        this.resetFightData();
         return;
       }
 
@@ -357,12 +366,43 @@ export default {
         if (this.isInFight || this.hasPendingFight) {
           // Refresh fight data to ensure we have the latest information
           await this.fightService.refreshFight(this.playerInfo);
+
+          // Fetch and store the resolved fighter data
+          await this.updateFightData();
+        } else {
+          // Reset fight data if not in a fight or pending
+          this.resetFightData();
         }
       } catch (error) {
         console.error("Error checking fight status:", error);
         this.isInFight = false;
         this.hasPendingFight = false;
+        this.resetFightData();
       }
+    },
+
+    async updateFightData() {
+      try {
+        // Fetch and store the resolved fighter data
+        const [attacker, defender, participants] = await Promise.all([
+          this.fightService.getAttacker(this.playerInfo),
+          this.fightService.getDefender(this.playerInfo),
+          this.fightService.getFightParticipants(this.playerInfo)
+        ]);
+
+        this.fightAttacker = attacker;
+        this.fightDefender = defender;
+        this.fightParticipants = participants || [];
+      } catch (error) {
+        console.error("Error updating fight data:", error);
+        this.resetFightData();
+      }
+    },
+
+    resetFightData() {
+      this.fightAttacker = null;
+      this.fightDefender = null;
+      this.fightParticipants = [];
     },
 
     async handleSkillSelected(skill) {
@@ -823,6 +863,15 @@ export default {
   watch: {
     selectedGameObjectId(newId) {
       this.refreshInventory();
+    },
+    hasPendingFight(newValue) {
+      if (newValue) {
+        // When hasPendingFight becomes true, update the fighter data
+        this.updateFightData();
+      } else {
+        // When hasPendingFight becomes false, reset the fighter data
+        this.resetFightData();
+      }
     },
   },
 };

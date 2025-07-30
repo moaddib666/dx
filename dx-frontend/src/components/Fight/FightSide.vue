@@ -1,30 +1,38 @@
 <script setup lang="ts">
 import FightSideImage from "@/components/Fight/FightSideImage.vue";
 import FightCharacter from "@/components/Fight/FightCharacter.vue";
-
+import {Fighter, Name535Enum} from "@/api/dx-backend";
+import {computed} from "vue";
 const props = defineProps<{
   direction?: 'left' | 'right';
-  side?: "mage" | "tech";
+  fighter: Fighter
 }>();
+
+enum FightSideEnum {
+  MAGE = 'mage',
+  TECH = 'tech'
+}
 
 // Default values if props are not provided
 const direction = props.direction || 'left';
-const side = props.side || 'mage';
+const side = computed(() => {
+  return props.fighter.path_name === Name535Enum.PathOfJSon ? FightSideEnum.MAGE : FightSideEnum.TECH;
+})
 </script>
 
 <template>
-<div class="fight-side">
-  <FightSideImage :direction="direction" :side="side"></FightSideImage>
-  <FightCharacter
-    class="character-info"
-    :direction="direction"
-    :character="{
+  <div class="fight-side">
+    <FightSideImage :direction="direction" :side="side"></FightSideImage>
+    <FightCharacter
+        class="character-info"
+        :direction="direction"
+        :character="{
       name: 'The Arbiter',
       title: 'The God of the Arena',
       avatar: undefined
     }"
-  ></FightCharacter>
-</div>
+    ></FightCharacter>
+  </div>
 </template>
 
 <style scoped>
@@ -36,6 +44,7 @@ const side = props.side || 'mage';
   align-items: center;
   position: relative;
 }
+
 .character-info {
   position: absolute;
   bottom: 10px;

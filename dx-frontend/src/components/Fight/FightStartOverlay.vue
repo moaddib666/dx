@@ -2,6 +2,23 @@
 
 import FightSide from "@/components/Fight/FightSide.vue";
 import FightFooter from "@/components/Fight/FightFooter.vue";
+import type {Fighter} from '@/api/dx-backend';
+import {withDefaults} from 'vue';
+
+interface Props {
+  attacker: Fighter,
+  defender: Fighter,
+  joined: Fighter[],
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  joined: () => [] as Fighter[]
+});
+
+// filter our attacker and defender from joined fighters
+const joinedFighters = computed(() => {
+  return props.joined.filter(fighter => fighter.id !== props.attacker.id && fighter.id !== props.defender.id);
+});
 </script>
 
 <template>
@@ -13,13 +30,13 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
     </div>
     <div class="fight-overlay-content">
       <div class="attacker">
-        <FightSide direction="right" side="tech"></FightSide>
+        <FightSide direction="right" :fighter="props.attacker"></FightSide>
       </div>
       <div class="defender">
-        <FightSide direction="left" side="mage"></FightSide>
+        <FightSide direction="left" :fighter="props.defender"></FightSide>
       </div>
     </div>
-    <FightFooter class="fight-overlay-footer"/>
+    <FightFooter :fighters="joinedFighters" class="fight-overlay-footer"/>
   </div>
 </template>
 
@@ -82,6 +99,7 @@ import FightFooter from "@/components/Fight/FightFooter.vue";
   filter: drop-shadow(0 0.1rem rgba(0, 0, 0, 0.6)) drop-shadow(0 0.1rem rgba(0, 0, 0, 0.4));
   transition: text-shadow 0.3s ease;
 }
+
 .bg-texture {
   position: absolute;
   top: 0;
