@@ -40,10 +40,10 @@ class FightGameLoopIntegration:
         self.logger.info(f"Preparing fights for cycle {cycle.number}")
 
         coordinator = FightCoordinator(self.notifier, cycle)
-
-        # Process fight detection and initial setup
-        results = coordinator.process_fight_detection_only()
-
+        # Process all fight activities
+        results = coordinator.process_all_fights()
+        # Log summary
+        self._log_cycle_summary(cycle, results)
         self.logger.info(f"Prepared {len(results)} new fights for cycle {cycle.number}")
 
         return {
@@ -67,13 +67,7 @@ class FightGameLoopIntegration:
 
         coordinator = FightCoordinator(self.notifier, cycle)
 
-        # Process all fight activities
-        results = coordinator.process_all_fights()
-
-        # Log summary
-        self._log_cycle_summary(cycle, results)
-
-        return results
+        return {}
 
     def _log_cycle_summary(self, cycle: "Cycle", results: dict):
         """

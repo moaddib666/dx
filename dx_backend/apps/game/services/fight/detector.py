@@ -4,6 +4,7 @@ import typing as t
 from apps.action.models import CharacterAction
 from apps.core.models import CharacterActionType
 from apps.fight.models import Fight
+from apps.game.services.character.core import CharacterService
 
 if t.TYPE_CHECKING:
     from apps.action.models import Cycle
@@ -207,6 +208,16 @@ class FightDetector:
             defender.save(update_fields=['fight'])
 
             self.logger.info(f"Created fight {fight.id} between {action.initiator} and {defender}")
+
+            # Set characters pending join
+            joining_fight = [*action.targets.filter(is_active=True), action.initiator]
+            for target in joining_fight:
+                svc = CharacterService(target)
+                svc.spend_all_ap()
+                self.logger.debug(f"Spent all AP for character {target.id} in fight {fight.id}")
+            fight.pending_join.add(*action.targets.filter(is_active=True))
+            fight.pending_join.add(action.initiator)
+
             self.logger.debug(f"Set fight field for characters {action.initiator.id} and {defender.id}")
             return fight
 

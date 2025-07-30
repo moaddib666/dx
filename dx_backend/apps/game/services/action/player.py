@@ -57,15 +57,15 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         # Apply base stats changes first
         self.base_stats_applier.apply()
 
-        # Process fight preparation early to detect new fights from previous cycle
-        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(self.cycle)
-
         # Schedule NPC actions (may be affected by new fights)
         self.npc_actions_scheduler.schedule_actions(self.cycle)
 
         # Map characters and handle movement
         self.auto_map_svc.map_characters()
         self.perform_follow_chase()
+
+        # Process fight preparation early to detect new fights from previous cycle
+        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(self.cycle)
 
     def post(self):
         self.update_characters()

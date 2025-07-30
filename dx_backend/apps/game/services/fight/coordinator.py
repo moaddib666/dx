@@ -54,25 +54,26 @@ class FightCoordinator:
         }
 
         try:
-            # 1. Detect and create new fights from aggressive actions
-            results['detected_fights'] = self.detector.detect_fights()
-            self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
 
-            # 2. Handle authorized leavers (characters who should leave fights)
+            # Handle authorized leavers (characters who should leave fights)
             results['authorized_leaves'] = self.auth_leaver.process_authorized_leavers(self.cycle.campaign)
             self.logger.debug(f"Processed authorized leavers for {len(results['authorized_leaves'])} fights")
 
-            # 3. Process auto-joining (add characters at fight positions to pending)
+            # Process auto-joining (add characters at fight positions to pending)
             results['auto_joins'] = self.auto_joiner.process_auto_joins(self.cycle.campaign)
             self.logger.debug(f"Processed auto-joins for {len(results['auto_joins'])} fights")
 
-            # 4. Convert pending joiners to active participants
+            # Convert pending joiners to active participants
             results['pending_joins'] = self.pending_joiner.process_pending_joiners(self.cycle.campaign)
             self.logger.debug(f"Processed pending joiners for {len(results['pending_joins'])} fights")
 
-            # 5. Close fights that should end
+            # Close fights that should end
             results['closed_fights'] = self.fight_closer.process_fight_endings()
             self.logger.debug(f"Closed {len(results['closed_fights'])} fights")
+
+            # Detect and create new fights from aggressive actions
+            results['detected_fights'] = self.detector.detect_fights()
+            self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
 
             self.logger.info(f"Completed fight processing for cycle {self.cycle.number}")
 
@@ -113,9 +114,9 @@ class FightCoordinator:
         from apps.fight.models import Fight
 
         stats = {
-            'total_fights': Fight.objects.filter(position__campaign=self.cycle.campaign).count(),
+            'total_fights': Fight.objects.filter(campaign=self.cycle.campaign).count(),
             'active_fights': Fight.objects.filter(
-                position__campaign=self.cycle.campaign,
+                campaign=self.cycle.campaign,
                 open=True
             ).count(),
             'fights_this_cycle': Fight.objects.filter(

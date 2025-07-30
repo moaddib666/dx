@@ -52,7 +52,7 @@ class FightCloser:
         """Get all active fights in the current campaign."""
         return list(Fight.objects.filter(
             open=True,
-            position__campaign=self.cycle.campaign
+            campaign=self.cycle.campaign
         ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
 
     def _should_close_fight(self, fight: Fight) -> bool:

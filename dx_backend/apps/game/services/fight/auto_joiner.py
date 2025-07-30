@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from apps.fight.models import Fight
 from apps.character.models import Character
+from apps.game.services.character.core import CharacterService
 
 if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
@@ -41,6 +42,10 @@ class FightAutoJoiner:
 
         for fight in active_fights:
             pending_joiners = self._process_fight_auto_join(fight)
+            for target in pending_joiners:
+                svc = CharacterService(target)
+                svc.spend_all_ap()
+                self.logger.debug(f"Spent all AP for character {target.id} in fight {fight.id}")
             if pending_joiners:
                 results[fight.id] = pending_joiners
 
@@ -52,7 +57,7 @@ class FightAutoJoiner:
         """Get all active (open) fights in the campaign."""
         return list(Fight.objects.filter(
             open=True,
-            position__campaign=campaign
+            campaign=campaign
         ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
 
     def _process_fight_auto_join(self, fight: Fight) -> list[Character]:

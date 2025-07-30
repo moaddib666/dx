@@ -49,7 +49,7 @@ class FightPendingJoiner:
         """Get active fights that have pending joiners."""
         return list(Fight.objects.filter(
             open=True,
-            position__campaign=campaign,
+            campaign=campaign,
             pending_join__isnull=False
         ).distinct().select_related('position').prefetch_related('pending_join'))
 
