@@ -1,10 +1,10 @@
 <template>
   <div class="location-view">
-    <FightOverlay>
-    </FightOverlay>
+    <FightStartOverlay v-if="hasPendingFight"/>
+    <FightOverlay :side="playerGeneralInfo?.path?.name" v-if="isInFight"/>
 
     <div class="rpg-action-holder"
-    v-if="false"
+      v-if="!hasPendingFight"
     >
     <ActionHolder
         :items="availableItems"
@@ -121,7 +121,7 @@ import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
 import ActionService from "@/services/actionsService.js";
-import PlayerService from "@/services/playerService.js";
+import PlayerService from "@/services/playerService";
 import DiceComponent from "@/components/Dice/DiceComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import GameObjectSelector from "@/components/Selectors/GameObjectSelector.vue";
@@ -153,12 +153,15 @@ import ActionTriggerGroup from "@/components/ActionArea/ActionTriggerGroup/Actio
 import CompassRPG from "@/components/Compass/CompassRPG.vue";
 import MapColumn from "@/components/MapColumn/MapColumn.vue";
 import RPGActionLog from "@/components/RPGActionLog/RPGActionLog.vue";
+import FightStartOverlay from "@/components/Fight/FightStartOverlay.vue";
+import { FightService } from "@/services/PlayerFight";
 import FightOverlay from "@/components/Fight/FightOverlay.vue";
 
 export default {
   name: 'LocationView',
   components: {
     FightOverlay,
+    FightStartOverlay,
     RPGActionLog,
     MapColumn,
     CompassRPG,
@@ -220,6 +223,9 @@ export default {
       actionLog: null,
       bargains: null,
       currentCycleNumber: null,
+      fightService: new FightService(),
+      isInFight: false,
+      hasPendingFight: false,
     };
   },
   async mounted() {
@@ -235,7 +241,7 @@ export default {
       return !this.isDiceVisible && !this.isInventoryVisible;
     },
     isCompassVisible() {
-      return this.hasActionPoints && !this.isDiceVisible && !this.isInventoryVisible && !this.bargainVisible;
+      return this.hasActionPoints && !this.isDiceVisible && !this.isInventoryVisible && !this.bargainVisible && !this.isInFight && !this.hasPendingFight;
     },
     isDiceVisible() {
       return this.diceVisible;
@@ -294,6 +300,10 @@ export default {
   async created() {
     try {
       await this.updateAll();
+      // Additional check for fight status after component is created
+      if (this.playerInfo) {
+        await this.checkFightStatus();
+      }
     } catch (error) {
       console.error("Error during component creation:", error);
       // Initialize with default values to prevent errors
@@ -311,9 +321,33 @@ export default {
       this.actionLog = [];
       this.inventoryItems = [];
       this.bargains = [];
+      this.isInFight = false;
+      this.hasPendingFight = false;
     }
   },
   methods: {
+    async checkFightStatus() {
+      if (!this.playerInfo) {
+        this.isInFight = false;
+        this.hasPendingFight = false;
+        return;
+      }
+
+      try {
+        this.isInFight = await this.fightService.isInFight(this.playerInfo);
+        this.hasPendingFight = await this.fightService.isPendingJoin(this.playerInfo);
+
+        if (this.isInFight || this.hasPendingFight) {
+          // Refresh fight data to ensure we have the latest information
+          await this.fightService.refreshFight(this.playerInfo);
+        }
+      } catch (error) {
+        console.error("Error checking fight status:", error);
+        this.isInFight = false;
+        this.hasPendingFight = false;
+      }
+    },
+
     async handleSkillSelected(skill) {
       if (!this.selectedGameObjectId) {
         console.warn("Cannot use skill without a selected target");
@@ -586,6 +620,7 @@ export default {
       await this.unsetMovement();
       await this.getCurrentPositionInfo();
       await this.getPlayerInfo();
+      await this.checkFightStatus(); // Check if player is in a fight
       await this.getPlayerSkills();
       await this.getActiveEffects();
       await this.refreshShields();
@@ -660,6 +695,12 @@ export default {
       }
     },
     async handleMove(connection) {
+      // Prevent movement if the character is in a fight or has a pending fight
+      if (this.isInFight || this.hasPendingFight) {
+        console.warn("Cannot move while in a fight or with a pending fight");
+        return;
+      }
+
       const direction = connection.direction;
       try {
         const move_direction = this.connections[direction];
@@ -671,6 +712,7 @@ export default {
         await this.actionService.move(new_postion_id);
         // await this.getCurrentPositionInfo();
         await this.getPlayerInfo();
+        await this.checkFightStatus(); // Check fight status after moving
         await this.setMovement();
       } catch (error) {
         console.error(`Error handling move to direction ${direction}:`, error);
