@@ -106,20 +106,6 @@ const emit = defineEmits(['select'])
   flex-direction: column;
 }
 
-.card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.1) 0%,
-      rgba(0, 0, 0, 0.3) 40%,
-      rgba(0, 0, 0, 0.8) 100%
-  );
-  transition: opacity 0.3s ease;
-}
 
 .character-card:hover .card-overlay {
   background: linear-gradient(
@@ -234,6 +220,6 @@ const emit = defineEmits(['select'])
   height: 100%;
   background: url('@/assets/images/avatar/death.webp') no-repeat center center;
   background-size: contain;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 </style>

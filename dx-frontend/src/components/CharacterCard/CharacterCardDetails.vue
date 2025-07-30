@@ -8,7 +8,6 @@
           :class="['stat-row', `stat-${key}`]"
       >
         <div class="stat-info">
-          <span class="stat-label">{{ getStatLabel(key) }}</span>
           <span class="stat-value">{{ attr.current }}/{{ attr.max }}</span>
         </div>
         <div class="stat-bar">
@@ -233,16 +232,19 @@ const getDisplayAttributes = () => {
 .stat-health .stat-label,
 .stat-health .stat-value {
   color: #e74c3c;
+  text-shadow: 0 0.0625rem 0.125rem rgba(231, 76, 60, 0.8);
 }
 
 .stat-energy .stat-label,
 .stat-energy .stat-value {
   color: #3498db;
+  text-shadow: 0 0.0625rem 0.125rem rgba(52, 152, 219, 0.8);
 }
 
 .stat-action .stat-label,
 .stat-action .stat-value {
   color: #9b59b6;
+  text-shadow: 0 0.0625rem 0.125rem rgba(155, 89, 182, 0.8);
 }
 
 /* Enhanced visual effects */
@@ -323,5 +325,15 @@ const getDisplayAttributes = () => {
   .compact-stats {
     gap: 0.1rem;
   }
+}
+
+.stat-info {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
+  flex: 1;
+  padding: clamp(0.1rem, 0.3vw, 0.15rem);
+  flex-direction: column;
+  align-items: center;
+  letter-spacing: 0.03em;
 }
 </style>

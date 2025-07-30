@@ -4,7 +4,7 @@
           v-for="character in characters"
           :key="character.id"
           :class="{ selected: character.id === selectedCharacterId }"
-          :icon="character.biography?.avatar || ''"
+          :icon="character.avatar || ''"
           :name="character.name"
           :details="getCharDetails(character.id)"
           :selected="character.id === selectedCharacterId"

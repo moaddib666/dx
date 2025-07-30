@@ -1,5 +1,4 @@
 import {WorldGameApi} from "@/api/backendService.js";
-import {CharacterInfoGameService} from "@/services/characterInfoService.js";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import type {CharacterOnPosition, WorldPosition} from "@/api/dx-backend";
 
@@ -7,14 +6,14 @@ import type {CharacterOnPosition, WorldPosition} from "@/api/dx-backend";
  * Service for managing character location data
  * Provides methods to get current position information and character details
  */
-export class CharacterCurrentLocationService {
+export class characterCurrentLocationService {
     private position: WorldPosition | null = null;
     private characters: CharacterOnPosition[] = [];
     private npcCharacters: CharacterOnPosition[] = [];
     private bus: any;
 
     /**
-     * Creates a new instance of the CharacterCurrentLocationService
+     * Creates a new instance of the characterCurrentLocationService
      */
     constructor() {
         // Initialize the websocket connection
@@ -147,7 +146,7 @@ export class CharacterCurrentLocationService {
 }
 
 // Create a singleton instance of the service
-const CharacterCurrentLocationService = new CharacterCurrentLocationService();
+const CharacterCurrentLocationService = new characterCurrentLocationService();
 
 // Export the singleton instance
 export default CharacterCurrentLocationService;

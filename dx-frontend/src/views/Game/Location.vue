@@ -34,8 +34,8 @@
     <!-- Top Row (Character Cards) -->
     <div class="top-row">
       <NewCharacterCardHolder
-          v-if="characters.length > 0 || npcCharacters.length > 0"
-          :characters="characters.concat(npcCharacters)"
+          v-if="getCharacters().length > 0"
+          :characters="getCharacters()"
           :selectedCharacterId="selectedGameObjectId"
           :additionalCharactersData="additionalCharactersData"
           @characterSelected="updateSelectedGameObjectId"
@@ -156,6 +156,7 @@ import RPGActionLog from "@/components/RPGActionLog/RPGActionLog.vue";
 import FightStartOverlay from "@/components/Fight/FightStartOverlay.vue";
 import { FightService } from "@/services/PlayerFight";
 import FightOverlay from "@/components/Fight/FightOverlay.vue";
+import CharacterCurrentLocationService from "@/services/CharacterCurrentLocationService";
 
 export default {
   name: 'LocationView',
@@ -231,8 +232,9 @@ export default {
   async mounted() {
     this.bus = ensureConnection();
     this.bus.on("world::new_cycle", this.handleCycleChange);
-    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id
+    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id;
   },
+  beforeUnmount() {},
   computed: {
     currentBargainId() {
       return this.bargains?.[0]?.id;
@@ -299,6 +301,9 @@ export default {
   },
   async created() {
     try {
+      // Initialize the CharacterCurrentLocationService
+      await CharacterCurrentLocationService.initialize();
+
       await this.updateAll();
       // Additional check for fight status after component is created
       if (this.playerInfo) {
@@ -326,6 +331,18 @@ export default {
     }
   },
   methods: {
+    getCharacters() {
+      return CharacterCurrentLocationService.getAllCharacters();
+    },
+    refreshCharactersFromService() {
+      try {
+        // Update characters and npcCharacters from the service
+        this.characters = CharacterCurrentLocationService.getPlayerCharacters();
+        this.npcCharacters = CharacterCurrentLocationService.getNpcCharacters();
+      } catch (error) {
+        console.error("Error refreshing characters from service:", error);
+      }
+    },
     async checkFightStatus() {
       if (!this.playerInfo) {
         this.isInFight = false;
@@ -619,6 +636,7 @@ export default {
       this.resetAdditionalPlayerData();
       await this.unsetMovement();
       await this.getCurrentPositionInfo();
+      this.refreshCharactersFromService();
       await this.getPlayerInfo();
       await this.checkFightStatus(); // Check if player is in a fight
       await this.getPlayerSkills();
@@ -733,20 +751,20 @@ export default {
     },
     async getCurrentPositionInfo() {
       try {
-        this.position = (await WorldGameApi.worldPositionCurrentRetrieve()).data;
+        // Use CharacterCurrentLocationService to get position data
+        this.position = await CharacterCurrentLocationService.getCurrentPositionInfo();
+
+        // Process connections from position data
         this.connections = {}
         if (this.position && this.position.connections) {
           this.position.connections.forEach((conn) => {
             this.connections[conn.direction] = conn;
           });
         }
-        this.characters = [];
-        this.npcCharacters = [];
-        if (this.position && this.position.characters) {
-          this.position.characters.forEach((char) => {
-            this.resolveCharacter(char);
-          });
-        }
+
+        // Get characters from CharacterCurrentLocationService
+        this.characters = CharacterCurrentLocationService.getPlayerCharacters();
+        this.npcCharacters = CharacterCurrentLocationService.getNpcCharacters();
       } catch (error) {
         console.error("Error getting current position info:", error);
         // Initialize with empty values to prevent errors
