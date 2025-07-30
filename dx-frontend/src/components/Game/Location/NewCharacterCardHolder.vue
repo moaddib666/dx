@@ -8,6 +8,7 @@
           :name="character.name"
           :details="getCharDetails(character.id)"
           :selected="character.id === selectedCharacterId"
+          :dead="!character.alive"
           @click="selectCharacter(character.id)"
       />
   </div>
