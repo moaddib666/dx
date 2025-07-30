@@ -55,6 +55,10 @@ class Character(GameObject):
 
     fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True, related_name='joined')
 
+    @property
+    def alive(self) -> bool:
+        return self.current_health_points > 0
+
     def __str__(self):
         return self.name
 

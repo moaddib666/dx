@@ -1,6 +1,6 @@
 from django.db import models
-from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
+from rest_framework import serializers
 
 from apps.character.models import Character
 from apps.game.services.character.core import CharacterService
@@ -62,7 +62,7 @@ class CharacterInfoSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from apps.world.models import Position, PositionConnection
-from apps.core.models import DirectionEnum, DimensionAnomaly, PositionConnectionConfig, PositionConnectionRequirement
+from apps.core.models import DirectionEnum, DimensionAnomaly
 
 
 class PositionConnectionRequirementSerializer(serializers.Serializer):
@@ -202,6 +202,14 @@ class TeleportPositionSerializer(serializers.Serializer):
         return instance
 
 
+class CharacterOnPositionSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(source='bio.avatar', allow_null=True, required=False)
+
+    class Meta:
+        model = Character
+        fields = ('id', 'name', 'is_active', "avatar", 'npc', 'alive')
+
+
 class WorldPositionSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -212,6 +220,8 @@ class WorldPositionSerializer(serializers.ModelSerializer):
     connections = serializers.SerializerMethodField()
     location = serializers.UUIDField(source='sub_location.location_id')
     characters = serializers.SerializerMethodField()
+    characters_on_position = serializers.SerializerMethodField()
+
     image = serializers.SerializerMethodField()
     anomalies = serializers.SerializerMethodField()
 
@@ -219,7 +229,7 @@ class WorldPositionSerializer(serializers.ModelSerializer):
         model = Position
         fields = (
             'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
-            "image", 'is_safe', 'anomalies')
+            'characters_on_position', "image", 'is_safe', 'anomalies')
 
     @extend_schema_field(serializers.ListField(child=serializers.UUIDField()))
     def get_anomalies(self, obj):
@@ -251,6 +261,14 @@ class WorldPositionSerializer(serializers.ModelSerializer):
         return [character.id for character in
                 obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign,
                                                                  is_active=True)]
+
+    def get_characters_on_position(self, obj):
+        """Retrieve all character objects in the current position."""
+        characters = obj.gameobject_set.instance_of(Character).filter(
+            campaign=self._client.current_campaign,
+            is_active=True
+        )
+        return CharacterOnPositionSerializer(characters, many=True, context=self.context).data
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_image(self, obj):
