@@ -1574,6 +1574,49 @@ export interface CharacterNewTurnGameEventData {
 /**
  * 
  * @export
+ * @interface CharacterOnPosition
+ */
+export interface CharacterOnPosition {
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterOnPosition
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterOnPosition
+     */
+    'name': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CharacterOnPosition
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterOnPosition
+     */
+    'avatar'?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CharacterOnPosition
+     */
+    'npc'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof CharacterOnPosition
+     */
+    'alive': boolean;
+}
+/**
+ * 
+ * @export
  * @interface CharacterPath
  */
 export interface CharacterPath {
@@ -2269,13 +2312,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -9076,10 +9119,10 @@ export interface WorldPosition {
     'characters': Array<string>;
     /**
      * 
-     * @type {string}
+     * @type {Array<CharacterOnPosition>}
      * @memberof WorldPosition
      */
-    'characters_on_position': string;
+    'characters_on_position': Array<CharacterOnPosition>;
     /**
      * 
      * @type {string}
