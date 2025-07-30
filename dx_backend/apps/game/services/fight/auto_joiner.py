@@ -42,10 +42,6 @@ class FightAutoJoiner:
 
         for fight in active_fights:
             pending_joiners = self._process_fight_auto_join(fight)
-            for target in pending_joiners:
-                svc = CharacterService(target)
-                svc.spend_all_ap()
-                self.logger.debug(f"Spent all AP for character {target.id} in fight {fight.id}")
             if pending_joiners:
                 results[fight.id] = pending_joiners
 
@@ -165,6 +161,9 @@ class FightAutoJoiner:
         try:
             fight.pending_join.add(character)
             self.logger.debug(f"Added {character} to pending joiners for fight {fight.id}")
+            svc = CharacterService(character)
+            svc.spend_all_ap()
+            self.logger.debug(f"Spent all AP for character {character.id} in fight {fight.id}")
         except Exception as e:
             self.logger.error(f"Failed to add {character} to pending joiners for fight {fight.id}: {e}")
 

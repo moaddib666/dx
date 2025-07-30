@@ -2,9 +2,11 @@ import logging
 import typing as t
 
 from apps.action.models import CharacterAction
+from apps.character.models import Character
 from apps.core.models import CharacterActionType
 from apps.fight.models import Fight
 from apps.game.services.character.core import CharacterService
+from apps.world.models import Position
 
 if t.TYPE_CHECKING:
     from apps.action.models import Cycle
@@ -168,6 +170,30 @@ class FightDetector:
             self.logger.debug(f"Fight already exists at position {action.position}")
             return False
 
+        if not self._could_character_start_fight(action.initiator, action.position):
+            self.logger.debug(f"Character {action.initiator} cannot start a fight at position {action.position}")
+            return False
+
+        first_target = active_targets.first()
+        if not first_target:
+            self.logger.debug(f"No active targets found for action {action.id}")
+            return False
+        if not self._could_character_start_fight(first_target, action.position):
+            self.logger.debug(f"Target {first_target} cannot start a fight at position {action.position}")
+            return False
+
+        return True
+
+    def _could_character_start_fight(self, character: "Character", posittion: "Position") -> bool:
+        svc = CharacterService(character)
+        # Check if initiator is knocked out
+        if svc.is_knocked_out():
+            self.logger.debug(f"Character {character} is incapacitated and cannot start a fight")
+            return False
+        # Check if character is at the position
+        if character.position != posittion:
+            self.logger.debug(f"Character {character} is not at the fight position {posittion}")
+            return False
         return True
 
     def _create_fight_from_action(self, action: CharacterAction) -> Fight:
