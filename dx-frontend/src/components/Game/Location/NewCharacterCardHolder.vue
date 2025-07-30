@@ -13,30 +13,61 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import CharacterCard from '@/components/CharacterCard/CharacterCard.vue';
+import { CharacterOnPosition } from "@/api/dx-backend";
 
-export default {
+// Define type for additional character data
+interface CharacterDetails {
+  name?: string;
+  rankGrade?: number;
+  dimension?: number;
+  path?: {
+    name: string;
+    icon: string | null;
+  };
+  attributes?: {
+    energy?: {
+      current: number;
+      max: number;
+    };
+    health?: {
+      current: number;
+      max: number;
+    };
+    action_points?: {
+      current: number;
+      max: number;
+    };
+  };
+  [key: string]: any; // For any additional properties
+}
+
+interface AdditionalCharactersData {
+  [characterId: string]: CharacterDetails;
+}
+
+export default defineComponent({
   name: "CharacterCardHolder",
   components: {
     CharacterCard,
   },
   props: {
     characters: {
-      type: Array,
-      required: true, // Array of character objects
+      type: Array as PropType<CharacterOnPosition[]>,
+      required: true,
     },
     selectedCharacterId: {
-      type: String,
+      type: String as PropType<string | null>,
       default: null,
     },
     /**
      * Additional character data to be displayed in the character card details
-     * @type {Object}
      * {"3f7d8e07-cf63-45fd-a9b0-19568b64234f":{"name":"Ororon","rankGrade":9,"dimension":1,"path":{"name":"xx","icon":null},"attributes":{"energy":{"current":150,"max":150},"health":{"current":75,"max":75}, "action_points":{"current":1,"max":10}}}}
      */
     additionalCharactersData: {
-      type: Object,
+      type: Object as PropType<AdditionalCharactersData>,
       required: false,
     }
   },
@@ -45,17 +76,17 @@ export default {
   },
   computed: {},
   methods: {
-    getCharDetails(charId) {
+    getCharDetails(charId: string): CharacterDetails | undefined {
       if (this.additionalCharactersData === undefined) {
-        return
+        return undefined;
       }
-      return this?.additionalCharactersData[charId]
+      return this.additionalCharactersData[charId];
     },
-    selectCharacter(id) {
+    selectCharacter(id: string): void {
       this.$emit("characterSelected", id);
     },
   },
-};
+});
 </script>
 
 <style scoped>
