@@ -2794,10 +2794,28 @@ export interface FightGeneric {
     'id': string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<Fighter>}
      * @memberof FightGeneric
      */
-    'joined': Array<string>;
+    'joined': Array<Fighter>;
+    /**
+     * 
+     * @type {Array<Fighter>}
+     * @memberof FightGeneric
+     */
+    'pending_join': Array<Fighter>;
+    /**
+     * 
+     * @type {Fighter}
+     * @memberof FightGeneric
+     */
+    'attacker': Fighter;
+    /**
+     * 
+     * @type {Fighter}
+     * @memberof FightGeneric
+     */
+    'defender': Fighter;
     /**
      * 
      * @type {boolean}
@@ -2830,18 +2848,6 @@ export interface FightGeneric {
     'position': string;
     /**
      * 
-     * @type {string}
-     * @memberof FightGeneric
-     */
-    'attacker': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof FightGeneric
-     */
-    'defender': string;
-    /**
-     * 
      * @type {number}
      * @memberof FightGeneric
      */
@@ -2852,12 +2858,6 @@ export interface FightGeneric {
      * @memberof FightGeneric
      */
     'ended_at'?: number | null;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof FightGeneric
-     */
-    'pending_join'?: Array<string>;
 }
 /**
  * 
@@ -2968,6 +2968,49 @@ export interface FightTurnActionResultGameEvent {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface Fighter
+ */
+export interface Fighter {
+    /**
+     * 
+     * @type {string}
+     * @memberof Fighter
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Fighter
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Fighter
+     */
+    'path_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Fighter
+     */
+    'rank_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Fighter
+     */
+    'avatar': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Fighter
+     */
+    'alive': boolean;
+}
 /**
  * Serializer for Formula DTO.
  * @export
