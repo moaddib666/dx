@@ -2269,13 +2269,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -9074,6 +9074,12 @@ export interface WorldPosition {
      * @memberof WorldPosition
      */
     'characters': Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorldPosition
+     */
+    'characters_on_position': string;
     /**
      * 
      * @type {string}
