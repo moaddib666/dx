@@ -1,14 +1,40 @@
 # serializers.py
 from rest_framework import serializers
 
+from apps.character.models import Character
 from apps.fight.models import Fight
 
 
+class Fighter(serializers.ModelSerializer):
+    path_name = serializers.CharField(source="path__name", read_only=True)
+    rank_name = serializers.CharField(source="rank__name", read_only=True)
+    avatar = serializers.ImageField(source="biography__avatar", read_only=True)
+    alive = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Character
+        fields = (
+            "id",
+            "name",
+            "path_name",
+            "rank_name",
+            "avatar",
+            "alive",
+        )
+        read_only_fields = fields
+
+
 class FightGenericSerializer(serializers.ModelSerializer):
-    joined = serializers.PrimaryKeyRelatedField(
+    joined = Fighter(
         many=True,
         read_only=True
     )
+    pending_join = Fighter(
+        many=True,
+        read_only=True
+    )
+    attacker = Fighter(read_only=True)
+    defender = Fighter(read_only=True)
 
     class Meta:
         model = Fight

@@ -1,5 +1,5 @@
 import { FightGameApi } from '@/api/backendService';
-import type { FightGeneric, OpenaiCharacter } from '@/api/dx-backend';
+import type { FightGeneric, Fighter, OpenaiCharacter } from '@/api/dx-backend';
 
 /**
  * Fight Service for managing character fights
@@ -11,8 +11,8 @@ import type { FightGeneric, OpenaiCharacter } from '@/api/dx-backend';
  */
 export class FightService {
   private currentFight: FightGeneric | null = null;
-  private pendingJoinUsers: string[] = [];
-  private joinedUsers: string[] = [];
+  private pendingJoinUsers: Fighter[] = [];
+  private joinedUsers: Fighter[] = [];
 
   /**
    * Determines if a character is in a fight by checking the fight property
@@ -51,7 +51,7 @@ export class FightService {
       return false;
     }
 
-    return this.currentFight.pending_join?.includes(character.id) || false;
+    return this.currentFight.pending_join?.some(fighter => fighter.id === character.id) || false;
   }
 
   /**
@@ -112,9 +112,9 @@ export class FightService {
   /**
    * Gets the participants in a fight
    * @param character The OpenaiCharacter to get the fight participants for
-   * @returns Promise<string[]> Array of participant IDs
+   * @returns Promise<Fighter[]> Array of fight participants
    */
-  public async getFightParticipants(character: OpenaiCharacter): Promise<string[]> {
+  public async getFightParticipants(character: OpenaiCharacter): Promise<Fighter[]> {
     // Use cached fight data if available
     if (!character.fight) {
       return [];
@@ -133,9 +133,9 @@ export class FightService {
   /**
    * Gets the pending join users in a fight
    * @param character The OpenaiCharacter to get the pending join users for
-   * @returns Promise<string[]> Array of pending join user IDs
+   * @returns Promise<Fighter[]> Array of pending join fighters
    */
-  public async getPendingJoinUsers(character: OpenaiCharacter): Promise<string[]> {
+  public async getPendingJoinUsers(character: OpenaiCharacter): Promise<Fighter[]> {
     // Use cached fight data if available
     if (!character.fight) {
       return [];
@@ -154,9 +154,9 @@ export class FightService {
   /**
    * Gets the attacker in a fight
    * @param character The OpenaiCharacter to get the attacker for
-   * @returns Promise<string | null> The attacker ID or null if not in a fight
+   * @returns Promise<Fighter | null> The attacker or null if not in a fight
    */
-  public async getAttacker(character: OpenaiCharacter): Promise<string | null> {
+  public async getAttacker(character: OpenaiCharacter): Promise<Fighter | null> {
     // Use cached fight data if available
     if (!character.fight) {
       return null;
@@ -175,9 +175,9 @@ export class FightService {
   /**
    * Gets the defender in a fight
    * @param character The OpenaiCharacter to get the defender for
-   * @returns Promise<string | null> The defender ID or null if not in a fight
+   * @returns Promise<Fighter | null> The defender or null if not in a fight
    */
-  public async getDefender(character: OpenaiCharacter): Promise<string | null> {
+  public async getDefender(character: OpenaiCharacter): Promise<Fighter | null> {
     // Use cached fight data if available
     if (!character.fight) {
       return null;
