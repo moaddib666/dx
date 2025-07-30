@@ -6,9 +6,9 @@ from apps.fight.models import Fight
 
 
 class Fighter(serializers.ModelSerializer):
-    path_name = serializers.CharField(source="path__name", read_only=True)
-    rank_name = serializers.CharField(source="rank__name", read_only=True)
-    avatar = serializers.ImageField(source="biography__avatar", read_only=True)
+    path_name = serializers.CharField(source="path.name", read_only=True)
+    rank_name = serializers.CharField(source="rank.name", read_only=True)
+    avatar = serializers.ImageField(source="biography.avatar", read_only=True)
     alive = serializers.BooleanField(read_only=True)
 
     class Meta:
