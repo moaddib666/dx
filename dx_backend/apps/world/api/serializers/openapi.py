@@ -203,7 +203,7 @@ class TeleportPositionSerializer(serializers.Serializer):
 
 
 class CharacterOnPositionSerializer(serializers.ModelSerializer):
-    avatar = serializers.ImageField(source='bio.avatar', allow_null=True, required=False)
+    avatar = serializers.ImageField(source='biography.avatar', allow_null=True, required=False)
 
     class Meta:
         model = Character
@@ -262,6 +262,7 @@ class WorldPositionSerializer(serializers.ModelSerializer):
                 obj.gameobject_set.instance_of(Character).filter(campaign=self._client.current_campaign,
                                                                  is_active=True)]
 
+    @extend_schema_field(CharacterOnPositionSerializer(many=True))
     def get_characters_on_position(self, obj):
         """Retrieve all character objects in the current position."""
         characters = obj.gameobject_set.instance_of(Character).filter(
