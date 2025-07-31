@@ -13,10 +13,10 @@ from .accept import ActionAcceptor
 from .base_service import CharacterActionPlayerServicePrototype
 from .stat_changes_applyer import BaseStatChangesApplier
 from ..character.core import CharacterService
+from ..fight.integration import FightGameLoopIntegration
 from ..follow.mover import WorldFollowService
 from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
-from ..fight.integration import FightGameLoopIntegration
 
 if typing.TYPE_CHECKING:
     from ..notifier.base import BaseNotifier
@@ -53,19 +53,19 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.follow_and_chase = WorldFollowService()
         self.fight_integration = FightGameLoopIntegration(notify)
 
-    def prepare(self):
+    def prepare(self, new_cycle: Cycle):
         # Apply base stats changes first
         self.base_stats_applier.apply()
-
-        # Schedule NPC actions (may be affected by new fights)
-        self.npc_actions_scheduler.schedule_actions(self.cycle)
 
         # Map characters and handle movement
         self.auto_map_svc.map_characters()
         self.perform_follow_chase()
 
         # Process fight preparation early to detect new fights from previous cycle
-        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(self.cycle)
+        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(new_cycle)
+
+        # Schedule NPC actions (may be affected by new fights)
+        self.npc_actions_scheduler.schedule_actions(self.cycle)
 
     def post(self):
         self.update_characters()
@@ -80,7 +80,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.post()
         # Get the campaign from the current cycle
         next_cycle = Cycle.objects.next(campaign=self.cycle.campaign)
-        self.prepare()
+        self.prepare(next_cycle)
         self.notify.new_cycle(next_cycle)
         return next_cycle
 
@@ -141,7 +141,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         """
         return Character.objects.filter(is_active=True, npc=False, campaign=self.cycle.campaign).values_list(
             "position__sub_location",
-                                                                               flat=True).distinct()
+            flat=True).distinct()
 
     def _get_suitable_characters(self) -> ["CharacterService"]:
         """
