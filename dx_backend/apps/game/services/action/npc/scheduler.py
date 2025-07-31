@@ -2,7 +2,7 @@ import logging
 import typing as t
 from collections import defaultdict
 
-from django.db.models import OuterRef, Exists
+from django.db.models import OuterRef, Exists, Q
 
 from apps.action.models import Cycle
 from apps.character.models import Character
@@ -41,6 +41,11 @@ class NpcActionScheduler:
         ).filter(
             has_players=True
         ).select_related('position', 'organization').order_by('position', 'organization', 'id')
+
+        # Exclude fight pending joiners they are not considered active NPCs
+        active_npcs = active_npcs.exclude(
+            Q(fights_pending_join__isnull=False)
+        ).distinct()
 
         # Group by actual model instances
         result = defaultdict(lambda: defaultdict(list))
