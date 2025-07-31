@@ -53,6 +53,7 @@ class FightAutoJoiner:
         """Get all active (open) fights in the campaign."""
         return list(Fight.objects.filter(
             open=True,
+            ended_at__isnull=True,
             campaign=campaign
         ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
 

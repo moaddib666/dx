@@ -242,9 +242,6 @@ class FightCloser:
             # Clear pending joiners
             fight.pending_join.clear()
 
-            # Update any actions that were linked to this fight
-            self._update_fight_actions(fight)
-
             self.logger.info(f"Closed fight {fight.id} in cycle {self.cycle.number}")
             return True
 
@@ -260,51 +257,12 @@ class FightCloser:
             fight: Fight instance being closed
         """
         try:
-            characters_to_clear = []
-
-            # Collect main participants
-            if fight.attacker:
-                characters_to_clear.append(fight.attacker)
-            if fight.defender:
-                characters_to_clear.append(fight.defender)
-
-            # Collect pending joiners
-            characters_to_clear.extend(fight.pending_join.all())
-
-            # Clear fight field for all participants
-            for character in characters_to_clear:
-                if character.fight == fight:
-                    character.fight = None
-                    character.save(update_fields=['fight'])
-                    self.logger.debug(f"Cleared fight field for character {character.id}")
-
-            self.logger.info(f"Cleared fight fields for {len(characters_to_clear)} characters in fight {fight.id}")
-
+            Character.objects.filter(
+                fight=fight
+            ).update(fight=None)
+            self.logger.debug(f"Cleared fight field for all characters in fight {fight.id}")
         except Exception as e:
             self.logger.error(f"Failed to clear character fight fields for fight {fight.id}: {e}")
-
-    def _update_fight_actions(self, fight: Fight):
-        """
-        Update actions that were linked to the closed fight.
-        
-        Args:
-            fight: Fight instance that was closed
-        """
-        try:
-            from apps.action.models import CharacterAction
-
-            # Mark fight-related actions as completed if they're still pending
-            fight_actions = CharacterAction.objects.filter(
-                fight=fight,
-                performed=False
-            )
-
-            for action in fight_actions:
-                # You might want to handle these differently based on action type
-                self.logger.debug(f"Fight {fight.id} closed with pending action {action.id}")
-
-        except Exception as e:
-            self.logger.error(f"Failed to update actions for closed fight {fight.id}: {e}")
 
     def _emit_fight_ended_events(self, fight: Fight):
         """

@@ -59,13 +59,13 @@ class FightCoordinator:
             results['authorized_leaves'] = self.auth_leaver.process_authorized_leavers(self.cycle.campaign)
             self.logger.debug(f"Processed authorized leavers for {len(results['authorized_leaves'])} fights")
 
-            # Process auto-joining (add characters at fight positions to pending)
-            results['auto_joins'] = self.auto_joiner.process_auto_joins(self.cycle.campaign)
-            self.logger.debug(f"Processed auto-joins for {len(results['auto_joins'])} fights")
-
             # Convert pending joiners to active participants
             results['pending_joins'] = self.pending_joiner.process_pending_joiners(self.cycle.campaign)
             self.logger.debug(f"Processed pending joiners for {len(results['pending_joins'])} fights")
+
+            # Process auto-joining (add characters at fight positions to pending)
+            results['auto_joins'] = self.auto_joiner.process_auto_joins(self.cycle.campaign)
+            self.logger.debug(f"Processed auto-joins for {len(results['auto_joins'])} fights")
 
             # Close fights that should end
             results['closed_fights'] = self.fight_closer.process_fight_endings()
