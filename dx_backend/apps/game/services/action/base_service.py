@@ -9,7 +9,7 @@ from apps.game.services.character.core import CharacterService
 from apps.game.services.world.movemant import MovementService
 
 if t.TYPE_CHECKING:
-    from apps.action.models import ActionImpact, CharacterAction, DiceRollResult
+    from apps.action.models import ActionImpact, CharacterAction, DiceRollResult, Cycle
     from apps.core.models import ActionImpactModel
 
 
@@ -123,7 +123,7 @@ class SingleTargetActionServicePrototype(CharacterActionServicePrototype, ABC):
 class CharacterActionPlayerServicePrototype(abc.ABC):
 
     @abc.abstractmethod
-    def prepare(self):
+    def prepare(self, new_cycle: "Cycle"):
         raise GameException("Not implemented")
 
     @abc.abstractmethod
