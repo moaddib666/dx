@@ -6,10 +6,11 @@ from django.db import models
 from typing_extensions import TypedDict
 
 from apps.core.models import SkillTypes, SpecialSkillType, TheChosenPath
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class ThePath(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255, unique=True, choices=TheChosenPath.choices(),
                             default=TheChosenPath.MAGIC_JSON, db_index=True)
     description = models.TextField()
@@ -20,6 +21,7 @@ class ThePath(BaseModel):
 
 
 class School(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     path = models.ManyToManyField(ThePath, blank=True, related_name='schools')
@@ -31,6 +33,7 @@ class School(BaseModel):
 
 
 class Skill(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     Types = SkillTypes
     SpecialTypes = SpecialSkillType
 

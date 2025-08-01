@@ -582,12 +582,14 @@ class GameObject(DjangoBaseModel, PolymorphicModel):
 
 
 class StatObject(DjangoBaseModel, PolymorphicModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = django_models.CharField(choices=CharacterStats.choices(), max_length=100, primary_key=True)
     icon = django_models.ImageField(upload_to='icons/stats/', null=True, blank=True)
     description = django_models.TextField(null=True, blank=True)
 
 
 class ViolationObject(DjangoBaseModel, PolymorphicModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = django_models.CharField(choices=ImpactViolationType.choices(), max_length=100, primary_key=True)
     icon = django_models.ImageField(upload_to='icons/violation/', null=True, blank=True)
     description = django_models.TextField(null=True, blank=True)

@@ -6,6 +6,7 @@ from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Organization(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     behavior = models.CharField(choices=BehaviorModel.choices(), default=BehaviorModel.PASSIVE, max_length=20)
@@ -72,7 +73,7 @@ class Rank(BaseModel):
     description: string
     experience_needed: int
     """
-    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE)
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.CAMPAIGN_TEMPLATE, TagsDescriptor.BaseTags.SANDBOX)
     objects = RankManager()
     name = models.CharField(max_length=255, unique=True)
     grade = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])

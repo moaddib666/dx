@@ -9,6 +9,7 @@ from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Dimension(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = models.IntegerField(primary_key=True)
     speed = models.FloatField()
     energy = models.FloatField()
@@ -22,6 +23,7 @@ class Dimension(BaseModel):
 
 
 class Planet(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='planets/', null=True, blank=True)
@@ -41,6 +43,7 @@ class Planet(BaseModel):
 
 
 class Continent(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='continents/', null=True, blank=True)
@@ -57,6 +60,7 @@ class Continent(BaseModel):
 
 
 class Country(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='countries/', null=True, blank=True)
@@ -71,6 +75,7 @@ class Country(BaseModel):
 
 
 class City(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='cities/', null=True, blank=True)
@@ -84,6 +89,7 @@ class City(BaseModel):
 
 
 class Area(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='areas/', null=True, blank=True)
@@ -98,6 +104,7 @@ class Area(BaseModel):
 
 
 class Location(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='locations/', null=True, blank=True)
@@ -112,6 +119,7 @@ class Location(BaseModel):
 
 
 class SubLocation(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='sub_locations/', null=True, blank=True)
@@ -132,6 +140,7 @@ class Position(Model):
      The position is part of the sub-location example: SubLocation is the building, Position is the room.
 
     """
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     grid_x = models.BigIntegerField(default=0)
     grid_y = models.BigIntegerField(default=0)
@@ -156,6 +165,7 @@ class Position(Model):
 
 
 class PositionConnection(models.Model):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     position_from = models.ForeignKey(
         'Position', on_delete=models.CASCADE, related_name='position_from'
     )

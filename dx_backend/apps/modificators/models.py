@@ -5,6 +5,7 @@ from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Modificator(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     icon = models.ImageField(upload_to='icons/modificators/', null=True, blank=True)

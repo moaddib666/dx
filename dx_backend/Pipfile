@@ -32,3 +32,4 @@ django-polymorphic = "*"
 sentry-sdk = "*"
 
 [dev-packages]
+factory-boy = "*"

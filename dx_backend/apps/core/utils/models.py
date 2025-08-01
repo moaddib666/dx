@@ -10,6 +10,7 @@ class TagsDescriptor:
         CAMPAIGN_TEMPLATE = "campaign_template"
         CORE_MODEL = "core_model"
         EXCLUDED = "excluded"
+        SANDBOX = "sandbox"
 
     def __init__(self, *tags):
         self.tags = set(tags)

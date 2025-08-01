@@ -4,6 +4,7 @@ from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class CurrencyToken(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     name = models.CharField(max_length=255)
     description = models.TextField()
     icon = models.ImageField(upload_to='icons/currency/', null=True, blank=True)

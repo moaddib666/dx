@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.core.models import ImpactViolationType
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class ShieldLevelResolver:
@@ -53,6 +53,7 @@ class ShieldLevelResolver:
 
 
 class Shield(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = models.CharField(max_length=255, choices=ImpactViolationType.choices, default=ImpactViolationType.NONE,
                           primary_key=True)
     icon = models.ImageField(upload_to='icons/shields/', null=True, blank=True)

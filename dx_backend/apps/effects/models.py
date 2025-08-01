@@ -1,10 +1,11 @@
 from django.db import models
 
 from apps.core.models import EffectType
-from apps.core.utils.models import BaseModel
+from apps.core.utils.models import BaseModel, TagsDescriptor
 
 
 class Effect(BaseModel):
+    game_tags = TagsDescriptor(TagsDescriptor.BaseTags.SANDBOX)
     id = models.CharField(max_length=255, choices=EffectType.choices, default=EffectType.NONE, primary_key=True)
     icon = models.ImageField(upload_to='icons/effects/', null=True, blank=True)
     permanent = models.BooleanField(default=False)
