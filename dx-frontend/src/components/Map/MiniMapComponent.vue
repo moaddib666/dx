@@ -185,16 +185,16 @@ export default {
       return this.radius * this.scaleAndOffset.scale;
     },
     allPositions() {
-      return (this.mapData.positions || []).map((p) => p.position);
+      return ((this.mapData && this.mapData.positions) || []).map((p) => p.position);
     },
     allConnections() {
-      return this.mapData.connections || [];
+      return (this.mapData && this.mapData.connections) || [];
     },
     charactersList() {
-      return this.mapData.characters || [];
+      return (this.mapData && this.mapData.characters) || [];
     },
     currentPositionId() {
-      return this.mapData.current_position;
+      return this.mapData && this.mapData.current_position;
     },
     currentPosCoords() {
       const found = this.allPositions.find((pos) => pos.id === this.currentPositionId);

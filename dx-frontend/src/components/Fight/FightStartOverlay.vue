@@ -4,6 +4,7 @@ import FightSide from "@/components/Fight/FightSide.vue";
 import FightFooter from "@/components/Fight/FightFooter.vue";
 import type {Fighter} from '@/api/dx-backend';
 import {withDefaults} from 'vue';
+import {computed} from "vue";
 
 interface Props {
   attacker: Fighter,

@@ -215,7 +215,7 @@ export default {
       actionService: new ActionService(ActionGameApi),
       playerService: null,
       playerSkills: null,
-      playerSpecials: null,
+      playerSpecials: [],
       diceResult: null,
       inventoryItems: null,
       activeEffects: [],
@@ -225,8 +225,8 @@ export default {
       bargainVisible: false,
       inventoryVisible: false,
       isMoving: false,
-      mapData: null,
-      actionLog: null,
+      mapData: {},
+      actionLog: [],
       bargains: null,
       currentCycleNumber: null,
       fightService: new FightService(),
@@ -263,6 +263,8 @@ export default {
       return this.inventoryVisible;
     },
     availableActions() {
+      if (!this.playerSkills) return [];
+
       return this.playerSkills.map((knownSkill) => {
         return knownSkill.skill;
       });
@@ -330,7 +332,7 @@ export default {
       this.activeEffects = [];
       this.shields = [];
       this.playerSpecials = [];
-      this.mapData = null;
+      this.mapData = {};
       this.actionLog = [];
       this.inventoryItems = [];
       this.bargains = [];
@@ -361,14 +363,13 @@ export default {
 
       try {
         this.isInFight = await this.fightService.isInFight(this.playerInfo);
-        this.hasPendingFight = await this.fightService.isPendingJoin(this.playerInfo);
-
-        if (this.isInFight || this.hasPendingFight) {
+        if (this.isInFight) {
           // Refresh fight data to ensure we have the latest information
           await this.fightService.refreshFight(this.playerInfo);
 
           // Fetch and store the resolved fighter data
           await this.updateFightData();
+          this.hasPendingFight = await this.fightService.isPendingJoin(this.playerInfo);
         } else {
           // Reset fight data if not in a fight or pending
           this.resetFightData();
@@ -485,6 +486,7 @@ export default {
         this.mapData = (await WorldGameApi.worldMapsMiniMapRetrieve()).data;
       } catch (error) {
         console.debug("Problem refreshing mini map:", error);
+        this.mapData = {};
       }
     },
     resetAdditionalPlayerData() {

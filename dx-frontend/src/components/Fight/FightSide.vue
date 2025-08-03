@@ -27,9 +27,9 @@ const side = computed(() => {
         class="character-info"
         :direction="direction"
         :character="{
-      name: 'The Arbiter',
-      title: 'The God of the Arena',
-      avatar: undefined
+      name: props.fighter.name,
+      title: props.fighter.rank_name,
+      avatar: props.fighter.avatar,
     }"
     ></FightCharacter>
   </div>

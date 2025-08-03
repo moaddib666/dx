@@ -17,6 +17,7 @@ const props = withDefaults(defineProps<{
  */
 function shouldInsertSeparator(index: number): boolean {
   if (index === 0) return true; // Always add a separator for the first item
+  if (!props.actions || index >= props.actions.length || index <= 0) return false;
   return props.actions[index].cycle !== props.actions[index - 1].cycle;
 }
 </script>
