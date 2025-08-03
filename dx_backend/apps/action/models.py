@@ -19,15 +19,31 @@ class CycleManager(models.Manager):
             return self.create(campaign=campaign, number=0)
         return qs.latest('number')
 
-    def next(self, campaign: "Campaign"):
+    def next(self, campaign: "Campaign") -> "Cycle":
         current = self.current(campaign=campaign)
         return self.create(campaign=campaign, number=current.number + 1)
 
-    def next_cycle(self, campaign: "Campaign"):
+    def previous(self, campaign: "Campaign") -> t.Optional["Cycle"]:
+        """
+        Get the previous cycle for the given campaign.
+        If there is no previous cycle, return None.
+        """
+        current = self.current(campaign=campaign)
+        if current.number == 0:
+            return None
+        return self.filter(campaign=campaign, number_lt=current.number).order_by('-number').first()
+
+    def next_cycle(self, campaign: "Campaign") -> "Cycle":
         """
         Alias for next() for backward compatibility.
         """
         return self.next(campaign=campaign)
+
+    def previous_cycle(self, campaign: "Campaign") -> t.Optional["Cycle"]:
+        """
+        Alias for previous() for backward compatibility.
+        """
+        return self.previous(campaign=campaign)
 
 
 class Cycle(BaseModel):

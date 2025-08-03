@@ -30,11 +30,11 @@ class FightCoordinator:
         self.logger = logging.getLogger("game.services.fight.FightCoordinator")
 
         # Initialize all fight services
-        self.detector = FightDetector(notifier, cycle)
+        self.detector = FightDetector(notifier)
         self.auto_joiner = FightAutoJoiner(notifier)
-        self.auth_leaver = FightAutoLeaver(notifier)
+        self.auto_leaver = FightAutoLeaver(notifier)
         self.pending_joiner = FightPendingJoiner(notifier)
-        self.fight_closer = FightCloser(notifier, cycle)
+        self.fight_closer = FightCloser(notifier)
 
     def process_all_fights(self) -> dict:
         """
@@ -48,7 +48,7 @@ class FightCoordinator:
         results = {
             'detected_fights': [],
             'auto_joins': {},
-            'authorized_leaves': {},
+            'auto_leaves': {},
             'pending_joins': {},
             'closed_fights': []
         }
@@ -56,23 +56,23 @@ class FightCoordinator:
         try:
 
             # Handle authorized leavers (characters who should leave fights)
-            results['authorized_leaves'] = self.auth_leaver.process_authorized_leavers(self.cycle.campaign)
-            self.logger.debug(f"Processed authorized leavers for {len(results['authorized_leaves'])} fights")
+            results['auto_leaves'] = self.auto_leaver.process_authorized_leavers(self.cycle.campaign)
+            self.logger.debug(f"Processed authorized leavers for {len(results['auto_leaves'])} fights")
 
             # Convert pending joiners to active participants
-            results['pending_joins'] = self.pending_joiner.process_pending_joiners(self.cycle.campaign)
+            results['pending_joins'] = self.pending_joiner.process_pending_joiners(self.cycle)
             self.logger.debug(f"Processed pending joiners for {len(results['pending_joins'])} fights")
 
             # Process auto-joining (add characters at fight positions to pending)
-            results['auto_joins'] = self.auto_joiner.process_auto_joins(self.cycle.campaign)
+            results['auto_joins'] = self.auto_joiner.process_auto_joins(self.cycle)
             self.logger.debug(f"Processed auto-joins for {len(results['auto_joins'])} fights")
 
             # Close fights that should end
-            results['closed_fights'] = self.fight_closer.process_fight_endings()
+            results['closed_fights'] = self.fight_closer.process_fight_endings(self.cycle)
             self.logger.debug(f"Closed {len(results['closed_fights'])} fights")
 
             # Detect and create new fights from aggressive actions
-            results['detected_fights'] = self.detector.detect_fights()
+            results['detected_fights'] = self.detector.detect_fights(self.cycle)
             self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
 
             self.logger.info(f"Completed fight processing for cycle {self.cycle.number}")
@@ -80,28 +80,6 @@ class FightCoordinator:
         except Exception as e:
             self.logger.error(f"Error during fight processing: {e}", exc_info=True)
 
-        return results
-
-    def process_fight_detection_only(self) -> list:
-        """
-        Only process fight detection (useful for specific scenarios).
-        
-        Returns:
-            List of newly detected fights
-        """
-        return self.detector.detect_fights()
-
-    def process_fight_cleanup_only(self) -> dict:
-        """
-        Only process fight cleanup (leavers and closers).
-        
-        Returns:
-            Dict containing cleanup results
-        """
-        results = {
-            'authorized_leaves': self.auth_leaver.process_authorized_leavers(self.cycle.campaign),
-            'closed_fights': self.fight_closer.process_fight_endings()
-        }
         return results
 
     def get_fight_statistics(self) -> dict:

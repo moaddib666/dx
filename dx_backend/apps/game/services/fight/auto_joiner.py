@@ -3,8 +3,9 @@ import typing as t
 
 from django.db.models import Q
 
-from apps.fight.models import Fight
+from apps.action.models import Cycle
 from apps.character.models import Character
+from apps.fight.models import Fight, CharactersPendingJoinFight
 from apps.game.services.character.core import CharacterService
 
 if t.TYPE_CHECKING:
@@ -27,21 +28,12 @@ class FightAutoJoiner:
         self.notifier = notifier
         self.logger = logging.getLogger("game.services.fight.FightAutoJoiner")
 
-    def process_auto_joins(self, campaign) -> dict[int, list]:
-        """
-        Process automatic fight joins for all active fights in the campaign.
-        
-        Args:
-            campaign: Campaign instance to process fights for
-            
-        Returns:
-            Dict mapping fight IDs to lists of characters that were added as pending joiners
-        """
-        active_fights = self._get_active_fights(campaign)
+    def process_auto_joins(self, cycle: Cycle) -> dict[int, list]:
+        active_fights = self._get_active_fights(cycle.campaign)
         results = {}
 
         for fight in active_fights:
-            pending_joiners = self._process_fight_auto_join(fight)
+            pending_joiners = self._process_fight_auto_join(fight, cycle)
             if pending_joiners:
                 results[fight.id] = pending_joiners
 
@@ -55,9 +47,9 @@ class FightAutoJoiner:
             open=True,
             ended_at__isnull=True,
             campaign=campaign
-        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
+        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_joiners'))
 
-    def _process_fight_auto_join(self, fight: Fight) -> list[Character]:
+    def _process_fight_auto_join(self, fight: Fight, cycle: "Cycle") -> list[Character]:
         """
         Process auto-join for a single fight.
         
@@ -72,7 +64,7 @@ class FightAutoJoiner:
 
         for character in potential_joiners:
             if self._should_add_to_pending(fight, character):
-                self._add_to_pending_join(fight, character)
+                self._add_to_pending_join(fight, character, cycle=cycle)
                 added_joiners.append(character)
                 self._emit_pending_join_events(fight, character)
 
@@ -88,6 +80,11 @@ class FightAutoJoiner:
         Returns:
             List of potential joiner characters
         """
+        # Get characters already pending to join this fight
+        pending_character_ids = CharactersPendingJoinFight.objects.filter(
+            fight=fight
+        ).values_list('character_id', flat=True)
+
         return list(Character.objects.filter(
             position=fight.position,
             is_active=True,
@@ -95,7 +92,7 @@ class FightAutoJoiner:
         ).exclude(
             Q(id=fight.attacker.id) | Q(id=fight.defender.id)
         ).exclude(
-            id__in=fight.pending_join.values_list('id', flat=True)
+            id__in=pending_character_ids
         ))
 
     def _should_add_to_pending(self, fight: Fight, character: Character) -> bool:
@@ -151,17 +148,22 @@ class FightAutoJoiner:
 
         return active_effects.exists()
 
-    def _add_to_pending_join(self, fight: Fight, character: Character):
+    def _add_to_pending_join(self, fight: Fight, character: Character, cycle: Cycle):
         """
-        Add character to fight's pending joiners.
+        Add character to fight's pending joiners using CharactersPendingJoinFight model.
         
         Args:
             fight: Fight instance
             character: Character to add
         """
         try:
-            fight.pending_join.add(character)
-            self.logger.debug(f"Added {character} to pending joiners for fight {fight.id}")
+            # Create a CharactersPendingJoinFight record
+            CharactersPendingJoinFight.objects.create(
+                character=character,
+                fight=fight,
+                cycle=cycle
+            )
+            self.logger.debug(f"Added {character} to pending joiners for fight {fight.id} in cycle {cycle.number}")
             svc = CharacterService(character)
             svc.spend_all_ap()
             self.logger.debug(f"Spent all AP for character {character.id} in fight {fight.id}")

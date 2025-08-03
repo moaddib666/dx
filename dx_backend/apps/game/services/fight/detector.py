@@ -7,9 +7,9 @@ from apps.core.models import CharacterActionType
 from apps.fight.models import Fight
 from apps.game.services.character.core import CharacterService
 from apps.world.models import Position
+from apps.action.models import Cycle
 
 if t.TYPE_CHECKING:
-    from apps.action.models import Cycle
     from apps.game.services.notifier.base import BaseNotifier
 
 
@@ -24,9 +24,8 @@ class FightDetector:
     5. Emits the FightStarted event to all characters in the position of the fight.
     """
 
-    def __init__(self, notifier: "BaseNotifier", cycle: "Cycle"):
+    def __init__(self, notifier: "BaseNotifier"):
         self.notifier = notifier
-        self.cycle = cycle
         self.logger = logging.getLogger("game.services.fight.FightDetector")
 
     AGGRESSIVE_ACTION_TYPES = {
@@ -35,18 +34,18 @@ class FightDetector:
         CharacterActionType.START_FIGHT,
     }
 
-    def detect_fights(self) -> list[Fight]:
+    def detect_fights(self, cycle: "Cycle") -> list[Fight]:
         """
         Detect and create fights based on aggressive actions in the previous cycle.
         
         Returns:
             List of newly created Fight instances
         """
-        if self.cycle.number == 0:
+        if cycle.number == 0:
             self.logger.debug("No previous cycle to check for fights")
             return []
 
-        previous_cycle = self._get_previous_cycle()
+        previous_cycle = Cycle.objects.previous(cycle.campaign)
         if not previous_cycle:
             self.logger.debug("No previous cycle found")
             return []
@@ -56,25 +55,13 @@ class FightDetector:
 
         for action in aggressive_actions:
             if self._should_create_fight(action):
-                fight = self._create_fight_from_action(action)
+                fight = self._create_fight_from_action(action, cycle)
                 if fight:
                     created_fights.append(fight)
                     self._emit_fight_started_event(fight)
 
         self.logger.info(f"Detected and created {len(created_fights)} new fights")
         return created_fights
-
-    def _get_previous_cycle(self):
-        """Get the previous cycle for fight detection."""
-        try:
-            from apps.action.models import Cycle
-            return Cycle.objects.filter(
-                campaign=self.cycle.campaign,
-                number=self.cycle.number - 1
-            ).first()
-        except Exception as e:
-            self.logger.error(f"Error getting previous cycle: {e}")
-            return None
 
     def _get_aggressive_actions(self, previous_cycle) -> list[CharacterAction]:
         """Get aggressive actions from the previous cycle that aren't already in fights."""
@@ -196,7 +183,7 @@ class FightDetector:
             return False
         return True
 
-    def _create_fight_from_action(self, action: CharacterAction) -> Fight:
+    def _create_fight_from_action(self, action: CharacterAction, cycle: "Cycle") -> t.Optional[Fight]:
         """
         Create a Fight instance from an aggressive action.
 
@@ -214,11 +201,11 @@ class FightDetector:
                 return None
 
             fight = Fight.objects.create(
-                campaign=self.cycle.campaign,
+                campaign=cycle.campaign,
                 position=action.position,
                 attacker=action.initiator,
                 defender=defender,
-                created=self.cycle,
+                created=cycle,
                 open=True
             )
 
@@ -241,9 +228,10 @@ class FightDetector:
                 svc = CharacterService(target)
                 svc.spend_all_ap()
                 self.logger.debug(f"Spent all AP for character {target.id} in fight {fight.id}")
-            fight.pending_join.add(*action.targets.filter(is_active=True))
-            fight.pending_join.add(action.initiator)
-
+                fight.pending_joiners.create(
+                    character=target,
+                    cycle=cycle
+                )
             self.logger.debug(f"Set fight field for characters {action.initiator.id} and {defender.id}")
             return fight
 

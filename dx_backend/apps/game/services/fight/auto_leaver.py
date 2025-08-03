@@ -3,7 +3,7 @@ import typing as t
 
 from django.db.models import Q
 
-from apps.fight.models import Fight
+from apps.fight.models import Fight, CharactersPendingJoinFight
 from apps.character.models import Character
 
 if t.TYPE_CHECKING:
@@ -52,7 +52,7 @@ class FightAutoLeaver:
         """Get all fights in the campaign (both active and inactive)."""
         return list(Fight.objects.filter(
             campaign=campaign
-        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
+        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_joiners'))
 
     def _process_fight_leavers(self, fight: Fight) -> list[Character]:
         """
@@ -78,10 +78,11 @@ class FightAutoLeaver:
                     self._emit_leave_events(fight, character)
 
         # Check pending joiners
-        pending_joiners = list(fight.pending_join.all())
-        for character in pending_joiners:
+        pending_records = CharactersPendingJoinFight.objects.filter(fight=fight).select_related('character')
+        for pending_record in pending_records:
+            character = pending_record.character
             if self._should_character_leave(fight, character):
-                self._remove_pending_joiner(fight, character)
+                self._remove_pending_joiner(fight, character, pending_record)
                 # Clear Character.fight field if it matches this fight
                 if character.fight == fight:
                     character.fight = None
@@ -217,10 +218,15 @@ class FightAutoLeaver:
             bool: True if defender was successfully handled
         """
         # Try to promote a pending joiner to defender
-        pending_joiners = fight.pending_join.filter(is_active=True)
-        if pending_joiners.exists():
-            new_defender = pending_joiners.first()
-            fight.pending_join.remove(new_defender)
+        pending_records = CharactersPendingJoinFight.objects.filter(
+            fight=fight,
+            character__is_active=True
+        ).select_related('character')
+
+        if pending_records.exists():
+            pending_record = pending_records.first()
+            new_defender = pending_record.character
+            pending_record.delete()  # Remove from pending
             fight.defender = new_defender
             fight.save()
             self.logger.info(f"Promoted {new_defender} to defender in fight {fight.id}")
@@ -230,16 +236,17 @@ class FightAutoLeaver:
             self._close_fight(fight, "Defender left and no replacement available")
             return True
 
-    def _remove_pending_joiner(self, fight: Fight, character: Character):
+    def _remove_pending_joiner(self, fight: Fight, character: Character, pending_record: CharactersPendingJoinFight):
         """
-        Remove a character from pending joiners.
+        Remove a character from pending joiners by deleting the CharactersPendingJoinFight record.
         
         Args:
             fight: Fight instance
             character: Character to remove from pending joiners
+            pending_record: CharactersPendingJoinFight record to delete
         """
         try:
-            fight.pending_join.remove(character)
+            pending_record.delete()
             self.logger.debug(f"Removed {character} from pending joiners for fight {fight.id}")
         except Exception as e:
             self.logger.error(f"Failed to remove {character} from pending joiners for fight {fight.id}: {e}")

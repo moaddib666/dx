@@ -1,8 +1,9 @@
 import logging
 import typing as t
 
-from apps.fight.models import Fight
+from apps.fight.models import Fight, CharactersPendingJoinFight
 from apps.character.models import Character
+from apps.action.models import Cycle
 
 if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
@@ -23,21 +24,15 @@ class FightPendingJoiner:
         self.notifier = notifier
         self.logger = logging.getLogger("game.services.fight.FightPendingJoiner")
 
-    def process_pending_joiners(self, campaign) -> dict[int, list]:
+    def process_pending_joiners(self, cycle: Cycle) -> dict[int, list]:
         """
         Process pending joiners for all fights in the campaign.
-        
-        Args:
-            campaign: Campaign instance to process fights for
-            
-        Returns:
-            Dict mapping fight IDs to lists of characters that joined
         """
-        active_fights = self._get_active_fights_with_pending(campaign)
+        active_fights = self._get_active_fights_with_pending(cycle.campaign)
         results = {}
 
         for fight in active_fights:
-            joined_characters = self._process_fight_pending_joiners(fight)
+            joined_characters = self._process_fight_pending_joiners(fight, cycle)
             if joined_characters:
                 results[fight.id] = joined_characters
 
@@ -47,15 +42,22 @@ class FightPendingJoiner:
 
     def _get_active_fights_with_pending(self, campaign) -> list[Fight]:
         """Get active fights that have pending joiners."""
+        # Get fight IDs that have pending joiners
+        fight_ids_with_pending = CharactersPendingJoinFight.objects.filter(
+            fight__campaign=campaign,
+            fight__open=True
+        ).values_list('fight_id', flat=True).distinct()
+        
         return list(Fight.objects.filter(
+            id__in=fight_ids_with_pending,
             open=True,
-            campaign=campaign,
-            pending_join__isnull=False
-        ).distinct().select_related('position').prefetch_related('pending_join'))
+            campaign=campaign
+        ).select_related('position').prefetch_related('pending_joiners'))
 
-    def _process_fight_pending_joiners(self, fight: Fight) -> list[Character]:
+    def _process_fight_pending_joiners(self, fight: Fight, cycle: Cycle) -> list[Character]:
         """
         Process pending joiners for a single fight.
+        Only processes characters that have been pending for at least 1 cycle (1-cycle delay).
         
         Args:
             fight: Fight instance to process
@@ -63,12 +65,19 @@ class FightPendingJoiner:
         Returns:
             List of characters that successfully joined the fight
         """
-        pending_characters = list(fight.pending_join.all())
+        # Get pending records that are ready to join (1-cycle delay)
+        # Characters can join if they were added in a previous cycle
+        pending_records = CharactersPendingJoinFight.objects.filter(
+            fight=fight,
+            cycle__number__lt=cycle.number  # Must be from a previous cycle
+        ).select_related('character')
+        
         joined_characters = []
 
-        for character in pending_characters:
+        for pending_record in pending_records:
+            character = pending_record.character
             if self._should_join_fight(fight, character):
-                if self._convert_to_active_participant(fight, character):
+                if self._convert_to_active_participant(fight, character, pending_record):
                     joined_characters.append(character)
                     self._emit_join_events(fight, character)
 
@@ -162,24 +171,26 @@ class FightPendingJoiner:
             return True
 
         current_participants = 2  # attacker + defender
-        current_participants += fight.pending_join.count()
+        current_participants += CharactersPendingJoinFight.objects.filter(fight=fight).count()
 
         return current_participants < max_participants
 
-    def _convert_to_active_participant(self, fight: Fight, character: Character) -> bool:
+    def _convert_to_active_participant(self, fight: Fight, character: Character,
+                                       pending_record: CharactersPendingJoinFight) -> bool:
         """
         Convert a pending joiner to an active participant in the fight.
         
         Args:
             fight: Fight instance
             character: Character to convert
+            pending_record: CharactersPendingJoinFight record to delete
             
         Returns:
             bool: True if conversion was successful
         """
         try:
-            # Remove from pending joiners
-            fight.pending_join.remove(character)
+            # Remove the pending join record
+            pending_record.delete()
 
             # Set Character.fight field to mark them as active participant
             character.fight = fight
@@ -272,8 +283,14 @@ class FightPendingJoiner:
             bool: True if successful
         """
         try:
-            if character in fight.pending_join.all():
-                return self._convert_to_active_participant(fight, character)
+            # Check if character has a pending join record
+            pending_record = CharactersPendingJoinFight.objects.filter(
+                fight=fight,
+                character=character
+            ).first()
+
+            if pending_record:
+                return self._convert_to_active_participant(fight, character, pending_record)
             else:
                 # Character wasn't pending, so just emit events
                 self._emit_join_events(fight, character)

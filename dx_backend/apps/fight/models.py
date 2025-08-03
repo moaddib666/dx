@@ -43,3 +43,30 @@ class Fight(BaseModel):
         related_name='fights_pending_join',
         blank=True
     )
+
+
+class CharactersPendingJoinFight(BaseModel):
+    """
+    Model to track characters pending to join a fight.
+    This is used to manage characters that are not yet in a fight but are expected to join.
+
+    This model allows auto joining characters that waits for at least one cycle to join a fight.
+    """
+    character = models.ForeignKey(
+        'character.Character',
+        on_delete=models.CASCADE,
+        related_name='pending_fights'
+    )
+    fight = models.ForeignKey(
+        Fight,
+        on_delete=models.CASCADE,
+        related_name='pending_joiners'
+    )
+    cycle = models.ForeignKey(
+        'action.Cycle',
+        on_delete=models.CASCADE,
+        related_name='pending_join_fights'
+    )
+
+    def __str__(self):
+        return f"{self.character.name} pending join fight {self.fight.id} in cycle {self.cycle.number}"

@@ -57,7 +57,7 @@ class FightTest(TestCase):
         - In the next cycle, all characters that been pending join the fight must been removed from pending joiners
         - When characters have ap it's expected that the NPC would continue attacking the Character
         - If any other characters are in the same position, does not metter on what cycle they must been pending join the fight if the fight is open and not ended thay action points are reduced to 0 and thay must wait for 1 cycle to join the fight
-        - The fitght ended when no affencive actions are applied in the fight for 3 cycles
+        - The fight ended when no affective actions are applied in the fight for 3 cycles
         - The fight must be closed when the fight ended
         """
         # Create 2 different organizations using factory boy

@@ -24,38 +24,37 @@ class FightCloser:
     6. Remove all characters from the fight.
     """
 
-    def __init__(self, notifier: "BaseNotifier", cycle: "Cycle"):
+    def __init__(self, notifier: "BaseNotifier"):
         self.notifier = notifier
-        self.cycle = cycle
         self.logger = logging.getLogger("game.services.fight.FightCloser")
 
-    def process_fight_endings(self) -> list[Fight]:
+    def process_fight_endings(self, cycle: "Cycle") -> list[Fight]:
         """
         Process fight endings for all active fights in the campaign.
         
         Returns:
             List of fights that were closed
         """
-        active_fights = self._get_active_fights()
+        active_fights = self._get_active_fights(cycle)
         closed_fights = []
 
         for fight in active_fights:
-            if self._should_close_fight(fight):
-                if self._close_fight(fight):
+            if self._should_close_fight(fight, cycle):
+                if self._close_fight(fight, cycle):
                     closed_fights.append(fight)
                     self._emit_fight_ended_events(fight)
 
         self.logger.info(f"Processed {len(active_fights)} active fights, closed {len(closed_fights)}")
         return closed_fights
 
-    def _get_active_fights(self) -> list[Fight]:
+    def _get_active_fights(self, cycle: "Cycle") -> list[Fight]:
         """Get all active fights in the current campaign."""
         return list(Fight.objects.filter(
             open=True,
-            campaign=self.cycle.campaign
+            campaign=cycle.campaign
         ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
 
-    def _should_close_fight(self, fight: Fight) -> bool:
+    def _should_close_fight(self, fight: Fight, cycle: "Cycle") -> bool:
         """
         Determine if a fight should be closed.
         
@@ -71,7 +70,7 @@ class FightCloser:
             return True
 
         # Check for inactivity
-        if self._is_fight_inactive(fight):
+        if self._is_fight_inactive(fight, cycle):
             self.logger.debug(f"Fight {fight.id} is inactive")
             return True
 
@@ -157,7 +156,7 @@ class FightCloser:
 
         return active_effects.exists()
 
-    def _is_fight_inactive(self, fight: Fight) -> bool:
+    def _is_fight_inactive(self, fight: Fight, cycle: "Cycle") -> bool:
         """
         Check if the fight is inactive (no actions from participants in recent cycles).
         
@@ -167,12 +166,12 @@ class FightCloser:
         Returns:
             bool: True if fight is inactive
         """
-        if self.cycle.number == 0:
+        if cycle.number == 0:
             return False
 
         # Check last few cycles for activity
         cycles_to_check = 3  # Check last 3 cycles for any fight activity
-        min_cycle_number = max(0, self.cycle.number - cycles_to_check)
+        min_cycle_number = max(0, cycle.number - cycles_to_check)
 
         # Get all participants
         participant_ids = set()
@@ -188,7 +187,7 @@ class FightCloser:
         # Check for recent actions from participants
         from apps.action.models import CharacterAction
         recent_actions = CharacterAction.objects.filter(
-            cycle__campaign=self.cycle.campaign,
+            cycle__campaign=cycle.campaign,
             cycle__number__gte=min_cycle_number,
             initiator__id__in=participant_ids,
             performed=True
@@ -220,7 +219,7 @@ class FightCloser:
 
         return False
 
-    def _close_fight(self, fight: Fight) -> bool:
+    def _close_fight(self, fight: Fight, cycle: "Cycle") -> bool:
         """
         Close a fight and clean up its state.
         
@@ -233,7 +232,7 @@ class FightCloser:
         try:
             # Set the fight as closed
             fight.open = False
-            fight.ended_at = self.cycle
+            fight.ended_at = cycle
             fight.save()
 
             # Clear Character.fight field for all participants
@@ -242,7 +241,7 @@ class FightCloser:
             # Clear pending joiners
             fight.pending_join.clear()
 
-            self.logger.info(f"Closed fight {fight.id} in cycle {self.cycle.number}")
+            self.logger.info(f"Closed fight {fight.id} in cycle {cycle.number}")
             return True
 
         except Exception as e:
@@ -290,7 +289,7 @@ class FightCloser:
             event = FightEndedEvent.create_event(
                 fight_id=fight.id,
                 position_id=fight.position.id,
-                cycle_id=self.cycle.id
+                cycle_id=cycle.id
             )
 
             self.notifier.bus.publish(event)
@@ -301,7 +300,7 @@ class FightCloser:
         except Exception as e:
             self.logger.error(f"Failed to emit FightEnded event: {e}")
 
-    def force_close_fight(self, fight: Fight, reason: str = "Manually closed") -> bool:
+    def force_close_fight(self, fight: Fight, cycle: "Cycle", reason: str = "Manually closed") -> bool:
         """
         Force close a fight regardless of normal conditions.
         
@@ -315,7 +314,7 @@ class FightCloser:
         try:
             self.logger.info(f"Force closing fight {fight.id}: {reason}")
 
-            if self._close_fight(fight):
+            if self._close_fight(fight, cycle):
                 self._emit_fight_ended_events(fight)
                 return True
             return False
