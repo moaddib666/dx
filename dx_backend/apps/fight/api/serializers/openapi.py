@@ -29,12 +29,14 @@ class FightGenericSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
-    pending_join = Fighter(
-        many=True,
-        read_only=True
-    )
+    pending_join = serializers.SerializerMethodField()
     attacker = Fighter(read_only=True)
     defender = Fighter(read_only=True)
+
+    def get_pending_join(self, obj):
+        """Get pending joiners from the CharactersPendingJoinFight relationship."""
+        pending_characters = [pending_record.character for pending_record in obj.pending_joiners.all()]
+        return Fighter(pending_characters, many=True).data
 
     class Meta:
         model = Fight

@@ -44,7 +44,7 @@ class NpcActionScheduler:
 
         # Exclude fight pending joiners they are not considered active NPCs
         active_npcs = active_npcs.exclude(
-            Q(fights_pending_join__isnull=False)
+            Q(pending_fights__isnull=False)
         ).distinct()
 
         # Group by actual model instances

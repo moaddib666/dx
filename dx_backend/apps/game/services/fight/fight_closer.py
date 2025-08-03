@@ -100,8 +100,8 @@ class FightCloser:
                 viable_count += 1
 
         # Check pending joiners
-        for character in fight.pending_join.all():
-            if self._is_character_viable(character):
+        for pending_record in fight.pending_joiners.all():
+            if self._is_character_viable(pending_record.character):
                 viable_count += 1
 
         # Need at least 2 viable participants for a fight
@@ -179,7 +179,7 @@ class FightCloser:
             participant_ids.add(fight.attacker.id)
         if fight.defender:
             participant_ids.add(fight.defender.id)
-        participant_ids.update(fight.pending_join.values_list('id', flat=True))
+        participant_ids.update(fight.pending_joiners.values_list('character_id', flat=True))
 
         if not participant_ids:
             return True

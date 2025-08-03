@@ -38,11 +38,6 @@ class Fight(BaseModel):
         null=True,
         blank=True
     )
-    pending_join = models.ManyToManyField(
-        'character.Character',
-        related_name='fights_pending_join',
-        blank=True
-    )
 
 
 class CharactersPendingJoinFight(BaseModel):

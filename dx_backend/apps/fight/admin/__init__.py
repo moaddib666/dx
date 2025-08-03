@@ -5,27 +5,34 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from apps.core.admin import CampaignModelAdmin
-from ..models import Fight
+from ..models import Fight, CharactersPendingJoinFight
 
 
 class PendingJoinersInline(admin.TabularInline):
     """Inline for displaying pending joiners in a fight."""
-    model = Fight.pending_join.through
+    model = CharactersPendingJoinFight
     verbose_name = "Pending Joiner"
     verbose_name_plural = "Pending Joiners"
     extra = 0
-    readonly_fields = ('character_link',)
-    fields = ('character_link',)
+    readonly_fields = ('character_link', 'cycle_display')
+    fields = ('character_link', 'cycle_display')
 
     def character_link(self, obj):
         """Display a link to the character admin."""
-        if hasattr(obj, 'character'):
-            character = obj.character
-            url = reverse('admin:character_character_change', args=[character.pk])
-            return format_html('<a href="{}">{}</a>', url, character.name)
+        if obj.character:
+            url = reverse('admin:character_character_change', args=[obj.character.pk])
+            return format_html('<a href="{}">{}</a>', url, obj.character.name)
         return '-'
 
     character_link.short_description = 'Character'
+
+    def cycle_display(self, obj):
+        """Display the cycle when the character was added to pending."""
+        if obj.cycle:
+            return f"Cycle {obj.cycle.number}"
+        return '-'
+
+    cycle_display.short_description = 'Added in Cycle'
 
 
 @admin.register(Fight)
@@ -172,7 +179,7 @@ class FightAdmin(CampaignModelAdmin):
 
     def pending_joiners_count(self, obj):
         """Display the count of pending joiners."""
-        count = obj.pending_join.count()
+        count = obj.pending_joiners.count()
         if count > 0:
             return format_html(
                 '<span style="background-color: #ffc107; color: black; padding: 2px 6px; border-radius: 3px; font-size: 11px;">{}</span>',
@@ -221,10 +228,11 @@ class FightAdmin(CampaignModelAdmin):
             )
 
         # Pending joiners
-        pending = obj.pending_join.all()
-        if pending:
+        pending_records = obj.pending_joiners.all()
+        if pending_records:
             joiner_links = []
-            for character in pending:
+            for pending_record in pending_records:
+                character = pending_record.character
                 joiner_links.append(
                     f'<a href="{reverse("admin:character_character_change", args=[character.pk])}">'
                     f'{character.name}</a>'

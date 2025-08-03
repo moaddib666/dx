@@ -194,10 +194,15 @@ class FightAutoLeaver:
             bool: True if attacker was successfully handled
         """
         # Try to promote a pending joiner to attacker
-        pending_joiners = fight.pending_join.filter(is_active=True)
-        if pending_joiners.exists():
-            new_attacker = pending_joiners.first()
-            fight.pending_join.remove(new_attacker)
+        pending_records = CharactersPendingJoinFight.objects.filter(
+            fight=fight,
+            character__is_active=True
+        ).select_related('character')
+
+        if pending_records.exists():
+            pending_record = pending_records.first()
+            new_attacker = pending_record.character
+            pending_record.delete()  # Remove from pending
             fight.attacker = new_attacker
             fight.save()
             self.logger.info(f"Promoted {new_attacker} to attacker in fight {fight.id}")

@@ -118,9 +118,9 @@ class FightTest(TestCase):
         self.assertEqual(actions.exists(), True, "NPC 2 should have attacked NPC 1 in the new cycle")
         npc_2.refresh_from_db()
         character1.refresh_from_db()
-        self.assertFalse(npc_2.fights_pending_join.exists(),
+        self.assertFalse(npc_2.pending_fights.exists(),
                          "NPC 2 should not have fights pending join yet")
-        self.assertFalse(character1.fights_pending_join.exists(),
+        self.assertFalse(character1.pending_fights.exists(),
                          "Character 1 should not have fights pending join yet")
         self.assertFalse(npc_2.fight, "NPC 2 should not be in a fight yet")
         self.assertFalse(character1.fight, "Character 1 should not be in a fight")
@@ -130,9 +130,9 @@ class FightTest(TestCase):
         # Check that fight is created
         npc_2.refresh_from_db()
         character1.refresh_from_db()
-        self.assertTrue(npc_2.fights_pending_join.exists(),
+        self.assertTrue(npc_2.pending_fights.exists(),
                         "NPC 2 should have fights pending join after the second cycle")
-        self.assertTrue(character1.fights_pending_join.exists(),
+        self.assertTrue(character1.pending_fights.exists(),
                         "Character 1 should have fights pending join after the second cycle")
         self.assertTrue(npc_2.fight, "NPC 2 should be in a fight after the second cycle")
         self.assertTrue(character1.fight, "Character 1 should be in a fight after the second cycle")
