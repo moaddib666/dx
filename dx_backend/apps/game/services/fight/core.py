@@ -40,6 +40,7 @@ class FightFactory:
             attacker=attacker,
             defender=defender,
             position=position,
+            campaign=cycle.campaign,
             open=True
         )
 

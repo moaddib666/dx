@@ -340,7 +340,7 @@ class NPCFactory(NPCFactoryProtocol):
             dimension=config.template.dimension or Dimension.objects.get(id=1),
             position=config.position or default_pos,
             is_active=True,
-            campaign=config.campaign or config.template.campaign
+            campaign=config.campaign
         )
 
         # Apply template stats

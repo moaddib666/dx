@@ -61,11 +61,11 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.auto_map_svc.map_characters()
         self.perform_follow_chase()
 
-        # Process fight preparation early to detect new fights from previous cycle
-        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(new_cycle)
-
         # Schedule NPC actions (may be affected by new fights)
         self.npc_actions_scheduler.schedule_actions(self.cycle)
+
+        # Process fight preparation early to detect new fights from previous cycle
+        self.fight_preparation_results = self.fight_integration.prepare_cycle_fights(new_cycle)
 
     def post(self):
         self.update_characters()

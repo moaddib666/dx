@@ -44,7 +44,7 @@ class FightGameLoopIntegration:
         results = coordinator.process_all_fights()
         # Log summary
         self._log_cycle_summary(cycle, results)
-        self.logger.info(f"Prepared {len(results)} new fights for cycle {cycle.number}")
+        self.logger.info(f"Prepared {len(results.get('detected_fights', []))} new fights for cycle {cycle.number}")
 
         return {
             'new_fights': results,
