@@ -30,18 +30,7 @@ def set_models_campaign(apps, schema_editor):
 
     # Update all GameObject instances (this includes Character, WorldItem, etc.)
     GameObject.objects.filter(campaign__isnull=True).update(campaign=campaign)
-
-    # Update models that don't inherit from GameObject
-    Organization.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    CharacterTemplate.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Dimension.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Planet.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Continent.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Country.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    City.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Area.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    Location.objects.filter(campaign__isnull=True).update(campaign=campaign)
-    SubLocation.objects.filter(campaign__isnull=True).update(campaign=campaign)
+    # CharacterTemplate.objects.filter(campaign__isnull=True).update(campaign=campaign)
     Cycle.objects.filter(campaign__isnull=True).update(campaign=campaign)
 
 
