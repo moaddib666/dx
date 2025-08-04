@@ -31,7 +31,7 @@ class CycleManager(models.Manager):
         current = self.current(campaign=campaign)
         if current.number == 0:
             return None
-        return self.filter(campaign=campaign, number_lt=current.number).order_by('-number').first()
+        return self.filter(campaign=campaign, number__lt=current.number).order_by('-number').first()
 
     def next_cycle(self, campaign: "Campaign") -> "Cycle":
         """

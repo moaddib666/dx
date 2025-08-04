@@ -4,6 +4,7 @@ import typing as t
 from apps.fight.models import Fight, CharactersPendingJoinFight
 from apps.character.models import Character
 from apps.action.models import Cycle
+from apps.game.services.character.core import CharacterService
 
 if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
@@ -195,7 +196,8 @@ class FightPendingJoiner:
             # Set Character.fight field to mark them as active participant
             character.fight = fight
             character.save(update_fields=['fight'])
-
+            svc = CharacterService(character)
+            svc.spend_all_ap()
             self.logger.info(f"Converted {character} from pending to active participant in fight {fight.id}")
             self.logger.debug(f"Set fight field for character {character.id}")
             return True

@@ -55,6 +55,10 @@ class FightCoordinator:
 
         try:
 
+            # Detect and create new fights from aggressive actions
+            results['detected_fights'] = self.detector.detect_fights(self.cycle)
+            self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
+
             # Handle authorized leavers (characters who should leave fights)
             results['auto_leaves'] = self.auto_leaver.process_authorized_leavers(self.cycle.campaign)
             self.logger.debug(f"Processed authorized leavers for {len(results['auto_leaves'])} fights")
@@ -70,10 +74,6 @@ class FightCoordinator:
             # Close fights that should end
             results['closed_fights'] = self.fight_closer.process_fight_endings(self.cycle)
             self.logger.debug(f"Closed {len(results['closed_fights'])} fights")
-
-            # Detect and create new fights from aggressive actions
-            results['detected_fights'] = self.detector.detect_fights(self.cycle)
-            self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
 
             self.logger.info(f"Completed fight processing for cycle {self.cycle.number}")
 

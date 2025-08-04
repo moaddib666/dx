@@ -8,7 +8,8 @@ from apps.fight.models import Fight
 from apps.game.services.character.core import CharacterService
 from apps.world.models import Position
 from apps.action.models import Cycle
-
+from django.db.models import Q
+from apps.core.models import ImpactType
 if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
 
@@ -65,9 +66,6 @@ class FightDetector:
 
     def _get_aggressive_actions(self, previous_cycle) -> list[CharacterAction]:
         """Get aggressive actions from the previous cycle that aren't already in fights."""
-        from django.db.models import Q
-        from apps.core.models import ImpactType
-
         # Get aggressive impact types for efficient querying
         aggressive_impact_types = [
             impact_type for impact_type in ImpactType
@@ -78,6 +76,7 @@ class FightDetector:
         base_conditions = Q(
             cycle=previous_cycle,
             performed=True,
+            accepted=True,
             action_type__in=self.AGGRESSIVE_ACTION_TYPES,
             fight__isnull=True  # Not already in a fight
         )
@@ -208,31 +207,7 @@ class FightDetector:
                 created=cycle,
                 open=True
             )
-
-            # Link the action to the fight
-            action.fight = fight
-            action.save()
-
-            # Set Character.fight field for participants
-            action.initiator.fight = fight
-            action.initiator.save(update_fields=['fight'])
-
-            defender.fight = fight
-            defender.save(update_fields=['fight'])
-
             self.logger.info(f"Created fight {fight.id} between {action.initiator} and {defender}")
-
-            # Set characters pending join
-            joining_fight = [*action.targets.filter(is_active=True), action.initiator]
-            for target in joining_fight:
-                svc = CharacterService(target)
-                svc.spend_all_ap()
-                self.logger.debug(f"Spent all AP for character {target.id} in fight {fight.id}")
-                fight.pending_joiners.create(
-                    character=target,
-                    cycle=cycle
-                )
-            self.logger.debug(f"Set fight field for characters {action.initiator.id} and {defender.id}")
             return fight
 
         except Exception as e:

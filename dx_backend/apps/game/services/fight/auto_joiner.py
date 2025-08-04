@@ -90,8 +90,6 @@ class FightAutoJoiner:
             is_active=True,
             fight__isnull=True  # Not already in any fight
         ).exclude(
-            Q(id=fight.attacker.id) | Q(id=fight.defender.id)
-        ).exclude(
             id__in=pending_character_ids
         ))
 
@@ -163,6 +161,8 @@ class FightAutoJoiner:
                 fight=fight,
                 cycle=cycle
             )
+            character.fight = fight  # Update character's fight reference
+            character.save(update_fields=['fight'])
             self.logger.debug(f"Added {character} to pending joiners for fight {fight.id} in cycle {cycle.number}")
             svc = CharacterService(character)
             svc.spend_all_ap()

@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from apps.fight.models import Fight
 from apps.character.models import Character
+from apps.game.services.character.core import CharacterService
 
 if t.TYPE_CHECKING:
     from apps.action.models import Cycle
@@ -52,7 +53,7 @@ class FightCloser:
         return list(Fight.objects.filter(
             open=True,
             campaign=cycle.campaign
-        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_join'))
+        ).select_related('position', 'attacker', 'defender').prefetch_related('pending_joiners'))
 
     def _should_close_fight(self, fight: Fight, cycle: "Cycle") -> bool:
         """
@@ -89,19 +90,22 @@ class FightCloser:
             fight: Fight instance to check
             
         Returns:
-            bool: True if fight has viable participants
+            bool: True if a fight has viable participants
         """
         viable_count = 0
 
         # Check main participants
-        main_participants = [fight.attacker, fight.defender]
+        main_participants = fight.joined.all()
+        # TODO: prefetch related active effects to optimize this query
         for character in main_participants:
             if character and self._is_character_viable(character):
+                self.logger.debug(f"Character {character.id} is viable for fight {fight.id}")
                 viable_count += 1
 
         # Check pending joiners
         for pending_record in fight.pending_joiners.all():
             if self._is_character_viable(pending_record.character):
+                self.logger.debug(f"Pending joiner {pending_record.character.id} is viable for fight {fight.id}")
                 viable_count += 1
 
         # Need at least 2 viable participants for a fight
@@ -117,12 +121,15 @@ class FightCloser:
         Returns:
             bool: True if character is viable
         """
-        # Check if character is active
-        if not character.is_active:
+        svc = CharacterService(character)
+
+        # Check if character is knocked out
+        if svc.is_knocked_out():
+            self.logger.debug(f"Character {character.id} is knocked out and cannot continue fighting")
             return False
 
-        # Check health status
-        if hasattr(character, 'current_health') and character.current_health <= 0:
+        # Check if the character is active
+        if not character.is_active:
             return False
 
         # Check for incapacitating effects
@@ -134,10 +141,10 @@ class FightCloser:
     def _is_character_incapacitated(self, character: Character) -> bool:
         """
         Check if character is incapacitated and cannot continue fighting.
-        
+
         Args:
             character: Character to check
-            
+
         Returns:
             bool: True if character is incapacitated
         """
@@ -146,8 +153,6 @@ class FightCloser:
         fight_ending_effects = {
             EffectType.KNOCKED_OUT,
             EffectType.COMA,
-            EffectType.SLEEPING,  # Could be temporary, but ends current fight
-            EffectType.PARALYZED,  # Could be temporary, but ends current fight
         }
 
         active_effects = character.effects.filter(
