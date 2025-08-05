@@ -1,10 +1,9 @@
 import logging
 import typing as t
 
-from django.db.models import Q
-
-from apps.fight.models import Fight, CharactersPendingJoinFight
+from apps.action.models import Cycle
 from apps.character.models import Character
+from apps.fight.models import Fight
 
 if t.TYPE_CHECKING:
     from apps.game.services.notifier.base import BaseNotifier
@@ -26,17 +25,11 @@ class FightAutoLeaver:
         self.notifier = notifier
         self.logger = logging.getLogger("game.services.fight.FightAuthLeaver")
 
-    def process_authorized_leavers(self, campaign) -> dict[int, list]:
+    def process_auto_leave(self, cycle: "Cycle") -> dict[int, list]:
         """
         Process authorized leaving for all fights in the campaign.
-        
-        Args:
-            campaign: Campaign instance to process fights for
-            
-        Returns:
-            Dict mapping fight IDs to lists of characters that left
         """
-        all_fights = self._get_all_fights(campaign)
+        all_fights = self._get_all_fights(cycle.campaign)
         results = {}
 
         for fight in all_fights:
@@ -57,51 +50,21 @@ class FightAutoLeaver:
     def _process_fight_leavers(self, fight: Fight) -> list[Character]:
         """
         Process leaving for a single fight.
-        
-        Args:
-            fight: Fight instance to process
-            
-        Returns:
-            List of characters that left the fight
         """
         leavers = []
 
         # Check main participants (attacker and defender)
-        main_participants = [fight.attacker, fight.defender]
-        for character in main_participants:
+        for character in fight.joined.all():
             if character and self._should_character_leave(fight, character):
-                if self._remove_main_participant(fight, character):
-                    # Clear Character.fight field
-                    character.fight = None
-                    character.save(update_fields=['fight'])
+                if self._remove_participant(fight, character):
                     leavers.append(character)
                     self._emit_leave_events(fight, character)
-
-        # Check pending joiners
-        pending_records = CharactersPendingJoinFight.objects.filter(fight=fight).select_related('character')
-        for pending_record in pending_records:
-            character = pending_record.character
-            if self._should_character_leave(fight, character):
-                self._remove_pending_joiner(fight, character, pending_record)
-                # Clear Character.fight field if it matches this fight
-                if character.fight == fight:
-                    character.fight = None
-                    character.save(update_fields=['fight'])
-                leavers.append(character)
-                self._emit_leave_events(fight, character)
 
         return leavers
 
     def _should_character_leave(self, fight: Fight, character: Character) -> bool:
         """
         Determine if a character should leave the fight.
-        
-        Args:
-            fight: Fight instance
-            character: Character to evaluate
-            
-        Returns:
-            bool: True if character should leave the fight
         """
         # Check if fight is no longer active and character should be removed
         if not fight.open and not self._is_fight_ending_gracefully(fight):
@@ -118,166 +81,31 @@ class FightAutoLeaver:
             self.logger.debug(f"Character {character} is no longer active")
             return True
 
-        # Check if character is incapacitated beyond recovery in this fight
-        if self._is_character_permanently_incapacitated(character):
-            return True
-
         return False
 
     def _is_fight_ending_gracefully(self, fight: Fight) -> bool:
         """
         Check if the fight is ending gracefully (e.g., through proper game mechanics).
-        
-        Args:
-            fight: Fight instance to check
-            
-        Returns:
-            bool: True if fight is ending gracefully
         """
         # If fight has an end cycle, it's ending gracefully
         return fight.ended_at is not None
 
-    def _is_character_permanently_incapacitated(self, character: Character) -> bool:
+    def _remove_participant(self, fight: Fight, character: Character) -> bool:
         """
-        Check if character is permanently incapacitated for this fight.
-        
-        Args:
-            character: Character to check
-            
-        Returns:
-            bool: True if character is permanently incapacitated
-        """
-        from apps.core.models import EffectType
-
-        # Characters in coma should be removed from fights
-        permanently_incapacitating_effects = {
-            EffectType.COMA,
-        }
-
-        active_effects = character.effects.filter(
-            effect__id__in=permanently_incapacitating_effects
-        )
-
-        return active_effects.exists()
-
-    def _remove_main_participant(self, fight: Fight, character: Character) -> bool:
-        """
-        Remove a main participant (attacker or defender) from the fight.
-        
-        Args:
-            fight: Fight instance
-            character: Character to remove
-            
-        Returns:
-            bool: True if character was successfully removed
+        Remove a main participant from the fight.
         """
         try:
-            if character == fight.attacker:
-                # If attacker leaves, try to promote defender or close fight
-                return self._handle_attacker_leaving(fight)
-            elif character == fight.defender:
-                # If defender leaves, try to promote pending joiner or close fight
-                return self._handle_defender_leaving(fight)
-            return False
+            character.fight = None  # Clear the fight reference
+            character.pending_fights.filter(fight=fight).delete()  # Remove any pending join records
+            character.save(update_fields=['fight'])
+            return True
         except Exception as e:
             self.logger.error(f"Failed to remove main participant {character} from fight {fight.id}: {e}")
             return False
 
-    def _handle_attacker_leaving(self, fight: Fight) -> bool:
-        """
-        Handle the attacker leaving the fight.
-        
-        Args:
-            fight: Fight instance
-            
-        Returns:
-            bool: True if attacker was successfully handled
-        """
-        # Try to promote a pending joiner to attacker
-        pending_records = CharactersPendingJoinFight.objects.filter(
-            fight=fight,
-            character__is_active=True
-        ).select_related('character')
-
-        if pending_records.exists():
-            pending_record = pending_records.first()
-            new_attacker = pending_record.character
-            pending_record.delete()  # Remove from pending
-            fight.attacker = new_attacker
-            fight.save()
-            self.logger.info(f"Promoted {new_attacker} to attacker in fight {fight.id}")
-            return True
-        else:
-            # No one to replace attacker, close the fight
-            self._close_fight(fight, "Attacker left and no replacement available")
-            return True
-
-    def _handle_defender_leaving(self, fight: Fight) -> bool:
-        """
-        Handle the defender leaving the fight.
-        
-        Args:
-            fight: Fight instance
-            
-        Returns:
-            bool: True if defender was successfully handled
-        """
-        # Try to promote a pending joiner to defender
-        pending_records = CharactersPendingJoinFight.objects.filter(
-            fight=fight,
-            character__is_active=True
-        ).select_related('character')
-
-        if pending_records.exists():
-            pending_record = pending_records.first()
-            new_defender = pending_record.character
-            pending_record.delete()  # Remove from pending
-            fight.defender = new_defender
-            fight.save()
-            self.logger.info(f"Promoted {new_defender} to defender in fight {fight.id}")
-            return True
-        else:
-            # No one to replace defender, close the fight
-            self._close_fight(fight, "Defender left and no replacement available")
-            return True
-
-    def _remove_pending_joiner(self, fight: Fight, character: Character, pending_record: CharactersPendingJoinFight):
-        """
-        Remove a character from pending joiners by deleting the CharactersPendingJoinFight record.
-        
-        Args:
-            fight: Fight instance
-            character: Character to remove from pending joiners
-            pending_record: CharactersPendingJoinFight record to delete
-        """
-        try:
-            pending_record.delete()
-            self.logger.debug(f"Removed {character} from pending joiners for fight {fight.id}")
-        except Exception as e:
-            self.logger.error(f"Failed to remove {character} from pending joiners for fight {fight.id}: {e}")
-
-    def _close_fight(self, fight: Fight, reason: str):
-        """
-        Close a fight with the given reason.
-        
-        Args:
-            fight: Fight instance to close
-            reason: Reason for closing the fight
-        """
-        try:
-            fight.open = False
-            fight.save()
-            self.logger.info(f"Closed fight {fight.id}: {reason}")
-        except Exception as e:
-            self.logger.error(f"Failed to close fight {fight.id}: {e}")
-
     def _emit_leave_events(self, fight: Fight, character: Character):
         """
         Emit events for a character leaving the fight.
-        
-        Args:
-            fight: Fight instance
-            character: Character that left
         """
         try:
             # Emit event to all characters at the position
@@ -292,10 +120,6 @@ class FightAutoLeaver:
     def _emit_character_leave_fight_event(self, fight: Fight, character: Character):
         """
         Emit CharacterLeaveFight event to all characters at the position.
-        
-        Args:
-            fight: Fight instance
-            character: Character leaving
         """
         try:
             from apps.core.bus.events.fight.produced import CharacterLeaveFightEvent
@@ -317,10 +141,6 @@ class FightAutoLeaver:
     def _emit_left_fight_event(self, fight: Fight, character: Character):
         """
         Emit LeftFight event to the specific character.
-        
-        Args:
-            fight: Fight instance
-            character: Character leaving
         """
         try:
             from apps.core.bus.events.fight.produced import LeftFightEvent

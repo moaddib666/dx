@@ -60,7 +60,7 @@ class FightCoordinator:
             self.logger.debug(f"Detected {len(results['detected_fights'])} new fights")
 
             # Handle authorized leavers (characters who should leave fights)
-            results['auto_leaves'] = self.auto_leaver.process_authorized_leavers(self.cycle.campaign)
+            results['auto_leaves'] = self.auto_leaver.process_auto_leave(self.cycle)
             self.logger.debug(f"Processed authorized leavers for {len(results['auto_leaves'])} fights")
 
             # Convert pending joiners to active participants

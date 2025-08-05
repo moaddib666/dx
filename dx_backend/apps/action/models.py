@@ -91,12 +91,15 @@ class CharacterAction(BaseModel):
         self.order = order
         if not self.position_id:
             self.position_id = self.initiator.position_id
-        self.fight = self.initiator.fight
-        self.save(update_fields=['accepted', 'order', 'updated_at', 'fight', 'position_id'])
+        if not self.fight:
+            self.fight = self.initiator.fight
+        self.save(update_fields=['accepted', 'order', 'updated_at', 'fight_id', 'position_id'])
 
     def perform(self):
         self.performed = True
-        self.save(update_fields=['performed', "updated_at"])
+        if not self.fight:
+            self.fight = self.initiator.fight
+        self.save(update_fields=['performed', "updated_at", "fight_id"])
 
     def __str__(self):
         return f"{self.initiator.name} - {self.action_type}"

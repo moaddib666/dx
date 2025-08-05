@@ -29,12 +29,6 @@ class FightDetector:
         self.notifier = notifier
         self.logger = logging.getLogger("game.services.fight.FightDetector")
 
-    AGGRESSIVE_ACTION_TYPES = {
-        CharacterActionType.USE_SKILL,
-        CharacterActionType.USE_ITEM,
-        CharacterActionType.START_FIGHT,
-    }
-
     def detect_fights(self, cycle: "Cycle") -> list[Fight]:
         """
         Detect and create fights based on aggressive actions in the previous cycle.
@@ -66,18 +60,12 @@ class FightDetector:
 
     def _get_aggressive_actions(self, previous_cycle) -> list[CharacterAction]:
         """Get aggressive actions from the previous cycle that aren't already in fights."""
-        # Get aggressive impact types for efficient querying
-        aggressive_impact_types = [
-            impact_type for impact_type in ImpactType
-            if impact_type.is_aggressive()
-        ]
-
         # Build query conditions
         base_conditions = Q(
             cycle=previous_cycle,
             performed=True,
             accepted=True,
-            action_type__in=self.AGGRESSIVE_ACTION_TYPES,
+            action_type__in=CharacterActionType.get_aggressive_types(),
             fight__isnull=True  # Not already in a fight
         )
 
@@ -85,7 +73,7 @@ class FightDetector:
         # 1. Have aggressive impacts, OR
         # 2. Are START_FIGHT actions (always aggressive)
         aggressive_conditions = Q(
-            impacts__type__in=aggressive_impact_types
+            impacts__type__in=ImpactType.get_aggressive_types()
         ) | Q(
             action_type=CharacterActionType.START_FIGHT
         )

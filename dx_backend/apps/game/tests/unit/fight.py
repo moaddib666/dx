@@ -272,6 +272,8 @@ class FightTest(TestCase):
         svc = CharacterService(npc_1)
         svc.knock_out()
         new_cycle = self.cycle_play_svc(new_cycle).play()
+        self._ensure_alive(character1)
+        self._ensure_alive(character2)
         actions = CharacterAction.objects.filter(
             cycle=new_cycle,
             performed=False,
@@ -286,6 +288,8 @@ class FightTest(TestCase):
         svc.knock_out()
         # Play the cycle again to check fight actions
         new_cycle = self.cycle_play_svc(new_cycle).play()
+        self._ensure_alive(character1)
+        self._ensure_alive(character2)
         self.assertIsNotNone(new_cycle, "New cycle should be created after playing the cycle")
         # Check that fight actions are created
         actions = CharacterAction.objects.filter(
@@ -296,9 +300,21 @@ class FightTest(TestCase):
         )
         self.assertFalse(actions.exists(), "Fight actions should be created after playing the cycle")
         fight.refresh_from_db()
-        self.assertTrue(fight.ended_at, "Fight should not be ended yet")
+        # Waiting for 2 cycles for the fight to end if no offensive actions are applied
+        self.assertTrue(fight.open, "Fight should be open after the sixth cycle")
+        self.assertFalse(fight.ended_at, "Fight should not be ended yet")
+        new_cycle = self.cycle_play_svc(new_cycle).play()
+        fight.refresh_from_db()
+        self._ensure_alive(character1)
+        self._ensure_alive(character2)
+        self.assertTrue(fight.open, "Fight should be open after the sixth cycle")
+        self.assertFalse(fight.ended_at, "Fight should not be ended yet")
+        new_cycle = self.cycle_play_svc(new_cycle).play()
+        fight.refresh_from_db()
+        self.assertTrue(fight.ended_at, "Fight should be ended")
         self.assertEqual(fight.ended_at, new_cycle, "Fight should be ended at the current cycle")
         character1.refresh_from_db()
+        character2.refresh_from_db()
         self.assertFalse(character1.pending_fights.exists(),
                          "Character 1 should not have fights pending join after the sixth cycle")
         self.assertFalse(character1.fight, "Character 1 should not be in a fight after the sixth cycle")

@@ -3,12 +3,13 @@ import typing as t
 
 from django.db.models import Q
 
+from apps.core.models import ImpactType
 from apps.fight.models import Fight
 from apps.character.models import Character
 from apps.game.services.character.core import CharacterService
+from apps.action.models import Cycle
 
 if t.TYPE_CHECKING:
-    from apps.action.models import Cycle
     from apps.game.services.notifier.base import BaseNotifier
 
 
@@ -95,7 +96,15 @@ class FightCloser:
         viable_count = 0
 
         # Check main participants
-        main_participants = fight.joined.all()
+        main_participants = fight.joined.filter(
+            current_health_points__gt=0,
+            is_active=True
+        )
+        pending_joiners = fight.pending_joiners.filter(
+            character__current_health_points__gt=0,
+            character__is_active=True
+        )
+        # TODO: check if the any npc character in fight ....
         # TODO: prefetch related active effects to optimize this query
         for character in main_participants:
             if character and self._is_character_viable(character):
@@ -103,7 +112,7 @@ class FightCloser:
                 viable_count += 1
 
         # Check pending joiners
-        for pending_record in fight.pending_joiners.all():
+        for pending_record in pending_joiners:
             if self._is_character_viable(pending_record.character):
                 self.logger.debug(f"Pending joiner {pending_record.character.id} is viable for fight {fight.id}")
                 viable_count += 1
@@ -169,37 +178,28 @@ class FightCloser:
             fight: Fight instance to check
             
         Returns:
-            bool: True if fight is inactive
+            bool: True if a fight is inactive
         """
         if cycle.number == 0:
             return False
+        n_cycles = 2
+        fight_cycles = Cycle.objects.filter(
+            campaign=fight.campaign,
+            number__lt=cycle.number,
+            number__gte=fight.created.number
+        ).order_by('-number')
+        if fight_cycles.count() <= n_cycles:
+            return False
+        last_n_cycles = fight_cycles[:n_cycles]
 
-        # Check last few cycles for activity
-        cycles_to_check = 3  # Check last 3 cycles for any fight activity
-        min_cycle_number = max(0, cycle.number - cycles_to_check)
-
-        # Get all participants
-        participant_ids = set()
-        if fight.attacker:
-            participant_ids.add(fight.attacker.id)
-        if fight.defender:
-            participant_ids.add(fight.defender.id)
-        participant_ids.update(fight.pending_joiners.values_list('character_id', flat=True))
-
-        if not participant_ids:
-            return True
-
-        # Check for recent actions from participants
-        from apps.action.models import CharacterAction
-        recent_actions = CharacterAction.objects.filter(
-            cycle__campaign=cycle.campaign,
-            cycle__number__gte=min_cycle_number,
-            initiator__id__in=participant_ids,
-            performed=True
+        offensive_actions = fight.actions.filter(
+            cycle__in=last_n_cycles,
+            impacts__type__in=ImpactType.get_aggressive_types(),
+            performed=True,
         )
 
-        # If no actions from participants in recent cycles, fight is inactive
-        return not recent_actions.exists()
+        # If no actions from participants in recent cycles, the fight is inactive
+        return not offensive_actions.exists()
 
     def _has_participants_at_position(self, fight: Fight) -> bool:
         """
@@ -244,7 +244,7 @@ class FightCloser:
             self._clear_character_fight_fields(fight)
 
             # Clear pending joiners
-            fight.pending_join.clear()
+            fight.pending_joiners.all().delete()
 
             self.logger.info(f"Closed fight {fight.id} in cycle {cycle.number}")
             return True

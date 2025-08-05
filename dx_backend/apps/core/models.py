@@ -49,6 +49,45 @@ class CharacterActionType(DjangoChoicesMixin, StrEnum):
     INSPECT = "INSPECT"
     SNATCH = "SNATCH_ITEM"
 
+    def is_spacial_action(self) -> bool:
+        """
+        Check if the action type is a special action.
+
+        Returns:
+            bool: True if the action type is a special action, False otherwise.
+        """
+        return self in {
+            CharacterActionType.LONG_REST,
+            CharacterActionType.BACK_TO_SAFE_ZONE,
+            CharacterActionType.INSPECT,
+            CharacterActionType.SNATCH,
+            CharacterActionType.GIFT,
+        }
+
+    def is_aggressive_action(self) -> bool:
+        """
+        Check if the action type is aggressive (causes harm or negative effects).
+
+        Returns:
+            bool: True if the action type is aggressive, False otherwise.
+        """
+        return self in {
+            CharacterActionType.START_FIGHT,
+            CharacterActionType.USE_SKILL,
+            CharacterActionType.USE_ITEM,
+            CharacterActionType.SNATCH,
+        }
+
+    @classmethod
+    def get_aggressive_types(cls) -> List['CharacterActionType']:
+        """
+        Get a list of all aggressive action types.
+
+        Returns:
+            List[CharacterActionType]: List of aggressive action types.
+        """
+        return [action for action in cls if action.is_aggressive_action()]
+
 
 class CharacterSpecialActionType(DjangoChoicesMixin, StrEnum):
     INSPECT = "INSPECT"
@@ -190,6 +229,16 @@ class ImpactType(DjangoChoicesMixin, StrEnum):
             ImpactType.LIFESTEAL,
         }
         return self in aggressive_types
+
+    @classmethod
+    def get_aggressive_types(cls) -> List['ImpactType']:
+        """
+        Get a list of all aggressive impact types.
+
+        Returns:
+            List[ImpactType]: List of aggressive impact types.
+        """
+        return [impact for impact in cls if impact.is_aggressive()]
 
 
 class ImpactViolationType(DjangoChoicesMixin, StrEnum):
