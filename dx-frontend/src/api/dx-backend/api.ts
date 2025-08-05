@@ -2312,13 +2312,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 

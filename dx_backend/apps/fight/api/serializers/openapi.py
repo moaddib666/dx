@@ -1,5 +1,6 @@
 # serializers.py
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from apps.character.models import Character
 from apps.fight.models import Fight
@@ -33,6 +34,7 @@ class FightGenericSerializer(serializers.ModelSerializer):
     attacker = Fighter(read_only=True)
     defender = Fighter(read_only=True)
 
+    @extend_schema_field(Fighter(many=True))
     def get_pending_join(self, obj):
         """Get pending joiners from the CharactersPendingJoinFight relationship."""
         pending_characters = [pending_record.character for pending_record in obj.pending_joiners.all()]
