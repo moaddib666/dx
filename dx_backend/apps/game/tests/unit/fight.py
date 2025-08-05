@@ -180,8 +180,7 @@ class FightTest(TestCase):
             performed=False,
             accepted=True,
         )
-        self.assertFalse(actions.exists(), "Fight actions should be created after playing the cycle due to the fight "
-                                           "pending for participants")
+        self.assertTrue(actions.exists(), "Fight actions should be created after playing the cycle")
 
         # Play the cycle again to process pending joiners and check fight actions
         new_cycle = self.cycle_play_svc(new_cycle).play()
