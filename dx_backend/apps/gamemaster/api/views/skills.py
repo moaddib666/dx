@@ -62,7 +62,7 @@ class SkillFactoryViewSet(viewsets.ReadOnlyModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        school_id = serializer.validated_data.get('school_id')
+        school_id = serializer.validated_data.get('school')
         if not school_id:
             gm_school = School.objects.filter(
                 game_master_only=True
@@ -72,8 +72,11 @@ class SkillFactoryViewSet(viewsets.ReadOnlyModelViewSet):
                     {"detail": "No game master only school found."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            serializer.validated_data['school_id'] = gm_school.id
+            serializer.validated_data['school'] = gm_school.id
 
+        serializer.validated_data.setdefault('effect', [])
+        serializer.validated_data.setdefault('impact', [])
+        serializer.validated_data.setdefault('cost', [])
         base_skill = BaseSkill(
             **serializer.validated_data
         )
