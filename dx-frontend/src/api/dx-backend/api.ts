@@ -340,6 +340,45 @@ export interface Art {
     'image': string;
 }
 /**
+ * Serializer for assignable effects.
+ * @export
+ * @interface AssignableEffectRequest
+ */
+export interface AssignableEffectRequest {
+    /**
+     * 
+     * @type {EffectEnum}
+     * @memberof AssignableEffectRequest
+     */
+    'name': EffectEnum;
+    /**
+     * 
+     * @type {ImpactRequest}
+     * @memberof AssignableEffectRequest
+     */
+    'impact'?: ImpactRequest | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof AssignableEffectRequest
+     */
+    'base_chance': number;
+    /**
+     * 
+     * @type {ModifierRequest}
+     * @memberof AssignableEffectRequest
+     */
+    'duration_modifier': ModifierRequest;
+    /**
+     * 
+     * @type {Array<ModifierRequest>}
+     * @memberof AssignableEffectRequest
+     */
+    'stat_modifiers'?: Array<ModifierRequest>;
+}
+
+
+/**
  * 
  * @export
  * @interface Attribute
@@ -347,10 +386,10 @@ export interface Art {
 export interface Attribute {
     /**
      * 
-     * @type {KindDeeEnum}
+     * @type {AttributesEnum}
      * @memberof Attribute
      */
-    'name': KindDeeEnum;
+    'name': AttributesEnum;
     /**
      * 
      * @type {number}
@@ -406,6 +445,21 @@ export const AttributeType = {
 } as const;
 
 export type AttributeType = typeof AttributeType[keyof typeof AttributeType];
+
+
+/**
+ * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
+ * @export
+ * @enum {string}
+ */
+
+export const AttributesEnum = {
+    Health: 'Health',
+    Energy: 'Energy',
+    ActionPoints: 'Action Points'
+} as const;
+
+export type AttributesEnum = typeof AttributesEnum[keyof typeof AttributesEnum];
 
 
 /**
@@ -2134,6 +2188,27 @@ export interface Coordinate {
     'z': number;
 }
 /**
+ * Serializer for skill costs.
+ * @export
+ * @interface CostRequest
+ */
+export interface CostRequest {
+    /**
+     * 
+     * @type {AttributesEnum}
+     * @memberof CostRequest
+     */
+    'kind': AttributesEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof CostRequest
+     */
+    'value': number;
+}
+
+
+/**
  * Serializer for creating an NPC from a template.  This serializer validates the data needed to create an NPC from a template, including the template ID and position ID.
  * @export
  * @interface CreateNPCFromTemplate
@@ -2584,10 +2659,10 @@ export interface Dimension {
 export interface Effect {
     /**
      * 
-     * @type {IdD3bEnum}
+     * @type {EffectEnum}
      * @memberof Effect
      */
-    'id'?: IdD3bEnum;
+    'id'?: EffectEnum;
     /**
      * 
      * @type {string}
@@ -3045,6 +3120,43 @@ export interface Formula {
      * 
      * @type {number}
      * @memberof Formula
+     */
+    'min_efficiency'?: number | null;
+}
+/**
+ * Serializer for formula calculations.
+ * @export
+ * @interface FormulaRequest
+ */
+export interface FormulaRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof FormulaRequest
+     */
+    'base': number;
+    /**
+     * 
+     * @type {Array<StatRequirementRequest>}
+     * @memberof FormulaRequest
+     */
+    'requires'?: Array<StatRequirementRequest>;
+    /**
+     * 
+     * @type {Array<ScalingRequest>}
+     * @memberof FormulaRequest
+     */
+    'scaling'?: Array<ScalingRequest>;
+    /**
+     * 
+     * @type {number}
+     * @memberof FormulaRequest
+     */
+    'max_efficiency'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof FormulaRequest
      */
     'min_efficiency'?: number | null;
 }
@@ -3961,10 +4073,10 @@ export interface GodIntervention {
     'size': SizeEnum;
     /**
      * 
-     * @type {Array<KindDeeEnum>}
+     * @type {Array<AttributesEnum>}
      * @memberof GodIntervention
      */
-    'attributes': Array<KindDeeEnum>;
+    'attributes': Array<AttributesEnum>;
 }
 
 
@@ -3988,10 +4100,10 @@ export interface GodInterventionRequest {
     'size': SizeEnum;
     /**
      * 
-     * @type {Array<KindDeeEnum>}
+     * @type {Array<AttributesEnum>}
      * @memberof GodInterventionRequest
      */
-    'attributes': Array<KindDeeEnum>;
+    'attributes': Array<AttributesEnum>;
 }
 
 
@@ -4030,36 +4142,6 @@ export type Id82bEnum = typeof Id82bEnum[keyof typeof Id82bEnum];
 
 
 /**
- * * `Knocked out` - Knocked out * `Coma` - Coma * `None` - None * `Burning` - Burning * `Poisoned` - Poisoned * `Sleeping` - Sleeping * `Confused` - Confused * `Paralyzed` - Paralyzed * `Fear` - Fear * `Slowness` - Slowness * `Cold` - Cold * `Cursed` - Cursed * `Blindness` - Blindness * `Haste` - Haste * `Regeneration` - Regeneration * `Blessed` - Blessed * `Arcane Surge` - Arcane Surge * `Marked` - Marked
- * @export
- * @enum {string}
- */
-
-export const IdD3bEnum = {
-    KnockedOut: 'Knocked out',
-    Coma: 'Coma',
-    None: 'None',
-    Burning: 'Burning',
-    Poisoned: 'Poisoned',
-    Sleeping: 'Sleeping',
-    Confused: 'Confused',
-    Paralyzed: 'Paralyzed',
-    Fear: 'Fear',
-    Slowness: 'Slowness',
-    Cold: 'Cold',
-    Cursed: 'Cursed',
-    Blindness: 'Blindness',
-    Haste: 'Haste',
-    Regeneration: 'Regeneration',
-    Blessed: 'Blessed',
-    ArcaneSurge: 'Arcane Surge',
-    Marked: 'Marked'
-} as const;
-
-export type IdD3bEnum = typeof IdD3bEnum[keyof typeof IdD3bEnum];
-
-
-/**
  * Serializer for Impact DTO.
  * @export
  * @interface Impact
@@ -4083,6 +4165,33 @@ export interface Impact {
      * @memberof Impact
      */
     'formula': Formula;
+}
+
+
+/**
+ * Serializer for skill impacts.
+ * @export
+ * @interface ImpactRequest
+ */
+export interface ImpactRequest {
+    /**
+     * 
+     * @type {ImpactTypeEnum}
+     * @memberof ImpactRequest
+     */
+    'kind': ImpactTypeEnum;
+    /**
+     * 
+     * @type {Type82bEnum}
+     * @memberof ImpactRequest
+     */
+    'type': Type82bEnum;
+    /**
+     * 
+     * @type {FormulaRequest}
+     * @memberof ImpactRequest
+     */
+    'formula': FormulaRequest;
 }
 
 
@@ -4488,21 +4597,6 @@ export interface JoinedFightEventData {
      */
     'character_id': string;
 }
-/**
- * * `Health` - Health * `Energy` - Energy * `Action Points` - Action Points
- * @export
- * @enum {string}
- */
-
-export const KindDeeEnum = {
-    Health: 'Health',
-    Energy: 'Energy',
-    ActionPoints: 'Action Points'
-} as const;
-
-export type KindDeeEnum = typeof KindDeeEnum[keyof typeof KindDeeEnum];
-
-
 /**
  * 
  * @export
@@ -4944,6 +5038,25 @@ export interface ModificatorRequest {
      * @memberof ModificatorRequest
      */
     'stat_modificators': Array<StatModificatorRequest>;
+}
+/**
+ * Serializer for effect modifiers.
+ * @export
+ * @interface ModifierRequest
+ */
+export interface ModifierRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ModifierRequest
+     */
+    'label': string;
+    /**
+     * 
+     * @type {FormulaRequest}
+     * @memberof ModifierRequest
+     */
+    'formula': FormulaRequest;
 }
 /**
  * * `Path of John` - Path of John * `Path of JSon` - Path of JSon * `Not Chosen` - Not Chosen
@@ -6040,6 +6153,12 @@ export interface OpenaiSchool {
      * @memberof OpenaiSchool
      */
     'is_base'?: boolean;
+    /**
+     * If true, only game masters can create skills in this school
+     * @type {boolean}
+     * @memberof OpenaiSchool
+     */
+    'game_master_only'?: boolean;
     /**
      * 
      * @type {Array<string>}
@@ -7897,6 +8016,25 @@ export interface Scaling {
     'value': number;
 }
 /**
+ * Serializer for scaling values in formulas.
+ * @export
+ * @interface ScalingRequest
+ */
+export interface ScalingRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ScalingRequest
+     */
+    'stat': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ScalingRequest
+     */
+    'value': number;
+}
+/**
  * 
  * @export
  * @interface Shield
@@ -7946,6 +8084,93 @@ export type SizeEnum = typeof SizeEnum[keyof typeof SizeEnum];
 
 
 /**
+ * 
+ * @export
+ * @interface Skill
+ */
+export interface Skill {
+    /**
+     * 
+     * @type {number}
+     * @memberof Skill
+     */
+    'id': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Skill
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Skill
+     */
+    'grade'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Skill
+     */
+    'description': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Skill
+     */
+    'multi_target': boolean;
+    /**
+     * 
+     * @type {TypeC27Enum}
+     * @memberof Skill
+     */
+    'type'?: TypeC27Enum;
+    /**
+     * A list of dictionaries representing the impact of the skill.
+     * @type {any}
+     * @memberof Skill
+     */
+    'impact'?: any;
+    /**
+     * A list of dictionaries representing the cost of the skill.
+     * @type {any}
+     * @memberof Skill
+     */
+    'cost'?: any;
+    /**
+     * A list of dictionaries representing the effects of the skill.
+     * @type {any}
+     * @memberof Skill
+     */
+    'effect'?: any;
+    /**
+     * Special type of the skill  * `ACTION` - ACTION * `TELEPORT` - TELEPORT * `TELEPORT_TO_CHARACTER` - TELEPORT_TO_CHARACTER * `TELEPORT_TO_SAFE_ZONE` - TELEPORT_TO_SAFE_ZONE * `RESET_STATS` - RESET_STATS * `FLOW_ACCUMULATION` - FLOW_ACCUMULATION
+     * @type {SpecialEnum}
+     * @memberof Skill
+     */
+    'special'?: SpecialEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Skill
+     */
+    'icon'?: string | null;
+    /**
+     * If true, the skill will be performed immediately
+     * @type {boolean}
+     * @memberof Skill
+     */
+    'immediate'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof Skill
+     */
+    'school'?: string | null;
+}
+
+
+/**
  * Serializer for Cost DTO.
  * @export
  * @interface SkillCost
@@ -7953,16 +8178,79 @@ export type SizeEnum = typeof SizeEnum[keyof typeof SizeEnum];
 export interface SkillCost {
     /**
      * 
-     * @type {KindDeeEnum}
+     * @type {AttributesEnum}
      * @memberof SkillCost
      */
-    'kind': KindDeeEnum;
+    'kind': AttributesEnum;
     /**
      * 
      * @type {number}
      * @memberof SkillCost
      */
     'value': number;
+}
+
+
+/**
+ * Serializer for creating a new skill. This serializer validates the input data for creating a skill with all nested structures.
+ * @export
+ * @interface SkillCreateRequest
+ */
+export interface SkillCreateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof SkillCreateRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SkillCreateRequest
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SkillCreateRequest
+     */
+    'school'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SkillCreateRequest
+     */
+    'multi_target'?: boolean;
+    /**
+     * 
+     * @type {TypeC27Enum}
+     * @memberof SkillCreateRequest
+     */
+    'type': TypeC27Enum;
+    /**
+     * 
+     * @type {number}
+     * @memberof SkillCreateRequest
+     */
+    'grade': number;
+    /**
+     * 
+     * @type {Array<CostRequest>}
+     * @memberof SkillCreateRequest
+     */
+    'cost'?: Array<CostRequest>;
+    /**
+     * 
+     * @type {Array<AssignableEffectRequest>}
+     * @memberof SkillCreateRequest
+     */
+    'effect'?: Array<AssignableEffectRequest>;
+    /**
+     * 
+     * @type {Array<ImpactRequest>}
+     * @memberof SkillCreateRequest
+     */
+    'impact'?: Array<ImpactRequest>;
 }
 
 
@@ -8204,6 +8492,27 @@ export interface StatRequirement {
      * 
      * @type {number}
      * @memberof StatRequirement
+     */
+    'value': number;
+}
+
+
+/**
+ * Serializer for stat requirements in formulas.
+ * @export
+ * @interface StatRequirementRequest
+ */
+export interface StatRequirementRequest {
+    /**
+     * 
+     * @type {StatEnum}
+     * @memberof StatRequirementRequest
+     */
+    'stat': StatEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof StatRequirementRequest
      */
     'value': number;
 }
@@ -18649,6 +18958,134 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
             };
         },
         /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/skill-factory/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * This endpoint allows game masters to create a new skill using the skill factory service. The skill will be created with the provided data and returned in the response.
+         * @summary Create a new skill
+         * @param {SkillCreateRequest} skillCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryNewSkillCreate: async (skillCreateRequest: SkillCreateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'skillCreateRequest' is not null or undefined
+            assertParamExists('gamemasterSkillFactoryNewSkillCreate', 'skillCreateRequest', skillCreateRequest)
+            const localVarPath = `/api/gamemaster/skill-factory/new_skill/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(skillCreateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSkillFactoryRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/skill-factory/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -19583,6 +20020,42 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSkillFactoryList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Skill>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * This endpoint allows game masters to create a new skill using the skill factory service. The skill will be created with the provided data and returned in the response.
+         * @summary Create a new skill
+         * @param {SkillCreateRequest} skillCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryNewSkillCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSkillFactoryRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get all position connections, optionally filtered by grid_z.
          * @param {number} [gridZ] Filter by grid_z coordinate
          * @param {*} [options] Override http request option.
@@ -20000,6 +20473,33 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          */
         gamemasterNpcsChangeBehaviorPartialUpdate(id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options?: any): AxiosPromise<GameMasterCharacterInfo> {
             return localVarFp.gamemasterNpcsChangeBehaviorPartialUpdate(id, patchedNPCBehaviorRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryList(options?: any): AxiosPromise<Array<Skill>> {
+            return localVarFp.gamemasterSkillFactoryList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * This endpoint allows game masters to create a new skill using the skill factory service. The skill will be created with the provided data and returned in the response.
+         * @summary Create a new skill
+         * @param {SkillCreateRequest} skillCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: any): AxiosPromise<Skill> {
+            return localVarFp.gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSkillFactoryRetrieve(id: string, options?: any): AxiosPromise<Skill> {
+            return localVarFp.gamemasterSkillFactoryRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
          * Get all position connections, optionally filtered by grid_z.
@@ -20429,6 +20929,39 @@ export class GamemasterApi extends BaseAPI {
      */
     public gamemasterNpcsChangeBehaviorPartialUpdate(id: string, patchedNPCBehaviorRequest?: PatchedNPCBehaviorRequest, options?: RawAxiosRequestConfig) {
         return GamemasterApiFp(this.configuration).gamemasterNpcsChangeBehaviorPartialUpdate(id, patchedNPCBehaviorRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterSkillFactoryList(options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * This endpoint allows game masters to create a new skill using the skill factory service. The skill will be created with the provided data and returned in the response.
+     * @summary Create a new skill
+     * @param {SkillCreateRequest} skillCreateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterSkillFactoryRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
