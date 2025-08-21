@@ -63,7 +63,7 @@ class SkillCreateSerializer(serializers.Serializer):
     """
     name = serializers.CharField(max_length=200)
     description = serializers.CharField()
-    school = serializers.UUIDField()
+    school = serializers.UUIDField(required=False)
     multi_target = serializers.BooleanField(default=False)
     type = serializers.ChoiceField(choices=SkillTypes.choices())
     grade = serializers.IntegerField(min_value=1, max_value=10)

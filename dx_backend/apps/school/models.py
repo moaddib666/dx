@@ -27,6 +27,8 @@ class School(BaseModel):
     path = models.ManyToManyField(ThePath, blank=True, related_name='schools')
     icon = models.ImageField(upload_to='icons/school/', null=True, blank=True)
     is_base = models.BooleanField(default=False)
+    game_master_only = models.BooleanField(default=False,
+                                           help_text='If true, only game masters can create skills in this school')
 
     def __str__(self):
         return f'{self.name}'

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from apps.core.models.skills import BaseSkill
 from apps.game.services.skills.gm_factory import GmManualSkillCreationFactory
 from apps.gamemaster.api.serializers.skill_factory import SkillCreateSerializer
+from apps.school.models import School
 from apps.skills.api.serializers.openapi import (
     LearnedSkillSerializer, LearnedSchoolSerializer, SkillSerializer
 )
@@ -61,6 +62,18 @@ class SkillFactoryViewSet(viewsets.ReadOnlyModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        school_id = serializer.validated_data.get('school_id')
+        if not school_id:
+            gm_school = School.objects.filter(
+                game_master_only=True
+            ).first()
+            if not gm_school:
+                return Response(
+                    {"detail": "No game master only school found."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            serializer.validated_data['school_id'] = gm_school.id
+
         base_skill = BaseSkill(
             **serializer.validated_data
         )
