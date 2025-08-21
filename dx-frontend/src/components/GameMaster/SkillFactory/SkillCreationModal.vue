@@ -162,13 +162,18 @@
           {{ error }}
         </div>
 
+        <!-- Success Display -->
+        <div v-if="successMessage" class="success-message">
+          {{ successMessage }}
+        </div>
+
         <!-- Action Buttons -->
         <div class="modal-actions">
           <LandingButton :action="closeModal" :disabled="isLoading">
             Cancel
           </LandingButton>
           <LandingButton
-            type="submit"
+            :action="createSkill"
             :disabled="!isFormValid || isLoading"
             class="create-btn"
           >
@@ -215,6 +220,7 @@ const emit = defineEmits<{
 // Reactive state
 const isLoading = ref(false)
 const error = ref('')
+const successMessage = ref('')
 
 const skillData = ref<SkillCreateRequest>({
   name: '',
@@ -252,6 +258,7 @@ const resetForm = () => {
     impact: []
   }
   error.value = ''
+  successMessage.value = ''
 }
 
 const clearForm = () => {
@@ -475,15 +482,54 @@ const createSkill = async () => {
     // Call the GameMaster API to create the skill
     const response = await GameMasterApi.gamemasterSkillFactoryNewSkillCreate(skillPayload)
 
+    // Show success message
+    successMessage.value = `Skill "${skillPayload.name}" has been created successfully!`
+
     // Emit success event
     emit('skillCreated', response.data)
 
-    // Reset form
-    resetForm()
+    // Reset form after a short delay to show success message
+    setTimeout(() => {
+      resetForm()
+    }, 3000)
 
   } catch (err: any) {
     console.error('Error creating skill:', err)
-    error.value = err.response?.data?.message || 'Failed to create skill. Please try again.'
+
+    // Clear any existing success message
+    successMessage.value = ''
+
+    // Provide specific error messages based on error type
+    if (err.response) {
+      // Server responded with error status
+      const status = err.response.status
+      const data = err.response.data
+
+      if (status === 401) {
+        error.value = 'Authentication failed. Please log in again.'
+      } else if (status === 403) {
+        error.value = 'You do not have permission to create skills.'
+      } else if (status === 400) {
+        // Validation errors
+        if (data?.detail) {
+          error.value = `Validation error: ${data.detail}`
+        } else if (data?.message) {
+          error.value = data.message
+        } else {
+          error.value = 'Invalid skill data. Please check your inputs.'
+        }
+      } else if (status === 500) {
+        error.value = 'Server error occurred. Please try again later.'
+      } else {
+        error.value = data?.message || `Server error (${status}). Please try again.`
+      }
+    } else if (err.request) {
+      // Network error
+      error.value = 'Network error. Please check your connection and try again.'
+    } else {
+      // Other error
+      error.value = 'An unexpected error occurred. Please try again.'
+    }
   } finally {
     isLoading.value = false
   }
@@ -611,6 +657,20 @@ watch(() => props.isOpen, (newValue) => {
   border-radius: 0.25rem;
   padding: 0.75rem;
   color: #ffcdd2;
+}
+
+.success-message {
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid #4CAF50;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  color: #c8e6c9;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-actions {

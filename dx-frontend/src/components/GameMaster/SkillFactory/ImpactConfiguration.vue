@@ -140,11 +140,6 @@ const emitUpdate = () => {
 watch(() => props.modelValue, (newValue) => {
   impacts.value = [...newValue]
 }, { deep: true })
-
-// Watch for internal changes
-watch(impacts, () => {
-  emitUpdate()
-}, { deep: true })
 </script>
 
 <style scoped>
