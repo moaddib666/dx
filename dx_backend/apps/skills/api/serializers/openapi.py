@@ -1,7 +1,14 @@
 from rest_framework import serializers
 
 from apps.school.api.serializers.openapi import OpenaiSkillSerializer
+from apps.school.models import Skill
 from apps.skills.models import LearnedSkill, LearnedSchool
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        exclude = ['created_at', 'updated_at']
 
 
 class LearnedSkillSerializer(serializers.ModelSerializer):

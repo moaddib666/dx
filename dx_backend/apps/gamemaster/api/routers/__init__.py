@@ -10,7 +10,8 @@ from apps.gamemaster.api.views.game_objects import GameObjectViewSet
 from apps.gamemaster.api.views.items import GameMasterItemViewSet, GameMasterWorldItemViewSet, \
     GameMasterCharacterItemViewSet
 from apps.gamemaster.api.views.school import GameMasterSchoolViewSet, GameMasterSkillViewSet, GameMasterPathViewSet
-from apps.gamemaster.api.views.skills import GameMasterLearnedSkillViewSet, GameMasterLearnedSchoolViewSet
+from apps.gamemaster.api.views.skills import GameMasterLearnedSkillViewSet, GameMasterLearnedSchoolViewSet, \
+    SkillFactoryViewSet
 from apps.gamemaster.api.views.world import WorldMapViewSet, PositionManagementViewSet, \
     PositionConnectionManagementViewSet
 
@@ -29,7 +30,7 @@ GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-i
 # # Skills viewsets
 # GameMasterRouter.register('learned-skills', GameMasterLearnedSkillViewSet, basename='gamemaster-learned-skills')
 # GameMasterRouter.register('learned-schools', GameMasterLearnedSchoolViewSet, basename='gamemaster-learned-schools')
-
+GameMasterRouter.register('skill-factory', SkillFactoryViewSet, basename='gamemaster-skill-factory')
 # # Effects viewsets
 # GameMasterRouter.register('effects', GameMasterEffectViewSet, basename='gamemaster-effects')
 # GameMasterRouter.register('active-effects', GameMasterActiveEffectViewSet, basename='gamemaster-active-effects')
