@@ -30,7 +30,7 @@ GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-i
 # # Skills viewsets
 # GameMasterRouter.register('learned-skills', GameMasterLearnedSkillViewSet, basename='gamemaster-learned-skills')
 # GameMasterRouter.register('learned-schools', GameMasterLearnedSchoolViewSet, basename='gamemaster-learned-schools')
-GameMasterRouter.register('skill-factory', SkillFactoryViewSet, basename='gamemaster-skill-factory')
+GameMasterRouter.register('skill', SkillFactoryViewSet, basename='gamemaster-skill')
 # # Effects viewsets
 # GameMasterRouter.register('effects', GameMasterEffectViewSet, basename='gamemaster-effects')
 # GameMasterRouter.register('active-effects', GameMasterActiveEffectViewSet, basename='gamemaster-active-effects')
