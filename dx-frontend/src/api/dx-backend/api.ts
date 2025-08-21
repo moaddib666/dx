@@ -2387,13 +2387,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -18962,8 +18962,8 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/gamemaster/skill-factory/`;
+        gamemasterSkillList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/skill/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -19003,10 +19003,10 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryNewSkillCreate: async (skillCreateRequest: SkillCreateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterSkillNewSkillCreate: async (skillCreateRequest: SkillCreateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'skillCreateRequest' is not null or undefined
-            assertParamExists('gamemasterSkillFactoryNewSkillCreate', 'skillCreateRequest', skillCreateRequest)
-            const localVarPath = `/api/gamemaster/skill-factory/new_skill/`;
+            assertParamExists('gamemasterSkillNewSkillCreate', 'skillCreateRequest', skillCreateRequest)
+            const localVarPath = `/api/gamemaster/skill/new_skill/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -19048,10 +19048,10 @@ export const GamemasterApiAxiosParamCreator = function (configuration?: Configur
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        gamemasterSkillRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('gamemasterSkillFactoryRetrieve', 'id', id)
-            const localVarPath = `/api/gamemaster/skill-factory/{id}/`
+            assertParamExists('gamemasterSkillRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/skill/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -20024,10 +20024,10 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterSkillFactoryList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Skill>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryList(options);
+        async gamemasterSkillList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Skill>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryList']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -20037,10 +20037,10 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options);
+        async gamemasterSkillNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillNewSkillCreate(skillCreateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryNewSkillCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillNewSkillCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -20049,10 +20049,10 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async gamemasterSkillFactoryRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillFactoryRetrieve(id, options);
+        async gamemasterSkillRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Skill>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSkillRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillFactoryRetrieve']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterSkillRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -20479,8 +20479,8 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryList(options?: any): AxiosPromise<Array<Skill>> {
-            return localVarFp.gamemasterSkillFactoryList(options).then((request) => request(axios, basePath));
+        gamemasterSkillList(options?: any): AxiosPromise<Array<Skill>> {
+            return localVarFp.gamemasterSkillList(options).then((request) => request(axios, basePath));
         },
         /**
          * This endpoint allows game masters to create a new skill using the skill factory service. The skill will be created with the provided data and returned in the response.
@@ -20489,8 +20489,8 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: any): AxiosPromise<Skill> {
-            return localVarFp.gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options).then((request) => request(axios, basePath));
+        gamemasterSkillNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: any): AxiosPromise<Skill> {
+            return localVarFp.gamemasterSkillNewSkillCreate(skillCreateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * ViewSet for game masters to create skills dynamically during gameplay. Provides skill factory functionality with comprehensive validation and documentation.
@@ -20498,8 +20498,8 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        gamemasterSkillFactoryRetrieve(id: string, options?: any): AxiosPromise<Skill> {
-            return localVarFp.gamemasterSkillFactoryRetrieve(id, options).then((request) => request(axios, basePath));
+        gamemasterSkillRetrieve(id: string, options?: any): AxiosPromise<Skill> {
+            return localVarFp.gamemasterSkillRetrieve(id, options).then((request) => request(axios, basePath));
         },
         /**
          * Get all position connections, optionally filtered by grid_z.
@@ -20937,8 +20937,8 @@ export class GamemasterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterSkillFactoryList(options?: RawAxiosRequestConfig) {
-        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryList(options).then((request) => request(this.axios, this.basePath));
+    public gamemasterSkillList(options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillList(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20949,8 +20949,8 @@ export class GamemasterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterSkillFactoryNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig) {
-        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryNewSkillCreate(skillCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    public gamemasterSkillNewSkillCreate(skillCreateRequest: SkillCreateRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillNewSkillCreate(skillCreateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -20960,8 +20960,8 @@ export class GamemasterApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof GamemasterApi
      */
-    public gamemasterSkillFactoryRetrieve(id: string, options?: RawAxiosRequestConfig) {
-        return GamemasterApiFp(this.configuration).gamemasterSkillFactoryRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    public gamemasterSkillRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterSkillRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

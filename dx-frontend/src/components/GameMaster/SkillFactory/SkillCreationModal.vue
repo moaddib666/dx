@@ -480,7 +480,7 @@ const createSkill = async () => {
     }
 
     // Call the GameMaster API to create the skill
-    const response = await GameMasterApi.gamemasterSkillFactoryNewSkillCreate(skillPayload)
+    const response = await GameMasterApi.gamemasterSkillNewSkillCreate(skillPayload)
 
     // Show success message
     successMessage.value = `Skill "${skillPayload.name}" has been created successfully!`
