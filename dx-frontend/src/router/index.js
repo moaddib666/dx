@@ -72,7 +72,7 @@ const routes = [
     {path: '/game-master/cartograph', name: 'Cartograph', component: CharacterView, meta: {requiresAuth: false, requiresGameMaster: true}},
     {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/character-template-editor', name: 'CharacterTemplateEditor', component: CharacterTemplateEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
-    {path: '/game-master/story-builder', name: 'StoryBuilder', component: StoryBuilder, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
+    {path: '/game-master/story-builder', name: 'StoryBuilder', component: () => import('@/views/GmJournalScreen.vue'), meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
 
     // Test routes
     {path: '/test', name: "TestScreen", component: () => import('@/views/TestScreen.vue'), meta: {requiresAuth: false}},
