@@ -45,25 +45,34 @@ const onSkillCreated = (skill: any) => {
 <style scoped>
 .skill-factory {
   width: 100%;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
 }
 
 .skill-factory-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(43, 43, 43, 0.8);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  color: white;
-  font-family: "Roboto", sans-serif;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid #555;
+  border-radius: 12px;
+  padding: 0.625rem 0.875rem;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+
+.skill-factory-row:hover {
+  border-color: #1E90FF;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
 }
 
 .skill-factory-title {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  color: #fada95;
 }
 
 .skill-factory-actions {
@@ -72,17 +81,26 @@ const onSkillCreated = (skill: any) => {
 }
 
 .create-skill-btn {
-  background: #4CAF50;
+  background: #1E90FF;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .create-skill-btn:hover {
-  background: #45a049;
+  background: #1873CC;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.create-skill-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 </style>

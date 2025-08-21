@@ -558,47 +558,54 @@ watch(() => props.isOpen, (newValue) => {
 }
 
 .modal {
-  background: rgba(43, 43, 43, 0.95);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid #555;
+  border-radius: 12px;
+  padding: 1rem;
+  max-width: 700px;
+  width: 95%;
+  max-height: 94vh;
   overflow-y: auto;
-  color: white;
-  font-family: "Roboto", sans-serif;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
 }
 
 .modal-title {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.5rem;
-  font-weight: 600;
+  margin: 0 0 0.375rem 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-family: 'Cinzel', serif;
+  color: #fada95;
 }
 
 .modal-description {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1rem 0;
   color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .skill-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.625rem;
 }
 
 .form-section h3 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #4CAF50;
-  border-bottom: 1px solid rgba(76, 175, 80, 0.3);
-  padding-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+  color: #1E90FF;
+  border-bottom: 1px solid rgba(30, 144, 255, 0.3);
+  padding-bottom: 0.375rem;
 }
 
 .form-group {
@@ -623,19 +630,22 @@ watch(() => props.isOpen, (newValue) => {
 
 .form-input,
 .form-textarea {
-  padding: 0.75rem;
+  padding: 0.625rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
+  border-radius: 6px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
   font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
 }
 
 .form-input:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #1E90FF;
   background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(30, 144, 255, 0.2);
 }
 
 .checkbox-label {
@@ -660,11 +670,11 @@ watch(() => props.isOpen, (newValue) => {
 }
 
 .success-message {
-  background: rgba(76, 175, 80, 0.2);
-  border: 1px solid #4CAF50;
+  background: rgba(30, 144, 255, 0.2);
+  border: 1px solid #1E90FF;
   border-radius: 0.25rem;
   padding: 0.75rem;
-  color: #c8e6c9;
+  color: #b3d9ff;
   animation: fadeIn 0.3s ease-in;
 }
 
@@ -676,47 +686,59 @@ watch(() => props.isOpen, (newValue) => {
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.625rem;
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .create-btn {
-  background: #4CAF50;
+  background: #1E90FF;
+  padding: 0.625rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .create-btn:hover:not(:disabled) {
-  background: #45a049;
+  background: #1873CC;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .create-btn:disabled {
-  background: rgba(76, 175, 80, 0.5);
+  background: rgba(30, 144, 255, 0.5);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .template-description {
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 1rem 0;
-  font-size: 0.9rem;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 
 .template-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.625rem;
 }
 
 .template-btn {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 0.625rem;
+  padding: 0.75rem;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.05);
   color: white;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-family: inherit;
   text-align: left;
 }
@@ -728,8 +750,8 @@ watch(() => props.isOpen, (newValue) => {
 }
 
 .template-btn.healing:hover {
-  border-color: #4CAF50;
-  background: rgba(76, 175, 80, 0.1);
+  border-color: #1E90FF;
+  background: rgba(30, 144, 255, 0.1);
 }
 
 .template-btn.physical:hover {

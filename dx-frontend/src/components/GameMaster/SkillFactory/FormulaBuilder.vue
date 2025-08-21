@@ -234,7 +234,7 @@ watch(formula, () => {
 
 .section-header h4 {
   margin: 0;
-  color: #4CAF50;
+  color: #1E90FF;
   font-size: 1rem;
 }
 
@@ -262,7 +262,7 @@ watch(formula, () => {
 }
 
 .add-btn {
-  background: #4CAF50;
+  background: #1E90FF;
   color: white;
   border: none;
   padding: 0.4rem 0.8rem;
@@ -272,7 +272,7 @@ watch(formula, () => {
 }
 
 .add-btn:hover {
-  background: #45a049;
+  background: #1873CC;
 }
 
 .empty-state {
@@ -327,7 +327,7 @@ watch(formula, () => {
 
 .form-input:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #1E90FF;
   background: rgba(255, 255, 255, 0.15);
 }
 
