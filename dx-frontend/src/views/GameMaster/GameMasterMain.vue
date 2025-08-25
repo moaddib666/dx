@@ -28,7 +28,6 @@
           <div
               class="character-bars"
           >
-            <h1 class="character-name">{{selectedCharacterData?.name || 'Unknown' }}</h1>
             <CharacterRPGBars
 
                 :character="{
