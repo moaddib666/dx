@@ -23,7 +23,6 @@
             class="top-center-right card-holder"
         />
         <div class="work-area">
-          <GameMasterImpact @impact="handleImpact" ref="Impact" @applied="refresh"/>
           <DynamicBackground :backgroundUrl="selectedCharacterPositionBackground"
                              v-if="selectedCharacterData && selectedCharacterInfo">
             <PlayerComponent
@@ -34,6 +33,14 @@
             />
             <ShieldHolder v-if="selectedCharacterShields.length > 0" :shields="selectedCharacterShields"/>
             <TeleportComponent @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
+            <CustomAction
+                :initiator="selectedInitiator"
+                :target="selectedTarget"
+                :action="selectedAction"
+                @selectInitiator="handleSelectInitiator"
+                @selectTarget="handleSelectTarget"
+                @selectAction="handleSelectAction"
+            />
           </DynamicBackground>
         </div>
       </div>
@@ -51,12 +58,33 @@
 
     <CurrentTurnComponent :current-turn="currentCycleNumber" class="current-turn"/>
     <EndTurnComponent class="end-turn"/>
+
+    <!-- Character Selector Modal -->
+    <div v-if="showCharSelector" class="modal-overlay" @click="handleCharSelectorClose">
+      <div class="modal-container" @click.stop>
+        <GmCharSelector
+          :characters="characters.concat(npcCharacters)"
+          @select="handleCharacterSelected"
+          @close="handleCharSelectorClose"
+        />
+      </div>
+    </div>
+
+    <!-- Skill Selector Modal -->
+    <div v-if="showSkillSelector" class="modal-overlay" @click="handleSkillSelectorClose">
+      <div class="modal-container" @click.stop>
+        <GMRPGSkills
+          :isDraggable="false"
+          @skillSelected="handleSkillSelected"
+          @close="handleSkillSelectorClose"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 
 <script>
-import GameMasterImpact from "@/components/GameMaster/GameMasterImpact.vue";
 import EndTurnComponent from "@/components/GameMaster/EndTurnComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue";
@@ -71,9 +99,15 @@ import VerticalPlayerList from "@/components/GameMaster/PlayerList/VerticalPlaye
 import TeleportComponent from "@/components/GameMaster/TeleportComponent.vue";
 import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
+import CustomAction from "@/components/GameMaster/CustomAction/CustomAction.vue";
+import GmCharSelector from "@/components/GameMaster/Character/GMCharSelector.vue";
+import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
 
 export default {
   components: {
+    CustomAction,
+    GmCharSelector,
+    GMRPGSkills,
     ShieldHolder,
     TeleportComponent,
     VerticalPlayerList,
@@ -81,7 +115,7 @@ export default {
     BackgroundView,
     PlayerComponent,
     GameObjectRawSelector,
-    CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent, GameMasterImpact
+    CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent
   },
   data() {
     return {
@@ -98,6 +132,12 @@ export default {
       selectedCharacterShields: [],
       currentCycleNumber: null,
       additionalCharactersData: {},
+      selectedInitiator: undefined,
+      selectedTarget: undefined,
+      selectedAction: undefined,
+      showCharSelector: false,
+      showSkillSelector: false,
+      currentSelectionType: null,
     };
   },
   async mounted() {
@@ -164,9 +204,6 @@ export default {
       await this.refreshCharacters();
     },
     async selectCharacter(id) {
-      if (id === this.selectedCharacterId) {
-        await this.refreshSelectedTargets();
-      }
       this.selectedCharacterId = id;
       this.selectedCharacterData = (await CharacterGameApi.characterGmCharacterInfoRetrieve(id)).data;
       this.selectedCharacterInfo = (await CharacterGameApi.characterGmRetrieve(id)).data;
@@ -208,21 +245,56 @@ export default {
     async refreshCharacterPosition() {
       this.selectedCharacterPositionBackground = await this.locationGMService.getBackgroundUrl(this.selectedCharacterData.position);
     },
-    async refreshSelectedTargets() {
-      // if initiator is not selected, select it first
-      if (!this.$refs.Impact.initiator) {
-        await this.$refs.Impact.setInitiator(this.selectedCharacterId);
-        return
-      }
-      // if targets are not selected, select them first
-      if (!this.$refs.Impact.target) {
-        await this.$refs.Impact.setTarget(this.selectedCharacterId);
-        return
-      }
+    handleSelectInitiator() {
+      this.currentSelectionType = 'initiator';
+      this.showCharSelector = true;
     },
-    handleImpact(impact) {
-      console.log("Impact Applied:", impact);
-      // this.refreshActions();
+    handleSelectTarget() {
+      this.currentSelectionType = 'target';
+      this.showCharSelector = true;
+    },
+    handleSelectAction() {
+      this.showSkillSelector = true;
+    },
+    handleCharacterSelected(characterId) {
+      const character = this.characters.concat(this.npcCharacters).find(c => c.id === characterId);
+      if (character) {
+        const participant = {
+          id: character.id,
+          name: character.name,
+          imageUrl: character.biography?.avatar
+        };
+
+        if (this.currentSelectionType === 'initiator') {
+          this.selectedInitiator = participant;
+        } else if (this.currentSelectionType === 'target') {
+          this.selectedTarget = participant;
+        }
+      }
+
+      this.showCharSelector = false;
+      this.currentSelectionType = null;
+    },
+    handleSkillSelected(skill) {
+      // Transform skill to action format
+      const action = {
+        skillId: skill.id || skill.name, // Use skill ID or name as identifier
+        name: skill.name,
+        description: skill.description,
+        school: skill.school,
+        grade: skill.grade,
+        type: skill.type
+      };
+
+      this.selectedAction = action;
+      this.showSkillSelector = false;
+    },
+    handleCharSelectorClose() {
+      this.showCharSelector = false;
+      this.currentSelectionType = null;
+    },
+    handleSkillSelectorClose() {
+      this.showSkillSelector = false;
     },
   },
   watch: {
@@ -231,7 +303,6 @@ export default {
       this.refreshCharacters()
     },
     selectedCharacterId() {
-      this.refreshSelectedTargets();
       this.refreshSelectedCharacterShields();
     },
     selectedCharacterData() {
@@ -287,8 +358,7 @@ export default {
 
 .work-area {
   display: flex;
-  flex-direction: row;
-  gap: 0.3rem;
+  flex-direction: column;
 }
 
 .current-turn {
@@ -310,5 +380,47 @@ export default {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+}
+
+/* Modal container styles - invisible positioning containers */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-container {
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom scrollbar for modal container */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: rgba(127, 255, 22, 0.6);
+  border-radius: 4px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(127, 255, 22, 0.8);
 }
 </style>
