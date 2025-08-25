@@ -120,7 +120,7 @@
 import EndTurnComponent from "@/components/GameMaster/EndTurnComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue";
-import {ActionGameApi, CharacterGameApi, ShieldsGameApi} from "@/api/backendService.js";
+import {ActionGameApi, CharacterGameApi, ShieldsGameApi, EffectsGameApi} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/GameMaster/Character/CharacterCardHolder.vue";
 import GameObjectRawSelector from "@/components/GameMaster/GameObjectRawSelector.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
@@ -164,6 +164,8 @@ export default {
       selectedCharacterData: null,
       locationGMService: LocationInfoGameService,
       selectedCharacterShields: [],
+      shields: [],
+      activeEffects: [],
       currentCycleNumber: null,
       additionalCharactersData: {},
       selectedInitiator: undefined,
@@ -222,9 +224,25 @@ export default {
       }
     },
     async refreshSelectedCharacterShields() {
-      this.selectedCharacterShields = (await ShieldsGameApi.shieldsGmActiveList(
-          this.selectedCharacterId,
-      )).data;
+      if (this.selectedCharacterId) {
+        this.shields = (await ShieldsGameApi.shieldsGmActiveList(
+            this.selectedCharacterId,
+        )).data;
+      } else {
+        this.shields = [];
+      }
+    },
+    async refreshActiveEffects() {
+      if (this.selectedCharacterId) {
+        try {
+          this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
+        } catch (error) {
+          console.error("Error refreshing active effects:", error);
+          this.activeEffects = [];
+        }
+      } else {
+        this.activeEffects = [];
+      }
     },
     async teleportToCoordinates(x, y, z) {
       await this.locationGMService.teleportToCoordinates(this.selectedCharacterId, x, y, z);
@@ -232,6 +250,7 @@ export default {
       await this.refreshCharacterPosition();
       await this.refreshCharacters();
       await this.refreshSelectedCharacterShields();
+      await this.refreshActiveEffects();
     },
     async teleportToPosition(id) {
       await this.locationGMService.teleportToPosition(this.selectedCharacterId, id);
@@ -381,6 +400,7 @@ export default {
     },
     selectedCharacterId() {
       this.refreshSelectedCharacterShields();
+      this.refreshActiveEffects();
     },
     selectedCharacterData() {
       this.refreshCharacterPosition();
