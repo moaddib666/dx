@@ -576,9 +576,10 @@ onBeforeUnmount(() => {
 .gm-rpg-skills {
   display: flex;
   flex-direction: column;
-  color: #ffffff;
-  border-radius: 4px;
+  color: #fada95;
+  border-radius: 0.263rem;
   overflow: hidden;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .gm-rpg-skills.draggable {
@@ -594,8 +595,10 @@ onBeforeUnmount(() => {
 
 .skills-list-header h3 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
 }
 
 .search-container {
@@ -604,30 +607,50 @@ onBeforeUnmount(() => {
 }
 
 .search-input {
-  padding: 0.25rem 0.5rem;
-  background: #444;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: 0.35rem 0.525rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  font-size: 0.875rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 400;
   width: 150px;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.search-input::placeholder {
+  color: rgba(250, 218, 149, 0.5);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #7fff16;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .refresh-btn {
-  padding: 0.25rem;
-  background: #444;
-  color: #ccc;
-  border: 1px solid #555;
-  border-radius: 4px;
+  padding: 0.35rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  transition: all 0.3s ease;
 }
 
 .refresh-btn:hover {
-  background: #555;
-  color: #fff;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-1px);
+}
+
+.refresh-btn:active {
+  transform: translateY(0);
 }
 
 .icon-refresh::before {
@@ -637,9 +660,9 @@ onBeforeUnmount(() => {
 .filters-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.525rem;
   padding: 0.5rem 1rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid rgba(127, 255, 22, 0.2);
 }
 
 .skills-filter {
@@ -649,12 +672,26 @@ onBeforeUnmount(() => {
 
 .filter-select {
   width: 100%;
-  padding: 0.25rem;
-  background: #444;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: 0.35rem 0.525rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  font-size: 0.875rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 400;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #7fff16;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.filter-select option {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
 }
 
 .school-filter {
@@ -681,7 +718,8 @@ onBeforeUnmount(() => {
 .loading-indicator, .no-skills, .error-message {
   padding: 2rem;
   text-align: center;
-  color: #999;
+  color: rgba(250, 218, 149, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   flex: 1;
   display: flex;
   align-items: center;
@@ -895,6 +933,8 @@ onBeforeUnmount(() => {
 .skill-name {
   font-size: 0.8rem;
   font-weight: 500;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -904,11 +944,13 @@ onBeforeUnmount(() => {
 
 .skill-school-label {
   font-size: 0.65rem;
-  color: #aaa;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: rgba(250, 218, 149, 0.8);
   text-transform: capitalize;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(127, 255, 22, 0.3);
   padding: 0.1rem 0.3rem;
-  border-radius: 2px;
+  border-radius: 0.263rem;
   margin-top: 0.1rem;
 }
 
@@ -918,8 +960,10 @@ onBeforeUnmount(() => {
   right: -0.5rem;
   font-size: 0.7rem;
   font-weight: bold;
-  background: #333;
-  color: white;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fada95;
+  border: 1px solid rgba(127, 255, 22, 0.5);
   width: 1.2rem;
   height: 1.2rem;
   display: flex;

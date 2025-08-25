@@ -70,10 +70,15 @@ const actionImageUrl = computed(() => {
   // No action, use placeholder
   return ActionPlaceholder;
 });
+
+const ready = computed(() => {
+  return props.initiator && props.target && props.action;
+});
 </script>
 
 <template>
   <div class="container">
+    <div class="ready" v-if="ready"></div>
     <CharacterSelectorCircle
         :participant="props.initiator"
         @select="emit('selectInitiator', $event)"/>
@@ -98,6 +103,7 @@ const actionImageUrl = computed(() => {
   align-items: center;
   flex-direction: row;
   min-height: 7rem;
+  position: relative;
 }
 
 .action-cell {
@@ -108,6 +114,8 @@ const actionImageUrl = computed(() => {
   aspect-ratio: 1 / 1;
   text-align: center;
   cursor: pointer;
+  transition: filter 0.3s, transform 0.2s ease;
+  z-index: 10;
 }
 .action-image {
   height: 3em;
@@ -135,4 +143,14 @@ const actionImageUrl = computed(() => {
 .action-cell:hover {
   filter: grayscale(0.5);
 }
+
+.ready {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url("@/assets/textures/lightning.png") no-repeat center center;
+  background-size: cover;
+  pointer-events: none;
+}
+
 </style>
