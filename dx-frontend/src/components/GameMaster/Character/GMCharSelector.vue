@@ -106,6 +106,73 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
     emit('filterByOrganisation', character.organization.id);
   }
 };
+
+// Active filters computed property
+const activeFilters = computed(() => {
+  const filters = [];
+
+  if (searchQuery.value.trim()) {
+    filters.push({
+      type: 'search',
+      label: `Search: "${searchQuery.value}"`,
+      value: searchQuery.value
+    });
+  }
+
+  if (selectedOrgId.value) {
+    const org = organizations.value.find(o => o.id === selectedOrgId.value);
+    filters.push({
+      type: 'organization',
+      label: `Organization: ${org?.name || 'Unknown'}`,
+      value: selectedOrgId.value
+    });
+  }
+
+  if (selectedNpcFilter.value !== '') {
+    const label = selectedNpcFilter.value === 'true' ? 'NPCs Only' : 'Players Only';
+    filters.push({
+      type: 'npc',
+      label: label,
+      value: selectedNpcFilter.value
+    });
+  }
+
+  if (selectedPositionId.value) {
+    filters.push({
+      type: 'position',
+      label: `Position: ${selectedPositionId.value.slice(0, 8)}...`,
+      value: selectedPositionId.value
+    });
+  }
+
+  return filters;
+});
+
+// Clear all filters function
+const clearAllFilters = () => {
+  searchQuery.value = '';
+  selectedOrgId.value = '';
+  selectedNpcFilter.value = '';
+  selectedPositionId.value = '';
+};
+
+// Individual filter removal functions
+const removeFilter = (filterType: string) => {
+  switch (filterType) {
+    case 'search':
+      searchQuery.value = '';
+      break;
+    case 'organization':
+      selectedOrgId.value = '';
+      break;
+    case 'npc':
+      selectedNpcFilter.value = '';
+      break;
+    case 'position':
+      selectedPositionId.value = '';
+      break;
+  }
+};
 </script>
 
 <template>
@@ -142,6 +209,39 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
             <option value="true">NPCs Only</option>
             <option value="false">Players Only</option>
           </select>
+        </div>
+
+        <!-- Clear All Filters Button -->
+        <div class="filter-group clear-button-group">
+          <button
+            @click="clearAllFilters"
+            class="clear-all-btn"
+            :disabled="activeFilters.length === 0"
+            title="Clear all active filters"
+          >
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Filter Tags -->
+      <div v-if="activeFilters.length > 0" class="filter-tags">
+        <div class="filter-tags-label">Active Filters:</div>
+        <div class="filter-tags-list">
+          <div
+            v-for="filter in activeFilters"
+            :key="filter.type"
+            class="filter-tag"
+          >
+            <span class="filter-tag-label">{{ filter.label }}</span>
+            <button
+              @click="removeFilter(filter.type)"
+              class="filter-tag-remove"
+              title="Remove this filter"
+            >
+              ×
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -230,6 +330,115 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
   color: #fada95;
 }
 
+/* Clear All Button */
+.clear-button-group {
+  flex: 0 0 auto;
+  min-width: auto;
+}
+
+.clear-all-btn {
+  padding: 0.35rem 0.7rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.clear-all-btn:hover:not(:disabled) {
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-1px);
+}
+
+.clear-all-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.clear-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(127, 255, 22, 0.1);
+}
+
+/* Filter Tags */
+.filter-tags {
+  margin-top: 0.525rem;
+  padding-top: 0.525rem;
+  border-top: 1px solid rgba(127, 255, 22, 0.2);
+}
+
+.filter-tags-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: rgba(250, 218, 149, 0.8);
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+
+.filter-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.filter-tag {
+  display: flex;
+  align-items: center;
+  background: rgba(127, 255, 22, 0.1);
+  border: 1px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.875rem;
+  padding: 0.175rem 0.35rem;
+  font-size: 0.75rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
+  backdrop-filter: blur(2px);
+  transition: all 0.2s ease;
+}
+
+.filter-tag:hover {
+  background: rgba(127, 255, 22, 0.15);
+  border-color: rgba(127, 255, 22, 0.5);
+}
+
+.filter-tag-label {
+  margin-right: 0.25rem;
+  font-weight: 400;
+}
+
+.filter-tag-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.2);
+  color: #fada95;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.filter-tag-remove:hover {
+  background: rgba(255, 0, 0, 0.4);
+  transform: scale(1.1);
+}
+
+.filter-tag-remove:active {
+  transform: scale(0.9);
+}
+
 /* Responsive filters */
 @media (max-width: 640px) {
   .filters {
@@ -238,6 +447,14 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
 
   .filter-group {
     min-width: 100%;
+  }
+
+  .clear-button-group {
+    min-width: 100%;
+  }
+
+  .filter-tags-list {
+    justify-content: flex-start;
   }
 }
 
