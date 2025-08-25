@@ -3,6 +3,7 @@
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import {OpenaiCharacter} from "@/api/dx-backend";
 import GmCharSelectorCard from "@/components/GameMaster/Character/GMCharSelectorCard.vue";
+import {ref, computed} from "vue";
 
 interface Filter {
   name?: string;
@@ -26,24 +27,130 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<{
   select: [characterId: string];
+  filterByPosition: [positionId: string];
+  filterByOrganisation: [orgId: string];
 }>();
+
+// Filter state
+const searchQuery = ref('');
+const selectedOrgId = ref('');
+const selectedNpcFilter = ref('');
+
+// Get unique organizations from characters
+const organizations = computed(() => {
+  const orgs = new Set<string>();
+  props.characters.forEach(char => {
+    if (char.campaign?.id) {
+      orgs.add(char.campaign.id);
+    }
+  });
+  return Array.from(orgs).map(id => {
+    const char = props.characters.find(c => c.campaign?.id === id);
+    return {
+      id,
+      name: char?.campaign?.name || `Organization ${id.slice(0, 8)}`
+    };
+  });
+});
+
+// Filtered characters based on search and filters
+const filteredCharacters = computed(() => {
+  let filtered = props.characters;
+
+  // Apply search query (name, id, or position)
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim();
+    filtered = filtered.filter(char =>
+      char.name.toLowerCase().includes(query) ||
+      char.id.toLowerCase().includes(query) ||
+      char.path?.id?.toLowerCase().includes(query) ||
+      char.rank?.name?.toLowerCase().includes(query)
+    );
+  }
+
+  // Apply organization filter
+  if (selectedOrgId.value) {
+    filtered = filtered.filter(char => char.campaign?.id === selectedOrgId.value);
+  }
+
+  // Apply NPC filter
+  if (selectedNpcFilter.value !== '') {
+    const isNpc = selectedNpcFilter.value === 'true';
+    filtered = filtered.filter(char => char.npc === isNpc);
+  }
+
+  return filtered;
+});
+
+// Fast action handlers
+const copyCharacterId = (characterId: string) => {
+  navigator.clipboard.writeText(characterId);
+};
+
+const filterByCharacterPosition = (character: OpenaiCharacter) => {
+  if (character.path?.id) {
+    emit('filterByPosition', character.path.id);
+  }
+};
+
+const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
+  if (character.campaign?.id) {
+    selectedOrgId.value = character.campaign.id;
+    emit('filterByOrganisation', character.campaign.id);
+  }
+};
 </script>
 
 <template>
   <RPGContainer class="char-selector-container">
     <div class="header">
       <h2 class="title">Character Selector</h2>
+
+      <!-- Filter Controls -->
+      <div class="filters">
+        <!-- Search Input -->
+        <div class="filter-group">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search by name, ID, position..."
+            class="search-input"
+          />
+        </div>
+
+        <!-- Organization Filter -->
+        <div class="filter-group">
+          <select v-model="selectedOrgId" class="filter-select">
+            <option value="">All Organizations</option>
+            <option v-for="org in organizations" :key="org.id" :value="org.id">
+              {{ org.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- NPC Filter -->
+        <div class="filter-group">
+          <select v-model="selectedNpcFilter" class="filter-select">
+            <option value="">All Characters</option>
+            <option value="true">NPCs Only</option>
+            <option value="false">Players Only</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <div class="characters-grid-wrapper">
       <div class="characters-grid">
         <GmCharSelectorCard
-          v-for="character in props.characters"
+          v-for="character in filteredCharacters"
           :key="character.id"
           :character="character"
           :selected="character.id === props.selectedCharacterId"
           class="character-card"
           @click="emit('select', character.id)"
+          @copy-id="copyCharacterId"
+          @filter-by-position="filterByCharacterPosition"
+          @filter-by-organisation="filterByCharacterOrganisation"
         />
       </div>
     </div>
@@ -65,12 +172,66 @@ const emit = defineEmits<{
 }
 
 .title {
-  margin: 0;
+  margin: 0 0 0.7rem 0;
   font-size: 1.1rem;
   font-weight: 600;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
   text-align: center;
+}
+
+.filters {
+  display: flex;
+  gap: 0.525rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 140px;
+}
+
+.search-input,
+.filter-select {
+  width: 100%;
+  padding: 0.35rem 0.525rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.search-input::placeholder {
+  color: rgba(250, 218, 149, 0.5);
+}
+
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #7fff16;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.filter-select option {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
+}
+
+/* Responsive filters */
+@media (max-width: 640px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    min-width: 100%;
+  }
 }
 
 .characters-grid-wrapper {
