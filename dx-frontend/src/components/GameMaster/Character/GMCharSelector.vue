@@ -3,7 +3,7 @@
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import {OpenaiCharacter} from "@/api/dx-backend";
 import GmCharSelectorCard from "@/components/GameMaster/Character/GMCharSelectorCard.vue";
-import {ref, computed} from "vue";
+import {ref, computed, watch} from "vue";
 
 interface Filter {
   name?: string;
@@ -173,6 +173,16 @@ const removeFilter = (filterType: string) => {
       break;
   }
 };
+
+// Auto-filter by position when a character is selected
+watch(() => props.selectedCharacterId, (newSelectedId) => {
+  if (newSelectedId) {
+    const selectedCharacter = props.characters.find(char => char.id === newSelectedId);
+    if (selectedCharacter?.position_id) {
+      selectedPositionId.value = selectedCharacter.position_id;
+    }
+  }
+}, { immediate: true });
 </script>
 
 <template>
