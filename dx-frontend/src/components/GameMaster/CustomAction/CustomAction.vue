@@ -4,6 +4,8 @@ import CharacterSelectorCircle from "@/components/Character/CharacterSelectorCir
 import RPGCell from "@/components/RPGGrid/RPGCell.vue";
 import ActionPlaceholder from "@/assets/images/action/placeholder.png"
 import {computed} from "vue";
+import skillService from "@/services/skillService.ts";
+import {itemsService} from "@/services/ItemsService.ts";
 interface Action {
   skillId?: string;
   itemId?: string;
@@ -35,8 +37,38 @@ const props = withDefaults(defineProps<Props>(), {
   action: undefined,
 });
 
+const skill = computed(() => {
+  if (props.action?.skillId) {
+    return skillService.getSkill(parseInt(props.action.skillId));
+  }
+  return null;
+});
+
+const item = computed(() => {
+  if (props.action?.itemId) {
+    return itemsService.getItemById(props.action.itemId);
+  }
+  return null;
+});
+
 const actionImageUrl = computed(() => {
-  return props.action ? ActionPlaceholder : ActionPlaceholder;
+  // If we have a skill, use its icon
+  if (skill.value?.icon) {
+    return skill.value.icon;
+  }
+
+  // If we have an item, use its icon
+  if (item.value?.icon) {
+    return item.value.icon;
+  }
+
+  // If we have an action but no icon, use default skill icon
+  if (props.action) {
+    return "@/assets/images/skill/default.webp";
+  }
+
+  // No action, use placeholder
+  return ActionPlaceholder;
 });
 </script>
 
