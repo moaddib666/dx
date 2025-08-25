@@ -64,7 +64,7 @@ const filteredCharacters = computed(() => {
     filtered = filtered.filter(char =>
       char.name.toLowerCase().includes(query) ||
       char.id.toLowerCase().includes(query) ||
-      char.path?.id?.toLowerCase().includes(query) ||
+      char.position_id?.toLowerCase().includes(query) ||
       char.rank?.name?.toLowerCase().includes(query)
     );
   }
@@ -76,7 +76,7 @@ const filteredCharacters = computed(() => {
 
   // Apply position filter
   if (selectedPositionId.value) {
-    filtered = filtered.filter(char => char.path?.id === selectedPositionId.value);
+    filtered = filtered.filter(char => char.position_id === selectedPositionId.value);
   }
 
   // Apply NPC filter
@@ -94,9 +94,9 @@ const copyCharacterId = (characterId: string) => {
 };
 
 const filterByCharacterPosition = (character: OpenaiCharacter) => {
-  if (character.path?.id) {
-    selectedPositionId.value = character.path.id;
-    emit('filterByPosition', character.path.id);
+  if (character.position_id) {
+    selectedPositionId.value = character.position_id;
+    emit('filterByPosition', character.position_id);
   }
 };
 

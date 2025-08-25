@@ -2387,13 +2387,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -5827,6 +5827,12 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'organization': Organization | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacter
+     */
+    'position_id': string | null;
 }
 /**
  * 
@@ -6020,6 +6026,12 @@ export interface OpenaiCharacterRequest {
      * @memberof OpenaiCharacterRequest
      */
     'organization': OrganizationRequest | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterRequest
+     */
+    'position_id': string | null;
 }
 /**
  * 

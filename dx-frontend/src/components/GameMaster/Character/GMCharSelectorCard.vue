@@ -53,7 +53,7 @@ const handleFilterByOrganisation = (event: Event) => {
           class="action-btn position-btn"
           title="Filter by Position"
           @click="handleFilterByPosition"
-          v-if="props.character.path?.id"
+          v-if="props.character.position_id"
         >
           🎯
         </button>
