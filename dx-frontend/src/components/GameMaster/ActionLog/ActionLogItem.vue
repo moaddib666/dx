@@ -152,7 +152,7 @@ export default {
 }
 
 .action-info {
-  flex: 0 0 10rem; /* Fixed size for action-info */
+  flex: 0 0 6rem; /* Fixed size for action-info */
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -171,8 +171,9 @@ export default {
 
 .status {
   display: flex;
-  gap: 0.5rem;
-  font-size: 0.75rem;
+  gap: 0.2rem;
+  font-size: 0.6rem;
+  flex-direction: column;
 }
 
 .status-true {
@@ -202,7 +203,7 @@ h4 {
 .action-info .action-icon {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 0.2rem;
   justify-content: flex-start;
   align-items: center;
 }
