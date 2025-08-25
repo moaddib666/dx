@@ -49,11 +49,18 @@ class CampaignSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
+class OrganizationSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    name = serializers.CharField(max_length=255)
+
+
 class OpenaiCharacterSerializer(serializers.ModelSerializer):
     biography = OpenaiCharacterBioSerializer()
     rank = RankSerializer()
     path = ThePathSerializer()
     campaign = CampaignSerializer()
+    organization = OrganizationSerializer(allow_null=True)
+    position_id = serializers.UUIDField(allow_null=True)
 
     def validate_age(self, value):
         if not (18 <= value <= 200):
@@ -75,6 +82,8 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
             "is_active",
             "campaign",
             "fight",
+            "organization",
+            "position_id",
         ]
 
 
