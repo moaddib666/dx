@@ -41,6 +41,8 @@
                 @selectInitiator="handleSelectInitiator"
                 @selectTarget="handleSelectTarget"
                 @selectAction="handleSelectAction"
+                @performAction="handlePerformAction"
+                @cancelAction="handleCancelAction"
             />
           </DynamicBackground>
       </div>
@@ -295,6 +297,36 @@ export default {
     },
     handleSkillSelectorClose() {
       this.showSkillSelector = false;
+    },
+    handlePerformAction(action) {
+      // Log the action being performed
+      console.log('Performing action:', {
+        initiator: this.selectedInitiator,
+        target: this.selectedTarget,
+        action: action
+      });
+
+      // Here you can add the actual action execution logic
+      // For example, calling an API to perform the action
+      // await ActionGameApi.performCustomAction({
+      //   initiatorId: this.selectedInitiator.id,
+      //   targetId: this.selectedTarget.id,
+      //   action: action
+      // });
+
+      // Reset state after performing action
+      this.resetCustomActionState();
+    },
+    handleCancelAction() {
+      // Reset state when canceling
+      this.resetCustomActionState();
+    },
+    resetCustomActionState() {
+      // Reset all custom action related state
+      this.selectedInitiator = undefined;
+      this.selectedTarget = undefined;
+      this.selectedAction = undefined;
+      this.currentSelectionType = null;
     },
   },
   watch: {

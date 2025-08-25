@@ -6,6 +6,9 @@ import ActionPlaceholder from "@/assets/images/action/placeholder.png"
 import {computed} from "vue";
 import skillService from "@/services/skillService.ts";
 import {itemsService} from "@/services/ItemsService.ts";
+import RPGButton from "@/components/RPGButton/RPGButton.vue";
+import {ButtonType} from "@/types/ButtonType";
+
 interface Action {
   skillId?: string;
   itemId?: string;
@@ -28,6 +31,8 @@ const emit = defineEmits(
       selectInitiator: (participant: Participant | undefined) => true,
       selectTarget: (participant: Participant | undefined) => true,
       selectAction: (action: Action | undefined) => true,
+      performAction: (action: Action | undefined) => true,
+      cancelAction: () => true,
     }
 );
 
@@ -79,6 +84,7 @@ const ready = computed(() => {
 <template>
   <div class="container">
     <div class="ready" v-if="ready"></div>
+    <RPGButton :type="ButtonType.CANCEL" v-if="ready" @click="emit('cancelAction')"> Cancel </RPGButton>
     <CharacterSelectorCircle
         :participant="props.initiator"
         @select="emit('selectInitiator', $event)"/>
@@ -92,13 +98,14 @@ const ready = computed(() => {
         :participant="props.target"
         @select="emit('selectTarget', $event)"
     />
+    <RPGButton :type="ButtonType.SUBMIT" v-if="ready" @click="emit('performAction', props.action)"> Perform </RPGButton>
   </div>
 </template>
 
 <style scoped>
 .container {
   display: flex;
-  gap: 2rem;
+  gap: 1.3rem;
   justify-content: center;
   align-items: center;
   flex-direction: row;
