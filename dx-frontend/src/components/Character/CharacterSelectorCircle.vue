@@ -4,7 +4,7 @@ import {computed} from "vue";
 
 interface Participant {
   id: string;
-  name: string;
+  name?: string;
   imageUrl?: string;
 }
 

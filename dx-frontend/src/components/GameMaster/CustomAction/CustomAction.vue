@@ -16,8 +16,8 @@ interface Participant {
 }
 
 interface Props {
-  initiatorId?: Participant;
-  targetId?: Participant;
+  initiator?: Participant;
+  target?: Participant;
   action?: Action;
 }
 
@@ -43,8 +43,8 @@ const actionImageUrl = computed(() => {
 <template>
   <div class="container">
     <CharacterSelectorCircle
-        :selected-character-id="props.initiatorId"
-        @select="emit('selectInitiator', props.initiatorId)"/>
+        :participant="props.initiator"
+        @select="emit('selectInitiator', $event)"/>
     <RPGCell
         class="action-cell"
         :class="{'placeholder': !props.action}"
@@ -52,8 +52,8 @@ const actionImageUrl = computed(() => {
       <img :src="actionImageUrl" class="action-image"  alt="Action"/>
     </RPGCell>
     <CharacterSelectorCircle
-        :selected-character-id="props.targetId"
-        @select="emit('selectTarget', props.targetId)"
+        :participant="props.target"
+        @select="emit('selectTarget', $event)"
     />
   </div>
 </template>
