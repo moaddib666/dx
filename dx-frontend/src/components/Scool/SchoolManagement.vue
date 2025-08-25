@@ -1,6 +1,6 @@
 <template>
   <div class="school-management">
-    <!-- School Selector -->
+    <!-- School GmCharSelector -->
     <SchoolSelector
         :schools="schools"
         :learnedSchools="learnedSchools"

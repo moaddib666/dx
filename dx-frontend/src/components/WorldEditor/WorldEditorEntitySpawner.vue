@@ -8,7 +8,7 @@
     </div>
 
     <div class="spawner-content">
-      <!-- Entity Type Selector -->
+      <!-- Entity Type GmCharSelector -->
       <div class="spawner-section">
         <h4>Entity Type</h4>
         <div class="entity-type-buttons">
