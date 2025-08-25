@@ -35,8 +35,9 @@ const emit = defineEmits<{
 const searchQuery = ref('');
 const selectedOrgId = ref('');
 const selectedNpcFilter = ref('');
+const selectedPositionId = ref('');
 
-// Get unique organizations from characters
+// Get unique campaigns from characters
 const organizations = computed(() => {
   const orgs = new Set<string>();
   props.characters.forEach(char => {
@@ -48,7 +49,7 @@ const organizations = computed(() => {
     const char = props.characters.find(c => c.campaign?.id === id);
     return {
       id,
-      name: char?.campaign?.name || `Organization ${id.slice(0, 8)}`
+      name: char?.campaign?.name || `Campaign ${id.slice(0, 8)}`
     };
   });
 });
@@ -68,9 +69,14 @@ const filteredCharacters = computed(() => {
     );
   }
 
-  // Apply organization filter
+  // Apply campaign filter
   if (selectedOrgId.value) {
     filtered = filtered.filter(char => char.campaign?.id === selectedOrgId.value);
+  }
+
+  // Apply position filter
+  if (selectedPositionId.value) {
+    filtered = filtered.filter(char => char.path?.id === selectedPositionId.value);
   }
 
   // Apply NPC filter
@@ -89,6 +95,7 @@ const copyCharacterId = (characterId: string) => {
 
 const filterByCharacterPosition = (character: OpenaiCharacter) => {
   if (character.path?.id) {
+    selectedPositionId.value = character.path.id;
     emit('filterByPosition', character.path.id);
   }
 };
@@ -118,10 +125,10 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
           />
         </div>
 
-        <!-- Organization Filter -->
+        <!-- Campaign Filter -->
         <div class="filter-group">
           <select v-model="selectedOrgId" class="filter-select">
-            <option value="">All Organizations</option>
+            <option value="">All Campaigns</option>
             <option v-for="org in organizations" :key="org.id" :value="org.id">
               {{ org.name }}
             </option>

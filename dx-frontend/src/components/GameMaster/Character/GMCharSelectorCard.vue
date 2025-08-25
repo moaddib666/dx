@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {OpenaiCharacter} from "@/api/dx-backend";
 import {computed} from "vue";
-
+import AvatarPlaceholder from '@/assets/images/avatar/avatarplaceholder.png';
 interface Props {
   character: OpenaiCharacter
   selected: boolean
@@ -15,7 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const avatarUrl = computed(() => {
-  return props.character?.biography?.avatar || 'https://via.placeholder.com/150';
+  return props.character?.biography?.avatar || AvatarPlaceholder;
 });
 
 // Fast action handlers
@@ -59,7 +59,7 @@ const handleFilterByOrganisation = (event: Event) => {
         </button>
         <button
           class="action-btn org-btn"
-          title="Filter by Organisation"
+          title="Filter by Campaign"
           @click="handleFilterByOrganisation"
           v-if="props.character.campaign?.id"
         >
@@ -146,22 +146,13 @@ const handleFilterByOrganisation = (event: Event) => {
 /* Fast Actions Overlay */
 .fast-actions {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0.35rem;
+  right: 0.35rem;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 0.263rem;
-}
-
-.selector-card:hover .fast-actions {
+  justify-content: flex-start;
+  gap: 0.25rem;
   opacity: 1;
 }
 
@@ -169,13 +160,13 @@ const handleFilterByOrganisation = (event: Event) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  border: 2px solid rgba(127, 255, 22, 0.6);
-  border-radius: 0.263rem;
-  background: rgba(0, 0, 0, 0.6);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid rgba(127, 255, 22, 0.6);
+  border-radius: 0.2rem;
+  background: rgba(0, 0, 0, 0.7);
   color: #fada95;
-  font-size: 1rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(2px);
