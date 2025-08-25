@@ -103,6 +103,16 @@
         />
       </div>
     </div>
+
+    <!-- Character Card Modal -->
+    <div v-if="showCharacterCard && selectedCharacterId" class="modal-overlay" @click="closeCharacterCard">
+      <div class="modal-container" @click.stop>
+        <GameMasterCharacterCard
+            :characterId="selectedCharacterId"
+            @close="closeCharacterCard"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -125,6 +135,7 @@ import GmCharSelector from "@/components/GameMaster/Character/GMCharSelector.vue
 import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import GameMasterCharacterInfo from "@/components/GameMaster/GameMasterCharacterInfo.vue";
+import GameMasterCharacterCard from "@/components/WorldEditor/GameMasterCharacterCard.vue";
 
 export default {
   components: {
@@ -138,7 +149,8 @@ export default {
     BackgroundView,
     GameObjectRawSelector,
     CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent,
-    GameMasterCharacterInfo
+    GameMasterCharacterInfo,
+    GameMasterCharacterCard
   },
   data() {
     return {
@@ -160,6 +172,7 @@ export default {
       selectedAction: undefined,
       showCharSelector: false,
       showSkillSelector: false,
+      showCharacterCard: false,
       currentSelectionType: null,
     };
   },
@@ -348,6 +361,14 @@ export default {
       this.selectedTarget = undefined;
       this.selectedAction = undefined;
       this.currentSelectionType = null;
+    },
+    openInfo() {
+      // Show the character card modal when character bars are clicked
+      this.showCharacterCard = true;
+    },
+    closeCharacterCard() {
+      // Close the character card modal
+      this.showCharacterCard = false;
     },
   },
   watch: {
