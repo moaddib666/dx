@@ -22,29 +22,50 @@
             @characterSelected="selectCharacter"
             class="top-center-right card-holder"
         />
-          <DynamicBackground
-              class="work-area"
-              :backgroundUrl="selectedCharacterPositionBackground"
-                             v-if="selectedCharacterData && selectedCharacterInfo">
-            <PlayerComponent
+        <DynamicBackground
+            :backgroundUrl="selectedCharacterPositionBackground"
+            v-if="selectedCharacterData && selectedCharacterInfo">
+          <div
+              class="character-bars"
+          >
+            <h1 class="character-name">{{selectedCharacterData?.name || 'Unknown' }}</h1>
+            <CharacterRPGBars
 
-                :player="selectedCharacterData"
-                :playerImage="selectedCharacterInfo.biography.avatar"
+                :character="{
+                  name: selectedCharacterData?.name || 'Unknown',
+                  level: selectedCharacterData?.rank_grade || 0,
+                  health: selectedCharacterData?.attributes.find(attr => attr.name === 'Health')?.current || 0,
+                  maxHealth: selectedCharacterData?.attributes.find(attr => attr.name === 'Health')?.max || 100,
+                  flow: selectedCharacterData?.attributes.find(attr => attr.name === 'Energy')?.current || 0,
+                  maxFlow: selectedCharacterData?.attributes.find(attr => attr.name === 'Energy')?.max || 100,
+                  actionPoints: selectedCharacterData?.attributes.find(attr => attr.name === 'Action Points')?.current || 0,
+                  maxActionPoints: selectedCharacterData?.attributes.find(attr => attr.name === 'Action Points')?.max || 10,
+                  avatar: selectedCharacterInfo?.biography?.avatar || '',
+                  rank_grade: selectedCharacterData?.rank_grade || 0,
+                  dimension: selectedCharacterData?.dimension || 0,
+                  id: selectedCharacterData?.id || '',
+                  position: selectedCharacterData?.position || '',
+                  tags: selectedCharacterData?.tags || []
+                }"
+                :shields="shields"
+                :effects="activeEffects"
                 :extended="true"
+                @openInfo="openInfo"
             />
-            <ShieldHolder v-if="selectedCharacterShields.length > 0" :shields="selectedCharacterShields"/>
-            <TeleportComponent @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
-            <CustomAction
-                :initiator="selectedInitiator"
-                :target="selectedTarget"
-                :action="selectedAction"
-                @selectInitiator="handleSelectInitiator"
-                @selectTarget="handleSelectTarget"
-                @selectAction="handleSelectAction"
-                @performAction="handlePerformAction"
-                @cancelAction="handleCancelAction"
-            />
-          </DynamicBackground>
+            <GameMasterCharacterInfo :character-data="selectedCharacterData" />
+          </div>
+          <TeleportComponent @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
+          <CustomAction
+              :initiator="selectedInitiator"
+              :target="selectedTarget"
+              :action="selectedAction"
+              @selectInitiator="handleSelectInitiator"
+              @selectTarget="handleSelectTarget"
+              @selectAction="handleSelectAction"
+              @performAction="handlePerformAction"
+              @cancelAction="handleCancelAction"
+          />
+        </DynamicBackground>
       </div>
     </div>
     <!-- Right Full Height Section -->
@@ -65,9 +86,9 @@
     <div v-if="showCharSelector" class="modal-overlay" @click="handleCharSelectorClose">
       <div class="modal-container" @click.stop>
         <GmCharSelector
-          :characters="characters.concat(npcCharacters)"
-          @select="handleCharacterSelected"
-          @close="handleCharSelectorClose"
+            :characters="characters.concat(npcCharacters)"
+            @select="handleCharacterSelected"
+            @close="handleCharSelectorClose"
         />
       </div>
     </div>
@@ -76,9 +97,9 @@
     <div v-if="showSkillSelector" class="modal-overlay" @click="handleSkillSelectorClose">
       <div class="modal-container" @click.stop>
         <GMRPGSkills
-          :isDraggable="false"
-          @skillSelected="handleSkillSelected"
-          @close="handleSkillSelectorClose"
+            :isDraggable="false"
+            @skillSelected="handleSkillSelected"
+            @close="handleSkillSelectorClose"
         />
       </div>
     </div>
@@ -93,31 +114,31 @@ import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue"
 import {ActionGameApi, CharacterGameApi, ShieldsGameApi} from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/GameMaster/Character/CharacterCardHolder.vue";
 import GameObjectRawSelector from "@/components/GameMaster/GameObjectRawSelector.vue";
-import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
 import BackgroundView from "@/components/Game/Location/BackgroundView.vue";
 import {LocationInfoGameService} from "@/services/locationInfoService";
 import DynamicBackground from "@/components/Background/DynamicBackground.vue";
 import VerticalPlayerList from "@/components/GameMaster/PlayerList/VerticalPlayerList.vue";
 import TeleportComponent from "@/components/GameMaster/TeleportComponent.vue";
-import ShieldHolder from "@/components/Shield/ShieldHolder.vue";
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import CustomAction from "@/components/GameMaster/CustomAction/CustomAction.vue";
 import GmCharSelector from "@/components/GameMaster/Character/GMCharSelector.vue";
 import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
+import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
+import GameMasterCharacterInfo from "@/components/GameMaster/GameMasterCharacterInfo.vue";
 
 export default {
   components: {
+    CharacterRPGBars,
     CustomAction,
     GmCharSelector,
     GMRPGSkills,
-    ShieldHolder,
     TeleportComponent,
     VerticalPlayerList,
     DynamicBackground,
     BackgroundView,
-    PlayerComponent,
     GameObjectRawSelector,
-    CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent
+    CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent,
+    GameMasterCharacterInfo
   },
   data() {
     return {
@@ -391,6 +412,9 @@ export default {
 .work-area {
   display: flex;
   flex-direction: column;
+  background: #ff5252;
+  width: 100%;
+  height: 100%;
 }
 
 .current-turn {
@@ -454,5 +478,24 @@ export default {
 
 .modal-container::-webkit-scrollbar-thumb:hover {
   background: rgba(127, 255, 22, 0.8);
+}
+.character-bars {
+  scale: 0.75;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+.character-name {
+  position: absolute;
+  top: -1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fada95;
+  text-shadow: 0 0 5px rgba(16, 16, 16, 0.7);
+  font-family: 'Cinzel', serif;
 }
 </style>
