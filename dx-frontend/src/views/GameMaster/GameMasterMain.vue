@@ -22,8 +22,9 @@
             @characterSelected="selectCharacter"
             class="top-center-right card-holder"
         />
-        <div class="work-area">
-          <DynamicBackground :backgroundUrl="selectedCharacterPositionBackground"
+          <DynamicBackground
+              class="work-area"
+              :backgroundUrl="selectedCharacterPositionBackground"
                              v-if="selectedCharacterData && selectedCharacterInfo">
             <PlayerComponent
 
@@ -42,7 +43,6 @@
                 @selectAction="handleSelectAction"
             />
           </DynamicBackground>
-        </div>
       </div>
     </div>
     <!-- Right Full Height Section -->
