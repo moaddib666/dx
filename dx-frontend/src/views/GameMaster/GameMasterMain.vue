@@ -51,9 +51,9 @@
                 :extended="true"
                 @openInfo="openInfo"
             />
-            <GameMasterCharacterInfo :character-data="selectedCharacterData" />
+            <GameMasterCharacterInfo :character-data="selectedCharacterData" @open-teleport="toggleTeleportComponent" />
           </div>
-          <TeleportComponent @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
+          <TeleportComponent v-if="showTeleportComponent" @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
           <CustomAction
               :initiator="selectedInitiator"
               :target="selectedTarget"
@@ -172,6 +172,7 @@ export default {
       showCharSelector: false,
       showSkillSelector: false,
       showCharacterCard: false,
+      showTeleportComponent: false,
       currentSelectionType: null,
     };
   },
@@ -237,6 +238,9 @@ export default {
       await this.refresh()
       await this.refreshCharacterPosition();
       await this.refreshCharacters();
+    },
+    toggleTeleportComponent() {
+      this.showTeleportComponent = !this.showTeleportComponent;
     },
     async selectCharacter(id) {
       this.selectedCharacterId = id;
@@ -509,13 +513,7 @@ export default {
   gap: 1rem;
   position: relative;
 }
-.character-name {
-  position: absolute;
-  top: -1.5rem;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fada95;
-  text-shadow: 0 0 5px rgba(16, 16, 16, 0.7);
-  font-family: 'Cinzel', serif;
+.top-bar{
+  height: 80%;
 }
 </style>

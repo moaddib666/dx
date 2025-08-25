@@ -36,5 +36,7 @@ export default {
 <style scoped>
 .background-container {
   transition: background 0.3s ease-in-out;
+  width: 100%;
+  height: 100%;
 }
 </style>
