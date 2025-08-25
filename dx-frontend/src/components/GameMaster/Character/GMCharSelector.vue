@@ -37,19 +37,19 @@ const selectedOrgId = ref('');
 const selectedNpcFilter = ref('');
 const selectedPositionId = ref('');
 
-// Get unique campaigns from characters
+// Get unique organizations from characters
 const organizations = computed(() => {
   const orgs = new Set<string>();
   props.characters.forEach(char => {
-    if (char.campaign?.id) {
-      orgs.add(char.campaign.id);
+    if (char.organization?.id) {
+      orgs.add(char.organization.id);
     }
   });
   return Array.from(orgs).map(id => {
-    const char = props.characters.find(c => c.campaign?.id === id);
+    const char = props.characters.find(c => c.organization?.id === id);
     return {
       id,
-      name: char?.campaign?.name || `Campaign ${id.slice(0, 8)}`
+      name: char?.organization?.name || `Organization ${id.slice(0, 8)}`
     };
   });
 });
@@ -69,9 +69,9 @@ const filteredCharacters = computed(() => {
     );
   }
 
-  // Apply campaign filter
+  // Apply organization filter
   if (selectedOrgId.value) {
-    filtered = filtered.filter(char => char.campaign?.id === selectedOrgId.value);
+    filtered = filtered.filter(char => char.organization?.id === selectedOrgId.value);
   }
 
   // Apply position filter
@@ -101,9 +101,9 @@ const filterByCharacterPosition = (character: OpenaiCharacter) => {
 };
 
 const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
-  if (character.campaign?.id) {
-    selectedOrgId.value = character.campaign.id;
-    emit('filterByOrganisation', character.campaign.id);
+  if (character.organization?.id) {
+    selectedOrgId.value = character.organization.id;
+    emit('filterByOrganisation', character.organization.id);
   }
 };
 </script>
@@ -125,10 +125,10 @@ const filterByCharacterOrganisation = (character: OpenaiCharacter) => {
           />
         </div>
 
-        <!-- Campaign Filter -->
+        <!-- Organization Filter -->
         <div class="filter-group">
           <select v-model="selectedOrgId" class="filter-select">
-            <option value="">All Campaigns</option>
+            <option value="">All Organizations</option>
             <option v-for="org in organizations" :key="org.id" :value="org.id">
               {{ org.name }}
             </option>

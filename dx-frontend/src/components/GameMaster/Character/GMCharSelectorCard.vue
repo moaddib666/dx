@@ -59,9 +59,9 @@ const handleFilterByOrganisation = (event: Event) => {
         </button>
         <button
           class="action-btn org-btn"
-          title="Filter by Campaign"
+          title="Filter by Organization"
           @click="handleFilterByOrganisation"
-          v-if="props.character.campaign?.id"
+          v-if="props.character.organization?.id"
         >
           🏛️
         </button>

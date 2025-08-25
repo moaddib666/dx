@@ -2387,13 +2387,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -5821,6 +5821,12 @@ export interface OpenaiCharacter {
      * @memberof OpenaiCharacter
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {Organization}
+     * @memberof OpenaiCharacter
+     */
+    'organization': Organization | null;
 }
 /**
  * 
@@ -6008,6 +6014,12 @@ export interface OpenaiCharacterRequest {
      * @memberof OpenaiCharacterRequest
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {OrganizationRequest}
+     * @memberof OpenaiCharacterRequest
+     */
+    'organization': OrganizationRequest | null;
 }
 /**
  * 
@@ -6346,6 +6358,44 @@ export interface OpenaiSkillRequest {
 }
 
 
+/**
+ * 
+ * @export
+ * @interface Organization
+ */
+export interface Organization {
+    /**
+     * 
+     * @type {string}
+     * @memberof Organization
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Organization
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface OrganizationRequest
+ */
+export interface OrganizationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof OrganizationRequest
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof OrganizationRequest
+     */
+    'name': string;
+}
 /**
  * * `Critical Fail` - Critical Fail * `Critical Success` - Critical Success * `Bad Luck` - Bad Luck * `Base Value` - Base Value * `Good Luck` - Good Luck
  * @export
