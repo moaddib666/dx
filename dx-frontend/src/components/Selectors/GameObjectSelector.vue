@@ -1,5 +1,11 @@
 <template>
   <div class="game-object-selector">
+    <div class="header-top">
+      <h3 class="title">Game Objects</h3>
+      <button @click="$emit('close')" class="close-btn" title="Close Game Object Selector">
+        ×
+      </button>
+    </div>
     <div class="selected compact-card" @click="toggleDropdown">
       <div class="card-icon" :style="{ backgroundImage: `url(${selectedObject?.icon || placeholderIcon})` }">
         <div class="card-overlay"></div>
@@ -35,6 +41,7 @@
 <script>
 export default {
   name: "GameObjectSelector",
+  emits: ['update:selectedId', 'close'],
   props: {
     gameObjects: {
       type: Array,
@@ -76,6 +83,59 @@ export default {
   position: relative;
   width: 14rem;
   cursor: pointer;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
+  flex: 1;
+  text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-50%) scale(1.1);
+  color: #7fff16;
+}
+
+.close-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 /* Compact Card Styling */

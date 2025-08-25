@@ -1,6 +1,11 @@
 <template>
   <div class="feature-selector">
-    <h2>{{ t('playerComponents.featureSelector.title') }}</h2>
+    <div class="header-top">
+      <h2>{{ t('playerComponents.featureSelector.title') }}</h2>
+      <button @click="$emit('close')" class="close-btn" title="Close Feature Selector">
+        ×
+      </button>
+    </div>
     <p>{{ t('playerComponents.featureSelector.description') }}</p>
 
     <!-- Feature Cards Scrollable Container -->
@@ -23,6 +28,7 @@ import { useI18n } from 'vue-i18n';
 
 export default {
   name: "FeatureSelector",
+  emits: ['close'],
   props: {
     modificators: {
       type: Array,
@@ -75,12 +81,58 @@ export default {
   padding: 20px;
   border-radius: 8px;
   background-color: #222;
-  color: #fff;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   text-align: center;
 }
 
-h2 {
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+  position: relative;
+}
+
+h2 {
+  margin: 0;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
+  flex: 1;
+  text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-50%) scale(1.1);
+  color: #7fff16;
+}
+
+.close-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 p {

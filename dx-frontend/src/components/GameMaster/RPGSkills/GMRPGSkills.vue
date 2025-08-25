@@ -32,7 +32,7 @@ const props = defineProps({
 });
 
 // Emit events
-const emit = defineEmits(['skillSelected']);
+const emit = defineEmits(['skillSelected', 'close']);
 
 // State
 const skills = ref([]);
@@ -470,7 +470,12 @@ onBeforeUnmount(() => {
     @mousedown="startDrag"
   >
     <div class="skills-list-header">
-      <h3>Skills</h3>
+      <div class="header-top">
+        <h3>Skills</h3>
+        <button @click="emit('close')" class="close-btn" title="Close Skills Selector">
+          ×
+        </button>
+      </div>
       <div class="filters-container">
         <div class="skills-filter">
           <select v-model="selectedSchool" class="filter-select school-filter">
@@ -587,10 +592,15 @@ onBeforeUnmount(() => {
 }
 
 .skills-list-header {
+  padding: 0.5rem 1rem;
+}
+
+.header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  position: relative;
 }
 
 .skills-list-header h3 {
@@ -599,6 +609,40 @@ onBeforeUnmount(() => {
   font-weight: 600;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
+  flex: 1;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-50%) scale(1.1);
+  color: #7fff16;
+}
+
+.close-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .search-container {

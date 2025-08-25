@@ -29,6 +29,7 @@ const emit = defineEmits<{
   select: [characterId: string];
   filterByPosition: [positionId: string];
   filterByOrganisation: [orgId: string];
+  close: [];
 }>();
 
 // Filter state
@@ -188,7 +189,12 @@ watch(() => props.selectedCharacterId, (newSelectedId) => {
 <template>
   <RPGContainer class="char-selector-container">
     <div class="header">
-      <h2 class="title">Character Selector</h2>
+      <div class="header-top">
+        <h2 class="title">Character Selector</h2>
+        <button @click="emit('close')" class="close-btn" title="Close Character Selector">
+          ×
+        </button>
+      </div>
 
       <!-- Filter Controls -->
       <div class="filters">
@@ -288,13 +294,55 @@ watch(() => props.selectedCharacterId, (newSelectedId) => {
   margin-bottom: 0.7rem;
 }
 
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+  position: relative;
+}
+
 .title {
-  margin: 0 0 0.7rem 0;
+  margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
+  flex: 1;
   text-align: center;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-50%) scale(1.1);
+  color: #7fff16;
+}
+
+.close-btn:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .filters {
