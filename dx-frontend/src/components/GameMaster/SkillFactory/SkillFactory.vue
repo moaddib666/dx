@@ -1,11 +1,13 @@
 <template>
-  <div class="skill-factory">
-    <div class="skill-factory-row">
-      <h3 class="skill-factory-title">Skill Factory</h3>
-      <div class="skill-factory-actions">
-        <LandingButton :action="openCreateModal" class="create-skill-btn">
-          Create New Skill
-        </LandingButton>
+  <RPGContainer class="skill-factory-container">
+    <div class="header">
+      <div class="header-top">
+        <h2 class="title">Skill Factory</h2>
+        <div class="skill-factory-actions">
+          <button @click="openCreateModal" class="create-skill-btn">
+            Create New Skill
+          </button>
+        </div>
       </div>
     </div>
 
@@ -15,12 +17,12 @@
       @close="closeCreateModal"
       @skill-created="onSkillCreated"
     />
-  </div>
+  </RPGContainer>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import LandingButton from '@/components/btn/LandingButton.vue'
+import RPGContainer from '@/components/RPGContainer/RPGContainer.vue'
 import SkillCreationModal from './SkillCreationModal.vue'
 
 // Reactive state
@@ -43,64 +45,64 @@ const onSkillCreated = (skill: any) => {
 </script>
 
 <style scoped>
-.skill-factory {
-  width: 100%;
-  margin: 0.5rem 0;
-}
-
-.skill-factory-row {
+.skill-factory-container {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  min-height: 200px;
+}
+
+.header {
+  flex-shrink: 0;
+  margin-bottom: 0.7rem;
+}
+
+.header-top {
+  display: flex;
   justify-content: space-between;
-  background: rgba(30, 30, 30, 0.95);
-  border: 2px solid #555;
-  border-radius: 12px;
-  padding: 0.625rem 0.875rem;
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  transition: all 0.2s ease;
+  align-items: center;
+  margin-bottom: 0.7rem;
+  position: relative;
 }
 
-.skill-factory-row:hover {
-  border-color: #1E90FF;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
-}
-
-.skill-factory-title {
+.title {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  font-family: 'Cinzel', serif;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
+  flex: 1;
+  text-align: center;
 }
 
 .skill-factory-actions {
-  display: flex;
-  gap: 0.5rem;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .create-skill-btn {
-  background: #1E90FF;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.875rem;
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .create-skill-btn:hover {
-  background: #1873CC;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  color: #7fff16;
+  transform: translateY(-50%) scale(1.05);
 }
 
 .create-skill-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-50%) scale(0.95);
 }
 </style>

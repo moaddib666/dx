@@ -221,9 +221,9 @@ watch(formula, () => {
 
 <style scoped>
 .formula-builder {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(127, 255, 22, 0.2);
+  border-radius: 0.263rem;
   padding: 1rem;
   margin-bottom: 1rem;
 }
@@ -234,8 +234,10 @@ watch(formula, () => {
 
 .section-header h4 {
   margin: 0;
-  color: #1E90FF;
+  color: #fada95;
   font-size: 1rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .subsection {
@@ -251,45 +253,56 @@ watch(formula, () => {
 
 .subsection-header h5 {
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #fada95;
   font-size: 0.9rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
 }
 
 .efficiency-section h5 {
   margin: 0 0 0.5rem 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #fada95;
   font-size: 0.9rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
 }
 
 .add-btn {
-  background: #1E90FF;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.7rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .add-btn:hover {
-  background: #1873CC;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  color: #7fff16;
+  transform: scale(1.05);
 }
 
 .empty-state {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(250, 218, 149, 0.5);
   font-style: italic;
   text-align: center;
   padding: 0.5rem;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
-  font-size: 0.8rem;
+  border: 1px dashed rgba(127, 255, 22, 0.2);
+  border-radius: 0.263rem;
+  font-size: 0.75rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .requirement-item,
 .scaling-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(127, 255, 22, 0.15);
+  border-radius: 0.263rem;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
 }
@@ -311,38 +324,52 @@ watch(formula, () => {
 
 .form-group label {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
+  color: #fada95;
   font-size: 0.8rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .form-input {
-  padding: 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-family: inherit;
-  font-size: 0.9rem;
+  padding: 0.35rem 0.525rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: border-color 0.3s, background-color 0.3s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #1E90FF;
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #7fff16;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.form-input option {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
 }
 
 .remove-btn {
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid rgba(244, 67, 54, 0.5);
+  border-radius: 0.263rem;
+  background: rgba(244, 67, 54, 0.2);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.7rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.75rem;
+  transition: all 0.3s ease;
   height: fit-content;
 }
 
 .remove-btn:hover {
-  background: #d32f2f;
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  transform: scale(1.05);
 }
 </style>

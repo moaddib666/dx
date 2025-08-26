@@ -316,37 +316,47 @@ watch(() => props.modelValue, (newValue) => {
 
 .section-header h4 {
   margin: 0;
-  color: #1E90FF;
+  color: #fada95;
   font-size: 1rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .add-btn {
-  background: #1E90FF;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .add-btn:hover {
-  background: #1873CC;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  color: #7fff16;
+  transform: scale(1.05);
 }
 
 .empty-state {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(250, 218, 149, 0.6);
   font-style: italic;
   text-align: center;
   padding: 1rem;
-  border: 1px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
+  border: 1px dashed rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .effect-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(127, 255, 22, 0.2);
+  border-radius: 0.263rem;
   padding: 1rem;
   margin-bottom: 1rem;
 }
@@ -360,8 +370,10 @@ watch(() => props.modelValue, (newValue) => {
 
 .effect-header h5 {
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: #fada95;
   font-size: 0.9rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .effect-fields {
@@ -371,9 +383,9 @@ watch(() => props.modelValue, (newValue) => {
 }
 
 .subsection {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(127, 255, 22, 0.2);
+  border-radius: 0.263rem;
   padding: 0.75rem;
 }
 
@@ -386,16 +398,19 @@ watch(() => props.modelValue, (newValue) => {
 
 .subsection-header h6 {
   margin: 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: #fada95;
   font-size: 0.85rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #fada95;
   font-size: 0.8rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   cursor: pointer;
 }
 
@@ -417,53 +432,69 @@ watch(() => props.modelValue, (newValue) => {
 
 .form-group label {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.9rem;
 }
 
 .form-input {
-  padding: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.25rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-family: inherit;
+  padding: 0.35rem 0.525rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: border-color 0.3s, background-color 0.3s;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #1E90FF;
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #7fff16;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.form-input option {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
 }
 
 .add-btn-small {
-  background: #1E90FF;
-  color: white;
-  border: none;
-  padding: 0.3rem 0.6rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.263rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .add-btn-small:hover {
-  background: #1873CC;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.1);
+  color: #7fff16;
+  transform: scale(1.05);
 }
 
 .empty-state-small {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(250, 218, 149, 0.5);
   font-style: italic;
   text-align: center;
   padding: 0.5rem;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
+  border: 1px dashed rgba(127, 255, 22, 0.2);
+  border-radius: 0.263rem;
   font-size: 0.75rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .modifier-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(127, 255, 22, 0.15);
+  border-radius: 0.263rem;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
 }
@@ -476,29 +507,36 @@ watch(() => props.modelValue, (newValue) => {
 }
 
 .modifier-header span {
-  color: rgba(255, 255, 255, 0.8);
+  color: #fada95;
   font-size: 0.8rem;
   font-weight: 500;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .remove-btn,
 .remove-btn-small {
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
+  padding: 0.35rem 0.7rem;
+  border: 2px solid rgba(244, 67, 54, 0.5);
+  border-radius: 0.263rem;
+  background: rgba(244, 67, 54, 0.2);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .remove-btn-small {
-  padding: 0.3rem 0.6rem;
+  padding: 0.25rem 0.5rem;
   font-size: 0.7rem;
 }
 
 .remove-btn:hover,
 .remove-btn-small:hover {
-  background: #d32f2f;
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  transform: scale(1.05);
 }
 </style>
