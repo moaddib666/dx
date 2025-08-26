@@ -142,7 +142,9 @@ import type {
   CharacterInfo,
   Shield,
   Effect,
-  Cycle
+  Cycle,
+  GameMasterCharacterActionRequest,
+  ActionType5f8Enum
 } from "@/api/dx-backend";
 import type { DefineComponent } from 'vue';
 
@@ -397,24 +399,48 @@ export default {
     handleSkillSelectorClose(): void {
       this.showSkillSelector = false;
     },
-    handlePerformAction(action: CustomActionData): void {
-      // Log the action being performed
-      console.log('Performing action:', {
-        initiator: this.selectedInitiator,
-        target: this.selectedTarget,
-        action: action
-      });
+    async handlePerformAction(action: CustomActionData): Promise<void> {
+      // Validate required data
+      if (!this.selectedInitiator || !this.selectedTarget || !action) {
+        console.error('Missing required data for action:', {
+          initiator: this.selectedInitiator,
+          target: this.selectedTarget,
+          action: action
+        });
+        return;
+      }
 
-      // Here you can add the actual action execution logic
-      // For example, calling an API to perform the action
-      // await ActionGameApi.performCustomAction({
-      //   initiatorId: this.selectedInitiator.id,
-      //   targetId: this.selectedTarget.id,
-      //   action: action
-      // });
+      try {
+        // Create the GameMasterCharacterActionRequest payload
+        const actionRequest: GameMasterCharacterActionRequest = {
+          initiator: this.selectedInitiator.id,
+          targets: [this.selectedTarget.id],
+          action_type: 'USE_SKILL' as ActionType5f8Enum,
+          skill: parseInt(action.skillId) || 0,
+        };
 
-      // Reset state after performing action
-      this.resetCustomActionState();
+        console.log('Performing action:', {
+          initiator: this.selectedInitiator,
+          target: this.selectedTarget,
+          action: action,
+          request: actionRequest
+        });
+
+        // Call the backend API to register the character action
+        const response = await ActionGameApi.actionGmRegisterCharacterActionCreate(actionRequest);
+
+        console.log('Action registered successfully:', response.data);
+
+        // Refresh actions to show the new action
+        await this.refreshActions();
+
+      } catch (error) {
+        console.error('Error performing action:', error);
+        // You could add user notification here if needed
+      } finally {
+        // Reset state after performing action (success or failure)
+        this.resetCustomActionState();
+      }
     },
     handleCancelAction(): void {
       // Reset state when canceling
