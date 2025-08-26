@@ -20,7 +20,18 @@
         <img src="@/assets/icons/gm-tools/admin.png" alt="Admin" class="icon-image" />
       </RPGCell>
 
-      <!-- Display text when clicked -->
+    <!-- NPC AI Icon -->
+    <RPGCell class="icon-button" @click="handleAIManageClick" title="Manage NPC AI">
+      <img src="@/assets/icons/gm-tools/npc_ai.png" alt="Admin" class="icon-image" />
+    </RPGCell>
+
+    <!-- DiceRoll Challenge Icon -->
+    <RPGCell class="icon-button" @click="handleDiceRollChallenge" title="Trigger DiceRoll Challenge">
+      <img src="@/assets/icons/gm-tools/dice.png" alt="Admin" class="icon-image" />
+    </RPGCell>
+
+
+    <!-- Display text when clicked -->
       <RPGCell v-if="displayText" class="display-text">
         {{ displayText }}
       </RPGCell>
@@ -68,6 +79,15 @@ export default {
     },
     handleTeleportClick() {
       this.$emit('open-teleport', this.characterData);
+    },
+    handleDiceRollChallenge() {
+      this.$emit('open-dice-roll-challenge', this.characterData);
+    },
+    handleAIManageClick() {
+      if (!this.characterData?.id) {
+        return;
+      }
+      this.$emit('open-npc-ai-manage', this.characterData.id);
     },
     handleAdminClick() {
       if (!this.characterData?.id) {

@@ -133,7 +133,7 @@ import CustomAction from "@/components/GameMaster/CustomAction/CustomAction.vue"
 import GmCharSelector from "@/components/GameMaster/Character/GMCharSelector.vue";
 import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
-import GameMasterCharacterInfo from "@/components/GameMaster/GameMasterCharacterInfo.vue";
+import GameMasterTools from "@/components/GameMaster/GameMasterTools.vue";
 import GameMasterCharacterCard from "@/components/WorldEditor/GameMasterCharacterCard.vue";
 
 export default {
@@ -148,7 +148,7 @@ export default {
     BackgroundView,
     GameObjectRawSelector,
     CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent,
-    GameMasterCharacterInfo,
+    GameMasterCharacterInfo: GameMasterTools,
     GameMasterCharacterCard
   },
   data() {
