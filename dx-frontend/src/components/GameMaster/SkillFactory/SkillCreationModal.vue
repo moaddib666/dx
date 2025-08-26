@@ -779,17 +779,19 @@ watch(() => props.isOpen, (newValue) => {
 }
 
 .template-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
   margin-bottom: 0.625rem;
+  justify-content: space-between;
 }
 
 .template-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.7rem;
+  gap: 0.25rem;
+  padding: 0.4rem 0.3rem;
   border: 2px solid rgba(127, 255, 22, 0.3);
   border-radius: 0.263rem;
   background: rgba(0, 0, 0, 0.4);
@@ -797,8 +799,10 @@ watch(() => props.isOpen, (newValue) => {
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  text-align: left;
-  font-size: 0.875rem;
+  text-align: center;
+  font-size: 0.75rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .template-btn:hover {
