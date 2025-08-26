@@ -137,6 +137,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.375rem;
   color: #e0e0e0;
   text-decoration: none;
@@ -145,7 +146,8 @@ export default {
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 60px;
+  width: 60px;
+  height: 60px;
 }
 
 .social-link:hover {
