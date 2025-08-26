@@ -27,9 +27,13 @@
 
     <!-- DiceRoll Challenge Icon -->
     <RPGCell class="icon-button" @click="handleDiceRollChallenge" title="Trigger DiceRoll Challenge">
-      <img src="@/assets/icons/gm-tools/dice.png" alt="Admin" class="icon-image" />
+      <img src="@/assets/icons/gm-tools/dice.png" alt="Dice Roll Challenge" class="icon-image" />
     </RPGCell>
 
+    <!-- Action Constructor Icon -->
+    <RPGCell class="icon-button" @click="handleActionConstructor" title="Trigger Open Action Constructor">
+      <img src="@/assets/icons/gm-tools/action-constructor.png" alt="Action Constructor" class="icon-image" />
+    </RPGCell>
 
     <!-- Display text when clicked -->
       <RPGCell v-if="displayText" class="display-text">
