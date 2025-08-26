@@ -32,7 +32,7 @@ export class DiceBackendService {
 
       // Get the dice roll value from the API response
       const diceValue = response.data.dice_side || 1;
-
+      console.debug(`DEBUG DICE `, {responseData: response.data});
       // Map API outcome to UI-compatible outcome
       let mappedOutcome;
       if (response.data.outcome) {
@@ -50,6 +50,7 @@ export class DiceBackendService {
         isDeterministic: true // API rolls are deterministic
       };
 
+      console.debug('D20 Dice Roll Result:', {result});
       return result;
     } catch (error) {
       console.error('Error rolling D20 dice via API:', error);

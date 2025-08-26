@@ -145,11 +145,12 @@ export default defineComponent({
         // Get dice roll result from backend API
         const apiResult = await this.diceBackendService.rollD20Dice();
 
+        // Store the API result BEFORE starting visual animation
+        this.lastApiResult = apiResult;
+
         // Use the target number from the API response for the visual dice roll
         const result = await this.$refs.diceCanvas.rollToTarget(apiResult.number);
 
-        // Store the API result for use in onRollComplete
-        this.lastApiResult = apiResult;
         this.lastResult = result;
 
         // Result will be handled by onRollComplete
@@ -160,12 +161,18 @@ export default defineComponent({
     },
 
     onRollComplete(result: RollResult): void {
-      // Combine the visual roll result with the API result
+      // Ensure we have fresh API result data - if not, something went wrong
+      if (!this.lastApiResult) {
+        console.warn('onRollComplete called without API result data');
+        return;
+      }
+
+      // Combine the visual roll result with the API result, prioritizing API data
       const combinedResult = {
         ...result,
-        // Use the API result for the actual outcome if available
-        number: this.lastApiResult?.number || result.number,
-        targetNumber: this.lastApiResult?.targetNumber || result.targetNumber
+        // Always use the API result for the actual outcome
+        number: this.lastApiResult.number,
+        targetNumber: this.lastApiResult.targetNumber
       };
 
       this.lastResult = combinedResult;
