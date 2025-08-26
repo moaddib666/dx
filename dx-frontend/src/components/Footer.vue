@@ -3,7 +3,6 @@
     <div class="footer-content">
       <!-- Contact Us Section -->
       <div class="contact-section">
-        <h3 class="section-title">Contact Us</h3>
         <div class="social-icons">
           <a
             v-for="social in socialLinks"
@@ -225,28 +224,41 @@ export default {
 /* Responsive Design */
 @media (max-width: 479px) {
   .footer {
-    padding: 1.125rem 0.375rem 0.75rem;
+    padding: 0.563rem 0.188rem 0.375rem; /* Reduced height by more than 50% */
+  }
+
+  .contact-section {
+    margin-bottom: 0.375rem; /* Reduced spacing */
   }
 
   .social-icons {
-    gap: 0.75rem;
+    gap: 0.375rem; /* Reduced gap for more compact layout */
   }
 
   .social-link {
-    min-width: 52.5px;
-    padding: 0.375rem;
+    min-width: 35px; /* Square and more minimalistic */
+    max-width: 35px;
+    height: 35px;
+    padding: 0.188rem;
+    border-radius: 4px; /* More square appearance */
+    justify-content: center; /* Center icon only */
   }
 
   .social-icon {
-    font-size: 0.938rem;
+    font-size: 0.875rem;
   }
 
   .social-name {
-    font-size: 0.525rem;
+    display: none; /* Hide text labels on mobile */
   }
 
   .section-title {
-    font-size: 0.938rem;
+    font-size: 0.75rem;
+    margin-bottom: 0.375rem; /* Reduced margin */
+  }
+
+  .footer-content {
+    gap: 0.75rem; /* Reduced gap between sections */
   }
 }
 
