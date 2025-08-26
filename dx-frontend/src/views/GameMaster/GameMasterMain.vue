@@ -51,7 +51,7 @@
                 :extended="true"
                 @openInfo="openInfo"
             />
-            <GameMasterCharacterInfo :character-data="selectedCharacterData" @open-teleport="toggleTeleportComponent" />
+            <GameMasterCharacterInfo :character-data="selectedCharacterData" @open-teleport="toggleTeleportComponent" @open-action-constructor="openSkillCreationModal" />
           </div>
           <TeleportComponent v-if="showTeleportComponent" @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
           <CustomAction
@@ -112,6 +112,13 @@
         />
       </div>
     </div>
+
+    <!-- Skill Creation Modal -->
+    <SkillCreationModal
+        :isOpen="showSkillCreationModal"
+        @close="closeSkillCreationModal"
+        @skillCreated="handleSkillCreated"
+    />
   </div>
 </template>
 
@@ -135,6 +142,7 @@ import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import GameMasterTools from "@/components/GameMaster/GameMasterTools.vue";
 import GameMasterCharacterCard from "@/components/WorldEditor/GameMasterCharacterCard.vue";
+import SkillCreationModal from "@/components/GameMaster/SkillFactory/SkillCreationModal.vue";
 import type {
   GameMasterCharacterActionLog,
   CharacterOnPosition,
@@ -192,7 +200,8 @@ export default {
     GameObjectRawSelector,
     CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent,
     GameMasterCharacterInfo: GameMasterTools,
-    GameMasterCharacterCard
+    GameMasterCharacterCard,
+    SkillCreationModal
   },
   data() {
     return {
@@ -218,6 +227,7 @@ export default {
       showSkillSelector: false as boolean,
       showCharacterCard: false as boolean,
       showTeleportComponent: false as boolean,
+      showSkillCreationModal: false as boolean,
       currentSelectionType: null as SelectionType,
       bus: null as any
     };
@@ -458,6 +468,21 @@ export default {
     closeCharacterCard(): void {
       // Close the character card modal
       this.showCharacterCard = false;
+    },
+    openSkillCreationModal(): void {
+      // Open the skill creation modal
+      this.showSkillCreationModal = true;
+    },
+    closeSkillCreationModal(): void {
+      // Close the skill creation modal
+      this.showSkillCreationModal = false;
+    },
+    handleSkillCreated(skill: any): void {
+      // Handle when a skill is successfully created
+      console.log('Skill created:', skill);
+      // Close the modal after successful creation
+      this.showSkillCreationModal = false;
+      // You could add additional logic here like refreshing skill lists, showing notifications, etc.
     },
   },
   watch: {
