@@ -50,33 +50,38 @@ export default {
     const socialLinks = [
       {
         name: 'Facebook',
-        url: 'https://facebook.com/dimensionx', // Replace with actual URL
+        url: 'https://www.facebook.com/groups/1290551983081540',
         icon: 'fab fa-facebook-f'
       },
       {
         name: 'Discord',
-        url: 'https://discord.gg/dimensionx', // Replace with actual URL
+        url: 'https://discord.gg/d8Y8hN39mf',
         icon: 'fab fa-discord'
       },
       {
         name: 'Instagram',
-        url: 'https://instagram.com/dimensionx', // Replace with actual URL
+        url: 'https://www.instagram.com/',
         icon: 'fab fa-instagram'
       },
       {
         name: 'Gmail',
-        url: 'mailto:moaddib666@gmail.com',
+        url: 'mailto:dimensionxlive@gmail.com',
         icon: 'fas fa-envelope'
       },
       {
         name: 'Patreon',
-        url: 'https://patreon.com/dimensionx', // Replace with actual URL
+        url: 'https://www.patreon.com/c/dimension_x_live',
         icon: 'fab fa-patreon'
       },
       {
         name: 'Telegram',
-        url: 'https://t.me/dimensionx', // Replace with actual URL
+        url: 'https://t.me/dimensionxlive',
         icon: 'fab fa-telegram-plane'
+      },
+      {
+        name: 'GitHub',
+        url: 'https://github.com/moaddib666/dx',
+        icon: 'fab fa-github'
       }
     ];
 
@@ -189,6 +194,10 @@ export default {
 
 .social-link[title="Telegram"]:hover .social-icon {
   color: #0088cc;
+}
+
+.social-link[title="GitHub"]:hover .social-icon {
+  color: #f0f6fc;
 }
 
 /* Copyright Section */
