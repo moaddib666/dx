@@ -26,9 +26,9 @@ export default {
   display: inline-block;
   background: #292929;
   color: #e0e0e0;
-  font-size: 0.9rem;
+  font-size: 0.675rem;
   font-weight: bold;
-  padding: 0.875rem 1.25rem;
+  padding: 0.656rem 0.938rem;
   border-radius: 4px;
   text-transform: uppercase;
   cursor: pointer;
@@ -37,8 +37,8 @@ export default {
   background-image: linear-gradient(145deg, #404040, #292929);
   border: 2px solid #444;
   text-align: center;
-  min-height: 44px; /* Minimum touch target size */
-  min-width: 120px;
+  min-height: 33px; /* Minimum touch target size */
+  min-width: 90px;
   white-space: nowrap;
 }
 
@@ -60,38 +60,38 @@ export default {
 /* Mobile optimizations */
 @media (max-width: 479px) {
   .dx-button {
-    font-size: 1rem;
-    padding: 1rem 1.5rem;
-    min-height: 48px; /* Larger touch target on mobile */
+    font-size: 0.75rem;
+    padding: 0.75rem 1.125rem;
+    min-height: 36px; /* Larger touch target on mobile */
     width: 100%;
-    max-width: 280px;
+    max-width: 210px;
   }
 }
 
 /* Tablet and small desktop */
 @media (min-width: 480px) and (max-width: 767px) {
   .dx-button {
-    font-size: 0.95rem;
-    padding: 0.9rem 1.4rem;
-    min-width: 140px;
+    font-size: 0.713rem;
+    padding: 0.675rem 1.05rem;
+    min-width: 105px;
   }
 }
 
 /* Large screens */
 @media (min-width: 1200px) {
   .dx-button {
-    font-size: 1.1rem;
-    padding: 1rem 2rem;
-    min-width: 160px;
+    font-size: 0.825rem;
+    padding: 0.75rem 1.5rem;
+    min-width: 120px;
   }
 }
 
 /* Extra large screens */
 @media (min-width: 1600px) {
   .dx-button {
-    font-size: 1.2rem;
-    padding: 1.125rem 2.25rem;
-    min-width: 180px;
+    font-size: 0.9rem;
+    padding: 0.844rem 1.688rem;
+    min-width: 135px;
   }
 }
 </style>

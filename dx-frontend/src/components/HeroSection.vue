@@ -98,8 +98,8 @@ html, body {
 .hero {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 120px); /* Account for header and footer */
-  height: calc(100vh - 120px);
+  min-height: 0;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +201,6 @@ html, body {
 /* Mobile optimizations */
 @media (max-width: 479px) {
   .hero {
-    min-height: 100vh;
     padding: 1rem 0.5rem;
   }
 

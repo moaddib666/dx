@@ -115,8 +115,8 @@ export default {
 
 .section-title {
   color: #FFFFFF;
-  font-size: 1.5rem;
-  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  margin: 0 0 0.75rem 0;
   font-weight: 600;
   text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
 }
@@ -125,7 +125,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.125rem;
   flex-wrap: wrap;
 }
 
@@ -133,15 +133,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   color: #e0e0e0;
   text-decoration: none;
-  padding: 0.75rem;
-  border-radius: 8px;
+  padding: 0.563rem;
+  border-radius: 6px;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 80px;
+  min-width: 60px;
 }
 
 .social-link:hover {
@@ -152,15 +152,15 @@ export default {
 }
 
 .social-icon {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   transition: color 0.3s ease;
 }
 
 .social-name {
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.375px;
 }
 
 /* Social platform specific colors on hover */
@@ -225,34 +225,34 @@ export default {
 /* Responsive Design */
 @media (max-width: 479px) {
   .footer {
-    padding: 1.5rem 0.5rem 1rem;
+    padding: 1.125rem 0.375rem 0.75rem;
   }
 
   .social-icons {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .social-link {
-    min-width: 70px;
-    padding: 0.5rem;
+    min-width: 52.5px;
+    padding: 0.375rem;
   }
 
   .social-icon {
-    font-size: 1.25rem;
+    font-size: 0.938rem;
   }
 
   .social-name {
-    font-size: 0.7rem;
+    font-size: 0.525rem;
   }
 
   .section-title {
-    font-size: 1.25rem;
+    font-size: 0.938rem;
   }
 }
 
 @media (min-width: 480px) and (max-width: 767px) {
   .social-icons {
-    gap: 1.25rem;
+    gap: 0.938rem;
   }
 }
 
@@ -261,7 +261,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .contact-section {
@@ -283,24 +283,24 @@ export default {
 
 @media (min-width: 1200px) {
   .footer {
-    padding: 2.5rem 2rem 1.5rem;
+    padding: 1.875rem 1.5rem 1.125rem;
   }
 
   .social-icons {
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .social-link {
-    min-width: 90px;
-    padding: 1rem;
+    min-width: 67.5px;
+    padding: 0.75rem;
   }
 
   .social-icon {
-    font-size: 1.75rem;
+    font-size: 1.313rem;
   }
 
   .section-title {
-    font-size: 1.75rem;
+    font-size: 1.313rem;
   }
 }
 </style>
