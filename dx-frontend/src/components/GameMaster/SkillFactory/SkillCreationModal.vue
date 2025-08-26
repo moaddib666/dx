@@ -177,16 +177,12 @@
 
           <!-- Action Buttons -->
           <div class="modal-actions">
-            <LandingButton :action="closeModal" :disabled="isLoading">
+            <RPGButton :type="ButtonType.CANCEL" @click="closeModal" :disabled="isLoading">
               Cancel
-            </LandingButton>
-            <LandingButton
-                :action="createSkill"
-                :disabled="!isFormValid || isLoading"
-                class="create-btn"
-            >
+            </RPGButton>
+            <RPGButton :type="ButtonType.SUBMIT" @click="createSkill" :disabled="!isFormValid || isLoading">
               {{ isLoading ? 'Creating...' : 'Create Skill' }}
-            </LandingButton>
+            </RPGButton>
           </div>
         </form>
       </div>
@@ -213,6 +209,8 @@ import {
   type AssignableEffectRequest,
   type ImpactRequest
 } from '@/api/dx-backend'
+import RPGButton from "@/components/RPGButton/RPGButton.vue";
+import {ButtonType} from "@/types/ButtonType";
 
 // Props
 interface Props {
