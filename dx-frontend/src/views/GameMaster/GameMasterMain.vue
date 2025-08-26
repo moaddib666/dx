@@ -116,7 +116,7 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import EndTurnComponent from "@/components/GameMaster/EndTurnComponent.vue";
 import CurrentTurnComponent from "@/components/Game/CurrentTurnComponent.vue";
 import ActionLog from "@/components/GameMaster/ActionLog/ActionLogComponent.vue";
@@ -135,6 +135,47 @@ import GMRPGSkills from "@/components/GameMaster/RPGSkills/GMRPGSkills.vue";
 import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import GameMasterTools from "@/components/GameMaster/GameMasterTools.vue";
 import GameMasterCharacterCard from "@/components/WorldEditor/GameMasterCharacterCard.vue";
+import type {
+  GameMasterCharacterActionLog,
+  CharacterOnPosition,
+  GameMasterCharacterInfo,
+  CharacterInfo,
+  Shield,
+  Effect,
+  Cycle
+} from "@/api/dx-backend";
+import type { DefineComponent } from 'vue';
+
+// Local interfaces for component-specific types
+interface ActionParticipant {
+  id: string;
+  name: string;
+  imageUrl?: string;
+}
+
+interface CustomActionData {
+  skillId: string;
+  name: string;
+  description: string;
+  school: string;
+  grade: number;
+  type: string;
+}
+
+interface AdditionalCharacterData {
+  [characterId: string]: any;
+}
+
+interface CycleChangeData {
+  id: number;
+}
+
+interface CharacterChangeData {
+  id: string;
+  [key: string]: any;
+}
+
+type SelectionType = 'initiator' | 'target' | null;
 
 export default {
   components: {
@@ -153,29 +194,30 @@ export default {
   },
   data() {
     return {
-      actions: [],
-      activePlayersCharacters: [],
-      characters: [],
-      npcCharacters: [],
-      selectedLocationId: null,
-      selectedCharacterId: null,
-      selectedCharacterPositionBackground: null,
-      selectedCharacterInfo: null,
-      selectedCharacterData: null,
+      actions: [] as GameMasterCharacterActionLog[],
+      activePlayersCharacters: [] as CharacterOnPosition[],
+      characters: [] as CharacterOnPosition[],
+      npcCharacters: [] as CharacterOnPosition[],
+      selectedLocationId: null as string | null,
+      selectedCharacterId: null as string | null,
+      selectedCharacterPositionBackground: null as string | null,
+      selectedCharacterInfo: null as CharacterInfo | null,
+      selectedCharacterData: null as GameMasterCharacterInfo | null,
       locationGMService: LocationInfoGameService,
-      selectedCharacterShields: [],
-      shields: [],
-      activeEffects: [],
-      currentCycleNumber: null,
-      additionalCharactersData: {},
-      selectedInitiator: undefined,
-      selectedTarget: undefined,
-      selectedAction: undefined,
-      showCharSelector: false,
-      showSkillSelector: false,
-      showCharacterCard: false,
-      showTeleportComponent: false,
-      currentSelectionType: null,
+      selectedCharacterShields: [] as Shield[],
+      shields: [] as Shield[],
+      activeEffects: [] as Effect[],
+      currentCycleNumber: null as number | null,
+      additionalCharactersData: {} as AdditionalCharacterData,
+      selectedInitiator: undefined as ActionParticipant | undefined,
+      selectedTarget: undefined as ActionParticipant | undefined,
+      selectedAction: undefined as CustomActionData | undefined,
+      showCharSelector: false as boolean,
+      showSkillSelector: false as boolean,
+      showCharacterCard: false as boolean,
+      showTeleportComponent: false as boolean,
+      currentSelectionType: null as SelectionType,
+      bus: null as any
     };
   },
   async mounted() {
@@ -199,11 +241,11 @@ export default {
     this.bus.off("world::character_changed", this.handleCharacterChange);
   },
   methods: {
-    async handleCharacterChange(data) {
+    async handleCharacterChange(data: CharacterChangeData): Promise<void> {
       console.debug("Character Changed:", {data});
       this.additionalCharactersData[data.id] = data;
     },
-    async handleNewAction(data) {
+    async handleNewAction(data: GameMasterCharacterActionLog): Promise<void> {
       console.debug("New Action Accepted:", {data});
       // check if data.id in this.actions then replace it else add it
       const index = this.actions.findIndex((action) => action.id === data.id);
@@ -213,17 +255,16 @@ export default {
         this.actions.push(data);
       }
       // re-render the actions and re order them by order
-      this.actions = [...this.actions].sort((a, b) => b.order - a.order);
-
+      this.actions = [...this.actions].sort((a, b) => (b.order || 0) - (a.order || 0));
     },
-    async handleCycleChange(data) {
+    async handleCycleChange(data: CycleChangeData): Promise<void> {
       console.debug("New Cycle:", {data});
       if (data.id !== this.currentCycleNumber) {
         this.currentCycleNumber = data.id;
         await this.refresh();
       }
     },
-    async refreshSelectedCharacterShields() {
+    async refreshSelectedCharacterShields(): Promise<void> {
       if (this.selectedCharacterId) {
         this.shields = (await ShieldsGameApi.shieldsGmActiveList(
             this.selectedCharacterId,
@@ -232,7 +273,7 @@ export default {
         this.shields = [];
       }
     },
-    async refreshActiveEffects() {
+    async refreshActiveEffects(): Promise<void> {
       if (this.selectedCharacterId) {
         try {
           this.activeEffects = (await EffectsGameApi.effectsActiveList()).data;
@@ -244,7 +285,8 @@ export default {
         this.activeEffects = [];
       }
     },
-    async teleportToCoordinates(x, y, z) {
+    async teleportToCoordinates(x: number, y: number, z: number): Promise<void> {
+      if (!this.selectedCharacterId) return;
       await this.locationGMService.teleportToCoordinates(this.selectedCharacterId, x, y, z);
       await this.refresh()
       await this.refreshCharacterPosition();
@@ -252,16 +294,17 @@ export default {
       await this.refreshSelectedCharacterShields();
       await this.refreshActiveEffects();
     },
-    async teleportToPosition(id) {
+    async teleportToPosition(id: string): Promise<void> {
+      if (!this.selectedCharacterId) return;
       await this.locationGMService.teleportToPosition(this.selectedCharacterId, id);
       await this.refresh()
       await this.refreshCharacterPosition();
       await this.refreshCharacters();
     },
-    toggleTeleportComponent() {
+    toggleTeleportComponent(): void {
       this.showTeleportComponent = !this.showTeleportComponent;
     },
-    async selectCharacter(id) {
+    async selectCharacter(id: string): Promise<void> {
       this.selectedCharacterId = id;
       this.selectedCharacterData = (await CharacterGameApi.characterGmCharacterInfoRetrieve(id)).data;
       this.selectedCharacterInfo = (await CharacterGameApi.characterGmRetrieve(id)).data;
@@ -269,55 +312,55 @@ export default {
         await this.selectLocationId(this.selectedCharacterData.position);
       }
     },
-    async selectLocationId(id) {
+    async selectLocationId(id: string): Promise<void> {
       this.selectedLocationId = id;
     },
-    async refresh() {
+    async refresh(): Promise<void> {
       // await this.refreshActions();
       if (this.selectedCharacterId) {
         await this.selectCharacter(this.selectedCharacterId);
       }
-    }
-    ,
-    async refreshActions() {
+    },
+    async refreshActions(): Promise<void> {
       const newActions = (await ActionGameApi.actionGmList(
           100,
       )).data;
       this.actions = newActions.results;
     },
-    async refreshActivePlayersCharacters() {
+    async refreshActivePlayersCharacters(): Promise<void> {
       this.activePlayersCharacters = (await CharacterGameApi.characterGmList(
           false,
       )).data;
     },
-    async refreshCharacters() {
+    async refreshCharacters(): Promise<void> {
       this.characters = (await CharacterGameApi.characterGmList(
           false, this.selectedLocationId,
       )).data;
     },
-    async refreshNPCharacters() {
+    async refreshNPCharacters(): Promise<void> {
       this.npcCharacters = (await CharacterGameApi.characterGmList(
           true, this.selectedLocationId,
       )).data;
     },
-    async refreshCharacterPosition() {
+    async refreshCharacterPosition(): Promise<void> {
+      if (!this.selectedCharacterData?.position) return;
       this.selectedCharacterPositionBackground = await this.locationGMService.getBackgroundUrl(this.selectedCharacterData.position);
     },
-    handleSelectInitiator() {
+    handleSelectInitiator(): void {
       this.currentSelectionType = 'initiator';
       this.showCharSelector = true;
     },
-    handleSelectTarget() {
+    handleSelectTarget(): void {
       this.currentSelectionType = 'target';
       this.showCharSelector = true;
     },
-    handleSelectAction() {
+    handleSelectAction(): void {
       this.showSkillSelector = true;
     },
-    handleCharacterSelected(characterId) {
+    handleCharacterSelected(characterId: string): void {
       const character = this.characters.concat(this.npcCharacters).find(c => c.id === characterId);
       if (character) {
-        const participant = {
+        const participant: ActionParticipant = {
           id: character.id,
           name: character.name,
           imageUrl: character.biography?.avatar
@@ -333,9 +376,9 @@ export default {
       this.showCharSelector = false;
       this.currentSelectionType = null;
     },
-    handleSkillSelected(skill) {
+    handleSkillSelected(skill: any): void {
       // Transform skill to action format
-      const action = {
+      const action: CustomActionData = {
         skillId: skill.id || skill.name, // Use skill ID or name as identifier
         name: skill.name,
         description: skill.description,
@@ -347,14 +390,14 @@ export default {
       this.selectedAction = action;
       this.showSkillSelector = false;
     },
-    handleCharSelectorClose() {
+    handleCharSelectorClose(): void {
       this.showCharSelector = false;
       this.currentSelectionType = null;
     },
-    handleSkillSelectorClose() {
+    handleSkillSelectorClose(): void {
       this.showSkillSelector = false;
     },
-    handlePerformAction(action) {
+    handlePerformAction(action: CustomActionData): void {
       // Log the action being performed
       console.log('Performing action:', {
         initiator: this.selectedInitiator,
@@ -373,22 +416,22 @@ export default {
       // Reset state after performing action
       this.resetCustomActionState();
     },
-    handleCancelAction() {
+    handleCancelAction(): void {
       // Reset state when canceling
       this.resetCustomActionState();
     },
-    resetCustomActionState() {
+    resetCustomActionState(): void {
       // Reset all custom action related state
       this.selectedInitiator = undefined;
       this.selectedTarget = undefined;
       this.selectedAction = undefined;
       this.currentSelectionType = null;
     },
-    openInfo() {
+    openInfo(): void {
       // Show the character card modal when character bars are clicked
       this.showCharacterCard = true;
     },
-    closeCharacterCard() {
+    closeCharacterCard(): void {
       // Close the character card modal
       this.showCharacterCard = false;
     },

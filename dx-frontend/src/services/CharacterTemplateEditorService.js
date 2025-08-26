@@ -658,7 +658,7 @@ export class CharacterTemplateEditorService {
 
     /**
      * Generate a preview of the current template using the GameMaster API
-     * @returns {Promise<Object|null>} - The preview data (GameMasterCharacterInfo) or null if failed
+     * @returns {Promise<Object|null>} - The preview data (GameMasterTools) or null if failed
      */
     async generatePreview() {
         if (this.isGeneratingPreview) {
@@ -693,7 +693,7 @@ export class CharacterTemplateEditorService {
                 return null;
             }
 
-            // Store the preview data (GameMasterCharacterInfo)
+            // Store the preview data (GameMasterTools)
             this.previewData = response.data;
             console.log('Template preview generated successfully');
             this.emit('previewGenerated', this.previewData);
@@ -711,7 +711,7 @@ export class CharacterTemplateEditorService {
 
     /**
      * Get the current preview data
-     * @returns {Object|null} - The preview data (GameMasterCharacterInfo) or null if not available
+     * @returns {Object|null} - The preview data (GameMasterTools) or null if not available
      */
     getPreviewData() {
         return this.previewData;
