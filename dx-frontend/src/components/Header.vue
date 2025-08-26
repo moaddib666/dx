@@ -203,9 +203,9 @@ export default {
   background-color: var(--dark-slate-gray, #2c3e50);
   border-radius: 8px;
   padding: 0;
-  width: 90%;
-  max-width: 400px;
-  max-height: 80vh;
+  width: 85%;
+  max-width: 320px;
+  max-height: 60vh;
   overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   border: 2px solid #444;
@@ -215,7 +215,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid #444;
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -223,18 +223,18 @@ export default {
 .mobile-menu-header h3 {
   color: #FFFFFF;
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .close-btn {
   background: none;
   border: none;
   color: #FFFFFF;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,7 +249,7 @@ export default {
 .mobile-nav-list {
   list-style: none;
   margin: 0;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .mobile-nav-list li {
@@ -260,8 +260,8 @@ export default {
   display: block;
   color: #FFFFFF;
   text-decoration: none;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
   transition: background-color 0.3s ease, color 0.3s ease;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -272,7 +272,7 @@ export default {
 }
 
 .mobile-menu-footer {
-  padding: 1rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-top: 1px solid #444;
   background-color: rgba(0, 0, 0, 0.2);
 }
