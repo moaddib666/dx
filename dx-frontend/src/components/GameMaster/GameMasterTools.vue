@@ -81,6 +81,9 @@ export default {
       const tags = this.characterData?.tags?.join(', ') || 'N/A';
       this.showText(`Tags: ${tags}`);
     },
+    handleActionConstructor() {
+      this.$emit('open-action-constructor');
+    },
     handleTeleportClick() {
       this.$emit('open-teleport', this.characterData);
     },
