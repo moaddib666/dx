@@ -46,21 +46,28 @@ export default {
   position: relative;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 479px) {
   .title {
-    font-size: 6vw;
+    font-size: 8vw;
+    min-font-size: 2rem;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 600px) {
+  .title {
+    font-size: 7vw;
   }
 }
 
 @media (min-width: 601px) and (max-width: 1200px) {
   .title {
-    font-size: 4vw;
+    font-size: 4.5vw;
   }
 }
 
 @media (min-width: 1201px) {
   .title {
-    font-size: 3vw;
+    font-size: 3.5vw;
   }
 }
 </style>

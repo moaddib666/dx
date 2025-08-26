@@ -98,12 +98,15 @@ html, body {
 .hero {
   position: relative;
   width: 100%;
-  height: 80vh;
+  min-height: calc(100vh - 120px); /* Account for header and footer */
+  height: calc(100vh - 120px);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   overflow: hidden;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
 .content {
@@ -111,6 +114,9 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 2rem;
+  max-width: 90vw;
+  width: 100%;
 }
 
 .background-layer {
@@ -189,6 +195,79 @@ html, body {
   }
   100% {
     transform: translateY(0px);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 479px) {
+  .hero {
+    min-height: 100vh;
+    padding: 1rem 0.5rem;
+  }
+
+  .content {
+    gap: 1.5rem;
+    max-width: 95vw;
+  }
+
+  .alpha-tag {
+    font-size: 0.15em;
+    top: -0.2em;
+    right: -3em;
+    padding: 1px 4px;
+  }
+
+  .background-layer {
+    background-attachment: scroll; /* Better performance on mobile */
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 480px) and (max-width: 767px) {
+  .hero {
+    padding: 1.5rem 1rem;
+  }
+
+  .content {
+    gap: 1.75rem;
+    max-width: 85vw;
+  }
+
+  .alpha-tag {
+    font-size: 0.18em;
+    top: -0.25em;
+    right: -4em;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1200px) {
+  .hero {
+    padding: 3rem 2rem;
+  }
+
+  .content {
+    gap: 2.5rem;
+    max-width: 80vw;
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 1600px) {
+  .hero {
+    padding: 4rem 3rem;
+  }
+
+  .content {
+    gap: 3rem;
+    max-width: 70vw;
+  }
+
+  .alpha-tag {
+    font-size: 0.25em;
+    top: -0.35em;
+    right: -6em;
+    padding: 3px 8px;
   }
 }
 </style>
