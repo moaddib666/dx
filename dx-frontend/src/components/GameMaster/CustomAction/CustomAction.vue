@@ -158,6 +158,7 @@ const ready = computed(() => {
   background: url("@/assets/textures/lightning.png") no-repeat center center;
   background-size: cover;
   pointer-events: none;
+  opacity: 0.8;
 }
 
 </style>
