@@ -255,7 +255,7 @@ export class D20Service {
 
     calculateTargetRotation(faceIndex) {
         // Align face normal toward camera (upward)
-        // Prioritize correct face alignment over number orientation
+        // Face 3 displays perfectly as the reference for proper triangle orientation
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             this.faceNormals[faceIndex].clone(),
             new THREE.Vector3(0, 1, 0)  // Point upward toward camera
