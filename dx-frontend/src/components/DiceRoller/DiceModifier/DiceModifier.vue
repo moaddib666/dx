@@ -14,7 +14,8 @@
 
 <script setup lang="ts">
 import {computed, ref} from 'vue'
-import DefaultImage from "@/assets/icons/challenge/artifact2.png"
+import DefaultPositiveImage from "@/assets/icons/challenge/artifact2.png"
+import DefaultNegativeImage from "@/assets/icons/challenge/danger-artifact.png"
 import {type ChallengeModifier} from "@/api/dx-backend";
 
 interface Props {
@@ -28,7 +29,7 @@ const onImageError = (event: Event) => {
   console.warn(`Failed to load icon for ${props.modifier.id} modifier:`, props.modifier.icon)
 }
 const iconUrl = computed(() => {
-  return props.modifier.icon || DefaultImage
+  return props.modifier.icon || (props.modifier.value < 0 ? DefaultNegativeImage : DefaultPositiveImage)
 })
 
 const negativeTint = computed(() => {
