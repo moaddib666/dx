@@ -54,6 +54,8 @@ class Character(GameObject):
     resetting_base_stats = models.BooleanField(default=False)
 
     fight = models.ForeignKey('fight.Fight', on_delete=models.SET_NULL, null=True, blank=True, related_name='joined')
+    challenge = models.OneToOneField('dice.Challenge', on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='for_character')
 
     @property
     def alive(self) -> bool:

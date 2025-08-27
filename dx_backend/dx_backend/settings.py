@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'apps.bargain',
     'apps.gallery',
     'apps.core',
+    'apps.dice',
     'apps.effects',
     'apps.client',
     'apps.world',
