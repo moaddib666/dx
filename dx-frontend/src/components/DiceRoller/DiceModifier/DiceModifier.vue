@@ -44,7 +44,8 @@ const formatedValue = computed(() => {
 <style scoped>
 .challenge-modifier {
   background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
-  border: 2px solid #8b7355;
+  border: 2px solid;
+  border-image: linear-gradient(to bottom, #b8956a 0%, #5d4a37 100%) 1;
   border-radius: 1em;
   padding: 0.2em;
   cursor: pointer;
@@ -64,7 +65,7 @@ const formatedValue = computed(() => {
 }
 
 .challenge-modifier:hover {
-  border-color: #d4af37;
+  border-image: linear-gradient(to bottom, #f4d76e 0%, #a6841f 100%) 1;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
   0 0 20px rgba(212, 175, 55, 0.2),
   inset 0 1px 0 rgba(212, 175, 55, 0.3);
@@ -103,14 +104,14 @@ const formatedValue = computed(() => {
 }
 
 .negative-tint {
-  border-color: #83a1cf;
+  border-image: linear-gradient(to bottom, #a8c5f0 0%, #5a7ba8 100%) 1;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
   inset 0 1px 0 rgba(0, 70, 139, 0.3);
   color: #a0c4ff;
 }
 
 .negative-tint:hover {
-  border-color: #00a1ff;
+  border-image: linear-gradient(to bottom, #4dc7ff 0%, #0080cc 100%) 1;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
   0 0 20px rgba(0, 161, 255, 0.2),
   inset 0 1px 0 rgba(0, 161, 255, 0.3);
