@@ -139,11 +139,9 @@ export class RollStateService {
         if (targetIndex !== -1) {
             const targetRotation = calculateTargetRotation(targetIndex)
 
-            // Improved interpolation for faster, more complete settling
-            // Start with higher base factor and increase more aggressively over time
-            const baseFactor = 0.15  // Increased from 0.08 max
-            const timeFactor = (settleTime - 0.3) * 0.12  // Increased from 0.04
-            const lerpFactor = Math.min(baseFactor, timeFactor)
+            // Aggressive interpolation for complete settling
+            // Use higher interpolation factor to ensure dice reach target rotation
+            const lerpFactor = Math.min(0.3, settleTime * 0.2)  // Much more aggressive convergence
 
             this.state.rotation.x += (targetRotation.x - this.state.rotation.x) * lerpFactor
             this.state.rotation.y += (targetRotation.y - this.state.rotation.y) * lerpFactor

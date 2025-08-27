@@ -254,8 +254,8 @@ export class D20Service {
     }
 
     calculateTargetRotation(faceIndex) {
-        // Simple approach: point face normal toward camera (upward)
-        // This preserves the original text orientation that was working
+        // Align face normal toward camera (upward)
+        // Prioritize correct face alignment over number orientation
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             this.faceNormals[faceIndex].clone(),
             new THREE.Vector3(0, 1, 0)  // Point upward toward camera
