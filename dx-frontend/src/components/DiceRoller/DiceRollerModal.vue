@@ -11,7 +11,7 @@
         <!-- Difficulty Class at the top -->
         <div class="difficulty-class">
           <h2>Difficulty</h2>
-          <h1>{{props.challenge?.difficulty || 12 }}</h1>
+          <h1>{{props.challenge?.difficulty || 14 }}</h1>
         </div>
 
         <!-- Dice Canvas -->
@@ -210,14 +210,15 @@ const onRollComplete = (result: RollResult): void => {
 
   currentState.value = 'results';
 
-  // Check if we have modifiers to animate
-  if (props.challenge?.modifiers && props.challenge.modifiers.length > 0) {
-    // Start modifier animation sequence
+  // Check if we have modifiers to animate and if the roll is not critical
+  if (props.challenge?.modifiers && props.challenge.modifiers.length > 0 && !isCriticalRoll(combinedResult.number)) {
+    // Start modifier animation sequence for non-critical rolls
     setTimeout(() => {
       animateModifiers();
     }, 1000); // Wait 1 second after initial roll result display
   } else {
-    // No modifiers, emit result immediately
+    // No modifiers, critical roll, or no modifiers to apply - emit result immediately
+    // For critical rolls, preserve the original critical outcome regardless of modifiers
     emit('roll-complete', combinedResult);
   }
 
@@ -246,6 +247,11 @@ const onDebugRollCompleted = (result: RollResult): void => {
 const onDebugVisibilityChanged = (visible: boolean): void => {
   showDebugToolbar.value = visible;
   console.log('Debug toolbar visibility changed:', visible);
+};
+
+// Helper function to check if a roll is critical (1 or 20)
+const isCriticalRoll = (rollValue: number): boolean => {
+  return rollValue === 1 || rollValue === 20;
 };
 
 // Modifier animation functions
