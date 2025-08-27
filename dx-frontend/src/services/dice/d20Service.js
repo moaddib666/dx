@@ -176,7 +176,12 @@ export class D20Service {
         ctx.font = "bold 140px Arial"
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
-        ctx.fillText(num.toString(), 256, 296)
+        // set dot to 9 and 6  numbers
+        let numText = num.toString()
+        if (num === 6 || num === 9) {
+            numText = num.toString() + "."
+        }
+        ctx.fillText(numText, 256, 296)
 
         return new THREE.CanvasTexture(canvas)
     }
