@@ -33,3 +33,15 @@ class ChallengeModifier(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ChallengeCreationRequest(BaseModel):
+    """DTO for creating challenges."""
+    target_character_id: uuid.UUID
+    difficulty: int = 12
+    dice_sides: int = 20
+    stat: CharacterStats = CharacterStats.LUCK
+    advantage: bool = False
+    disadvantage: bool = False
+    description: t.Optional[str] = None
+    modifiers: t.List[uuid.UUID] = Field(default_factory=list)

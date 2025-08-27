@@ -5,6 +5,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.core.models.dice import ChallengeCreationRequest
 from apps.dice.models import Challenge
 from apps.game.services.challenge import ChallengeService
 from apps.gamemaster.api.serializers.challenge import (
@@ -13,7 +14,7 @@ from apps.gamemaster.api.serializers.challenge import (
 )
 
 
-class GameMasterChallengeViewSet(viewsets.GenericViewSet):
+class GameMasterChallengeViewSet(viewsets.ModelViewSet):
     """
     ViewSet for GameMasters to create and manage challenges for characters.
     
@@ -42,8 +43,15 @@ class GameMasterChallengeViewSet(viewsets.GenericViewSet):
     def get_queryset(self):
         """
         Override to filter challenges by the current campaign if applicable.
+        Includes prefetching for performance optimization.
         """
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related(
+            'target',  # Character who faces the challenge
+            'outcome'  # DiceRollResult if challenge is completed
+        ).prefetch_related(
+            'modifiers'  # All challenge modifiers
+        )
+        
         if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
             # Filter challenges for characters in the current campaign
             return queryset.filter(target__campaign=self.request.user.current_campaign)
@@ -155,53 +163,3 @@ class GameMasterChallengeViewSet(viewsets.GenericViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     
-    @extend_schema(
-        description="List all challenges in the current campaign",
-        responses={
-            200: OpenApiResponse(
-                response=GameMasterChallengeResponseSerializer(many=True),
-                description="List of challenges"
-            ),
-            403: OpenApiResponse(description="Permission denied - Admin access required")
-        },
-        summary="List Challenges",
-        tags=["GameMaster - Challenges"]
-    )
-    def list(self, request):
-        """
-        List all challenges in the current campaign.
-        
-        Returns a list of all challenges for characters in the GameMaster's current campaign.
-        """
-        queryset = self.get_queryset().select_related('target').prefetch_related('modifiers')
-        serializer = GameMasterChallengeResponseSerializer(queryset, many=True)
-        return Response(serializer.data)
-    
-    @extend_schema(
-        description="Get details of a specific challenge",
-        responses={
-            200: OpenApiResponse(
-                response=GameMasterChallengeResponseSerializer,
-                description="Challenge details"
-            ),
-            403: OpenApiResponse(description="Permission denied - Admin access required"),
-            404: OpenApiResponse(description="Challenge not found")
-        },
-        summary="Get Challenge Details",
-        tags=["GameMaster - Challenges"]
-    )
-    def retrieve(self, request, pk=None):
-        """
-        Get details of a specific challenge.
-        
-        Returns detailed information about a challenge including all modifiers.
-        """
-        try:
-            challenge = self.get_queryset().select_related('target').prefetch_related('modifiers').get(pk=pk)
-            serializer = GameMasterChallengeResponseSerializer(challenge)
-            return Response(serializer.data)
-        except Challenge.DoesNotExist:
-            return Response(
-                {"error": "Challenge not found"},
-                status=status.HTTP_404_NOT_FOUND
-            )
