@@ -43,6 +43,15 @@
         value: -4,
       }
   ]"></DiceModifierHolder>
+
+    <!-- Debug Toolbar -->
+    <DiceDebugToolbar
+        :dice-canvas="$refs.diceCanvas"
+        :visible="showDebugToolbar"
+        @roll-started="onDebugRollStarted"
+        @roll-completed="onDebugRollCompleted"
+        @visibility-changed="onDebugVisibilityChanged"
+    />
   </div>
 </template>
 
@@ -51,6 +60,7 @@ import {defineComponent, ref, PropType} from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
 import DiceBackendService from "@/services/dice/DiceBackendService.js";
 import DiceModifierHolder from "@/components/DiceRoller/DiceModifier/DiceModifierHolder.vue";
+import DiceDebugToolbar from "@/components/DiceRoller/DiceDebugToolbar.vue";
 
 // Define types for component
 interface RollResult {
@@ -69,7 +79,8 @@ export default defineComponent({
 
   components: {
     DiceModifierHolder,
-    DiceCanvas
+    DiceCanvas,
+    DiceDebugToolbar
   },
 
   props: {
@@ -94,7 +105,8 @@ export default defineComponent({
       lastApiResult: null as RollResult | null,
       file: null as File | null,
       currentOutcome: null as OutcomeType | null,
-      diceBackendService: new DiceBackendService()
+      diceBackendService: new DiceBackendService(),
+      showDebugToolbar: process.env.NODE_ENV === 'development' // Show debug toolbar only in development
     }
   },
 
@@ -216,6 +228,29 @@ export default defineComponent({
 
       // Clear the API result after using it
       this.lastApiResult = null;
+    },
+
+    // Debug toolbar event handlers
+    onDebugRollStarted(debugInfo: any): void {
+      console.log('Debug roll started:', debugInfo);
+      this.currentState = 'rolling';
+    },
+
+    onDebugRollCompleted(result: RollResult): void {
+      console.log('Debug roll completed:', result);
+      this.lastResult = result;
+
+      // For debug rolls, determine outcome based on the result number
+      this.currentOutcome = this.diceBackendService.determineOutcome(result.number) as OutcomeType;
+      this.currentState = 'results';
+
+      // Emit the debug result
+      this.$emit('roll-complete', result);
+    },
+
+    onDebugVisibilityChanged(visible: boolean): void {
+      this.showDebugToolbar = visible;
+      console.log('Debug toolbar visibility changed:', visible);
     }
   }
 });
