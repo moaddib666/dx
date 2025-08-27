@@ -123,15 +123,8 @@ class ChallengeService:
         
         # Create properly typed event using the create_event class method
         event = ChallengeCreatedEvent.create_event(
-            challenge_id=challenge.id,
-            target_character_id=challenge.target.id,
-            difficulty=challenge.difficulty,
-            dice_sides=challenge.dice_sides,
-            stat=challenge.stat,
-            advantage=challenge.advantage,
-            disadvantage=challenge.disadvantage,
-            description=challenge.description,
-            modifier_count=modifier_count
+            id=challenge.id,
+            character_id=challenge.target.id
         )
         
         event_bus.publish(event)

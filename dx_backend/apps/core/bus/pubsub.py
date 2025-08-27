@@ -47,7 +47,18 @@ class _PubSub(EventBusProto):
         #  - target GameMaster
         if event.name == "new_cycle":
             self.publisher.send(event, Channel.WORLD)
-        self.publisher.send(event, Channel.MASTER)
+        elif event.name == "challenge_created":
+            # Send challenge_created event to specific character instead of broadcasting
+            character_id = event.data.get("character_id")
+            if character_id:
+                character_channel = Channel.character(character_id)
+                self.publisher.send(event, character_channel)
+                self.logger.debug(f"Sent challenge_created event to character channel: {character_channel}")
+            else:
+                self.logger.warning("ChallengeCreatedEvent missing character_id, sending to MASTER")
+                self.publisher.send(event, Channel.MASTER)
+        else:
+            self.publisher.send(event, Channel.MASTER)
 
     @classmethod
     def set_publisher(cls, publisher: Sender):
