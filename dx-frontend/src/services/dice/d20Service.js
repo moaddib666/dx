@@ -15,7 +15,7 @@ export class D20Service {
         this.materialService = markRaw(new D20MaterialService())
 
         // D20 geometry data
-        this.t = (1 + Math.sqrt(5)) / 2
+        this.t = (1 + Math.sqrt(3)) / 2
         this.vertices = [
             [-1, this.t, 0], [1, this.t, 0], [-1, -this.t, 0], [1, -this.t, 0],
             [0, -1, this.t], [0, 1, this.t], [0, -1, -this.t], [0, 1, -this.t],
@@ -85,30 +85,8 @@ export class D20Service {
         // this.scene.add(new THREE.AmbientLight(0x404040, 40.5))
         this.scene.add(new THREE.AmbientLight(0xffffff, 2.5))
 
-        // Main directional light for strong reflections
-        // const dirLight = new THREE.DirectionalLight(0xffffff, 0.2)
-        // dirLight.position.set(15, 20, 20)
-        // dirLight.castShadow = true
-        // dirLight.shadow.mapSize.width = 2048
-        // dirLight.shadow.mapSize.height = 2048
-        // this.scene.add(dirLight)
-
-        // // Additional lights for metallic reflections
-        // const fillLight1 = new THREE.DirectionalLight(0xffffff, 1.6)
-        // fillLight1.position.set(-10, 15, -10)
-        // this.scene.add(fillLight1)
-        //
-        // const fillLight2 = new THREE.DirectionalLight(0xffffff, 1.4)
-        // fillLight2.position.set(10, 8, 10)
-        // this.scene.add(fillLight2)
-
-        // Top light for better visibility
-        // const topLight = new THREE.DirectionalLight(0xffffff, 1.3)
-        // topLight.position.set(0.1, 1, 0.1)
-        // this.scene.add(topLight)
-
-        const rearLight = new THREE.SpotLight(0xffffff, 105)
-        rearLight.position.set(0, 4.5, 0)
+        const rearLight = new THREE.AmbientLight(0xffffff, 9)
+        rearLight.position.set(1, 5.5, 0)
         rearLight.castShadow = false
         rearLight.penumbra = 0.3
         this.scene.add(rearLight)
@@ -254,14 +232,18 @@ export class D20Service {
     }
 
     calculateTargetRotation(faceIndex) {
-        // Align face normal toward camera (upward)
-        // Face 3 displays perfectly as the reference for proper triangle orientation
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             this.faceNormals[faceIndex].clone(),
-            new THREE.Vector3(0, 1, 0)  // Point upward toward camera
+            new THREE.Vector3(0, 1, 0)
         )
         const euler = new THREE.Euler().setFromQuaternion(quaternion)
-        return new THREE.Vector3(euler.x, euler.y, euler.z)
+
+        // Face-specific corrections
+        const faceNumber = this.faceNumbers[faceIndex]
+        const corrections = {}
+
+        const zCorrection = corrections[faceNumber] || 0
+        return new THREE.Vector3(euler.x, euler.y, euler.z + zCorrection)
     }
 
     createDice(highlightFace = -1) {
