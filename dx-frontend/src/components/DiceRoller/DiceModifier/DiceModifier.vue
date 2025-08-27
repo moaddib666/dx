@@ -1,5 +1,9 @@
 <template>
-  <div class="challenge-modifier" :class="{'negative-tint': negativeTint}">
+  <div class="challenge-modifier" :class="{
+    'negative-tint': negativeTint,
+    'highlighted': props.isHighlighted,
+    'animating': props.isAnimating
+  }">
     <img
         v-if="iconUrl"
         :src="iconUrl"
@@ -19,10 +23,15 @@ import DefaultNegativeImage from "@/assets/icons/challenge/danger-artifact.png"
 import {type ChallengeModifier} from "@/api/dx-backend";
 
 interface Props {
-  modifier: ChallengeModifier
+  modifier: ChallengeModifier;
+  isHighlighted?: boolean;
+  isAnimating?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {
+  isHighlighted: false,
+  isAnimating: false
+})
 
 
 const onImageError = (event: Event) => {
@@ -129,6 +138,69 @@ const formatedValue = computed(() => {
   inset 0 1px 0 rgba(0, 161, 255, 0.3);
   transform: translateY(-2px);
   filter: brightness(1.2);
+}
+
+/* Highlighting animation styles */
+.challenge-modifier.highlighted {
+  animation: modifierHighlight 0.8s ease-in-out;
+  border-image: linear-gradient(to bottom, #ffd700 0%, #ffaa00 100%) 1 !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+  0 0 30px rgba(255, 215, 0, 0.6),
+  0 0 50px rgba(255, 215, 0, 0.4),
+  inset 0 1px 0 rgba(255, 215, 0, 0.5) !important;
+  transform: scale(1.1) translateY(-4px) !important;
+  filter: brightness(1.4) !important;
+  z-index: 10;
+}
+
+.challenge-modifier.highlighted.negative-tint {
+  border-image: linear-gradient(to bottom, #ff6b6b 0%, #ff3333 100%) 1 !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+  0 0 30px rgba(255, 107, 107, 0.6),
+  0 0 50px rgba(255, 107, 107, 0.4),
+  inset 0 1px 0 rgba(255, 107, 107, 0.5) !important;
+}
+
+@keyframes modifierHighlight {
+  0% {
+    transform: scale(1) translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(139, 115, 85, 0.3);
+  }
+  25% {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(255, 215, 0, 0.4),
+    inset 0 1px 0 rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.6),
+    0 0 50px rgba(255, 215, 0, 0.4),
+    inset 0 1px 0 rgba(255, 215, 0, 0.5);
+  }
+  75% {
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.45),
+    0 0 25px rgba(255, 215, 0, 0.5),
+    0 0 40px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.4);
+  }
+  100% {
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(255, 215, 0, 0.6),
+    0 0 50px rgba(255, 215, 0, 0.4),
+    inset 0 1px 0 rgba(255, 215, 0, 0.5);
+  }
+}
+
+/* Subtle animation for non-highlighted modifiers during animation */
+.challenge-modifier.animating:not(.highlighted) {
+  opacity: 0.6;
+  filter: grayscale(0.3);
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 </style>

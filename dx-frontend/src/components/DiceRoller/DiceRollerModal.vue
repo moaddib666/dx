@@ -40,6 +40,8 @@
         v-if="props.challenge?.modifiers"
         class="modifier-holder"
         :modifiers="props.challenge.modifiers"
+        :highlighted-index="currentlyHighlightedModifier"
+        :is-animating="isAnimatingModifiers"
     />
 
     <!-- Debug Toolbar -->
@@ -96,7 +98,7 @@ const emit = defineEmits<{
 }>();
 
 // Reactive data
-const currentState = ref<'initial' | 'rolling' | 'results'>('initial');
+const currentState = ref<'initial' | 'rolling' | 'results' | 'applying-modifiers'>('initial');
 const isCanvasReady = ref(false);
 const lastResult = ref<RollResult | null>(null);
 const lastApiResult = ref<RollResult | null>(null);
@@ -104,6 +106,12 @@ const file = ref<File | null>(null);
 const currentOutcome = ref<OutcomeType | null>(null);
 const showCTA = ref(true);
 const diceBackendService = new DiceBackendService();
+
+// Animation state for modifiers
+const isAnimatingModifiers = ref(false);
+const currentlyHighlightedModifier = ref<number>(-1);
+const modifiedRollValue = ref<number>(0);
+const originalRollValue = ref<number>(0);
 const descriptionText = computed((): string => {
   return props.challenge?.description || 'Roll a d20 to determine the outcome of your challenge.';
 });
@@ -189,6 +197,8 @@ const onRollComplete = (result: RollResult): void => {
   };
 
   lastResult.value = combinedResult;
+  originalRollValue.value = combinedResult.number;
+  modifiedRollValue.value = combinedResult.number;
 
   // Always use the outcome from the API result, which is determined by the service
   if (lastApiResult.value?.outcome) {
@@ -199,7 +209,17 @@ const onRollComplete = (result: RollResult): void => {
   }
 
   currentState.value = 'results';
-  emit('roll-complete', combinedResult);
+
+  // Check if we have modifiers to animate
+  if (props.challenge?.modifiers && props.challenge.modifiers.length > 0) {
+    // Start modifier animation sequence
+    setTimeout(() => {
+      animateModifiers();
+    }, 1000); // Wait 1 second after initial roll result display
+  } else {
+    // No modifiers, emit result immediately
+    emit('roll-complete', combinedResult);
+  }
 
   // Clear the API result after using it
   lastApiResult.value = null;
@@ -226,6 +246,87 @@ const onDebugRollCompleted = (result: RollResult): void => {
 const onDebugVisibilityChanged = (visible: boolean): void => {
   showDebugToolbar.value = visible;
   console.log('Debug toolbar visibility changed:', visible);
+};
+
+// Modifier animation functions
+const animateModifiers = async (): Promise<void> => {
+  if (!props.challenge?.modifiers || props.challenge.modifiers.length === 0) {
+    return;
+  }
+
+  currentState.value = 'applying-modifiers';
+  isAnimatingModifiers.value = true;
+
+  // Animate each modifier sequentially
+  for (let i = 0; i < props.challenge.modifiers.length; i++) {
+    const modifier = props.challenge.modifiers[i];
+
+    // Highlight current modifier
+    currentlyHighlightedModifier.value = i;
+
+    // Wait for highlight animation
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Apply modifier value
+    const previousValue = modifiedRollValue.value;
+    modifiedRollValue.value += modifier.value;
+
+    // Ensure the modified value stays within valid dice range (1-20 for display purposes)
+    const displayValue = Math.max(1, Math.min(20, modifiedRollValue.value));
+
+    // Trigger dice shake and number update
+    await shakeDiceAndUpdateNumber(displayValue);
+
+    // Wait before next modifier
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+
+  // Clear highlighting
+  currentlyHighlightedModifier.value = -1;
+  isAnimatingModifiers.value = false;
+
+  // Update final outcome based on modified roll value
+  const finalResult = {
+    ...lastResult.value!,
+    number: modifiedRollValue.value,
+    originalNumber: originalRollValue.value,
+    modifiedBy: modifiedRollValue.value - originalRollValue.value
+  };
+
+  // Determine new outcome based on modified value
+  currentOutcome.value = diceBackendService.determineOutcome(modifiedRollValue.value) as OutcomeType;
+
+  currentState.value = 'results';
+  emit('roll-complete', finalResult);
+};
+
+const shakeDiceAndUpdateNumber = async (newNumber: number): Promise<void> => {
+  if (!diceCanvas.value) return;
+
+  // Create a subtle shake effect by slightly moving the dice
+  const originalPosition = { x: 0, y: 1, z: 0 };
+  const shakeIntensity = 0.1;
+  const shakeDuration = 300; // ms
+  const shakeSteps = 6;
+
+  // Perform shake animation
+  for (let i = 0; i < shakeSteps; i++) {
+    const offsetX = (Math.random() - 0.5) * shakeIntensity;
+    const offsetY = (Math.random() - 0.5) * shakeIntensity * 0.5; // Less vertical shake
+    const offsetZ = (Math.random() - 0.5) * shakeIntensity;
+
+    // Note: We would need to add a method to DiceCanvas to update position
+    // For now, we'll simulate the shake with a visual effect
+
+    await new Promise(resolve => setTimeout(resolve, shakeDuration / shakeSteps));
+  }
+
+  // Roll dice to show new number
+  try {
+    await diceCanvas.value.rollToTarget(newNumber);
+  } catch (error) {
+    console.warn('Could not update dice to show new number:', error);
+  }
 };
 
 // Lifecycle hooks
