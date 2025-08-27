@@ -1,11 +1,20 @@
 <template>
   <div class="dice-roller-modal" v-if="visible">
     <div class="modal-overlay" @click="closeModal"></div>
-    <div class="modal-container" @click="handleContainerClick">
+    <div class="modal-container">
+      <!-- Challenge Description -->
+      <div class="challenge-description">
+        <p>This challenge tests your abilities. Roll the dice to determine your fate and see if you can overcome the difficulty.</p>
+      </div>
+
       <div class="modal-container--mask">
-        <div v-if="currentState === 'results' && lastResult" class="outcome-banner" :class="outcomeClass">
-          {{ currentOutcome }}
+        <!-- Difficulty Class at the top -->
+        <div class="difficulty-class">
+          <h2>Difficulty</h2>
+          <h1>14</h1>
         </div>
+
+        <!-- Dice Canvas -->
         <div class="dice-canvas-content" @click="rollDice">
           <DiceCanvas
               ref="diceCanvas"
@@ -15,37 +24,27 @@
               @roll-complete="onRollComplete"
               class="dice-canvas"
           />
+          <!-- CTA Text -->
+          <div class="dice-cta">Click to roll the dice</div>
         </div>
+      </div>
 
+      <!-- Outcome Banner at the bottom with cool styling -->
+      <div v-if="currentState === 'results' && lastResult" class="outcome-banner" :class="outcomeClass">
+        {{ currentOutcome }}
       </div>
     </div>
+
+    <!-- Dice Modifier Holder -->
     <DiceModifierHolder
+        v-if="props.challenge?.modifiers"
         class="modifier-holder"
-        :modifiers="[
-      {
-        id: 'mod1',
-        name: 'Strength Boost',
-        value: 2,
-      },
-      {
-        id: 'mod2',
-        name: 'Agility Boost',
-        value: 3,
-      },
-      {
-        id: 'mod3',
-        name: 'Intelligence Boost',
-        value: 1,
-      },
-      {
-        id: 'mod4',
-        name: 'Speed Debuff',
-        value: -4,
-      }
-  ]"></DiceModifierHolder>
+        :modifiers="props.challenge.modifiers"
+    />
 
     <!-- Debug Toolbar -->
     <DiceDebugToolbar
+        v-if="props.debug"
         :dice-canvas="$refs.diceCanvas"
         :visible="showDebugToolbar"
         @roll-started="onDebugRollStarted"
@@ -55,12 +54,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref, PropType} from 'vue';
+<script setup lang="ts">
+import {ref, computed, onMounted, type PropType} from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
 import DiceBackendService from "@/services/dice/DiceBackendService.js";
 import DiceModifierHolder from "@/components/DiceRoller/DiceModifier/DiceModifierHolder.vue";
 import DiceDebugToolbar from "@/components/DiceRoller/DiceDebugToolbar.vue";
+import type {ChallengeGeneric} from "@/api/dx-backend/api";
 
 // Define types for component
 interface RollResult {
@@ -74,184 +74,172 @@ interface RollResult {
 
 // Define outcome types
 type OutcomeType = 'Critical Fail' | 'Fail' | 'Success' | 'Critical Success';
-export default defineComponent({
-  name: 'DiceRollerModal',
 
-  components: {
-    DiceModifierHolder,
-    DiceCanvas,
-    DiceDebugToolbar
-  },
+type Props = {
+  visible: boolean;
+  debug: boolean;
+  challenge: ChallengeGeneric | null;
+};
 
-  props: {
-    visible: {
-      type: Boolean as PropType<boolean>,
-      default: false
-    }
-  },
+// Props
+const props = withDefaults(defineProps<Props>(), {
+  visible: false,
+  debug: false,
+  challenge: null
+});
 
-  emits: ['close', 'error', 'roll-complete'],
+// Emits
+const emit = defineEmits<{
+  close: [];
+  error: [error: Error];
+  'roll-complete': [result: RollResult];
+}>();
 
-  setup() {
-    // Return empty setup to use options API with TypeScript
-    return {};
-  },
+// Reactive data
+const currentState = ref<'initial' | 'rolling' | 'results'>('initial');
+const isCanvasReady = ref(false);
+const lastResult = ref<RollResult | null>(null);
+const lastApiResult = ref<RollResult | null>(null);
+const file = ref<File | null>(null);
+const currentOutcome = ref<OutcomeType | null>(null);
+const diceBackendService = new DiceBackendService();
+const showDebugToolbar = ref(props.debug || process.env.NODE_ENV === 'development');
 
-  data() {
-    return {
-      currentState: 'initial' as 'initial' | 'rolling' | 'results',
-      isCanvasReady: false,
-      lastResult: null as RollResult | null,
-      lastApiResult: null as RollResult | null,
-      file: null as File | null,
-      currentOutcome: null as OutcomeType | null,
-      diceBackendService: new DiceBackendService(),
-      showDebugToolbar: process.env.NODE_ENV === 'development' // Show debug toolbar only in development
-    }
-  },
+// Template refs
+const diceCanvas = ref<InstanceType<typeof DiceCanvas> | null>(null);
 
-  async created() {
-    try {
-      // Load the texture
-      const textureModule = await import('@/assets/textures/dice-texture.png');
-      const textureUrl = textureModule.default;
+// Computed properties
+const canRoll = computed((): boolean => {
+  return isCanvasReady.value && currentState.value !== 'rolling';
+});
 
-      // Fetch the texture image
-      const response = await fetch(textureUrl);
-      const blob = await response.blob();
+const outcomeClass = computed((): string => {
+  if (!currentOutcome.value) return '';
 
-      // Create a File object from the blob
-      this.file = new File([blob], 'dice-texture.png', {type: blob.type});
-    } catch (error) {
-      console.error('Failed to load dice texture:', error);
-    }
-  },
+  switch (currentOutcome.value) {
+    case 'Critical Fail':
+      return 'outcome-critical-fail';
+    case 'Fail':
+      return 'outcome-fail';
+    case 'Success':
+      return 'outcome-success';
+    case 'Critical Success':
+      return 'outcome-critical-success';
+    default:
+      return '';
+  }
+});
 
-  computed: {
-    canRoll(): boolean {
-      return this.isCanvasReady && this.currentState !== 'rolling'
-    },
+// Methods
+const closeModal = (): void => {
+  emit('close');
+};
 
-    outcomeClass(): string {
-      if (!this.currentOutcome) return '';
+const onCanvasReady = async (): Promise<void> => {
+  isCanvasReady.value = true;
+  // Texture is now applied during initialization via the preloaded-texture prop
+};
 
-      switch (this.currentOutcome) {
-        case 'Critical Fail':
-          return 'outcome-critical-fail';
-        case 'Fail':
-          return 'outcome-fail';
-        case 'Success':
-          return 'outcome-success';
-        case 'Critical Success':
-          return 'outcome-critical-success';
-        default:
-          return '';
-      }
-    }
-  },
+const onCanvasError = (error: Error): void => {
+  console.error('Canvas error:', error);
+  emit('error', error);
+};
 
-  methods: {
-    closeModal(): void {
-      this.$emit('close');
-    },
 
-    async onCanvasReady(): Promise<void> {
-      this.isCanvasReady = true;
-      // Texture is now applied during initialization via the preloaded-texture prop
-    },
+const rollDice = async (): Promise<void> => {
+  if (!canRoll.value || !diceCanvas.value) return;
 
-    onCanvasError(error: Error): void {
-      console.error('Canvas error:', error);
-      this.$emit('error', error);
-    },
+  try {
+    currentState.value = 'rolling';
 
-    handleContainerClick(event: MouseEvent): void {
-      // Prevent closing modal when clicking inside
-      event.stopPropagation();
+    // Get dice roll result from backend API
+    const apiResult = await diceBackendService.rollD20Dice();
 
-      if (this.canRoll) {
-        this.rollDice();
-      }
-    },
+    // Store the API result BEFORE starting visual animation
+    lastApiResult.value = apiResult;
 
-    async rollDice(): Promise<void> {
-      if (!this.canRoll || !this.$refs.diceCanvas) return;
+    // Use the target number from the API response for the visual dice roll
+    const result = await diceCanvas.value.rollToTarget(apiResult.number);
 
-      try {
-        this.currentState = 'rolling';
+    lastResult.value = result;
 
-        // Get dice roll result from backend API
-        const apiResult = await this.diceBackendService.rollD20Dice();
+    // Result will be handled by onRollComplete
+  } catch (error) {
+    console.error('Error rolling dice:', error);
+    currentState.value = 'initial';
+  }
+};
 
-        // Store the API result BEFORE starting visual animation
-        this.lastApiResult = apiResult;
+const onRollComplete = (result: RollResult): void => {
+  // Ensure we have fresh API result data - if not, something went wrong
+  if (!lastApiResult.value) {
+    console.warn('onRollComplete called without API result data');
+    return;
+  }
 
-        // Use the target number from the API response for the visual dice roll
-        const result = await this.$refs.diceCanvas.rollToTarget(apiResult.number);
+  // Combine the visual roll result with the API result, prioritizing API data
+  const combinedResult = {
+    ...result,
+    // Always use the API result for the actual outcome
+    number: lastApiResult.value.number,
+    targetNumber: lastApiResult.value.targetNumber
+  };
 
-        this.lastResult = result;
+  lastResult.value = combinedResult;
 
-        // Result will be handled by onRollComplete
-      } catch (error) {
-        console.error('Error rolling dice:', error);
-        this.currentState = 'initial';
-      }
-    },
+  // Always use the outcome from the API result, which is determined by the service
+  if (lastApiResult.value?.outcome) {
+    currentOutcome.value = lastApiResult.value.outcome as OutcomeType;
+  } else {
+    // If for some reason we don't have an API result, use the service to determine the outcome
+    currentOutcome.value = diceBackendService.determineOutcome(combinedResult.number) as OutcomeType;
+  }
 
-    onRollComplete(result: RollResult): void {
-      // Ensure we have fresh API result data - if not, something went wrong
-      if (!this.lastApiResult) {
-        console.warn('onRollComplete called without API result data');
-        return;
-      }
+  currentState.value = 'results';
+  emit('roll-complete', combinedResult);
 
-      // Combine the visual roll result with the API result, prioritizing API data
-      const combinedResult = {
-        ...result,
-        // Always use the API result for the actual outcome
-        number: this.lastApiResult.number,
-        targetNumber: this.lastApiResult.targetNumber
-      };
+  // Clear the API result after using it
+  lastApiResult.value = null;
+};
 
-      this.lastResult = combinedResult;
+// Debug toolbar event handlers
+const onDebugRollStarted = (debugInfo: any): void => {
+  console.log('Debug roll started:', debugInfo);
+  currentState.value = 'rolling';
+};
 
-      // Always use the outcome from the API result, which is determined by the service
-      if (this.lastApiResult?.outcome) {
-        this.currentOutcome = this.lastApiResult.outcome as OutcomeType;
-      } else {
-        // If for some reason we don't have an API result, use the service to determine the outcome
-        this.currentOutcome = this.diceBackendService.determineOutcome(combinedResult.number) as OutcomeType;
-      }
+const onDebugRollCompleted = (result: RollResult): void => {
+  console.log('Debug roll completed:', result);
+  lastResult.value = result;
 
-      this.currentState = 'results';
-      this.$emit('roll-complete', combinedResult);
+  // For debug rolls, determine outcome based on the result number
+  currentOutcome.value = diceBackendService.determineOutcome(result.number) as OutcomeType;
+  currentState.value = 'results';
 
-      // Clear the API result after using it
-      this.lastApiResult = null;
-    },
+  // Emit the debug result
+  emit('roll-complete', result);
+};
 
-    // Debug toolbar event handlers
-    onDebugRollStarted(debugInfo: any): void {
-      console.log('Debug roll started:', debugInfo);
-      this.currentState = 'rolling';
-    },
+const onDebugVisibilityChanged = (visible: boolean): void => {
+  showDebugToolbar.value = visible;
+  console.log('Debug toolbar visibility changed:', visible);
+};
 
-    onDebugRollCompleted(result: RollResult): void {
-      console.log('Debug roll completed:', result);
-      this.lastResult = result;
+// Lifecycle hooks
+onMounted(async () => {
+  try {
+    // Load the texture
+    const textureModule = await import('@/assets/textures/dice-texture.png');
+    const textureUrl = textureModule.default;
 
-      // For debug rolls, determine outcome based on the result number
-      this.currentOutcome = this.diceBackendService.determineOutcome(result.number) as OutcomeType;
-      this.currentState = 'results';
+    // Fetch the texture image
+    const response = await fetch(textureUrl);
+    const blob = await response.blob();
 
-      // Emit the debug result
-      this.$emit('roll-complete', result);
-    },
-
-    onDebugVisibilityChanged(visible: boolean): void {
-      this.showDebugToolbar = visible;
-      console.log('Debug toolbar visibility changed:', visible);
-    }
+    // Create a File object from the blob
+    file.value = new File([blob], 'dice-texture.png', {type: blob.type});
+  } catch (error) {
+    console.error('Failed to load dice texture:', error);
   }
 });
 </script>
@@ -293,6 +281,28 @@ export default defineComponent({
   mask-size: contain;
 }
 
+/* Challenge Description Styles */
+.challenge-description {
+  position: absolute;
+  top: 0.5rem;
+  width: 90%;
+  text-align: center;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  padding: 0.8rem;
+  backdrop-filter: blur(10px);
+}
+
+.challenge-description p {
+  color: #f0f0f0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 .modal-container--mask {
   position: relative;
   width: 100%;
@@ -310,6 +320,36 @@ export default defineComponent({
   backdrop-filter: blur(25px);
 }
 
+/* Difficulty Class Styles */
+.difficulty-class {
+  position: absolute;
+  top: 7rem;
+  width: 90%;
+  text-align: center;
+  z-index: 10;
+  padding: 0.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  color: #d4af37;
+  text-transform: uppercase;
+}
+
+.difficulty-class h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  font-family: 'Copperplate Gothic', 'Gothic', serif;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.difficulty-class h1 {
+  font-size: 3.5rem;
+  margin: 0;
+  font-family: 'Copperplate Gothic', 'Gothic', serif;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
 .dice-canvas-content {
   width: 62%;
   margin-top: 5rem;
@@ -322,6 +362,24 @@ export default defineComponent({
 
 .dice-canvas {
   pointer-events: none;
+}
+
+.dice-cta {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f0f0f0;
+  font-size: 0.9rem;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
 }
 
 .roll-result {
@@ -352,16 +410,21 @@ export default defineComponent({
 
 .outcome-banner {
   position: absolute;
-  top: 6rem;
-  width: 60%;
-  flex-wrap: wrap;
-  text-wrap: wrap;
+  bottom: 10rem;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
   text-align: center;
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   font-family: 'Copperplate Gothic', 'Gothic', serif;
   letter-spacing: 2px;
-  padding: 0.5rem;
+  padding: 0.8rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
 }
 
 .outcome-critical-fail {
