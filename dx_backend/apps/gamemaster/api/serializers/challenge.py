@@ -47,9 +47,7 @@ class GameMasterCreateChallengeSerializer(serializers.Serializer):
         help_text="Optional description of the challenge"
     )
     modifiers = serializers.ListField(
-        child=serializers.DictField(
-            child=serializers.UUIDField()
-        ),
+        child=serializers.UUIDField(),
         required=False,
         help_text="List of modifiers to apply to the challenge"
     )

@@ -14,7 +14,7 @@ from apps.gamemaster.api.serializers.challenge import (
 )
 
 
-class GameMasterChallengeViewSet(viewsets.ModelViewSet):
+class GameMasterChallengeViewSet(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for GameMasters to create and manage challenges for characters.
     
@@ -70,7 +70,6 @@ class GameMasterChallengeViewSet(viewsets.ModelViewSet):
             404: OpenApiResponse(description="Target character not found")
         },
         summary="Create Challenge",
-        tags=["GameMaster - Challenges"]
     )
     @action(detail=False, methods=['post'], url_path='create')
     @transaction.atomic
