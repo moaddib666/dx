@@ -5,7 +5,7 @@
     @mousedown="handleMouseDown"
     @mousemove="handleMouseMove"
     @mouseup="handleMouseUp"
-    @wheel="handleWheel"
+    @wheel.prevent="handleWheel"
   ></canvas>
 </template>
 
@@ -520,8 +520,6 @@ export default {
         camera.position.setFromSpherical(spherical)
         camera.lookAt(0, 1, 0)
       }
-
-      event.preventDefault()
     },
 
     // Resize handling

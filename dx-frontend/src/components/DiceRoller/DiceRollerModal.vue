@@ -4,14 +4,14 @@
     <div class="modal-container">
       <!-- Challenge Description -->
       <div class="challenge-description">
-        <p>This challenge tests your abilities. Roll the dice to determine your fate and see if you can overcome the difficulty.</p>
+        <p> {{ descriptionText }}</p>
       </div>
 
       <div class="modal-container--mask">
         <!-- Difficulty Class at the top -->
         <div class="difficulty-class">
           <h2>Difficulty</h2>
-          <h1>14</h1>
+          <h1>{{props.challenge?.difficulty || 12 }}</h1>
         </div>
 
         <!-- Dice Canvas -->
@@ -25,7 +25,7 @@
               class="dice-canvas"
           />
           <!-- CTA Text -->
-          <div class="dice-cta">Click to roll the dice</div>
+          <div v-if="showCTA" class="dice-cta">Click to roll the dice</div>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
     <DiceDebugToolbar
         v-if="props.debug"
         :dice-canvas="$refs.diceCanvas"
-        :visible="showDebugToolbar"
+        :visible="props.debug"
         @roll-started="onDebugRollStarted"
         @roll-completed="onDebugRollCompleted"
         @visibility-changed="onDebugVisibilityChanged"
@@ -77,8 +77,8 @@ type OutcomeType = 'Critical Fail' | 'Fail' | 'Success' | 'Critical Success';
 
 type Props = {
   visible: boolean;
-  debug: boolean;
-  challenge: ChallengeGeneric | null;
+  debug: boolean | undefined;
+  challenge: ChallengeGeneric | null | undefined;
 };
 
 // Props
@@ -102,9 +102,11 @@ const lastResult = ref<RollResult | null>(null);
 const lastApiResult = ref<RollResult | null>(null);
 const file = ref<File | null>(null);
 const currentOutcome = ref<OutcomeType | null>(null);
+const showCTA = ref(true);
 const diceBackendService = new DiceBackendService();
-const showDebugToolbar = ref(props.debug || process.env.NODE_ENV === 'development');
-
+const descriptionText = computed((): string => {
+  return props.challenge?.description || 'Roll a d20 to determine the outcome of your challenge.';
+});
 // Template refs
 const diceCanvas = ref<InstanceType<typeof DiceCanvas> | null>(null);
 
@@ -151,6 +153,7 @@ const rollDice = async (): Promise<void> => {
 
   try {
     currentState.value = 'rolling';
+    showCTA.value = false; // Hide CTA after first roll
 
     // Get dice roll result from backend API
     const apiResult = await diceBackendService.rollD20Dice();
@@ -227,6 +230,9 @@ const onDebugVisibilityChanged = (visible: boolean): void => {
 
 // Lifecycle hooks
 onMounted(async () => {
+  // Reset CTA visibility on mount
+  showCTA.value = true;
+
   try {
     // Load the texture
     const textureModule = await import('@/assets/textures/dice-texture.png');
@@ -366,7 +372,7 @@ onMounted(async () => {
 
 .dice-cta {
   position: absolute;
-  bottom: 0;
+  bottom: -1rem;
   left: 50%;
   transform: translateX(-50%);
   color: #f0f0f0;
