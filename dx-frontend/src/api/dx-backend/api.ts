@@ -2539,13 +2539,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -15706,8 +15706,8 @@ export const DiceApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        diceDiceList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/dice/dice/`;
+        diceChallengeList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/dice/challenge/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -15746,10 +15746,10 @@ export const DiceApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        diceDiceRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        diceChallengeRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('diceDiceRetrieve', 'id', id)
-            const localVarPath = `/api/dice/dice/{id}/`
+            assertParamExists('diceChallengeRetrieve', 'id', id)
+            const localVarPath = `/api/dice/challenge/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -15798,10 +15798,10 @@ export const DiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async diceDiceList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChallengeGeneric>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.diceDiceList(options);
+        async diceChallengeList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChallengeGeneric>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.diceChallengeList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceDiceList']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceChallengeList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -15810,10 +15810,10 @@ export const DiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async diceDiceRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChallengeGeneric>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.diceDiceRetrieve(id, options);
+        async diceChallengeRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChallengeGeneric>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.diceChallengeRetrieve(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceDiceRetrieve']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceChallengeRetrieve']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -15831,8 +15831,8 @@ export const DiceApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        diceDiceList(options?: any): AxiosPromise<Array<ChallengeGeneric>> {
-            return localVarFp.diceDiceList(options).then((request) => request(axios, basePath));
+        diceChallengeList(options?: any): AxiosPromise<Array<ChallengeGeneric>> {
+            return localVarFp.diceChallengeList(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -15840,8 +15840,8 @@ export const DiceApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        diceDiceRetrieve(id: string, options?: any): AxiosPromise<ChallengeGeneric> {
-            return localVarFp.diceDiceRetrieve(id, options).then((request) => request(axios, basePath));
+        diceChallengeRetrieve(id: string, options?: any): AxiosPromise<ChallengeGeneric> {
+            return localVarFp.diceChallengeRetrieve(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -15859,8 +15859,8 @@ export class DiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DiceApi
      */
-    public diceDiceList(options?: RawAxiosRequestConfig) {
-        return DiceApiFp(this.configuration).diceDiceList(options).then((request) => request(this.axios, this.basePath));
+    public diceChallengeList(options?: RawAxiosRequestConfig) {
+        return DiceApiFp(this.configuration).diceChallengeList(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -15870,8 +15870,8 @@ export class DiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DiceApi
      */
-    public diceDiceRetrieve(id: string, options?: RawAxiosRequestConfig) {
-        return DiceApiFp(this.configuration).diceDiceRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    public diceChallengeRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return DiceApiFp(this.configuration).diceChallengeRetrieve(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
