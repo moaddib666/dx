@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.gamemaster.api.views.character import GameMasterCharacterViewSet
 from apps.gamemaster.api.views.character_template import CharacterTemplateViewSet
+from apps.gamemaster.api.views.challenge import GameMasterChallengeViewSet
 from apps.gamemaster.api.views.impersonation import GameMasterImpersonationViewSet
 from apps.gamemaster.api.views.npc import NPCViewSet
 from apps.gamemaster.api.views.currency import GameMasterCurrencyTokenViewSet, GameMasterCharacterCurrencyViewSet
@@ -21,6 +22,9 @@ GameMasterRouter = DefaultRouter()
 GameMasterRouter.register('characters', GameMasterCharacterViewSet, basename='gamemaster-characters')
 GameMasterRouter.register('character-templates', CharacterTemplateViewSet, basename='gamemaster-character-templates')
 GameMasterRouter.register('npcs', NPCViewSet, basename='gamemaster-npcs')
+
+# Challenge viewsets
+GameMasterRouter.register('challenges', GameMasterChallengeViewSet, basename='gamemaster-challenges')
 
 # # Items viewsets
 GameMasterRouter.register('items', GameMasterItemViewSet, basename='gamemaster-items')
