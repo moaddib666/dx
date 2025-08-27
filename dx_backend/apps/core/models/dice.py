@@ -1,7 +1,7 @@
 import typing as t
 import uuid
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from apps.core.models import CharacterStats
 from apps.core.models import DiceRollResult
@@ -18,10 +18,17 @@ class Challenge(BaseModel):
     advantage: bool = False
     disadvantage: bool = False
 
-    modifiers: t.List["ChallengeModifier"] = []
+    # Use default_factory to avoid shared mutable defaults
+    modifiers: t.List["ChallengeModifier"] = Field(default_factory=list)
+
+    class Config:
+        from_attributes = True
 
 
 class ChallengeModifier(BaseModel):
     name: str
     icon: t.Optional[str] = None
     value: int
+
+    class Config:
+        from_attributes = True
