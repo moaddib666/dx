@@ -4,4 +4,4 @@ from apps.dice.api.views.challenge import ChallengeViewSet
 
 
 OpenAIRouter = DefaultRouter()
-OpenAIRouter.register('dice', ChallengeViewSet, basename='dice')
+OpenAIRouter.register('challenge', ChallengeViewSet, basename='dice-challenge')

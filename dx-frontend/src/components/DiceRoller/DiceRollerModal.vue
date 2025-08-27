@@ -19,6 +19,30 @@
 
       </div>
     </div>
+    <DiceModifierHolder
+        class="modifier-holder"
+        :modifiers="[
+      {
+        id: 'mod1',
+        name: 'Strength Boost',
+        value: 2,
+      },
+      {
+        id: 'mod2',
+        name: 'Agility Boost',
+        value: 3,
+      },
+      {
+        id: 'mod3',
+        name: 'Intelligence Boost',
+        value: 1,
+      },
+      {
+        id: 'mod4',
+        name: 'Speed Debuff',
+        value: -4,
+      }
+  ]"></DiceModifierHolder>
   </div>
 </template>
 
@@ -26,6 +50,7 @@
 import {defineComponent, ref, PropType} from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
 import DiceBackendService from "@/services/dice/DiceBackendService.js";
+import DiceModifierHolder from "@/components/DiceRoller/DiceModifier/DiceModifierHolder.vue";
 
 // Define types for component
 interface RollResult {
@@ -43,6 +68,7 @@ export default defineComponent({
   name: 'DiceRollerModal',
 
   components: {
+    DiceModifierHolder,
     DiceCanvas
   },
 
@@ -320,4 +346,12 @@ export default defineComponent({
   background-image: linear-gradient(to bottom, #f6e27a, #d4af37, #c5a028, #f6e27a);
 }
 
+.modifier-holder {
+  position: absolute;
+  bottom: 1rem;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
