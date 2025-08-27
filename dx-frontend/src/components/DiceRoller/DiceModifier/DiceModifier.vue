@@ -103,6 +103,15 @@ const formatedValue = computed(() => {
   font-weight: 500;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .negative-tint {
