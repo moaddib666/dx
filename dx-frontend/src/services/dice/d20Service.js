@@ -47,8 +47,8 @@ export class D20Service {
             // Scene setup
             this.scene = markRaw(new THREE.Scene())
 
-            // Camera setup - start with top view
-            this.camera = markRaw(new THREE.PerspectiveCamera(50, width / height, 2, 5))
+            // Camera setup - direct top-down view for clear dice face visibility
+            this.camera = markRaw(new THREE.PerspectiveCamera(50, width / height, 2, 8))
             this.camera.position.set(0, 6, 0)
             this.camera.lookAt(0, 0, 0)
 
@@ -223,7 +223,7 @@ export class D20Service {
                 .normalize()
             normals.push(normal.x, normal.y, normal.z, normal.x, normal.y, normal.z, normal.x, normal.y, normal.z)
 
-            // UVs
+            // UVs - simple uniform mapping that preserves text readability
             uvs.push(0.1, 0.2, 0.9, 0.2, 0.5, 0.85)
 
             // Create texture for this face
@@ -254,9 +254,11 @@ export class D20Service {
     }
 
     calculateTargetRotation(faceIndex) {
+        // Simple approach: point face normal toward camera (upward)
+        // This preserves the original text orientation that was working
         const quaternion = new THREE.Quaternion().setFromUnitVectors(
             this.faceNormals[faceIndex].clone(),
-            new THREE.Vector3(0, 1, 0)
+            new THREE.Vector3(0, 1, 0)  // Point upward toward camera
         )
         const euler = new THREE.Euler().setFromQuaternion(quaternion)
         return new THREE.Vector3(euler.x, euler.y, euler.z)

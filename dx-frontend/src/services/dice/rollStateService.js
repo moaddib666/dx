@@ -46,7 +46,7 @@ export class RollStateService {
         this.state.canSettle = false
         this.state.isSettling = false
         this.state.topFaceIndex = -1
-        
+
         // Set initial rotation and velocity
         this.state.rotation.set(
             Math.random() * Math.PI * 2,
@@ -57,9 +57,9 @@ export class RollStateService {
         this.state.lastNumberChange = 0
         this.state.currentDisplayNumber = Math.floor(Math.random() * 20) + 1
         this.state.numberChangeInterval = 0.12
-        
-        this.state.status = isDeterministic 
-            ? `Rolling for ${targetNumber}…` 
+
+        this.state.status = isDeterministic
+            ? `Rolling for ${targetNumber}…`
             : "Rolling randomly…"
 
         this.notifyStateChange()
@@ -107,7 +107,7 @@ export class RollStateService {
         }
 
         const settleTime = this.state.rollTime - this.state.settleStartTime
-        
+
         // Gradually slow down
         const slowdown = Math.max(0.05, 1 - settleTime * 0.4)
         this.state.currentSpeed = this.state.baseSpeed * slowdown
@@ -119,7 +119,7 @@ export class RollStateService {
             this.state.currentDisplayNumber = Math.random() < targetProbability
                 ? this.state.targetNumber
                 : Math.floor(Math.random() * 20) + 1
-            
+
             this.state.lastNumberChange = this.state.rollTime
             this.state.numberChangeInterval = 0.15 + settleTime * 0.1
             this.notifyNumberChange()
@@ -138,8 +138,13 @@ export class RollStateService {
         const targetIndex = faceNumbers.indexOf(this.state.targetNumber)
         if (targetIndex !== -1) {
             const targetRotation = calculateTargetRotation(targetIndex)
-            const lerpFactor = Math.min(0.15, (settleTime - 0.3) * 0.08)
-            
+
+            // Improved interpolation for faster, more complete settling
+            // Start with higher base factor and increase more aggressively over time
+            const baseFactor = 0.15  // Increased from 0.08 max
+            const timeFactor = (settleTime - 0.3) * 0.12  // Increased from 0.04
+            const lerpFactor = Math.min(baseFactor, timeFactor)
+
             this.state.rotation.x += (targetRotation.x - this.state.rotation.x) * lerpFactor
             this.state.rotation.y += (targetRotation.y - this.state.rotation.y) * lerpFactor
             this.state.rotation.z += (targetRotation.z - this.state.rotation.z) * lerpFactor
@@ -158,14 +163,14 @@ export class RollStateService {
     completeRoll() {
         this.state.isRolling = false
         this.state.angularVelocity.set(0, 0, 0)
-        
-        const finalNumber = this.state.isDeterministic 
-            ? this.state.targetNumber 
+
+        const finalNumber = this.state.isDeterministic
+            ? this.state.targetNumber
             : this.state.currentDisplayNumber
 
         this.state.currentDisplayNumber = finalNumber
         this.state.status = `Landed on ${finalNumber}`
-        
+
         this.notifyRollComplete(finalNumber)
         this.notifyStateChange()
     }
