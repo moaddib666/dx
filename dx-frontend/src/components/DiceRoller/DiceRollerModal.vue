@@ -29,6 +29,11 @@
         </div>
       </div>
 
+      <!-- Skip Animation Button -->
+      <div v-if="canSkipAnimation && !isSkipRequested" class="skip-animation-button" @click="skipAnimation">
+        Skip Animation
+      </div>
+
       <!-- Outcome Banner at the bottom with cool styling -->
       <div v-if="currentState === 'results' && lastResult" class="outcome-banner" :class="outcomeClass">
         {{ currentOutcome }}
@@ -112,6 +117,10 @@ const isAnimatingModifiers = ref(false);
 const currentlyHighlightedModifier = ref<number>(-1);
 const modifiedRollValue = ref<number>(0);
 const originalRollValue = ref<number>(0);
+
+// Skip animation state
+const canSkipAnimation = ref(false);
+const isSkipRequested = ref(false);
 const descriptionText = computed((): string => {
   return props.challenge?.description || 'Roll a d20 to determine the outcome of your challenge.';
 });
@@ -163,6 +172,10 @@ const rollDice = async (): Promise<void> => {
     currentState.value = 'rolling';
     showCTA.value = false; // Hide CTA after first roll
 
+    // Enable skip animation during rolling
+    canSkipAnimation.value = true;
+    isSkipRequested.value = false;
+
     // Get dice roll result from backend API
     const apiResult = await diceBackendService.rollD20Dice();
 
@@ -212,13 +225,20 @@ const onRollComplete = (result: RollResult): void => {
 
   // Check if we have modifiers to animate and if the roll is not critical
   if (props.challenge?.modifiers && props.challenge.modifiers.length > 0 && !isCriticalRoll(combinedResult.number)) {
-    // Start modifier animation sequence for non-critical rolls
-    setTimeout(() => {
-      animateModifiers();
-    }, 1000); // Wait 1 second after initial roll result display
+    // Check if skip was requested during rolling
+    if (isSkipRequested.value) {
+      // Skip directly to final result with all modifiers applied
+      skipModifierAnimation();
+    } else {
+      // Start modifier animation sequence for non-critical rolls
+      setTimeout(() => {
+        animateModifiers();
+      }, 1000); // Wait 1 second after initial roll result display
+    }
   } else {
     // No modifiers, critical roll, or no modifiers to apply - emit result immediately
     // For critical rolls, preserve the original critical outcome regardless of modifiers
+    canSkipAnimation.value = false;
     emit('roll-complete', combinedResult);
   }
 
@@ -254,6 +274,66 @@ const isCriticalRoll = (rollValue: number): boolean => {
   return rollValue === 1 || rollValue === 20;
 };
 
+// Skip animation functionality
+const skipAnimation = (): void => {
+  if (!canSkipAnimation.value || isSkipRequested.value) return;
+
+  isSkipRequested.value = true;
+  canSkipAnimation.value = false;
+
+  // Handle different animation states
+  if (currentState.value === 'rolling') {
+    // Skip dice rolling animation - wait for roll to complete naturally but skip modifier animation
+    // The skip will be handled in onRollComplete
+    return;
+  }
+
+  if (currentState.value === 'applying-modifiers') {
+    // Skip modifier animation and calculate final result immediately
+    skipModifierAnimation();
+  }
+};
+
+const skipModifierAnimation = (): void => {
+  if (!props.challenge?.modifiers || !lastResult.value) return;
+
+  // Stop current animation
+  isAnimatingModifiers.value = false;
+  currentlyHighlightedModifier.value = -1;
+
+  // Calculate final result with all modifiers applied
+  let finalModifiedValue = originalRollValue.value;
+
+  // Apply all modifiers at once
+  for (const modifier of props.challenge.modifiers) {
+    finalModifiedValue += modifier.value;
+  }
+
+  modifiedRollValue.value = finalModifiedValue;
+
+  // Update dice display to final result immediately
+  const displayValue = Math.max(1, Math.min(20, finalModifiedValue));
+  if (diceCanvas.value) {
+    diceCanvas.value.rollToTarget(displayValue).catch(error => {
+      console.warn('Could not update dice to show final number:', error);
+    });
+  }
+
+  // Create final result
+  const finalResult = {
+    ...lastResult.value,
+    number: finalModifiedValue,
+    originalNumber: originalRollValue.value,
+    modifiedBy: finalModifiedValue - originalRollValue.value
+  };
+
+  // Determine final outcome
+  currentOutcome.value = diceBackendService.determineOutcome(finalModifiedValue) as OutcomeType;
+
+  currentState.value = 'results';
+  emit('roll-complete', finalResult);
+};
+
 // Modifier animation functions
 const animateModifiers = async (): Promise<void> => {
   if (!props.challenge?.modifiers || props.challenge.modifiers.length === 0) {
@@ -263,15 +343,30 @@ const animateModifiers = async (): Promise<void> => {
   currentState.value = 'applying-modifiers';
   isAnimatingModifiers.value = true;
 
+  // Enable skip animation during modifier animation
+  canSkipAnimation.value = true;
+
   // Animate each modifier sequentially
   for (let i = 0; i < props.challenge.modifiers.length; i++) {
+    // Check if skip was requested
+    if (isSkipRequested.value) {
+      skipModifierAnimation();
+      return;
+    }
+
     const modifier = props.challenge.modifiers[i];
 
     // Highlight current modifier
     currentlyHighlightedModifier.value = i;
 
-    // Wait for highlight animation
+    // Wait for highlight animation (with skip check)
     await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Check again after delay
+    if (isSkipRequested.value) {
+      skipModifierAnimation();
+      return;
+    }
 
     // Apply modifier value
     const previousValue = modifiedRollValue.value;
@@ -283,13 +378,16 @@ const animateModifiers = async (): Promise<void> => {
     // Trigger dice shake and number update
     await shakeDiceAndUpdateNumber(displayValue);
 
-    // Wait before next modifier
+    // Wait before next modifier (with skip check)
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 
   // Clear highlighting
   currentlyHighlightedModifier.value = -1;
   isAnimatingModifiers.value = false;
+
+  // Disable skip animation as animation is complete
+  canSkipAnimation.value = false;
 
   // Update final outcome based on modified roll value
   const finalResult = {
@@ -564,5 +662,40 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.skip-animation-button {
+  position: absolute;
+  top: 12rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #f0f0f0;
+  border: 2px solid #d4af37;
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.9rem;
+  font-family: 'Copperplate Gothic', 'Gothic', serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 15;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.skip-animation-button:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: #f6e27a;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+.skip-animation-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 </style>
