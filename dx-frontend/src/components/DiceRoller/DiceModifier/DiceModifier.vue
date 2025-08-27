@@ -54,8 +54,10 @@ const formatedValue = computed(() => {
   align-items: center;
   justify-content: space-between;
   gap: 0.5em;
-  width: 5vw;
-  height: 7.5vw;
+  width: clamp(60px, 5vw, 120px);
+  height: clamp(90px, 7.5vw, 180px);
+  min-width: 60px;
+  min-height: 90px;
   position: relative;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
@@ -74,7 +76,7 @@ const formatedValue = computed(() => {
 }
 
 .modifier-value {
-  font-size: 1.1em;
+  font-size: clamp(0.8rem, 1.1em, 1.4rem);
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -97,7 +99,7 @@ const formatedValue = computed(() => {
 
 .modifier-name {
   z-index: 1;
-  font-size: 0.7em;
+  font-size: clamp(0.5rem, 0.7em, 1rem);
   font-weight: 500;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
