@@ -26,6 +26,7 @@ class Challenge(BaseModel):
 
 
 class ChallengeModifier(BaseModel):
+    id: uuid.UUID
     name: str
     icon: t.Optional[str] = None
     value: int

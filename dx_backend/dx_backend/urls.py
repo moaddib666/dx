@@ -36,6 +36,7 @@ urlpatterns = [
 
     # Feature Modules
     path('api/character/', include('apps.character.urls')),
+    path('api/dice/', include('apps.dice.urls')),
     path('api/effects/', include('apps.effects.urls')),
     path('api/school/', include('apps.school.urls')),
     path('api/world/', include('apps.world.urls')),
