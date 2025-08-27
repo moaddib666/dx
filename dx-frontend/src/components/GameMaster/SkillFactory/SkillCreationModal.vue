@@ -203,7 +203,7 @@ import {
   AttributesEnum,
   ImpactTypeEnum,
   Type82bEnum,
-  StatEnum,
+  IdEa2Enum,
   type SkillCreateRequest,
   type CostRequest,
   type AssignableEffectRequest,
@@ -304,13 +304,13 @@ const applyTemplate = (templateType: string) => {
               base: 13,
               requires: [
                 {
-                  stat: StatEnum.Concentration,
+                  stat: IdEa2Enum.Concentration,
                   value: 10
                 }
               ],
               scaling: [
                 {
-                  stat: StatEnum.Concentration,
+                  stat: IdEa2Enum.Concentration,
                   value: 0.05
                 }
               ],
@@ -349,13 +349,13 @@ const applyTemplate = (templateType: string) => {
               base: 6,
               requires: [
                 {
-                  stat: StatEnum.PhysicalStrength,
+                  stat: IdEa2Enum.PhysicalStrength,
                   value: 10
                 }
               ],
               scaling: [
                 {
-                  stat: StatEnum.FlowResonance,
+                  stat: IdEa2Enum.FlowResonance,
                   value: 0.05
                 }
               ],
@@ -394,13 +394,13 @@ const applyTemplate = (templateType: string) => {
               base: 12,
               requires: [
                 {
-                  stat: StatEnum.FlowManipulation,
+                  stat: IdEa2Enum.FlowManipulation,
                   value: 10
                 }
               ],
               scaling: [
                 {
-                  stat: StatEnum.FlowManipulation,
+                  stat: IdEa2Enum.FlowManipulation,
                   value: 0.05
                 }
               ],
@@ -443,13 +443,13 @@ const applyTemplate = (templateType: string) => {
               base: 20,
               requires: [
                 {
-                  stat: StatEnum.FlowResonance,
+                  stat: IdEa2Enum.FlowResonance,
                   value: 10
                 }
               ],
               scaling: [
                 {
-                  stat: StatEnum.FlowResonance,
+                  stat: IdEa2Enum.FlowResonance,
                   value: 0.05
                 }
               ],

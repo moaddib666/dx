@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { ImpactTypeEnum, Type82bEnum, StatEnum, type ImpactRequest, type FormulaRequest } from '@/api/dx-backend'
+import { ImpactTypeEnum, Type82bEnum, IdEa2Enum, type ImpactRequest, type FormulaRequest } from '@/api/dx-backend'
 import FormulaBuilder from './FormulaBuilder.vue'
 
 // Props
@@ -112,11 +112,11 @@ const addImpact = () => {
     formula: {
       base: isFirstImpact ? 10 : 0,
       requires: isFirstImpact ? [{
-        stat: StatEnum.PhysicalStrength,
+        stat: IdEa2Enum.PhysicalStrength,
         value: 5
       }] : [],
       scaling: isFirstImpact ? [{
-        stat: StatEnum.PhysicalStrength,
+        stat: IdEa2Enum.PhysicalStrength,
         value: 1.0
       }] : [],
       min_efficiency: isFirstImpact ? 0.5 : null,

@@ -692,6 +692,158 @@ export interface CampaignRequest {
     'name': string;
 }
 /**
+ * Event fired when a new challenge is created for a character.
+ * @export
+ * @interface ChallengeCreatedEvent
+ */
+export interface ChallengeCreatedEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeCreatedEvent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ChallengeCreatedEvent
+     */
+    'timestamp'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeCreatedEvent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {EventCategory}
+     * @memberof ChallengeCreatedEvent
+     */
+    'category'?: EventCategory;
+    /**
+     * 
+     * @type {ChallengeCreatedEventData}
+     * @memberof ChallengeCreatedEvent
+     */
+    'data': ChallengeCreatedEventData;
+}
+
+
+/**
+ * Data for challenge created event with full typing coverage.
+ * @export
+ * @interface ChallengeCreatedEventData
+ */
+export interface ChallengeCreatedEventData {
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeCreatedEventData
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeCreatedEventData
+     */
+    'character_id': string;
+}
+/**
+ * 
+ * @export
+ * @interface ChallengeGeneric
+ */
+export interface ChallengeGeneric {
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeGeneric
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ChallengeGeneric
+     */
+    'difficulty'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeGeneric
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ChallengeGeneric
+     */
+    'dice_sides'?: number;
+    /**
+     * 
+     * @type {DiceRollResult}
+     * @memberof ChallengeGeneric
+     */
+    'outcome': DiceRollResult;
+    /**
+     * 
+     * @type {IdEa2Enum}
+     * @memberof ChallengeGeneric
+     */
+    'stat'?: IdEa2Enum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ChallengeGeneric
+     */
+    'advantage'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof ChallengeGeneric
+     */
+    'disadvantage'?: boolean;
+    /**
+     * 
+     * @type {Array<ChallengeModifier>}
+     * @memberof ChallengeGeneric
+     */
+    'modifiers': Array<ChallengeModifier>;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface ChallengeModifier
+ */
+export interface ChallengeModifier {
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeModifier
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeModifier
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ChallengeModifier
+     */
+    'icon'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ChallengeModifier
+     */
+    'value': number;
+}
+/**
  * Serializer for Chapter model.
  * @export
  * @interface Chapter
@@ -2415,10 +2567,10 @@ export interface DetailStat {
     'dice_rolls': Array<DiceRollResult>;
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof DetailStat
      */
-    'name'?: StatEnum;
+    'name'?: IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -3257,6 +3409,75 @@ export interface GameEventRequest {
 /**
  * 
  * @export
+ * @interface GameMasterChallengeResponse
+ */
+export interface GameMasterChallengeResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterChallengeResponse
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof GameMasterChallengeResponse
+     */
+    'difficulty': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterChallengeResponse
+     */
+    'description': string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof GameMasterChallengeResponse
+     */
+    'dice_sides': number;
+    /**
+     * 
+     * @type {Nested}
+     * @memberof GameMasterChallengeResponse
+     */
+    'outcome': Nested;
+    /**
+     * 
+     * @type {IdEa2Enum}
+     * @memberof GameMasterChallengeResponse
+     */
+    'stat': IdEa2Enum;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GameMasterChallengeResponse
+     */
+    'advantage': boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GameMasterChallengeResponse
+     */
+    'disadvantage': boolean;
+    /**
+     * 
+     * @type {Array<Nested>}
+     * @memberof GameMasterChallengeResponse
+     */
+    'modifiers': Array<Nested>;
+    /**
+     * 
+     * @type {Nested}
+     * @memberof GameMasterChallengeResponse
+     */
+    'target': Nested;
+}
+
+
+/**
+ * 
+ * @export
  * @interface GameMasterCharacterAction
  */
 export interface GameMasterCharacterAction {
@@ -3680,6 +3901,12 @@ export interface GameMasterCharacterInfo {
      * @memberof GameMasterCharacterInfo
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameMasterCharacterInfo
+     */
+    'challenge'?: string | null;
 }
 
 
@@ -3769,10 +3996,10 @@ export interface GameMasterCharacterStat {
     'id': string;
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof GameMasterCharacterStat
      */
-    'name'?: StatEnum;
+    'name'?: IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -3807,6 +4034,63 @@ export interface GameMasterCharacterStatsCard {
      */
     'stats': Array<GameMasterCharacterStat>;
 }
+/**
+ * Serializer for GameMaster challenge creation requests.  This serializer handles the data needed to create a challenge for a character, including target selection, dice configuration, difficulty, and modifiers.
+ * @export
+ * @interface GameMasterCreateChallengeRequest
+ */
+export interface GameMasterCreateChallengeRequest {
+    /**
+     * The character who will face this challenge
+     * @type {string}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'target_character': string;
+    /**
+     * Difficulty Class (DC) for the challenge
+     * @type {number}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'difficulty': number;
+    /**
+     * Number of sides on the dice (default: 20)
+     * @type {number}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'dice_sides'?: number;
+    /**
+     * Character stat to use for the challenge  * `Physical Strength` - Physical Strength * `Mental Strength` - Mental Strength * `Flow Resonance` - Flow Resonance * `Concentration` - Concentration * `Flow Manipulation` - Flow Manipulation * `Flow Connection` - Flow Connection * `Knowledge` - Knowledge * `Speed` - Speed * `Luck` - Luck * `Charisma` - Charisma
+     * @type {IdEa2Enum}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'stat'?: IdEa2Enum;
+    /**
+     * Whether the character has advantage on this challenge
+     * @type {boolean}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'advantage'?: boolean;
+    /**
+     * Whether the character has disadvantage on this challenge
+     * @type {boolean}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'disadvantage'?: boolean;
+    /**
+     * Optional description of the challenge
+     * @type {string}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'description'?: string;
+    /**
+     * List of modifiers to apply to the challenge
+     * @type {Array<string>}
+     * @memberof GameMasterCreateChallengeRequest
+     */
+    'modifiers'?: Array<string>;
+}
+
+
 /**
  * 
  * @export
@@ -4139,6 +4423,28 @@ export const Id82bEnum = {
 } as const;
 
 export type Id82bEnum = typeof Id82bEnum[keyof typeof Id82bEnum];
+
+
+/**
+ * * `Physical Strength` - Physical Strength * `Mental Strength` - Mental Strength * `Flow Resonance` - Flow Resonance * `Concentration` - Concentration * `Flow Manipulation` - Flow Manipulation * `Flow Connection` - Flow Connection * `Knowledge` - Knowledge * `Speed` - Speed * `Luck` - Luck * `Charisma` - Charisma
+ * @export
+ * @enum {string}
+ */
+
+export const IdEa2Enum = {
+    PhysicalStrength: 'Physical Strength',
+    MentalStrength: 'Mental Strength',
+    FlowResonance: 'Flow Resonance',
+    Concentration: 'Concentration',
+    FlowManipulation: 'Flow Manipulation',
+    FlowConnection: 'Flow Connection',
+    Knowledge: 'Knowledge',
+    Speed: 'Speed',
+    Luck: 'Luck',
+    Charisma: 'Charisma'
+} as const;
+
+export type IdEa2Enum = typeof IdEa2Enum[keyof typeof IdEa2Enum];
 
 
 /**
@@ -5235,6 +5541,12 @@ export interface Nested {
      * @memberof Nested
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Nested
+     */
+    'challenge'?: string | null;
 }
 
 
@@ -5382,6 +5694,12 @@ export interface NestedRequest {
      * @memberof NestedRequest
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NestedRequest
+     */
+    'challenge'?: string | null;
 }
 
 
@@ -8442,28 +8760,6 @@ export interface Stat {
     'value': number;
 }
 /**
- * * `Physical Strength` - Physical Strength * `Mental Strength` - Mental Strength * `Flow Resonance` - Flow Resonance * `Concentration` - Concentration * `Flow Manipulation` - Flow Manipulation * `Flow Connection` - Flow Connection * `Knowledge` - Knowledge * `Speed` - Speed * `Luck` - Luck * `Charisma` - Charisma
- * @export
- * @enum {string}
- */
-
-export const StatEnum = {
-    PhysicalStrength: 'Physical Strength',
-    MentalStrength: 'Mental Strength',
-    FlowResonance: 'Flow Resonance',
-    Concentration: 'Concentration',
-    FlowManipulation: 'Flow Manipulation',
-    FlowConnection: 'Flow Connection',
-    Knowledge: 'Knowledge',
-    Speed: 'Speed',
-    Luck: 'Luck',
-    Charisma: 'Charisma'
-} as const;
-
-export type StatEnum = typeof StatEnum[keyof typeof StatEnum];
-
-
-/**
  * 
  * @export
  * @interface StatModificator
@@ -8477,10 +8773,10 @@ export interface StatModificator {
     'id': string;
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof StatModificator
      */
-    'stat'?: StatEnum;
+    'stat'?: IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -8498,10 +8794,10 @@ export interface StatModificator {
 export interface StatModificatorRequest {
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof StatModificatorRequest
      */
-    'stat'?: StatEnum;
+    'stat'?: IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -8519,10 +8815,10 @@ export interface StatModificatorRequest {
 export interface StatObject {
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof StatObject
      */
-    'id': StatEnum;
+    'id': IdEa2Enum;
     /**
      * 
      * @type {string}
@@ -8546,10 +8842,10 @@ export interface StatObject {
 export interface StatRequirement {
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof StatRequirement
      */
-    'stat': StatEnum;
+    'stat': IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -8567,10 +8863,10 @@ export interface StatRequirement {
 export interface StatRequirementRequest {
     /**
      * 
-     * @type {StatEnum}
+     * @type {IdEa2Enum}
      * @memberof StatRequirementRequest
      */
-    'stat': StatEnum;
+    'stat': IdEa2Enum;
     /**
      * 
      * @type {number}
@@ -15400,6 +15696,188 @@ export class CurrencyApi extends BaseAPI {
 
 
 /**
+ * DiceApi - axios parameter creator
+ * @export
+ */
+export const DiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        diceDiceList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/dice/dice/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        diceDiceRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('diceDiceRetrieve', 'id', id)
+            const localVarPath = `/api/dice/dice/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DiceApi - functional programming interface
+ * @export
+ */
+export const DiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async diceDiceList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ChallengeGeneric>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.diceDiceList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceDiceList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async diceDiceRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChallengeGeneric>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.diceDiceRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DiceApi.diceDiceRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DiceApi - factory interface
+ * @export
+ */
+export const DiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        diceDiceList(options?: any): AxiosPromise<Array<ChallengeGeneric>> {
+            return localVarFp.diceDiceList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        diceDiceRetrieve(id: string, options?: any): AxiosPromise<ChallengeGeneric> {
+            return localVarFp.diceDiceRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DiceApi - object-oriented interface
+ * @export
+ * @class DiceApi
+ * @extends {BaseAPI}
+ */
+export class DiceApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DiceApi
+     */
+    public diceDiceList(options?: RawAxiosRequestConfig) {
+        return DiceApiFp(this.configuration).diceDiceList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id A UUID string identifying this challenge.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DiceApi
+     */
+    public diceDiceRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return DiceApiFp(this.configuration).diceDiceRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * EffectsApi - axios parameter creator
  * @export
  */
@@ -17835,6 +18313,134 @@ export class GalleryApi extends BaseAPI {
 export const GamemasterApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Create a new challenge for a character
+         * @summary Create Challenge
+         * @param {GameMasterCreateChallengeRequest} gameMasterCreateChallengeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesCreateCreate: async (gameMasterCreateChallengeRequest: GameMasterCreateChallengeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'gameMasterCreateChallengeRequest' is not null or undefined
+            assertParamExists('gamemasterChallengesCreateCreate', 'gameMasterCreateChallengeRequest', gameMasterCreateChallengeRequest)
+            const localVarPath = `/api/gamemaster/challenges/create/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(gameMasterCreateChallengeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/challenges/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterChallengesRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/challenges/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Create an NPC from a template.  This action creates a new NPC based on the specified template and position. It requires template_id and position_id parameters.
          * @param {CreateNPCFromTemplateRequest} createNPCFromTemplateRequest 
          * @param {*} [options] Override http request option.
@@ -19761,6 +20367,42 @@ export const GamemasterApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = GamemasterApiAxiosParamCreator(configuration)
     return {
         /**
+         * Create a new challenge for a character
+         * @summary Create Challenge
+         * @param {GameMasterCreateChallengeRequest} gameMasterCreateChallengeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest: GameMasterCreateChallengeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterChallengeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterChallengesCreateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterChallengesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GameMasterChallengeResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterChallengesList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterChallengesList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterChallengesRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameMasterChallengeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterChallengesRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GamemasterApi.gamemasterChallengesRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Create an NPC from a template.  This action creates a new NPC based on the specified template and position. It requires template_id and position_id parameters.
          * @param {CreateNPCFromTemplateRequest} createNPCFromTemplateRequest 
          * @param {*} [options] Override http request option.
@@ -20291,6 +20933,33 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
     const localVarFp = GamemasterApiFp(configuration)
     return {
         /**
+         * Create a new challenge for a character
+         * @summary Create Challenge
+         * @param {GameMasterCreateChallengeRequest} gameMasterCreateChallengeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest: GameMasterCreateChallengeRequest, options?: any): AxiosPromise<GameMasterChallengeResponse> {
+            return localVarFp.gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesList(options?: any): AxiosPromise<Array<GameMasterChallengeResponse>> {
+            return localVarFp.gamemasterChallengesList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+         * @param {string} id A UUID string identifying this challenge.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterChallengesRetrieve(id: string, options?: any): AxiosPromise<GameMasterChallengeResponse> {
+            return localVarFp.gamemasterChallengesRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Create an NPC from a template.  This action creates a new NPC based on the specified template and position. It requires template_id and position_id parameters.
          * @param {CreateNPCFromTemplateRequest} createNPCFromTemplateRequest 
          * @param {*} [options] Override http request option.
@@ -20697,6 +21366,39 @@ export const GamemasterApiFactory = function (configuration?: Configuration, bas
  * @extends {BaseAPI}
  */
 export class GamemasterApi extends BaseAPI {
+    /**
+     * Create a new challenge for a character
+     * @summary Create Challenge
+     * @param {GameMasterCreateChallengeRequest} gameMasterCreateChallengeRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest: GameMasterCreateChallengeRequest, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterChallengesCreateCreate(gameMasterCreateChallengeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterChallengesList(options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterChallengesList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * ViewSet for GameMasters to create and manage challenges for characters.  This viewset provides functionality for GameMasters to: - Create new challenges for characters - View existing challenges - Configure challenge parameters including difficulty, dice, modifiers, and advantage/disadvantage  The challenge creation process includes business logic that automatically adds modifiers based on character state, stats, effects, skills, and items.
+     * @param {string} id A UUID string identifying this challenge.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GamemasterApi
+     */
+    public gamemasterChallengesRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GamemasterApiFp(this.configuration).gamemasterChallengesRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Create an NPC from a template.  This action creates a new NPC based on the specified template and position. It requires template_id and position_id parameters.
      * @param {CreateNPCFromTemplateRequest} createNPCFromTemplateRequest 

@@ -33,16 +33,16 @@
           <div class="form-group">
             <label>Stat</label>
             <select v-model="req.stat" class="form-input">
-              <option :value="StatEnum.PhysicalStrength">Physical Strength</option>
-              <option :value="StatEnum.MentalStrength">Mental Strength</option>
-              <option :value="StatEnum.FlowResonance">Flow Resonance</option>
-              <option :value="StatEnum.Concentration">Concentration</option>
-              <option :value="StatEnum.FlowManipulation">Flow Manipulation</option>
-              <option :value="StatEnum.FlowConnection">Flow Connection</option>
-              <option :value="StatEnum.Knowledge">Knowledge</option>
-              <option :value="StatEnum.Speed">Speed</option>
-              <option :value="StatEnum.Luck">Luck</option>
-              <option :value="StatEnum.Charisma">Charisma</option>
+              <option :value="IdEa2Enum.PhysicalStrength">Physical Strength</option>
+              <option :value="IdEa2Enum.MentalStrength">Mental Strength</option>
+              <option :value="IdEa2Enum.FlowResonance">Flow Resonance</option>
+              <option :value="IdEa2Enum.Concentration">Concentration</option>
+              <option :value="IdEa2Enum.FlowManipulation">Flow Manipulation</option>
+              <option :value="IdEa2Enum.FlowConnection">Flow Connection</option>
+              <option :value="IdEa2Enum.Knowledge">Knowledge</option>
+              <option :value="IdEa2Enum.Speed">Speed</option>
+              <option :value="IdEa2Enum.Luck">Luck</option>
+              <option :value="IdEa2Enum.Charisma">Charisma</option>
             </select>
           </div>
 
@@ -82,16 +82,16 @@
           <div class="form-group">
             <label>Stat</label>
             <select v-model="scaling.stat" class="form-input">
-              <option :value="StatEnum.PhysicalStrength">Physical Strength</option>
-              <option :value="StatEnum.MentalStrength">Mental Strength</option>
-              <option :value="StatEnum.FlowResonance">Flow Resonance</option>
-              <option :value="StatEnum.Concentration">Concentration</option>
-              <option :value="StatEnum.FlowManipulation">Flow Manipulation</option>
-              <option :value="StatEnum.FlowConnection">Flow Connection</option>
-              <option :value="StatEnum.Knowledge">Knowledge</option>
-              <option :value="StatEnum.Speed">Speed</option>
-              <option :value="StatEnum.Luck">Luck</option>
-              <option :value="StatEnum.Charisma">Charisma</option>
+              <option :value="IdEa2Enum.PhysicalStrength">Physical Strength</option>
+              <option :value="IdEa2Enum.MentalStrength">Mental Strength</option>
+              <option :value="IdEa2Enum.FlowResonance">Flow Resonance</option>
+              <option :value="IdEa2Enum.Concentration">Concentration</option>
+              <option :value="IdEa2Enum.FlowManipulation">Flow Manipulation</option>
+              <option :value="IdEa2Enum.FlowConnection">Flow Connection</option>
+              <option :value="IdEa2Enum.Knowledge">Knowledge</option>
+              <option :value="IdEa2Enum.Speed">Speed</option>
+              <option :value="IdEa2Enum.Luck">Luck</option>
+              <option :value="IdEa2Enum.Charisma">Charisma</option>
             </select>
           </div>
 
@@ -145,7 +145,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { StatEnum, type FormulaRequest, type StatRequirementRequest, type ScalingRequest } from '@/api/dx-backend'
+import { IdEa2Enum, type FormulaRequest, type StatRequirementRequest, type ScalingRequest } from '@/api/dx-backend'
 
 // Props
 interface Props {
@@ -173,7 +173,7 @@ const formula = ref<FormulaRequest>({
 const addRequirement = () => {
   formula.value.requires = formula.value.requires || []
   formula.value.requires.push({
-    stat: StatEnum.PhysicalStrength,
+    stat: IdEa2Enum.PhysicalStrength,
     value: 0
   })
   emitUpdate()
@@ -187,7 +187,7 @@ const removeRequirement = (index: number) => {
 const addScaling = () => {
   formula.value.scaling = formula.value.scaling || []
   formula.value.scaling.push({
-    stat: StatEnum.PhysicalStrength,
+    stat: IdEa2Enum.PhysicalStrength,
     value: 0
   })
   emitUpdate()
