@@ -38,6 +38,22 @@
           </button>
         </div>
       </div>
+
+      <!-- Auto-Connect Settings -->
+      <div class="tool-group">
+        <h4>Connection Settings</h4>
+        <div class="tool-grid">
+          <button
+              :class="['tool-btn', 'toggle-btn', { 'active': autoConnectEnabled }]"
+              :title="autoConnectEnabled ? 'Auto-connect is ON - new rooms will automatically connect to selected room' : 'Auto-connect is OFF - use connection tool to connect rooms manually'"
+              @click="toggleAutoConnect"
+          >
+            <i :class="autoConnectEnabled ? 'icon-link' : 'icon-unlink'"></i>
+            <span>Auto Connect</span>
+            <div class="toggle-indicator">{{ autoConnectEnabled ? 'ON' : 'OFF' }}</div>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -53,8 +69,12 @@ export default {
       default: WorldEditorTool.SELECT
     }
   },
+  emits: ['tool-selected', 'auto-connect-toggled'],
   data() {
     return {
+      // Auto-connect toggle state
+      autoConnectEnabled: true, // Default to enabled for convenience
+
       // Tool options
       connectionOptions: {
         vertical: false
@@ -189,6 +209,11 @@ export default {
   methods: {
     selectTool(toolId) {
       this.$emit('tool-selected', toolId);
+    },
+
+    toggleAutoConnect() {
+      this.autoConnectEnabled = !this.autoConnectEnabled;
+      this.$emit('auto-connect-toggled', this.autoConnectEnabled);
     },
 
     updateToolOptions() {

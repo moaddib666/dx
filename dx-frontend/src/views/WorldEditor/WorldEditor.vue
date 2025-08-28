@@ -64,6 +64,7 @@
             :selectedTool="selectedTool"
             class="editor-toolbar"
             @tool-selected="onToolSelected"
+            @auto-connect-toggled="onAutoConnectToggled"
         />
 
 
@@ -254,6 +255,7 @@ export default {
       showLayersPanel: false, // Layers panel visibility state
       showItemsPanel: true, // Items panel visibility state
       showNPCTemplatesPanel: false, // NPC Templates panel visibility state
+      autoConnectEnabled: true, // Auto-connect toggle state (default enabled)
 
       // Timer for current time update
       timeUpdateInterval: null,
@@ -543,6 +545,11 @@ export default {
       this.service.setTool(tool);
     },
 
+    onAutoConnectToggled(enabled) {
+      this.autoConnectEnabled = enabled;
+      this.setLastAction(`Auto-connect ${enabled ? 'enabled' : 'disabled'}`);
+    },
+
     onLayerToggled(layer) {
       this.service.toggleLayer(layer);
     },
@@ -613,11 +620,11 @@ export default {
           this.service.clearSelection();
           this.service.toggleRoomSelection(newRoom.id);
 
-          // Create automatic connection if there was a previously selected room (Issue #3)
-          if (previouslySelectedRoom && previouslySelectedRoom.id !== newRoom.id) {
+          // Create automatic connection if auto-connect is enabled and there was a previously selected room
+          if (this.autoConnectEnabled && previouslySelectedRoom && previouslySelectedRoom.id !== newRoom.id) {
             try {
               await this.service.createConnection(previouslySelectedRoom.id, newRoom.id, false);
-              this.setLastAction(`Created room and connected to ${previouslySelectedRoom.getDisplayName?.() || 'previous room'}`);
+              this.setLastAction(`Created room and auto-connected to ${previouslySelectedRoom.getDisplayName?.() || 'previous room'}`);
             } catch (connectionError) {
               console.error('Failed to create automatic connection:', connectionError);
               this.setLastAction('Created room but failed to create automatic connection');

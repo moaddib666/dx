@@ -527,12 +527,37 @@ export class WorldEditorService {
      */
     async createConnection(fromRoomId, toRoomId, isVertical = false) {
         try {
-            // This would need a backend API endpoint for creating connections
-            // For now, we'll create a local connection
-            const connectionId = `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            // Get room objects to validate they exist
+            const fromRoom = this.state.rooms.get(fromRoomId);
+            const toRoom = this.state.rooms.get(toRoomId);
 
+            if (!fromRoom) {
+                throw new Error(`Source room with id ${fromRoomId} not found`);
+            }
+            if (!toRoom) {
+                throw new Error(`Target room with id ${toRoomId} not found`);
+            }
+
+            // Create connection via backend API
+            const connectionRequest = {
+                position_from: fromRoomId,
+                position_to: toRoomId,
+                is_active: true,
+                is_public: true,
+                locked: false
+            };
+
+            const response = await GameMasterApi.gamemasterWorldMapCreateConnectionCreate(connectionRequest);
+
+            // Validate response data
+            if (!response.data || !response.data.id) {
+                console.error('Invalid response data from gamemasterWorldMapCreateConnectionCreate:', {response});
+                throw new Error('Failed to create connection: Invalid response data');
+            }
+
+            // Create local connection object with backend ID
             const connection = new WorldEditorConnection({
-                id: connectionId,
+                id: response.data.id,
                 fromRoomId,
                 toRoomId,
                 isVertical
@@ -556,6 +581,14 @@ export class WorldEditorService {
     async deleteConnection(connectionId) {
         try {
             const connection = this.state.connections.get(connectionId);
+            if (!connection) {
+                throw new Error(`Connection with id ${connectionId} not found`);
+            }
+
+            // Delete connection via backend API
+            await GameMasterApi.gamemasterWorldMapDeleteConnectionDestroy(connectionId);
+
+            // Remove from local state after successful backend deletion
             this.state.removeConnection(connectionId);
 
             this.emit('connectionDeleted', {connectionId, connection});
