@@ -23,7 +23,7 @@ class Spawner(BaseModel, PolymorphicModel):
 
 class SpawnedEntity(BaseModel):
     spawner = models.ForeignKey(Spawner, on_delete=models.CASCADE, related_name='spawned_entities')
-    game_object = models.ForeignKey('core.GameObject', on_delete=models.CASCADE)
+    game_object = models.ForeignKey('core.GameObject', on_delete=models.CASCADE, related_name='spawned_by')
     spawned_at = models.ForeignKey('action.Cycle', null=True, on_delete=models.SET_NULL, blank=True,
                                    default=None)
 

@@ -124,6 +124,10 @@ class KomaActiveEffectService(DefaultActiveEffectService):
 
         # TODO: use position service to teleport to the safe place
         if char_svc.model.npc:
+            # check if npc been spawned by spawner
+            if hasattr(char_svc.model, 'spawned_by'):
+                char_svc.model.delete()
+                return
             char_svc.model.is_active = False
             char_svc.model.save(update_fields=['is_active', 'updated_at'])
             return

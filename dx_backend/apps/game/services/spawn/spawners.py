@@ -33,7 +33,7 @@ class CoreSpawnersService:
             if service.should_spawn(cycle):
                 npc = service.spawn()
                 self.logger.info(f"Spawned NPC {npc} from spawner {spawner.id} at position {spawner.position}")
-                spawner.spawned_entities.add(npc)
+                spawner.spawned_entities.create(game_object=npc, spawned_at=cycle)
 
 
 class NPCSpawnerService(SpecificSpawnerService):
@@ -67,7 +67,7 @@ class NPCSpawnerService(SpecificSpawnerService):
             self.spawner.next_spawn_cycle_number = cycle.number + self.spawner.respawn_cycles
             self.spawner.save(update_fields=['next_spawn_cycle_number'])
             return False
-        if self.spawner.next_spawn_cycle_number and self.spawner.next_spawn_cycle_number >= cycle.number:
+        if self.spawner.next_spawn_cycle_number and self.spawner.next_spawn_cycle_number > cycle.number:
             self.logger.debug(
                 f"Spawner {self.spawner.id} not ready to spawn. Next spawn cycle: {self.spawner.next_spawn_cycle_number}, current cycle: {cycle.number}.")
             return False
