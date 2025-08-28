@@ -40,6 +40,7 @@
     <div class="top-row">
       <NewCharacterCardHolder
           v-if="getCharacters().length > 0"
+          :class="{ 'no-target-feedback': showNoTargetFeedback }"
           :characters="getCharacters()"
           :selectedCharacterId="selectedGameObjectId"
           :additionalCharactersData="additionalCharactersData"
@@ -236,6 +237,7 @@ export default {
       fightDefender: null,
       fightParticipants: [],
       currentChallenge: null,
+      showNoTargetFeedback: false,
     };
   },
   async mounted() {
@@ -412,6 +414,7 @@ export default {
     async handleSkillSelected(skill) {
       if (!this.selectedGameObjectId) {
         console.warn("Cannot use skill without a selected target");
+        this.triggerNoTargetFeedback();
         return;
       }
       const action = {
@@ -426,6 +429,7 @@ export default {
     async handleItemSelected(item) {
       if (!this.selectedGameObjectId) {
         console.warn("Cannot use item without a selected target");
+        this.triggerNoTargetFeedback();
         return;
       }
       const action = {
@@ -440,6 +444,7 @@ export default {
     async handleSpecialSelected(special) {
       if (!this.selectedGameObjectId) {
         console.warn("Cannot use special ability without a selected target");
+        this.triggerNoTargetFeedback();
         return;
       }
       const action = {
@@ -450,6 +455,14 @@ export default {
         targets: [this.selectedGameObjectId],
       };
       await this.applyAction(action);
+    },
+    triggerNoTargetFeedback() {
+      // Trigger visual feedback for no target selected
+      this.showNoTargetFeedback = true;
+      // Reset the feedback after animation duration (1 second)
+      setTimeout(() => {
+        this.showNoTargetFeedback = false;
+      }, 1000);
     },
     async handleCycleChange(data) {
       try {
@@ -1149,5 +1162,48 @@ export default {
 
 .center-left {
   margin-left: 0.5rem;
+}
+
+/* Visual feedback for no target selected */
+.no-target-feedback {
+  animation: shake-highlight 1s ease-in-out;
+}
+
+@keyframes shake-highlight {
+  0% {
+    transform: translateX(0);
+    box-shadow: 0 0 0 rgba(255, 87, 87, 0);
+  }
+  10% {
+    transform: translateX(-5px);
+  }
+  20% {
+    transform: translateX(5px);
+  }
+  30% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-3px);
+  }
+  60% {
+    transform: translateX(3px);
+  }
+  70% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  90% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+    box-shadow: 0 0 0 rgba(255, 87, 87, 0);
+  }
 }
 </style>
