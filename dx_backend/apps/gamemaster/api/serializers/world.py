@@ -11,7 +11,8 @@ class SubLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubLocation
-        fields = ['id', 'name', 'description', 'location', 'is_active']
+        fields = ['id', 'name', 'description', 'image', 'location', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
 
 
 class PositionSerializer(serializers.ModelSerializer):

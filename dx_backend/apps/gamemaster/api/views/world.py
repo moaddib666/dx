@@ -19,9 +19,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.gamemaster.api.serializers.world import PositionSerializer, PositionConnectionSerializer, \
-    GridZParameterSerializer, MapResponseSerializer, PositionMoveSerializer, PositionConnectionCreateSerializer
+    GridZParameterSerializer, MapResponseSerializer, PositionMoveSerializer, PositionConnectionCreateSerializer, \
+    SubLocationSerializer
 from apps.world.api.serializers.openapi import PositionRelationConfigurationSerializer
-from apps.world.models import Position, PositionConnection
+from apps.world.models import Position, PositionConnection, SubLocation
 from apps.game.services.world.position_connection import PositionConnectionService
 
 
@@ -564,3 +565,86 @@ class PositionConnectionManagementViewSet(viewsets.ModelViewSet):
                 {"error": "Position not found"},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+@extend_schema(
+    description="API for managing sub-locations in the world",
+    tags=["GM World Editor - SubLocations"]
+)
+class SubLocationManagementViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing sub-locations via game master API.
+
+    Provides CRUD operations for sub-locations and additional actions for activating/deactivating
+    sub-locations and managing related positions.
+    """
+    queryset = SubLocation.objects.all()
+    serializer_class = SubLocationSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['location', 'is_active']
+    ordering_fields = ['name', 'created_at', 'updated_at']
+    search_fields = ['name', 'description']
+
+    @extend_schema(
+        description="Activate a sub-location",
+        responses={200: SubLocationSerializer}
+    )
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """Activate a sub-location."""
+        sub_location = self.get_object()
+        sub_location.is_active = True
+        sub_location.save()
+        serializer = self.get_serializer(sub_location)
+        return Response(serializer.data)
+
+    @extend_schema(
+        description="Deactivate a sub-location",
+        responses={200: SubLocationSerializer}
+    )
+    @action(detail=True, methods=['post'])
+    def deactivate(self, request, pk=None):
+        """Deactivate a sub-location."""
+        sub_location = self.get_object()
+        sub_location.is_active = False
+        sub_location.save()
+        serializer = self.get_serializer(sub_location)
+        return Response(serializer.data)
+
+    @extend_schema(
+        description="Get all positions within this sub-location",
+        responses={200: PositionSerializer(many=True)}
+    )
+    @action(detail=True, methods=['get'])
+    def positions(self, request, pk=None):
+        """Get all positions within this sub-location."""
+        sub_location = self.get_object()
+        positions = Position.objects.filter(sub_location=sub_location)
+        serializer = PositionSerializer(positions, many=True)
+        return Response(serializer.data)
+
+    @extend_schema(
+        description="Get statistics about this sub-location",
+        responses={200: serializers.Serializer}
+    )
+    @action(detail=True, methods=['get'])
+    def stats(self, request, pk=None):
+        """Get statistics about this sub-location."""
+        sub_location = self.get_object()
+        positions = Position.objects.filter(sub_location=sub_location)
+        
+        stats = {
+            'total_positions': positions.count(),
+            'safe_positions': positions.filter(is_safe=True).count(),
+            'dangerous_positions': positions.filter(is_safe=False).count(),
+            'connections_count': PositionConnection.objects.filter(
+                position_from__sub_location=sub_location
+            ).count() + PositionConnection.objects.filter(
+                position_to__sub_location=sub_location
+            ).count()
+        }
+        
+        return Response(stats)
+
+
