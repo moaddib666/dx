@@ -68,9 +68,9 @@ export default {
   justify-content: space-between;
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.5rem;
-  padding: 0.7rem;
-  gap: 0.7rem;
+  border-radius: 0.4rem;
+  padding: 0.4rem;
+  gap: 0.5rem;
   transition: all 0.3s ease;
 }
 
@@ -80,8 +80,8 @@ export default {
 }
 
 .stat-icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   object-fit: contain;
   border: 2px solid rgba(127, 255, 22, 0.3);
@@ -91,10 +91,14 @@ export default {
 .stat-name {
   flex: 1;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #fada95;
   text-transform: capitalize;
+  max-width: 6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .stat-value {
@@ -127,15 +131,15 @@ export default {
 }
 
 .value {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fada95;
-  min-width: 3rem;
+  min-width: 2.5rem;
   text-align: center;
   background: rgba(250, 218, 149, 0.1);
   border: 1px solid rgba(250, 218, 149, 0.3);
   border-radius: 0.3rem;
-  padding: 0.3rem 0.5rem;
+  padding: 0.2rem 0.4rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 

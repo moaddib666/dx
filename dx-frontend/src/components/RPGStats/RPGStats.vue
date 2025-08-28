@@ -109,25 +109,25 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
 .rpg-stats-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.7rem;
-  padding: 1rem;
-  min-height: 200px;
+  border-radius: 0.5rem;
+  padding: 0.7rem;
+  min-height: auto;
 }
 
 .stats-header {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   border-bottom: 1px solid rgba(127, 255, 22, 0.2);
-  padding-bottom: 0.7rem;
+  padding-bottom: 0.4rem;
 }
 
 .stats-title {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
@@ -175,7 +175,7 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
 .stats-list {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.4rem;
   flex: 1;
 }
 

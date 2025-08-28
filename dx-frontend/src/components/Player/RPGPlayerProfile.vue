@@ -151,57 +151,63 @@ watch(() => props.isOpen, (newValue) => {
       </div>
 
       <div class="modal-content" v-if="!loading && playerInfo">
-        <!-- Player Info Section -->
-        <div class="player-info-section">
-          <div class="avatar-container">
-            <img
-              v-if="playerInfo.biography.avatar"
-              :src="playerInfo.biography.avatar"
-              alt="Player Avatar"
-              class="player-avatar"
-            />
-            <img
-              v-else
-              src="@/assets/images/avatar/placeholder.webp"
-              alt="Player Avatar"
-              class="player-avatar"
-            />
+        <div class="two-column-layout">
+          <!-- Left Column: Player Info Section -->
+          <div class="left-column">
+            <div class="player-info-section">
+              <div class="avatar-container">
+                <img
+                  v-if="playerInfo.biography.avatar"
+                  :src="playerInfo.biography.avatar"
+                  alt="Player Avatar"
+                  class="player-avatar"
+                />
+                <img
+                  v-else
+                  src="@/assets/images/avatar/placeholder.webp"
+                  alt="Player Avatar"
+                  class="player-avatar"
+                />
 
-            <div class="path-overlay" :title="`${playerInfo.path.name}: ${playerInfo.path.description}`">
-              <img :src="playerInfo.path.icon" alt="Path Icon" class="path-icon"/>
+                <div class="path-overlay" :title="`${playerInfo.path.name}: ${playerInfo.path.description}`">
+                  <img :src="playerInfo.path.icon" alt="Path Icon" class="path-icon"/>
+                </div>
+              </div>
+
+              <div class="player-details">
+                <h3 class="player-name">{{ playerInfo.name }}</h3>
+                <div class="player-meta">
+                  <div class="rank-info">
+                    <span class="rank-label">Rank:</span>
+                    <span class="rank-value">{{ playerInfo.rank.name }} (Level {{ playerInfo.rank.level }})</span>
+                  </div>
+                  <div class="experience-info">
+                    <span class="exp-label">Experience:</span>
+                    <span class="exp-value">{{ playerInfo.experience }} XP</span>
+                  </div>
+                </div>
+
+                <div class="player-tags" v-if="playerInfo.tags && playerInfo.tags.length > 0">
+                  <span class="tag" v-for="tag in playerInfo.tags" :key="tag">{{ tag }}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="player-details">
-            <h3 class="player-name">{{ playerInfo.name }}</h3>
-            <div class="player-meta">
-              <div class="rank-info">
-                <span class="rank-label">Rank:</span>
-                <span class="rank-value">{{ playerInfo.rank.name }} (Level {{ playerInfo.rank.level }})</span>
-              </div>
-              <div class="experience-info">
-                <span class="exp-label">Experience:</span>
-                <span class="exp-value">{{ playerInfo.experience }} XP</span>
-              </div>
-            </div>
-
-            <div class="player-tags" v-if="playerInfo.tags && playerInfo.tags.length > 0">
-              <span class="tag" v-for="tag in playerInfo.tags" :key="tag">{{ tag }}</span>
+          <!-- Right Column: Stats Section -->
+          <div class="right-column">
+            <div class="stats-section">
+              <RPGStats
+                :stats="playerStats"
+                title="Character Statistics"
+                :show-upgrades="true"
+                :available-upgrade-points="upgradePoints"
+                :allowResetBaseStats="playerInfo?.resetting_base_stats"
+                @upgrade-stat="handleUpgradeStat"
+                @switchBaseStats="handleSwitchBaseStats"
+              />
             </div>
           </div>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="stats-section">
-          <RPGStats
-            :stats="playerStats"
-            title="Character Statistics"
-            :show-upgrades="true"
-            :available-upgrade-points="upgradePoints"
-            :allowResetBaseStats="playerInfo?.resetting_base_stats"
-            @upgrade-stat="handleUpgradeStat"
-            @switchBaseStats="handleSwitchBaseStats"
-          />
         </div>
       </div>
 
@@ -230,7 +236,7 @@ watch(() => props.isOpen, (newValue) => {
 
 .player-profile-modal {
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
   display: flex;
@@ -291,17 +297,33 @@ watch(() => props.isOpen, (newValue) => {
 .modal-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   flex: 1;
+}
+
+.two-column-layout {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.left-column {
+  flex: 1;
+  min-width: 0;
+}
+
+.right-column {
+  flex: 1;
+  min-width: 0;
 }
 
 .player-info-section {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.7rem;
+  padding: 0.7rem;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(127, 255, 22, 0.2);
-  border-radius: 0.5rem;
+  border-radius: 0.4rem;
 }
 
 .avatar-container {
@@ -310,8 +332,8 @@ watch(() => props.isOpen, (newValue) => {
 }
 
 .player-avatar {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(127, 255, 22, 0.3);
