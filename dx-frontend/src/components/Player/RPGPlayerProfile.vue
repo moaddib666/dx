@@ -3,6 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue"
 import RPGStats from "@/components/RPGStats/RPGStats.vue"
 import { CharacterGameApi } from "@/api/backendService.js"
+import StatsGameService from "@/services/statService.js"
 
 interface Player {
   id: string
@@ -22,6 +23,7 @@ interface Player {
   }
   experience: number
   tags: string[]
+  resetting_base_stats?: boolean
 }
 
 interface Stat {
@@ -65,9 +67,24 @@ const handleUpgradeStat = (statId: string) => {
   }
 }
 
+const handleSwitchBaseStats = async ({ fromStatId, toStatId }: { fromStatId: string, toStatId: string }) => {
+  try {
+    const response = await CharacterGameApi.characterStatsSwipeBaseStatCreate({
+      from_stat: fromStatId,
+      to_stat: toStatId,
+    })
+    playerStats.value = response.data
+  } catch (error) {
+    console.error("Failed to switch base stats:", error)
+  }
+}
+
 const syncPlayerData = async () => {
   try {
     loading.value = true
+
+    // Initialize stats service mapping for images
+    await StatsGameService.refreshStats()
 
     // Fetch player info
     const playerResponse = await CharacterGameApi.characterPlayerCharacterDetailsRetrieve()
@@ -181,7 +198,9 @@ watch(() => props.isOpen, (newValue) => {
             title="Character Statistics"
             :show-upgrades="true"
             :available-upgrade-points="upgradePoints"
+            :allowResetBaseStats="playerInfo?.resetting_base_stats"
             @upgrade-stat="handleUpgradeStat"
+            @switchBaseStats="handleSwitchBaseStats"
           />
         </div>
       </div>
