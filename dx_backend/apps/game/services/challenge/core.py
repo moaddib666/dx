@@ -76,7 +76,6 @@ class ChallengeService:
         """
         character_service = CharacterService(character)
 
-        # Example: Add modifier based on character's current health
         current_hp_percentage = character_service.get_current_hp() / character_service.get_max_hp()
         if current_hp_percentage < 0.25:  # Less than 25% health
             ChallengeModifier.objects.create(
@@ -91,7 +90,6 @@ class ChallengeService:
                 value=-1  # Minor penalty for being wounded
             )
 
-        # Example: Add modifier based on character's energy
         current_energy_percentage = character_service.get_current_energy() / character_service.get_max_energy()
         if current_energy_percentage < 0.25:  # Less than 25% energy
             ChallengeModifier.objects.create(
@@ -100,6 +98,15 @@ class ChallengeService:
                 value=-1  # Penalty for being exhausted
             )
 
+        # Stat-based modifiers
+        stat_value = character_service.get_stat(challenge.stat)
+        if stat_value >= 15:
+            ChallengeModifier.objects.create(
+                challenge=challenge,
+                name=f"{challenge.stat.capitalize()}",
+                value=int(stat_value / 15) + 1
+            )
+        
         # TODO: Add more automatic modifiers based on:
         # - Active effects on the character
         # - Character's skills relevant to the challenge
