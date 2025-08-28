@@ -19,6 +19,7 @@ from ..npc.bahavior_factory import BehaviorFactory
 from ..shield import ActiveShieldLifeCycleService
 
 if typing.TYPE_CHECKING:
+    from ..spawn.spawners import CoreSpawnersService
     from ..notifier.base import BaseNotifier
     from .factory import CharacterActionFactory
     from ..effect.facctory import ApplyEffectFactory, ManagerEffectFactory
@@ -36,6 +37,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
                  auto_map_svc: "AutoMapService",
                  bargain_cleanup_svc: "BargainCleanupService",
                  notify: "BaseNotifier",
+                 spawners: "CoreSpawnersService",
                  ):
         self.cycle = cycle
         self.factory = factory
@@ -52,6 +54,7 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
         self.notify = notify
         self.follow_and_chase = WorldFollowService()
         self.fight_integration = FightGameLoopIntegration(notify)
+        self.spawners = spawners
 
     def prepare(self, new_cycle: Cycle):
         # Apply base stats changes first
@@ -73,6 +76,9 @@ class ManualCharacterActionPlayerService(CharacterActionPlayerServicePrototype):
 
         # Process fight post-cycle activities (closing inactive fights, etc.)
         self.fight_integration.post_cycle_fights(self.cycle)
+
+        # Process spawners after all actions and effects have been applied
+        self.spawners.process_spawners(self.cycle)
 
     def play(self) -> Cycle:
         self._play()

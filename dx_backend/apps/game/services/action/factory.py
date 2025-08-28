@@ -23,6 +23,7 @@ from apps.game.services.action.use_item import UseItemActionService
 from apps.game.services.bargain.bargaincleanupservice import bargain_cleaner
 from apps.game.services.effect.facctory import ManagerEffectFactory, ApplyEffectFactory
 from apps.game.services.notifier.base import BaseNotifier
+from apps.game.services.spawn.spawners import CoreSpawnersService
 from apps.game.services.world.auto_map import AutoMapService
 from apps.game.services.world.movemant import MovementService
 from apps.school.dto import Cost, Impact, Formula, StatRequirement, Scaling
@@ -273,4 +274,5 @@ ManualCharacterActionPlayerServiceFactory = partial(
     notify=BaseNotifier(
         event_bus
     ),
+    spawners=CoreSpawnersService(),
 )
