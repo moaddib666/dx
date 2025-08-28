@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {SubLocation} from "@/api/dx-backend";
 import {computed} from "vue";
+import DefaultImage from "@/assets/images/backgrounds/AbstracPosition.png"
 
 interface Props {
   subLocation: SubLocation
@@ -14,7 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const imageUrl = computed(() => {
-  return props.subLocation?.image || '/src/assets/images/default-location.png';
+  return props.subLocation?.image || DefaultImage;
 });
 
 // Fast action handlers
@@ -37,17 +38,17 @@ const handleFilterByLocation = (event: Event) => {
       <!-- Fast Actions Overlay -->
       <div class="fast-actions">
         <button
-          class="action-btn copy-btn"
-          title="Copy SubLocation ID"
-          @click="handleCopyId"
+            class="action-btn copy-btn"
+            title="Copy SubLocation ID"
+            @click="handleCopyId"
         >
           📋
         </button>
         <button
-          class="action-btn location-btn"
-          title="Filter by Location"
-          @click="handleFilterByLocation"
-          v-if="props.subLocation.location"
+            class="action-btn location-btn"
+            title="Filter by Location"
+            @click="handleFilterByLocation"
+            v-if="props.subLocation.location"
         >
           🗺️
         </button>
@@ -57,7 +58,9 @@ const handleFilterByLocation = (event: Event) => {
       <h3 class="sublocation-name">{{ props.subLocation.name }}</h3>
       <p class="location-name">{{ props.subLocation.location || 'Unknown Location' }}</p>
       <p class="sublocation-description" v-if="props.subLocation.description">
-        {{ props.subLocation.description.length > 60 ? props.subLocation.description.substring(0, 60) + '...' : props.subLocation.description }}
+        {{
+          props.subLocation.description.length > 60 ? props.subLocation.description.substring(0, 60) + '...' : props.subLocation.description
+        }}
       </p>
     </div>
   </div>
