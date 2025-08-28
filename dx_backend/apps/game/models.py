@@ -33,3 +33,11 @@ class Campaign(BaseModel):
 
     def __str__(self):
         return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"
+
+
+class CampaignStartItem(BaseModel):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='start_items')
+    item = models.ForeignKey('items.Item', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    chance = models.FloatField(default=1.0, help_text="Chance (0.0 to 1.0) that the item is included in the start kit.")
+
