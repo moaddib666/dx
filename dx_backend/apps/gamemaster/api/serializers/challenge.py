@@ -59,14 +59,6 @@ class GameMasterCreateChallengeSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 "A challenge cannot have both advantage and disadvantage"
             )
-
-        # Validate target character is not already in a challenge
-        target_character = data.get('target_character')
-        if target_character and hasattr(target_character, 'challenge') and target_character.challenge:
-            raise serializers.ValidationError(
-                f"Character '{target_character.name}' already has an active challenge"
-            )
-
         return data
 
     def validate_target_character(self, value):
