@@ -16,3 +16,19 @@ services:
     image: redis:6.2
     ports:
       - "6379:6379"
+
+  database:
+    image: postgres:15
+    container_name: postgres_dx
+    restart: always
+    environment:
+      POSTGRES_DB: dx
+      POSTGRES_USER: dx_user
+      POSTGRES_PASSWORD: dx_password
+    volumes:
+      - dx_db_data:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+
+volumes:
+  dx_db_data:
