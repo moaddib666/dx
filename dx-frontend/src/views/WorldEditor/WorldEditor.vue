@@ -96,6 +96,7 @@
         />
 
         <WorldEditorMap
+            ref="worldEditorMap"
             :currentFloor="currentFloor"
             :editorState="editorState"
             :mapData="mapData"
@@ -371,6 +372,9 @@ export default {
       // Set up event listeners
       this.setupEventListeners();
 
+      // Set up keyboard event listeners
+      this.setupKeyboardListeners();
+
       // Start time update interval
       this.timeUpdateInterval = setInterval(() => {
         this.currentTime = new Date().toLocaleTimeString();
@@ -392,6 +396,9 @@ export default {
   beforeUnmount() {
     // Clean up event listeners
     this.cleanupEventListeners();
+
+    // Clean up keyboard event listeners
+    this.cleanupKeyboardListeners();
 
     // Clear time update interval
     if (this.timeUpdateInterval) {
@@ -488,6 +495,32 @@ export default {
       this.service.off('modeChanged', this.onModeChanged);
       this.service.off('toolChanged', this.onToolChanged);
       this.service.off('layerToggled', this.onLayerToggledEvent);
+    },
+
+    // Keyboard event listeners
+    setupKeyboardListeners() {
+      document.addEventListener('keydown', this.handleKeyDown);
+    },
+
+    cleanupKeyboardListeners() {
+      document.removeEventListener('keydown', this.handleKeyDown);
+    },
+
+    handleKeyDown(event) {
+      // Handle Escape key to cancel in-progress actions
+      if (event.key === 'Escape') {
+        this.handleEscapeKey();
+      }
+    },
+
+    handleEscapeKey() {
+      // Cancel any in-progress actions in the map component
+      if (this.$refs.worldEditorMap) {
+        this.$refs.worldEditorMap.cancelInProgressActions();
+      }
+
+      // Provide user feedback
+      this.setLastAction('Action canceled');
     },
 
     // Event handlers

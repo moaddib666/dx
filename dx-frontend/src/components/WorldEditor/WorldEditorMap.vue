@@ -785,6 +785,18 @@ export default {
       this.connectionPreview = null;
     },
 
+    // Cancel all in-progress actions (called when Escape key is pressed)
+    cancelInProgressActions() {
+      // Clear connection creation state
+      this.selectedRoomForConnection = null;
+
+      // Clear all previews
+      this.clearPreviews();
+
+      // Reset drag mode if needed
+      this.dragMode = true;
+    },
+
     // Coordinate conversion
     screenToMap(clientX, clientY) {
       const rect = this.$refs.mapSvg.getBoundingClientRect();

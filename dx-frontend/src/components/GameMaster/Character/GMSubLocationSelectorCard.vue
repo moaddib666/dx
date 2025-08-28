@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {SubLocation} from "@/api/dx-backend";
 import {computed} from "vue";
-import DefaultImage from "@/assets/images/backgrounds/AbstracPosition.png"
+import DefaultImage from "@/assets/images/backgrounds/AbstracPositionLoading.png"
 
 interface Props {
   subLocation: SubLocation
