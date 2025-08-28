@@ -412,9 +412,10 @@ const handleSubLocationSelect = (subLocation: SubLocation) => {
 
 .sublocations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.7rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
   padding-bottom: 1rem;
+  align-items: start;
 }
 
 .sublocation-card {

@@ -75,7 +75,10 @@ const handleFilterByLocation = (event: Event) => {
   transition: border-color 0.3s, background-color 0.3s, transform 0.2s ease;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(4px);
-  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .selector-card:hover {
