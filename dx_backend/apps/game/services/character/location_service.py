@@ -38,6 +38,8 @@ class LocationService:
         return pos
 
     def default(self, character: Character, position: Position = None) -> Position:
+        if character.campaign and character.campaign.start_position:
+            return character.campaign.start_position
         if not position:
             position = Position.objects.get(pk=self.default_position)
         return position

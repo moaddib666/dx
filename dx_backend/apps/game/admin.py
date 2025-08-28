@@ -31,7 +31,7 @@ class CampaignAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'description', 'background_image')
+            'fields': ('name', 'description', 'background_image', 'start_position')
         }),
         ('Status', {
             'fields': ('is_active', 'is_completed', "default", "auto_play")
