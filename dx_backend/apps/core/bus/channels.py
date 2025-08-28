@@ -7,6 +7,6 @@ class Channel(StrEnum):
     MASTER = "world::master"
     
     @classmethod
-    def character(cls, character_id: uuid.UUID) -> str:
+    def character(cls, character_id: str) -> str:
         """Generate a character-specific channel."""
-        return f"character::{character_id}"
+        return f"world::character::{character_id}"

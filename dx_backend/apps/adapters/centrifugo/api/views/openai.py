@@ -1,3 +1,5 @@
+import logging
+
 from drf_spectacular.utils import extend_schema
 
 from apps.core.bus.base import GameEvent
@@ -47,6 +49,7 @@ class CentrifugoViewSet(viewsets.ViewSet):
             character_id = character_svc.get_id()
             channels = [
                 Channel.WORLD,
+                Channel.character(character_id),
             ]
             if request.user.is_superuser:
                 channels.append(Channel.MASTER)
@@ -60,6 +63,7 @@ class CentrifugoViewSet(viewsets.ViewSet):
                     "channels": channels
                 }
             }
+            logging.debug(f"User {character_svc.character.name} connected to channels: {channels}")
             return Response(response_data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

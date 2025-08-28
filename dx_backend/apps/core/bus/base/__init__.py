@@ -30,7 +30,7 @@ class EventDirection(StrEnum):
 
 class GameEvent(BaseModel):
     name: str
-    timestamp: int = Field(default_factory=time.time)
+    timestamp: int = Field(default_factory=lambda: int(time.time()))
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     category: EventCategory = EventCategory.GAME
     data: Optional[Union[list, dict]]

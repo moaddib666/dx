@@ -49,7 +49,7 @@ class _PubSub(EventBusProto):
             self.publisher.send(event, Channel.WORLD)
         elif event.name == "challenge_created":
             # Send challenge_created event to specific character instead of broadcasting
-            character_id = event.data.get("character_id")
+            character_id = event.data.character_id
             if character_id:
                 character_channel = Channel.character(character_id)
                 self.publisher.send(event, character_channel)
