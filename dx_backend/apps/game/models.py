@@ -23,5 +23,13 @@ class Campaign(BaseModel):
     default = models.BooleanField(default=False, help_text="Indicates if this is the default campaign for new clients.")
     auto_play = models.BooleanField(default=False, help_text="Indicates if this campaign is set for auto-play.")
 
+    start_position = models.ForeignKey(
+        "world.Position",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='starting_campaigns'
+    )
+
     def __str__(self):
         return f"{self.name} ({'Active' if self.is_active else 'Inactive'})"

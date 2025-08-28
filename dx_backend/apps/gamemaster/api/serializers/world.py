@@ -8,11 +8,24 @@ class SubLocationSerializer(serializers.ModelSerializer):
     """
     Serializer for SubLocation model.
     """
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = SubLocation
         fields = ['id', 'name', 'description', 'image', 'location', 'is_active', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
+
+    def get_image(self, obj):
+        """
+        Get image with recursive fallback to parent models.
+        """
+        image = obj.get_image_with_fallback()
+        if image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(image.url)
+            return image.url
+        return None
 
 
 class PositionSerializer(serializers.ModelSerializer):

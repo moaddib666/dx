@@ -126,6 +126,30 @@ class SubLocation(BaseModel):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
+    def get_image_with_fallback(self):
+        """
+        Get image with recursive fallback to parent models.
+        Returns the first non-null image found in the hierarchy:
+        SubLocation -> Location -> Area -> City
+        """
+        if self.image:
+            return self.image
+        
+        # Try location image
+        if self.location and self.location.image:
+            return self.location.image
+        
+        # Try area image
+        if self.location and self.location.area and self.location.area.image:
+            return self.location.area.image
+        
+        # Try city image
+        if (self.location and self.location.area and 
+            self.location.area.city and self.location.area.city.image):
+            return self.location.area.city.image
+        
+        return None
+
     def __str__(self):
         return self.name
 
