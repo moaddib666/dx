@@ -38,68 +38,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Entity Tools -->
-      <div class="tool-group">
-        <h4>Entity Tools</h4>
-        <div class="tool-grid">
-          <button
-              v-for="tool in entityTools"
-              :key="tool.id"
-              :class="['tool-btn', { 'active': selectedTool === tool.id }]"
-              :title="tool.description"
-              @click="selectTool(tool.id)"
-          >
-            <i :class="tool.icon"></i>
-            <span>{{ tool.name }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Tool Options -->
-      <div v-if="selectedToolConfig" class="tool-options">
-        <h4>Tool Options</h4>
-        <div class="options-content">
-          <!-- Connection Type Options -->
-          <div v-if="isConnectionTool" class="option-group">
-            <label>
-              <input
-                  v-model="connectionOptions.vertical"
-                  type="checkbox"
-                  @change="updateToolOptions"
-              />
-              Vertical Connection
-            </label>
-          </div>
-
-          <!-- Room Creation Options -->
-          <div v-if="isRoomCreationTool" class="option-group">
-            <label>Room Type:</label>
-            <select v-model="roomOptions.type" @change="updateToolOptions">
-              <option value="default">Default</option>
-              <option value="special">Special</option>
-              <option value="secret">Secret</option>
-              <option value="dangerous">Dangerous</option>
-            </select>
-          </div>
-
-          <!-- Entity Spawn Options -->
-          <div v-if="isEntityTool" class="option-group">
-            <label>Spawn Mode:</label>
-            <select v-model="entityOptions.mode" @change="updateToolOptions">
-              <option value="single">Single</option>
-              <option value="multiple">Multiple</option>
-              <option value="random">Random</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tool Instructions -->
-      <div v-if="selectedToolConfig" class="tool-instructions">
-        <h4>Instructions</h4>
-        <p>{{ selectedToolConfig.instructions }}</p>
-      </div>
     </div>
   </div>
 </template>
