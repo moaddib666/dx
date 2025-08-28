@@ -195,7 +195,8 @@ class CharacterActionsViewSet(
             data={'sides': sides},
             position=initiator.position,
             cycle=Cycle.objects.current(campaign=campaign),
-            immediate=True
+            immediate=True,
+            challenge=initiator.challenge,
         )
 
         # Execute the action immediately using the action pipeline

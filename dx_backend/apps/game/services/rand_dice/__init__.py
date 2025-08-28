@@ -73,6 +73,21 @@ class DiceService:
         self.logger.debug(f"Character {self.character.pk} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
         return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
 
+    def challenge_roll(self, difficulty: int) -> DiceRollResult:
+        roll, multiplier, outcome = self._calculate_challenge_outcome(difficulty)
+        self.logger.debug(f"Character {self.character.pk} rolled {roll} against difficulty {difficulty} with multiplier {multiplier} and outcome {outcome}")
+        return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
+
+    def _calculate_challenge_outcome(self, difficulty: int) -> tuple[int, float, RollOutcome]:
+        roll = self.roll()
+        if roll == 1:
+            return roll, 0.0, RollOutcome.CRITICAL_FAIL
+        if roll < difficulty:
+            return roll, 0.5, RollOutcome.BAD_LUCK
+        if roll < self.sides:
+            return roll, 1.0, RollOutcome.GOOD_LUCK
+        return roll, 2.0, RollOutcome.CRITICAL_SUCCESS
+
 
 if __name__ == '__main__':
     def check_luck(luck: int, sides: int, count: int = 10_000):
