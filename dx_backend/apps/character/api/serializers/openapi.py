@@ -82,6 +82,7 @@ class OpenaiCharacterSerializer(serializers.ModelSerializer):
             "is_active",
             "campaign",
             "fight",
+            "challenge",
             "organization",
             "position_id",
         ]
