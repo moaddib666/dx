@@ -58,5 +58,5 @@ class CharacterFactory:
         for start_item in character.campaign.start_items.all():
             if self.dice_service_cls.roll_chance(start_item.chance):
                 for _ in range(start_item.quantity):
-                    world_item = self.world_item_factory.create_world_item(start_item.item)
+                    world_item = self.world_item_factory.create_world_item(start_item.item, character.campaign)
                     items_svc.pick_item(world_item)
