@@ -582,6 +582,11 @@ export default {
       this.diceVisible = true;
     },
     async closeDice() {
+      // Check if there's a current challenge - don't close modal if challenge is present
+      if (this.currentChallenge && this.playerGeneralInfo && this.playerGeneralInfo.challenge) {
+        console.log("Cannot close dice modal - current challenge is active:", this.currentChallenge.id);
+        return;
+      }
       this.diceVisible = false;
     },
     async openBargain() {
@@ -848,6 +853,12 @@ export default {
           this.playerGeneralInfo = (await CharacterGameApi.characterPlayerRetrieve(this.playerInfo.id)).data;
         }
         this.playerService = new PlayerService(this.playerInfo);
+
+        // Check if character has a current challenge
+        if (this.playerGeneralInfo && this.playerGeneralInfo.challenge) {
+          console.log("Character has current challenge:", this.playerGeneralInfo.challenge);
+          await this.loadCurrentChallenge(this.playerGeneralInfo.challenge);
+        }
       } catch (error) {
         console.error("Error getting player info:", error);
         // Initialize with default values to prevent errors
@@ -860,6 +871,24 @@ export default {
           this.playerGeneralInfo = {biography: {avatar: null}};
         }
         this.playerService = new PlayerService(this.playerInfo);
+      }
+    },
+    async loadCurrentChallenge(challengeId) {
+      try {
+        console.log("Loading current challenge with ID:", challengeId);
+
+        // Fetch the challenge data using DiceGameApi
+        const challengeResponse = await DiceGameApi.diceChallengeRetrieve(challengeId);
+        const challenge = challengeResponse.data;
+
+        console.log("Current challenge loaded successfully:", challenge);
+
+        // Store the challenge and open the dice modal
+        this.currentChallenge = challenge;
+        await this.openDice();
+
+      } catch (error) {
+        console.error("Error loading current challenge:", error);
       }
     },
     async getPlayerSkills() {
