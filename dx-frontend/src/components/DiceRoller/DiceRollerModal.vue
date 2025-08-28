@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, type PropType} from 'vue';
+import {ref, computed, onMounted, watch, type PropType} from 'vue';
 import DiceCanvas from "@/components/DiceRoller/DiceCanvas.vue";
 import DiceBackendService from "@/services/dice/DiceBackendService.js";
 import DiceModifierHolder from "@/components/DiceRoller/DiceModifier/DiceModifierHolder.vue";
@@ -432,6 +432,28 @@ const shakeDiceAndUpdateNumber = async (newNumber: number): Promise<void> => {
     console.warn('Could not update dice to show new number:', error);
   }
 };
+
+// Reset state when modal opens
+const resetModalState = (): void => {
+  currentState.value = 'initial';
+  lastResult.value = null;
+  lastApiResult.value = null;
+  currentOutcome.value = null;
+  showCTA.value = true;
+  isAnimatingModifiers.value = false;
+  currentlyHighlightedModifier.value = -1;
+  modifiedRollValue.value = 0;
+  originalRollValue.value = 0;
+  canSkipAnimation.value = false;
+  isSkipRequested.value = false;
+};
+
+// Watch for modal visibility changes
+watch(() => props.visible, (newVisible) => {
+  if (newVisible) {
+    resetModalState();
+  }
+});
 
 // Lifecycle hooks
 onMounted(async () => {

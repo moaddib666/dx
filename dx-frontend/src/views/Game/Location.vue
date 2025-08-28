@@ -587,6 +587,9 @@ export default {
         console.log("Cannot close dice modal - current challenge is active:", this.currentChallenge.id);
         return;
       }
+
+      // Clear the current challenge when closing the modal to ensure fresh state on reopen
+      this.currentChallenge = null;
       this.diceVisible = false;
     },
     async openBargain() {
@@ -743,6 +746,22 @@ export default {
         // Store the dice roll result
         this.diceResult = result.number;
         console.log('Dice roll complete:', result);
+
+        // Check if the roll was successful and there's a current challenge
+        if (result.outcome && (result.outcome === 'Success' || result.outcome === 'Critical Success') && this.currentChallenge) {
+          console.log('Challenge completed successfully, updating character...');
+
+          // Clear the current challenge since it's been fulfilled
+          this.currentChallenge = null;
+
+          // Update character information to reflect the completed challenge
+          await this.getPlayerInfo();
+
+          // Close the dice modal since the challenge is complete
+          this.isDiceVisible = false;
+
+          console.log('Character updated after successful challenge completion');
+        }
       } catch (error) {
         console.error('Error handling dice roll result:', error);
         this.diceResult = null;
