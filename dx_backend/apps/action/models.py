@@ -84,6 +84,8 @@ class CharacterAction(BaseModel):
 
     fight = models.ForeignKey("fight.Fight", on_delete=models.CASCADE, null=True, blank=True,
                               related_name='actions')
+    challenge = models.OneToOneField('dice.Challenge', on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name='action')
     order = models.FloatField(default=1)
 
     def accept(self, order: float):
