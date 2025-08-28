@@ -12,6 +12,36 @@
         <span class="mode-indicator">{{ currentMode.toUpperCase() }} MODE</span>
       </div>
 
+      <!-- SubLocation Selector -->
+      <div class="toolbar-section sublocation-controls">
+        <label class="sublocation-label">SubLocation:</label>
+        <button
+          class="sublocation-selector-btn"
+          :disabled="isSubLocationsLoading || subLocations.length === 0"
+          @click="openSubLocationModal"
+        >
+          <div v-if="isSubLocationsLoading" class="loading-state">
+            Loading...
+          </div>
+          <div v-else-if="subLocations.length === 0" class="empty-state">
+            No SubLocations
+          </div>
+          <div v-else-if="currentSubLocation" class="selected-sublocation">
+            <div
+              class="sublocation-background"
+              :style="{ backgroundImage: currentSubLocation.image ? `url(${currentSubLocation.image})` : 'none' }"
+            >
+              <div class="sublocation-overlay">
+                <span class="sublocation-name">{{ currentSubLocation.name }}</span>
+              </div>
+            </div>
+          </div>
+          <div v-else class="no-selection">
+            Select SubLocation
+          </div>
+        </button>
+      </div>
+
       <!-- Floor controls moved to floating component -->
 
       <div class="toolbar-section action-controls">
@@ -138,6 +168,18 @@
           @close="closeCharacterCard(characterId)"
           @item-selected="onCharacterItemSelected"
       />
+
+      <!-- SubLocation Selector Modal -->
+      <div v-if="showSubLocationModal" class="modal-overlay" @click="closeSubLocationModal">
+        <div class="modal-content" @click.stop>
+          <GMSubLocationSelector
+            :subLocations="subLocations"
+            :selectedSubLocationId="currentSubLocation?.id"
+            @select="onSubLocationSelected"
+            @close="closeSubLocationModal"
+          />
+        </div>
+      </div>
     </div>
 
     <!-- Status Bar -->
@@ -171,7 +213,7 @@
 import {worldEditorService} from '@/services/WorldEditorService.js';
 import {WorldEditorLayer, WorldEditorMode, WorldEditorTool} from '@/models/WorldEditorModels.js';
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
-import {ActionGameApi} from "@/api/backendService.js";
+import {ActionGameApi, GMWorldSubLocationsApi} from "@/api/backendService.js";
 
 // Import WorldEditor components (to be created)
 import WorldEditorToolbar from '@/components/WorldEditor/WorldEditorToolbar.vue';
@@ -183,6 +225,7 @@ import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
+import GMSubLocationSelector from '@/components/GameMaster/Character/GMSubLocationSelector.vue';
 import Loader from '@/components/Loader.vue';
 
 export default {
@@ -197,6 +240,7 @@ export default {
     WorldEditorItemsList,
     NPCTemplatesList,
     GameMasterCharacterCard,
+    GMSubLocationSelector,
     Loader
   },
   data() {
@@ -229,7 +273,13 @@ export default {
       isMapLoading: false,
 
       // Character cards
-      openedCharacterIds: []
+      openedCharacterIds: [],
+
+      // SubLocation management
+      subLocations: [],
+      currentSubLocation: null,
+      isSubLocationsLoading: false,
+      showSubLocationModal: false
     };
   },
   computed: {
@@ -307,6 +357,22 @@ export default {
         }
       }
 
+      // Fetch SubLocations and restore saved SubLocation
+      await this.fetchSubLocations();
+      const savedSubLocation = localStorage.getItem('worldEditor_currentSubLocation');
+      if (savedSubLocation) {
+        try {
+          const parsedSubLocation = JSON.parse(savedSubLocation);
+          // Verify the saved SubLocation still exists in the fetched list
+          const existingSubLocation = this.subLocations.find(sl => sl.id === parsedSubLocation.id);
+          if (existingSubLocation) {
+            this.currentSubLocation = existingSubLocation;
+          }
+        } catch (error) {
+          console.warn('Failed to parse saved SubLocation:', error);
+        }
+      }
+
       // Set up event listeners
       this.setupEventListeners();
 
@@ -363,6 +429,46 @@ export default {
 
       // Refresh world data when cycle changes
       await this.refreshWorld();
+    },
+
+    // SubLocation management methods
+    async fetchSubLocations() {
+      try {
+        this.isSubLocationsLoading = true;
+        const response = await GMWorldSubLocationsApi.gamemasterWorldSubLocationsList(true); // Only active SubLocations
+        this.subLocations = response.data.results || response.data || [];
+
+        // Set the first active SubLocation as current if none is selected
+        if (!this.currentSubLocation && this.subLocations.length > 0) {
+          this.currentSubLocation = this.subLocations[0];
+        }
+      } catch (error) {
+        console.error("Failed to fetch SubLocations:", error);
+        this.subLocations = [];
+      } finally {
+        this.isSubLocationsLoading = false;
+      }
+    },
+
+    selectSubLocation(subLocation) {
+      this.currentSubLocation = subLocation;
+      this.setLastAction(`Selected SubLocation: ${subLocation.name}`);
+      // Save selected SubLocation to localStorage
+      localStorage.setItem('worldEditor_currentSubLocation', JSON.stringify(subLocation));
+    },
+
+    // SubLocation modal methods
+    openSubLocationModal() {
+      this.showSubLocationModal = true;
+    },
+
+    closeSubLocationModal() {
+      this.showSubLocationModal = false;
+    },
+
+    onSubLocationSelected(subLocation) {
+      this.selectSubLocation(subLocation);
+      this.closeSubLocationModal();
     },
 
     setupEventListeners() {
@@ -501,7 +607,8 @@ export default {
 
     async onRoomCreated(position) {
       try {
-        await this.service.createRoom(position.gridX, position.gridY, position.gridZ);
+        const subLocationId = this.currentSubLocation ? this.currentSubLocation.id : null;
+        await this.service.createRoom(position.gridX, position.gridY, position.gridZ, subLocationId);
       } catch (error) {
         console.error('Failed to create room:', error);
         this.setLastAction('Failed to create room');
@@ -1152,5 +1259,102 @@ button:disabled {
 :deep(.input:focus) {
   border-color: #1E90FF;
   outline: none;
+}
+
+/* SubLocation Selector Button */
+.sublocation-selector-btn {
+  min-width: 200px;
+  height: 60px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.sublocation-selector-btn:hover:not(:disabled) {
+  border-color: #7fff16;
+  transform: translateY(-1px);
+}
+
+.sublocation-selector-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.loading-state,
+.empty-state,
+.no-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.selected-sublocation {
+  height: 100%;
+  width: 100%;
+}
+
+.sublocation-background {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.sublocation-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sublocation-name {
+  color: #fada95;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  width: 90vw;
+  max-width: 1200px;
+  height: 80vh;
+  max-height: 600px;
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -375,13 +375,20 @@ export class WorldEditorService {
     /**
      * Create a new room at the specified coordinates
      */
-    async createRoom(gridX, gridY, gridZ = this.state.currentFloor) {
+    async createRoom(gridX, gridY, gridZ = this.state.currentFloor, subLocationId = null) {
         try {
-            const response = await GameMasterApi.gamemasterWorldMapCreate({
+            const roomData = {
                 grid_x: gridX,
                 grid_y: gridY,
                 grid_z: gridZ
-            });
+            };
+
+            // Add sub_location if provided
+            if (subLocationId) {
+                roomData.sub_location = subLocationId;
+            }
+
+            const response = await GameMasterApi.gamemasterWorldMapCreate(roomData);
 
             // Validate response data
             if (!response.data || !response.data.position || !response.data.position.id) {
