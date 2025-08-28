@@ -33,14 +33,12 @@
 
 <script>
 import StatsGameService from "@/services/statService.js";
-import SwapResults from "@/components/Selectors/DiceStatsResults.vue";
 import DiceNRolls from "@/components/Dice/DiceNRolls.vue";
 import SwapIcon from "@/components/icons/Swap.vue";
-import SwitchBaseValuesModal from "@/components/Modal/SwitchBaseValuesModal.vue";
 
 export default {
   name: "StatPresenter",
-  components: {SwitchBaseValuesModal, SwipeIcon: SwapIcon, DiceNRolls, SwapResults},
+  components: {SwipeIcon: SwapIcon, DiceNRolls},
   props: {
     allowResetBaseStats: {
       type: Boolean,
