@@ -51,7 +51,7 @@
                 :extended="true"
                 @openInfo="openInfo"
             />
-            <GameMasterCharacterInfo :character-data="selectedCharacterData" @open-teleport="toggleTeleportComponent" @open-action-constructor="openSkillCreationModal" />
+            <GameMasterCharacterInfo :character-data="selectedCharacterData" @open-teleport="toggleTeleportComponent" @open-action-constructor="openSkillCreationModal" @open-dice-roll-challenge="openDiceChallengeModal" />
           </div>
           <TeleportComponent v-if="showTeleportComponent" @teleportToCoordinates="teleportToCoordinates" @teleportToPosition="teleportToPosition"/>
           <CustomAction
@@ -119,6 +119,17 @@
         @close="closeSkillCreationModal"
         @skillCreated="handleSkillCreated"
     />
+
+    <!-- Dice Challenge Modal -->
+    <div v-if="showDiceChallengeModal && selectedCharacterId" class="modal-overlay" @click="closeDiceChallengeModal">
+      <div class="modal-container" @click.stop>
+        <GameMasterDiceChallenge
+            :selectedCharacterId="selectedCharacterId"
+            @close="closeDiceChallengeModal"
+            @challengeCreated="handleChallengeCreated"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -143,6 +154,7 @@ import CharacterRPGBars from "@/components/PlayerRPGBars/CharacterRPGBars.vue";
 import GameMasterTools from "@/components/GameMaster/GameMasterTools.vue";
 import GameMasterCharacterCard from "@/components/WorldEditor/GameMasterCharacterCard.vue";
 import SkillCreationModal from "@/components/GameMaster/SkillFactory/SkillCreationModal.vue";
+import GameMasterDiceChallenge from "@/components/GameMaster/Character/GameMasterDiceChallenge.vue";
 import type {
   GameMasterCharacterActionLog,
   CharacterOnPosition,
@@ -201,7 +213,8 @@ export default {
     CharacterCardHolder, ActionLog, CurrentTurnComponent, EndTurnComponent,
     GameMasterCharacterInfo: GameMasterTools,
     GameMasterCharacterCard,
-    SkillCreationModal
+    SkillCreationModal,
+    GameMasterDiceChallenge
   },
   data() {
     return {
@@ -228,6 +241,7 @@ export default {
       showCharacterCard: false as boolean,
       showTeleportComponent: false as boolean,
       showSkillCreationModal: false as boolean,
+      showDiceChallengeModal: false as boolean,
       currentSelectionType: null as SelectionType,
       bus: null as any
     };
@@ -483,6 +497,21 @@ export default {
       // Close the modal after successful creation
       this.showSkillCreationModal = false;
       // You could add additional logic here like refreshing skill lists, showing notifications, etc.
+    },
+    openDiceChallengeModal(characterData: GameMasterCharacterInfo): void {
+      // Open the dice challenge modal
+      this.showDiceChallengeModal = true;
+    },
+    closeDiceChallengeModal(): void {
+      // Close the dice challenge modal
+      this.showDiceChallengeModal = false;
+    },
+    handleChallengeCreated(challengeId: string): void {
+      // Handle when a challenge is successfully created
+      console.log('Challenge created:', challengeId);
+      // Close the modal after successful creation
+      this.showDiceChallengeModal = false;
+      // You could add additional logic here like refreshing action logs, showing notifications, etc.
     },
   },
   watch: {

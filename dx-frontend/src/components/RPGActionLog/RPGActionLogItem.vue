@@ -66,7 +66,7 @@ import { CharacterLogActionImpact } from '@/api/dx-backend/api';
 const props = withDefaults(defineProps<{
   initiator: string;
   actionType: string;
-  skill: number;
+  skill?: number | null;
   data?: Record<string, any>;
   impacts: CharacterLogActionImpact[];
 }>(), {

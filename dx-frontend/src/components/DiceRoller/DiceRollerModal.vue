@@ -84,8 +84,8 @@ type OutcomeType = 'Critical Fail' | 'Fail' | 'Success' | 'Critical Success';
 
 type Props = {
   visible: boolean;
-  debug: boolean | undefined;
-  challenge: ChallengeGeneric | null | undefined;
+  debug?: boolean | undefined;
+  challenge?: ChallengeGeneric | null | undefined;
 };
 
 // Props

@@ -18,7 +18,7 @@ import {
     SkillsApi,
     StoryApi,
     WorldApi,
-    FightApi,
+    FightApi, DiceApi,
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
@@ -43,3 +43,4 @@ export const GMWorldPositionConnectionsApi = new GMWorldEditiorPositionConnectio
 export const GMWorldPositionsApi = new GMWorldEditiorPositionsApi(GameApiConfig);
 export const StoryGameApi = new StoryApi(GameApiConfig);
 export const FightGameApi = new FightApi(GameApiConfig); // Assuming FightGameApi is the same as GameMasterApi for fights
+export const DiceGameApi = new DiceApi(GameApiConfig); // Assuming DiceGameApi is the same as GameMasterApi for dice
