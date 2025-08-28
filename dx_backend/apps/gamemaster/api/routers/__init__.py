@@ -1,20 +1,15 @@
 from rest_framework.routers import DefaultRouter
 
+from apps.gamemaster.api.views.challenge import GameMasterChallengeViewSet
 from apps.gamemaster.api.views.character import GameMasterCharacterViewSet
 from apps.gamemaster.api.views.character_template import CharacterTemplateViewSet
-from apps.gamemaster.api.views.challenge import GameMasterChallengeViewSet
-from apps.gamemaster.api.views.impersonation import GameMasterImpersonationViewSet
-from apps.gamemaster.api.views.npc import NPCViewSet
-from apps.gamemaster.api.views.currency import GameMasterCurrencyTokenViewSet, GameMasterCharacterCurrencyViewSet
-from apps.gamemaster.api.views.effects import GameMasterEffectViewSet, GameMasterActiveEffectViewSet
 from apps.gamemaster.api.views.game_objects import GameObjectViewSet
-from apps.gamemaster.api.views.items import GameMasterItemViewSet, GameMasterWorldItemViewSet, \
-    GameMasterCharacterItemViewSet
-from apps.gamemaster.api.views.school import GameMasterSchoolViewSet, GameMasterSkillViewSet, GameMasterPathViewSet
-from apps.gamemaster.api.views.skills import GameMasterLearnedSkillViewSet, GameMasterLearnedSchoolViewSet, \
-    SkillFactoryViewSet
+from apps.gamemaster.api.views.impersonation import GameMasterImpersonationViewSet
+from apps.gamemaster.api.views.items import GameMasterItemViewSet
+from apps.gamemaster.api.views.npc import NPCViewSet
+from apps.gamemaster.api.views.skills import SkillFactoryViewSet
 from apps.gamemaster.api.views.world import WorldMapViewSet, PositionManagementViewSet, \
-    PositionConnectionManagementViewSet
+    PositionConnectionManagementViewSet, SubLocationManagementViewSet
 
 GameMasterRouter = DefaultRouter()
 
@@ -57,6 +52,7 @@ GameMasterRouter.register('world-map', WorldMapViewSet, basename='gamemaster-wor
 GameMasterRouter.register('world-positions', PositionManagementViewSet, basename='gamemaster-world-positions')
 GameMasterRouter.register('world-position-connections', PositionConnectionManagementViewSet,
                           basename='gamemaster-world-position-connections')
-
+GameMasterRouter.register("world-sub-locations", SubLocationManagementViewSet,
+                          basename='gamemaster-world-sub-locations')
 # Impersonation viewset
 GameMasterRouter.register('impersonation', GameMasterImpersonationViewSet, basename='gamemaster-impersonation')

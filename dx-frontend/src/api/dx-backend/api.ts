@@ -2539,13 +2539,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -7456,6 +7456,43 @@ export interface PatchedStoryRequest {
     'canonical'?: boolean;
 }
 /**
+ * Serializer for SubLocation model.
+ * @export
+ * @interface PatchedSubLocationRequest
+ */
+export interface PatchedSubLocationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedSubLocationRequest
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedSubLocationRequest
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {File}
+     * @memberof PatchedSubLocationRequest
+     */
+    'image'?: File | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedSubLocationRequest
+     */
+    'location'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedSubLocationRequest
+     */
+    'is_active'?: boolean;
+}
+/**
  * Serializer for TokenReward model.
  * @export
  * @interface PatchedTokenRewardRequest
@@ -9052,6 +9089,12 @@ export interface SubLocation {
      * @type {string}
      * @memberof SubLocation
      */
+    'image'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubLocation
+     */
     'location': string;
     /**
      * 
@@ -9059,6 +9102,18 @@ export interface SubLocation {
      * @memberof SubLocation
      */
     'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubLocation
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SubLocation
+     */
+    'updated_at': string;
 }
 /**
  * Serializer for SubLocation model.
@@ -9078,6 +9133,12 @@ export interface SubLocationRequest {
      * @memberof SubLocationRequest
      */
     'description': string;
+    /**
+     * 
+     * @type {File}
+     * @memberof SubLocationRequest
+     */
+    'image'?: File | null;
     /**
      * 
      * @type {string}
@@ -18151,6 +18212,888 @@ export class GMWorldEditiorPositionsApi extends BaseAPI {
      */
     public gamemasterWorldPositionsUpdate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
         return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsUpdate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GMWorldEditorSubLocationsApi - axios parameter creator
+ * @export
+ */
+export const GMWorldEditorSubLocationsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Activate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsActivateCreate: async (id: string, subLocationRequest: SubLocationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsActivateCreate', 'id', id)
+            // verify required parameter 'subLocationRequest' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsActivateCreate', 'subLocationRequest', subLocationRequest)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/activate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(subLocationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsCreate: async (subLocationRequest: SubLocationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'subLocationRequest' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsCreate', 'subLocationRequest', subLocationRequest)
+            const localVarPath = `/api/gamemaster/world-sub-locations/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(subLocationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Deactivate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsDeactivateCreate: async (id: string, subLocationRequest: SubLocationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsDeactivateCreate', 'id', id)
+            // verify required parameter 'subLocationRequest' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsDeactivateCreate', 'subLocationRequest', subLocationRequest)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/deactivate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(subLocationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsDestroy', 'id', id)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsList: async (isActive?: boolean, location?: string, ordering?: string, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/world-sub-locations/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (isActive !== undefined) {
+                localVarQueryParameter['is_active'] = isActive;
+            }
+
+            if (location !== undefined) {
+                localVarQueryParameter['location'] = location;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {PatchedSubLocationRequest} [patchedSubLocationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsPartialUpdate: async (id: string, patchedSubLocationRequest?: PatchedSubLocationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsPartialUpdate', 'id', id)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedSubLocationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get all positions within this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsPositionsList: async (id: string, isActive?: boolean, location?: string, ordering?: string, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsPositionsList', 'id', id)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/positions/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (isActive !== undefined) {
+                localVarQueryParameter['is_active'] = isActive;
+            }
+
+            if (location !== undefined) {
+                localVarQueryParameter['location'] = location;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Get statistics about this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsStatsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsStatsRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/stats/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsUpdate: async (id: string, subLocationRequest: SubLocationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsUpdate', 'id', id)
+            // verify required parameter 'subLocationRequest' is not null or undefined
+            assertParamExists('gamemasterWorldSubLocationsUpdate', 'subLocationRequest', subLocationRequest)
+            const localVarPath = `/api/gamemaster/world-sub-locations/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(subLocationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GMWorldEditorSubLocationsApi - functional programming interface
+ * @export
+ */
+export const GMWorldEditorSubLocationsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GMWorldEditorSubLocationsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Activate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsActivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsActivateCreate(id, subLocationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsActivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsCreate(subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsCreate(subLocationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Deactivate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsDeactivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsDeactivateCreate(id, subLocationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsDeactivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsList(isActive?: boolean, location?: string, ordering?: string, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SubLocation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsList(isActive, location, ordering, search, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {PatchedSubLocationRequest} [patchedSubLocationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsPartialUpdate(id: string, patchedSubLocationRequest?: PatchedSubLocationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsPartialUpdate(id, patchedSubLocationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get all positions within this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsPositionsList(id: string, isActive?: boolean, location?: string, ordering?: string, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Position>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsPositionsList(id, isActive, location, ordering, search, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsPositionsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Get statistics about this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsStatsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsStatsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsStatsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterWorldSubLocationsUpdate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SubLocation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterWorldSubLocationsUpdate(id, subLocationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSubLocationsApi.gamemasterWorldSubLocationsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GMWorldEditorSubLocationsApi - factory interface
+ * @export
+ */
+export const GMWorldEditorSubLocationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GMWorldEditorSubLocationsApiFp(configuration)
+    return {
+        /**
+         * Activate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsActivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsActivateCreate(id, subLocationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsCreate(subLocationRequest: SubLocationRequest, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsCreate(subLocationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Deactivate a sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsDeactivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsDeactivateCreate(id, subLocationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.gamemasterWorldSubLocationsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsList(isActive?: boolean, location?: string, ordering?: string, search?: string, options?: any): AxiosPromise<Array<SubLocation>> {
+            return localVarFp.gamemasterWorldSubLocationsList(isActive, location, ordering, search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {PatchedSubLocationRequest} [patchedSubLocationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsPartialUpdate(id: string, patchedSubLocationRequest?: PatchedSubLocationRequest, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsPartialUpdate(id, patchedSubLocationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get all positions within this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {boolean} [isActive] 
+         * @param {string} [location] 
+         * @param {string} [ordering] Which field to use when ordering the results.
+         * @param {string} [search] A search term.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsPositionsList(id: string, isActive?: boolean, location?: string, ordering?: string, search?: string, options?: any): AxiosPromise<Array<Position>> {
+            return localVarFp.gamemasterWorldSubLocationsPositionsList(id, isActive, location, ordering, search, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsRetrieve(id: string, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Get statistics about this sub-location
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsStatsRetrieve(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.gamemasterWorldSubLocationsStatsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing sub-locations in the world
+         * @param {string} id A UUID string identifying this sub location.
+         * @param {SubLocationRequest} subLocationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterWorldSubLocationsUpdate(id: string, subLocationRequest: SubLocationRequest, options?: any): AxiosPromise<SubLocation> {
+            return localVarFp.gamemasterWorldSubLocationsUpdate(id, subLocationRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GMWorldEditorSubLocationsApi - object-oriented interface
+ * @export
+ * @class GMWorldEditorSubLocationsApi
+ * @extends {BaseAPI}
+ */
+export class GMWorldEditorSubLocationsApi extends BaseAPI {
+    /**
+     * Activate a sub-location
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {SubLocationRequest} subLocationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsActivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsActivateCreate(id, subLocationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {SubLocationRequest} subLocationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsCreate(subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsCreate(subLocationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Deactivate a sub-location
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {SubLocationRequest} subLocationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsDeactivateCreate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsDeactivateCreate(id, subLocationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {boolean} [isActive] 
+     * @param {string} [location] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [search] A search term.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsList(isActive?: boolean, location?: string, ordering?: string, search?: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsList(isActive, location, ordering, search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {PatchedSubLocationRequest} [patchedSubLocationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsPartialUpdate(id: string, patchedSubLocationRequest?: PatchedSubLocationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsPartialUpdate(id, patchedSubLocationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get all positions within this sub-location
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {boolean} [isActive] 
+     * @param {string} [location] 
+     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {string} [search] A search term.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsPositionsList(id: string, isActive?: boolean, location?: string, ordering?: string, search?: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsPositionsList(id, isActive, location, ordering, search, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Get statistics about this sub-location
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsStatsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsStatsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing sub-locations in the world
+     * @param {string} id A UUID string identifying this sub location.
+     * @param {SubLocationRequest} subLocationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSubLocationsApi
+     */
+    public gamemasterWorldSubLocationsUpdate(id: string, subLocationRequest: SubLocationRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSubLocationsApiFp(this.configuration).gamemasterWorldSubLocationsUpdate(id, subLocationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
