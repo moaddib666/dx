@@ -391,13 +391,34 @@ export class WorldEditorService {
             const response = await GameMasterApi.gamemasterWorldMapCreate(roomData);
 
             // Validate response data
-            if (!response.data || !response.data.position || !response.data.position.id) {
-                console.error('Invalid response data from gamemasterWorldMapCreate:', response.data);
+            if (!response.data || !response.data.id) {
+                // {
+                //     "id": "4a5b2b67-b144-47b5-9b42-9cd2c4d77876",
+                //     "grid_x": -2,
+                //     "grid_y": -2,
+                //     "grid_z": -3,
+                //     "sub_location": "8250bb97-2543-497b-8355-4e41dfe03be7",
+                //     "sub_location_details": {
+                //         "id": "8250bb97-2543-497b-8355-4e41dfe03be7",
+                //         "name": "Mirror Trap Rooms",
+                //         "description": "The infinite maze",
+                //         "image": "http://localhost:8000/media/locations/C9D53EB8-83F4-4F01-BD3B-492D734B8BD8.PNG",
+                //         "location": "7ea5aa62-8e5f-49a6-b86a-1e86f5faee66",
+                //         "is_active": true,
+                //         "created_at": "2025-08-28T12:49:35Z",
+                //         "updated_at": "2025-08-28T12:50:08.368352Z"
+                //     },
+                //     "labels": [],
+                //     "is_safe": false,
+                //     "image": null,
+                //     "coordinates": "-2x-2x-3"
+                // }
+                console.error('Invalid response data from gamemasterWorldMapCreate:', {response});
                 throw new Error('Failed to create room: Invalid response data');
             }
 
             const newRoom = new WorldEditorRoom({
-                id: response.data.position.id,
+                id: response.data.id,
                 position: {
                     grid_x: gridX,
                     grid_y: gridY,

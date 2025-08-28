@@ -252,6 +252,7 @@ export default {
     'room-selected',
     'room-created',
     'room-moved',
+    'room-deleted',
     'connection-created',
     'connection-deleted',
     'connection-selected',

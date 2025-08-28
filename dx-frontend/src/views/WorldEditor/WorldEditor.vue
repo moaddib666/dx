@@ -103,6 +103,7 @@
             @room-selected="onRoomSelected"
             @room-created="onRoomCreated"
             @room-moved="onRoomMoved"
+            @room-deleted="onRoomDeleted"
             @connection-created="onConnectionCreated"
             @connection-deleted="onConnectionDeleted"
             @connection-selected="onConnectionSelected"
@@ -115,17 +116,9 @@
         />
       </div>
 
-      <!-- Right Panel - Entity Management (only visible when it has content) -->
-      <div v-if="(isEditMode && selectedRoom) || showStatsPanel || showLayersPanel || showItemsPanel || showNPCTemplatesPanel"
+      <!-- Right Panel - Entity Management (only visible when it has content and not in edit mode) -->
+      <div v-if="!isEditMode && (showStatsPanel || showLayersPanel || showItemsPanel || showNPCTemplatesPanel)"
            class="right-panel">
-        <!-- Entity Spawner (only visible in edit mode) -->
-        <WorldEditorEntitySpawner
-            v-if="isEditMode && selectedRoom"
-            :room="selectedRoom"
-            :selectedTool="selectedTool"
-            class="entity-spawner"
-            @entity-spawned="onEntitySpawned"
-        />
 
         <!-- World Statistics -->
         <WorldEditorStats
@@ -499,6 +492,8 @@ export default {
     onStateUpdated(state) {
       this.editorState = state;
       this.hasUnsavedChanges = true;
+      // Force Vue to detect changes in the state object
+      this.$forceUpdate();
     },
 
     onRoomCreatedEvent(room) {
@@ -608,7 +603,29 @@ export default {
     async onRoomCreated(position) {
       try {
         const subLocationId = this.currentSubLocation ? this.currentSubLocation.id : null;
-        await this.service.createRoom(position.gridX, position.gridY, position.gridZ, subLocationId);
+        const previouslySelectedRoom = this.selectedRoom;
+
+        const newRoom = await this.service.createRoom(position.gridX, position.gridY, position.gridZ, subLocationId);
+
+        // Automatically select the newly created room (Issue #2)
+        if (newRoom) {
+          this.selectedRoom = newRoom;
+          this.service.clearSelection();
+          this.service.toggleRoomSelection(newRoom.id);
+
+          // Create automatic connection if there was a previously selected room (Issue #3)
+          if (previouslySelectedRoom && previouslySelectedRoom.id !== newRoom.id) {
+            try {
+              await this.service.createConnection(previouslySelectedRoom.id, newRoom.id, false);
+              this.setLastAction(`Created room and connected to ${previouslySelectedRoom.getDisplayName?.() || 'previous room'}`);
+            } catch (connectionError) {
+              console.error('Failed to create automatic connection:', connectionError);
+              this.setLastAction('Created room but failed to create automatic connection');
+            }
+          } else {
+            this.setLastAction('Created room');
+          }
+        }
       } catch (error) {
         console.error('Failed to create room:', error);
         this.setLastAction('Failed to create room');
