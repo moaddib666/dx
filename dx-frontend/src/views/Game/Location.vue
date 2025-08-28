@@ -1,25 +1,25 @@
 <template>
   <div class="location-view">
     <FightStartOverlay
-      v-if="hasPendingFight"
-      :attacker="fightAttacker"
-      :defender="fightDefender"
-      :joined="fightParticipants"
+        v-if="hasPendingFight"
+        :attacker="fightAttacker"
+        :defender="fightDefender"
+        :joined="fightParticipants"
     />
     <FightOverlay :side="playerGeneralInfo?.path?.name" v-if="isInFight"/>
 
     <div class="rpg-action-holder"
-      v-if="!hasPendingFight"
+         v-if="!hasPendingFight"
     >
-    <ActionHolder
-        :items="availableItems"
-        :skills="availableActions"
-        :specials="playerSpecials"
-        :player-service="playerService"
-        @skill-selected="handleSkillSelected"
-        @item-selected="handleItemSelected"
-        @special-selected="handleSpecialSelected"
-    />
+      <ActionHolder
+          :items="availableItems"
+          :skills="availableActions"
+          :specials="playerSpecials"
+          :player-service="playerService"
+          @skill-selected="handleSkillSelected"
+          @item-selected="handleItemSelected"
+          @special-selected="handleSpecialSelected"
+      />
       <ActionTriggerGroup
           class="trigger"
           @next-turn-triggered="handleEndTurn"
@@ -78,13 +78,13 @@
             <span>Inventory</span>
           </template>
         </ItemHolder>
-        <DiceRollerModal :visible="isDiceVisible" @close="toogleDice" @roll-complete="onDiceRollComplete" />
+        <DiceRollerModal :visible="isDiceVisible" :challenge="currentChallenge" @close="toogleDice"
+                         @roll-complete="onDiceRollComplete"/>
         <CompassRPG
             v-if="isCompassVisible"
             :position="position"
             @move="handleMove"
         />
-
 
 
       </div>
@@ -120,7 +120,8 @@ import {
   ItemsGameApi,
   ShieldsGameApi,
   SkillsGameApi,
-  WorldGameApi
+  WorldGameApi,
+  DiceGameApi
 } from "@/api/backendService.js";
 import CharacterCardHolder from "@/components/Game/Location/CharacterCardHolder.vue";
 import PlayerComponent from "@/components/Game/Location/PlayerComponent.vue";
@@ -159,10 +160,9 @@ import CompassRPG from "@/components/Compass/CompassRPG.vue";
 import MapColumn from "@/components/MapColumn/MapColumn.vue";
 import RPGActionLog from "@/components/RPGActionLog/RPGActionLog.vue";
 import FightStartOverlay from "@/components/Fight/FightStartOverlay.vue";
-import { FightService } from "@/services/PlayerFight";
+import {FightService} from "@/services/PlayerFight";
 import FightOverlay from "@/components/Fight/FightOverlay.vue";
 import CharacterCurrentLocationService from "@/services/CharacterCurrentLocationService";
-
 export default {
   name: 'LocationView',
   components: {
@@ -235,14 +235,17 @@ export default {
       fightAttacker: null,
       fightDefender: null,
       fightParticipants: [],
+      currentChallenge: null,
     };
   },
   async mounted() {
     this.bus = ensureConnection();
     this.bus.on("world::new_cycle", this.handleCycleChange);
+    this.bus.on("character::challenge_created", this.handleChallengeCreated);
     this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id;
   },
-  beforeUnmount() {},
+  beforeUnmount() {
+  },
   computed: {
     currentBargainId() {
       return this.bargains?.[0]?.id;
@@ -463,6 +466,28 @@ export default {
         await this.updateAll();
       } catch (error) {
         console.error("Error handling cycle change:", error);
+      }
+    },
+    async handleChallengeCreated(challengeData) {
+      try {
+        if (!challengeData) {
+          console.error("Invalid challenge data received:", challengeData);
+          return;
+        }
+        console.log("Challenge created event received", challengeData);
+
+        // Fetch the challenge data using DiceGameApi
+        const challengeResponse = await DiceGameApi.diceChallengeRetrieve(challengeData.id);
+        const challenge = challengeResponse.data;
+
+        console.log("Challenge fetched successfully:", challenge);
+
+        // Store the challenge and open the dice modal
+        this.currentChallenge = challenge;
+        await this.openDice();
+
+      } catch (error) {
+        console.error("Error handling challenge created event:", error);
       }
     },
     async refreshBargains() {
@@ -891,6 +916,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .trigger {
   display: flex;
   width: 12rem;
@@ -899,6 +925,7 @@ export default {
   transform: translateY(35%);
 
 }
+
 .center-section {
   display: flex;
   justify-content: space-between;
@@ -952,7 +979,7 @@ export default {
 
 .mini-map {
   display: flex;
-  flex:1;
+  flex: 1;
   width: 55%;
   min-width: 10rem;
   margin-bottom: -2.7rem;
