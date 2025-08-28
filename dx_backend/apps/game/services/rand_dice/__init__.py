@@ -70,12 +70,14 @@ class DiceService:
 
     def multiplier_roll(self) -> DiceRollResult:
         roll, multiplier, outcome = self._calculate_multiplier()
-        self.logger.debug(f"Character {self.character.pk} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
+        self.logger.debug(
+            f"Character {self.character.pk} rolled {roll} with multiplier {multiplier} and outcome {outcome}")
         return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
 
     def challenge_roll(self, difficulty: int) -> DiceRollResult:
         roll, multiplier, outcome = self._calculate_challenge_outcome(difficulty)
-        self.logger.debug(f"Character {self.character.pk} rolled {roll} against difficulty {difficulty} with multiplier {multiplier} and outcome {outcome}")
+        self.logger.debug(
+            f"Character {self.character.pk} rolled {roll} against difficulty {difficulty} with multiplier {multiplier} and outcome {outcome}")
         return DiceRollResult(dice_side=roll, multiplier=multiplier, outcome=outcome)
 
     def _calculate_challenge_outcome(self, difficulty: int) -> tuple[int, float, RollOutcome]:
@@ -87,6 +89,17 @@ class DiceService:
         if roll < self.sides:
             return roll, 1.0, RollOutcome.GOOD_LUCK
         return roll, 2.0, RollOutcome.CRITICAL_SUCCESS
+
+    @classmethod
+    def roll_chance(cls, chance: float) -> bool:
+        """
+        Roll a chance between 0.0 and 1.0
+        Args:
+            chance: float between 0.0 and 1.0
+        Returns:
+            bool: True if the roll is successful, False otherwise
+        """
+        return random.random() <= chance
 
 
 if __name__ == '__main__':
