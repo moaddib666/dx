@@ -6141,6 +6141,12 @@ export interface OpenaiCharacter {
     'fight'?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof OpenaiCharacter
+     */
+    'challenge'?: string | null;
+    /**
+     * 
      * @type {Organization}
      * @memberof OpenaiCharacter
      */
@@ -6338,6 +6344,12 @@ export interface OpenaiCharacterRequest {
      * @memberof OpenaiCharacterRequest
      */
     'fight'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpenaiCharacterRequest
+     */
+    'challenge'?: string | null;
     /**
      * 
      * @type {OrganizationRequest}
