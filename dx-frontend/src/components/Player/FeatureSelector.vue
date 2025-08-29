@@ -78,20 +78,52 @@ export default {
 </script>
 <style scoped>
 .feature-selector {
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #222;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   text-align: center;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect */
+.feature-selector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 8s ease-in-out infinite;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1.5rem;
   position: relative;
+  z-index: 2;
 }
 
 h2 {
@@ -100,6 +132,8 @@ h2 {
   color: #fada95;
   flex: 1;
   text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
 .close-btn {
@@ -136,67 +170,117 @@ h2 {
 }
 
 p {
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  color: #ccc;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  color: rgba(250, 218, 149, 0.8);
+  position: relative;
+  z-index: 2;
 }
 
 /* Scrollable Container */
 .features-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 1.5rem;
   justify-content: center;
   align-items: stretch;
-  max-height: 500px; /* Limit height for scrolling */
+  max-height: 500px;
   overflow-y: auto;
-  padding: 10px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background-color: #333;
+  padding: 1.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 2;
 }
 
 /* Feature Cards */
 .feature-card {
-  flex: 0 1 calc(25% - 20px); /* Four cards per row on large screens */
-  max-width: calc(25% - 20px);
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  border-radius: 8px;
+  flex: 0 1 calc(25% - 1.5rem);
+  max-width: calc(25% - 1.5rem);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  opacity: 0.6;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0.7;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   text-align: left;
+  border: 2px solid rgba(127, 255, 22, 0.2);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect for feature cards */
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 6s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .feature-card:hover {
   opacity: 1;
-  transform: translateY(-10px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(127, 255, 22, 0.2);
+  border-color: rgba(127, 255, 22, 0.5);
+}
+
+.feature-card:hover::before {
+  opacity: 1;
 }
 
 .feature-card.selected {
   opacity: 1;
-  background-color: rgba(33, 150, 243, 0.8);
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.7);
-  transform: scale(1.05);
+  background: rgba(127, 255, 22, 0.1);
+  box-shadow: 0 6px 20px rgba(127, 255, 22, 0.4);
+  transform: translateY(-2px);
+  border-color: #7fff16;
+}
+
+.feature-card.selected::before {
+  opacity: 1;
 }
 
 .feature-card h3 {
   font-size: 1.2rem;
-  margin-bottom: 10px;
-  color: #fff;
+  margin-bottom: 1rem;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
 }
 
 .feature-card p {
   font-size: 0.9rem;
-  color: #ddd;
+  color: rgba(250, 218, 149, 0.8);
   margin: 0;
+  line-height: 1.4;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  position: relative;
+  z-index: 2;
 }
 
 /* Responsive Design */

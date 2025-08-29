@@ -25,22 +25,22 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   margin: 0.25rem;
-  border: none;
-  border-radius: 0.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 25px;
   font-size: 0.9rem;
   font-weight: 600;
-  text-transform: uppercase;
-  color: white;
-  background: rgba(0, 0, 0, 0.4);
-  box-shadow:
-    0 0.25rem 0.9375rem rgba(0, 0, 0, 0.4),
-    0 0 0 0.125rem rgba(100, 150, 255, 0.2);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  text-transform: none;
+  color: #fada95;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.1), rgba(127, 255, 22, 0.1));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(2px);
 }
 
 .compact-button:before {
@@ -50,80 +50,82 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 40%,
-    rgba(0, 0, 0, 0.1) 100%
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
   );
+  background-size: 300% 300%;
+  animation: flowBorder 6s ease-in-out infinite;
+  opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .compact-button:hover {
-  transform: translateY(-0.1rem) scale(1.01);
-  box-shadow:
-    0 0.5rem 1.5625rem rgba(0, 0, 0, 0.6),
-    0 0 0 0.1875rem rgba(100, 150, 255, 0.5),
-    0 0 1.25rem rgba(100, 150, 255, 0.3);
+  transform: translateY(-2px);
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.2), rgba(127, 255, 22, 0.2));
+  box-shadow: 0 6px 20px rgba(127, 255, 22, 0.4);
+  border-color: #7fff16;
 }
 
 .compact-button:hover:before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.1) 40%,
-    rgba(0, 0, 0, 0.05) 100%
-  );
+  opacity: 1;
 }
 
 .compact-button:active {
-  transform: translateY(0);
-  box-shadow:
-    0 0.125rem 0.375rem rgba(0, 0, 0, 0.2),
-    0 0 0 0.125rem rgba(100, 150, 255, 0.3);
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(127, 255, 22, 0.2);
 }
 
 .compact-button.icon-only {
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  border-radius: 0.25rem;
+  border-radius: 50%;
 }
 
 .compact-button.labeled {
-  padding: 0.5rem 1.5rem;
+  padding: 0.75rem 2rem;
 }
 
 /* Selection glow effect */
 .compact-button:after {
   content: '';
   position: absolute;
-  top: -0.125rem;
-  left: -0.125rem;
-  right: -0.125rem;
-  bottom: -0.125rem;
-  border-radius: 0.625rem;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 25px;
   background: linear-gradient(45deg,
     transparent,
-    rgba(100, 150, 255, 0.3),
+    rgba(127, 255, 22, 0.3),
     transparent,
-    rgba(100, 150, 255, 0.3),
+    rgba(127, 255, 22, 0.3),
     transparent
   );
+  background-size: 300% 300%;
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: -1;
+  animation: flowBorder 4s ease-in-out infinite;
 }
 
 .compact-button:hover:after {
   opacity: 1;
-  animation: pulse-glow 2s infinite;
 }
 
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+.compact-button.icon-only:after {
+  border-radius: 50%;
 }
 
 /* Responsive Design for different viewport sizes */

@@ -147,62 +147,146 @@ export default {
 
 <style scoped>
 .bio-component {
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #222;
-  color: #fff;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect */
+.bio-component::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 8s ease-in-out infinite;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 h2 {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   text-align: center;
+  font-size: 1.8rem;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  position: relative;
+  z-index: 2;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 1rem;
 }
 
 input,
 textarea,
 select {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #444;
-  border-radius: 4px;
-  background-color: #333;
-  color: #fff;
+  padding: 0.75rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.25rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.05);
+  box-shadow: 0 0 10px rgba(127, 255, 22, 0.2);
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: rgba(127, 255, 22, 0.5);
+  background: rgba(127, 255, 22, 0.02);
 }
 
 textarea {
   resize: vertical;
+  min-height: 100px;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #aaa;
+  color: rgba(250, 218, 149, 0.6);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+select option {
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .form-actions {
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #2196f3;
-  color: white;
+  padding: 0.75rem 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 25px;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.1), rgba(127, 255, 22, 0.1));
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
 }
 
 button:hover {
-  background-color: #1976d2;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.2), rgba(127, 255, 22, 0.2));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+  border-color: #7fff16;
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(127, 255, 22, 0.2);
 }
 </style>

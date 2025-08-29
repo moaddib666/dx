@@ -276,103 +276,216 @@ export default {
 </script>
 
 <style scoped>
+/* Character Creation Container */
+.character-creation {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
+}
+
 /* Step Loader */
 .step-loader {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #2d2d2d;
-  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect for step loader */
+.step-loader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 6s ease-in-out infinite;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .step {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.step:hover {
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-2px);
 }
 
 .step.completed .step-number {
-  background-color: #4caf50; /* Green for completed steps */
+  background: linear-gradient(45deg, #7fff16, #fada95);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(127, 255, 22, 0.4);
 }
 
 .step.active .step-number {
-  background-color: #2196f3; /* Blue for the active step */
+  background: linear-gradient(45deg, #fada95, #7fff16);
+  color: #000;
+  box-shadow: 0 2px 8px rgba(250, 218, 149, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .step-number {
   display: inline-block;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   border-radius: 50%;
-  background-color: #757575;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 5px;
+  background: rgba(127, 255, 22, 0.2);
+  color: #fada95;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(127, 255, 22, 0.3);
 }
 
 .step-label {
-  color: #ddd;
+  color: rgba(250, 218, 149, 0.8);
   font-size: 14px;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .step.active .step-label {
-  font-weight: bold;
-  color: white;
+  font-weight: 600;
+  color: #fada95;
+}
+
+.step.completed .step-label {
+  color: #fada95;
 }
 
 /* Step Content */
 .step-content {
-  margin: 20px 0;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #222;
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 2rem 0;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect for step content */
+.step-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 8s ease-in-out infinite;
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 /* Navigation Buttons */
 .navigation-buttons {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  gap: 1.5rem;
+  margin-top: 2rem;
   align-items: center;
-  justify-items: center;
+  flex-wrap: wrap;
 }
 
+/* Override default button styles */
 button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+  padding: 0.75rem 2rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 25px;
   font-size: 16px;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  backdrop-filter: blur(2px);
+}
+
+button:hover {
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+  border-color: #7fff16;
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(127, 255, 22, 0.2);
 }
 
 .back-button {
-  background-color: #757575;
-  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(250, 218, 149, 0.8);
+  border-color: rgba(127, 255, 22, 0.2);
 }
 
 .back-button:hover {
-  background-color: #616161;
+  background: rgba(127, 255, 22, 0.05);
+  color: #fada95;
+  border-color: rgba(127, 255, 22, 0.4);
 }
 
 .next-button, .finish-button {
-  background-color: #2196f3;
-  color: white;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.1), rgba(127, 255, 22, 0.1));
+  color: #fada95;
+  border-color: #7fff16;
 }
 
 .next-button:hover, .finish-button:hover {
-  background-color: #1976d2;
-}
-.character-creation {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.2), rgba(127, 255, 22, 0.2));
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
 }
 </style>

@@ -182,95 +182,196 @@ export default {
 <style scoped>
 .school-and-spell-selector {
   display: flex;
-  gap: 20px;
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #222;
-  color: #fff;
+  gap: 2rem;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
   height: 50vh;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
 }
 
+/* Flow border effect */
+.school-and-spell-selector::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 8s ease-in-out infinite;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
 .placeholder {
   text-align: center;
+  color: rgba(250, 218, 149, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  position: relative;
+  z-index: 2;
 }
+
 /* School List */
 .school-list {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background-color: #333;
-  overflow-y: auto; /* Independent scroll */
-  max-height: 100%; /* Prevents overflow into the page */
+  padding: 1.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 100%;
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 2;
 }
 
 h2 {
-  margin-bottom: 10px;
+  margin-bottom: 1.5rem;
   text-align: center;
+  font-size: 1.5rem;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .school-item {
   display: flex;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  border: 2px solid rgba(127, 255, 22, 0.2);
+  backdrop-filter: blur(2px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Flow border effect for school items */
+.school-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 6s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .school-item:hover {
-  transform: translateY(-5px);
-  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  background: rgba(127, 255, 22, 0.05);
+  border-color: rgba(127, 255, 22, 0.5);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.2);
+}
+
+.school-item:hover::before {
+  opacity: 1;
 }
 
 .school-item.selected {
-  background-color: rgba(33, 150, 243, 0.8);
+  background: rgba(127, 255, 22, 0.1);
+  border-color: #7fff16;
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+}
+
+.school-item.selected::before {
+  opacity: 1;
 }
 
 .school-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
+  width: 60px;
+  height: 60px;
+  border-radius: 0.5rem;
   object-fit: cover;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.school-details {
+  position: relative;
+  z-index: 2;
 }
 
 .school-details h3 {
-  font-size: 1.1rem;
-  margin-bottom: 5px;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .school-details p {
   font-size: 0.9rem;
-  color: #ddd;
+  color: rgba(250, 218, 149, 0.8);
+  line-height: 1.4;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 /* Spell List */
 .spell-list {
   flex: 2;
-  padding: 10px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background-color: #333;
-  overflow-y: auto; /* Independent scroll */
-  max-height: 100%; /* Prevents overflow into the page */
+  padding: 1.5rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 100%;
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 2;
 }
 
 .spell-group {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
 }
 
 .spell-group h3 {
-  font-size: 1.1rem;
-  color: #fff;
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #fada95;
+  margin-bottom: 1rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
 }
 
 .spell-group-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .spell-item {
@@ -279,42 +380,91 @@ h2 {
   justify-content: center;
   width: 80px;
   height: 80px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
+  border: 2px solid rgba(127, 255, 22, 0.2);
+  backdrop-filter: blur(2px);
+  overflow: hidden;
+}
+
+/* Flow border effect for spell items */
+.spell-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent,
+    rgba(127, 255, 22, 0.1),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 6s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spell-item:hover::before {
+  opacity: 1;
+}
+
+.spell-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(127, 255, 22, 0.5);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.2);
 }
 
 .spell-item.disabled {
-  background-color: rgba(100, 100, 100, 0.3);
+  background: rgba(100, 100, 100, 0.2);
   cursor: not-allowed;
+  opacity: 0.4;
+  border-color: rgba(127, 255, 22, 0.1);
 }
 
 .spell-item.selected {
-  background-color: rgba(33, 150, 243, 0.8);
-  transform: scale(1.05);
+  background: rgba(127, 255, 22, 0.1);
+  transform: translateY(-2px);
+  border-color: #7fff16;
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+}
+
+.spell-item.selected::before {
+  opacity: 1;
 }
 
 .spell-item span {
   font-size: 0.8rem;
-  color: #fff;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  position: relative;
+  z-index: 2;
 }
 
 /* Tooltip */
 .spell-hover .tooltip {
   position: absolute;
   top: -50px;
-  background-color: #444;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fada95;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
   font-size: 0.8rem;
   white-space: nowrap;
   z-index: 10;
   opacity: 0;
   transition: opacity 0.3s ease;
+  border: 1px solid rgba(127, 255, 22, 0.3);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .spell-hover:hover .tooltip {
@@ -322,30 +472,36 @@ h2 {
 }
 
 .spell-limit-warning {
-  margin-top: 10px;
+  margin-top: 1rem;
   font-size: 0.9rem;
-  color: #f44336;
+  color: #ff6b6b;
   text-align: center;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
 }
 
 .description {
   text-align: center;
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
   font-size: 1rem;
-  color: #ddd;
+  color: rgba(250, 218, 149, 0.8);
   display: flex;
   flex: 1;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .description p {
-  margin: 5px 0;
+  margin: 0.5rem 0;
+  line-height: 1.5;
 }
 
 .description strong {
-  color: #4caf50;
+  color: #7fff16;
 }
 
 </style>

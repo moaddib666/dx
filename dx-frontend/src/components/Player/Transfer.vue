@@ -112,25 +112,52 @@ export default {
 .character-tool {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 1rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
 }
 
 .button-group .button {
-  padding: 10px 20px;
+  padding: 0.75rem 1.5rem;
   font-size: 16px;
-  border: none;
-  border-radius: 4px;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 25px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  backdrop-filter: blur(2px);
 }
 
 .button {
-  background-color: #2196f3;
-  color: white;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.1), rgba(127, 255, 22, 0.1));
+  color: #fada95;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
 }
 
 .button:hover {
-  background-color: #1976d2;
+  background: linear-gradient(45deg, rgba(250, 218, 149, 0.2), rgba(127, 255, 22, 0.2));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+  border-color: #7fff16;
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(127, 255, 22, 0.2);
 }
 
 .hidden {
@@ -144,59 +171,108 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+  border-radius: 0.5rem;
   width: 80%;
   max-height: 90%;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 20px rgba(127, 255, 22, 0.2);
   overflow: auto;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  backdrop-filter: blur(2px);
+  position: relative;
+}
+
+/* Flow border effect for modal */
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg,
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent,
+    rgba(127, 255, 22, 0.05),
+    transparent
+  );
+  background-size: 300% 300%;
+  animation: flowBorder 8s ease-in-out infinite;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+@keyframes flowBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .editor {
   width: 100%;
   height: 400px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 1rem;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.25rem;
   font-size: 14px;
-  background: #f4f4f4;
-  color: #333;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
   resize: none;
+  font-family: 'Courier New', monospace;
+  backdrop-filter: blur(2px);
+  position: relative;
+  z-index: 2;
+}
+
+.editor:focus {
+  outline: none;
+  border-color: #7fff16;
+  background: rgba(127, 255, 22, 0.05);
+  box-shadow: 0 0 10px rgba(127, 255, 22, 0.2);
 }
 
 .modal-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 2;
 }
 
 .save {
-  background-color: #4caf50;
-  color: white;
+  background: linear-gradient(45deg, rgba(127, 255, 22, 0.2), rgba(250, 218, 149, 0.2));
+  color: #fada95;
+  border: 2px solid #7fff16;
 }
 
 .save:hover {
-  background-color: #388e3c;
+  background: linear-gradient(45deg, rgba(127, 255, 22, 0.3), rgba(250, 218, 149, 0.3));
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
 }
 
 .cancel {
-  background-color: #f44336;
-  color: white;
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border: 2px solid rgba(255, 107, 107, 0.4);
 }
 
 .cancel:hover {
-  background-color: #d32f2f;
+  background: rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  border-color: #ff6b6b;
 }
 </style>
