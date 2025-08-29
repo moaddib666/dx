@@ -18,8 +18,8 @@
           :class="['school-item', { selected: selectedSchools.includes(school.id) }]"
           @click="toggleSchool(school.id)"
       >
+        <img :alt="school.name" :src="school.icon" class="school-icon" />
         <div v-if="!school.is_default" class="default-school-label">
-          <img :alt="school.name" :src="school.icon" class="school-icon" />
           <div class="school-details">
             <h3>{{ school.name }}</h3>
             <p>{{ school.description }}</p>
@@ -180,248 +180,274 @@ export default {
 </script>
 
 <style scoped>
+/* School and Spell Selector - Responsive */
 .school-and-spell-selector {
   display: flex;
-  gap: 2rem;
-  padding: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
   border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.4);
+  background: transparent;
   color: #fada95;
-  height: 50vh;
+  min-height: 60vh;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  border: 2px solid rgba(127, 255, 22, 0.3);
-  backdrop-filter: blur(2px);
-  position: relative;
-  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Flow border effect */
-.school-and-spell-selector::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 0.5rem;
-  background: linear-gradient(45deg,
-    transparent,
-    rgba(127, 255, 22, 0.05),
-    transparent,
-    rgba(127, 255, 22, 0.05),
-    transparent
-  );
-  background-size: 300% 300%;
-  animation: flowBorder 8s ease-in-out infinite;
-  opacity: 0.3;
-  pointer-events: none;
+/* Responsive layout - two columns on larger screens */
+@media (min-width: 768px) {
+  .school-and-spell-selector {
+    flex-direction: row;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
 }
 
-@keyframes flowBorder {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+@media (min-width: 1024px) {
+  .school-and-spell-selector {
+    gap: 2rem;
+    padding: 2rem;
+  }
 }
 
 .placeholder {
   text-align: center;
   color: rgba(250, 218, 149, 0.8);
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  position: relative;
-  z-index: 2;
+  padding: 2rem;
 }
 
-/* School List */
+/* School List - Responsive */
 .school-list {
   flex: 1;
-  padding: 1.5rem;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  padding: 1rem;
+  border: 1px solid rgba(127, 255, 22, 0.2);
   border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  max-height: 100%;
-  backdrop-filter: blur(2px);
-  position: relative;
-  z-index: 2;
+  box-sizing: border-box;
+  max-height: 80vh;
+}
+
+/* Responsive school list padding */
+@media (min-width: 768px) {
+  .school-list {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .school-list {
+    padding: 1.5rem;
+  }
 }
 
 h2 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 600;
 }
 
-.school-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 1rem;
-  border: 2px solid rgba(127, 255, 22, 0.2);
-  backdrop-filter: blur(2px);
-  position: relative;
-  overflow: hidden;
+/* Responsive heading */
+@media (min-width: 768px) {
+  h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+  }
 }
 
-/* Flow border effect for school items */
-.school-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+@media (min-width: 1024px) {
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.school-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
   border-radius: 0.5rem;
-  background: linear-gradient(45deg,
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent
-  );
-  background-size: 300% 300%;
-  animation: flowBorder 6s ease-in-out infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.75rem;
+  border: 1px solid rgba(127, 255, 22, 0.2);
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Responsive school item */
+@media (min-width: 768px) {
+  .school-item {
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .school-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   background: rgba(127, 255, 22, 0.05);
   border-color: rgba(127, 255, 22, 0.5);
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.2);
-}
-
-.school-item:hover::before {
-  opacity: 1;
 }
 
 .school-item.selected {
   background: rgba(127, 255, 22, 0.1);
   border-color: #7fff16;
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
-}
-
-.school-item.selected::before {
-  opacity: 1;
 }
 
 .school-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 0.5rem;
+  position: absolute;
+  height: 100%;
+  width: 40%;
   object-fit: cover;
-  border: 2px solid rgba(127, 255, 22, 0.3);
-  position: relative;
-  z-index: 2;
-}
-
-.school-details {
-  position: relative;
-  z-index: 2;
+  right: 0;
+  top: 0;
+  mask: linear-gradient(to left, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0) 100%);
+  z-index: 0;
 }
 
 .school-details h3 {
-  font-size: 1.2rem;
+
+  font-size: 1rem;
   margin-bottom: 0.5rem;
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 600;
 }
 
+/* Responsive school details */
+@media (min-width: 768px) {
+  .school-details h3 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .school-details h3 {
+    font-size: 1.2rem;
+  }
+}
+
 .school-details p {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: rgba(250, 218, 149, 0.8);
   line-height: 1.4;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
-/* Spell List */
+/* Responsive school description */
+@media (min-width: 768px) {
+  .school-details p {
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .school-details p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Spell List - Responsive */
 .spell-list {
   flex: 2;
-  padding: 1.5rem;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  padding: 1rem;
+  border: 1px solid rgba(127, 255, 22, 0.2);
   border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   overflow-y: auto;
-  max-height: 100%;
-  backdrop-filter: blur(2px);
-  position: relative;
-  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Responsive spell list padding */
+@media (min-width: 768px) {
+  .spell-list {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spell-list {
+    padding: 1.5rem;
+  }
 }
 
 .spell-group {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive spell group spacing */
+@media (min-width: 768px) {
+  .spell-group {
+    margin-bottom: 2rem;
+  }
 }
 
 .spell-group h3 {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #fada95;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 600;
 }
 
+/* Responsive spell group heading */
+@media (min-width: 768px) {
+  .spell-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spell-group h3 {
+    font-size: 1.2rem;
+  }
+}
+
 .spell-group-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Responsive spell grid */
+@media (min-width: 768px) {
+  .spell-group-list {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spell-group-list {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
 }
 
 .spell-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  background: rgba(0, 0, 0, 0.4);
+  aspect-ratio: 1;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  border: 2px solid rgba(127, 255, 22, 0.2);
-  backdrop-filter: blur(2px);
-  overflow: hidden;
-}
-
-/* Flow border effect for spell items */
-.spell-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 0.5rem;
-  background: linear-gradient(45deg,
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent
-  );
-  background-size: 300% 300%;
-  animation: flowBorder 6s ease-in-out infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.spell-item:hover::before {
-  opacity: 1;
+  border: 1px solid rgba(127, 255, 22, 0.2);
+  box-sizing: border-box;
 }
 
 .spell-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   border-color: rgba(127, 255, 22, 0.5);
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.2);
 }
 
 .spell-item.disabled {
@@ -433,21 +459,26 @@ h2 {
 
 .spell-item.selected {
   background: rgba(127, 255, 22, 0.1);
-  transform: translateY(-2px);
   border-color: #7fff16;
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
-}
-
-.spell-item.selected::before {
-  opacity: 1;
 }
 
 .spell-item span {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  position: relative;
-  z-index: 2;
+}
+
+/* Responsive spell item text */
+@media (min-width: 768px) {
+  .spell-item span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spell-item span {
+    font-size: 0.8rem;
+  }
 }
 
 /* Tooltip */

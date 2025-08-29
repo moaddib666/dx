@@ -12,17 +12,6 @@
         <span class="step-label">{{ step.label }}</span>
       </div>
     </div>
-
-    <!-- Step Content -->
-    <div class="step-content">
-      <component :is="steps[currentStep].component"
-                 v-if="steps[currentStep] && steps[currentStep].component"
-                 v-bind="steps[currentStep].data"
-                 @back="goToPreviousStep"
-                 @next="goToNextStep"
-      />
-    </div>
-
     <!-- Navigation Buttons -->
     <div class="navigation-buttons">
       <CompactButton
@@ -48,11 +37,22 @@
         Finish
       </CompactButton>
     </div>
+    <!-- Step Content -->
+    <div class="step-content">
+      <component :is="steps[currentStep].component"
+                 v-if="steps[currentStep] && steps[currentStep].component"
+                 v-bind="steps[currentStep].data"
+                 @back="goToPreviousStep"
+                 @next="goToNextStep"
+      />
+    </div>
+
+
   </div>
 </template>
 
 <script>
-import PathSelector from "@/components/Path/Selector.vue";
+import PathPathSelector from "@/components/Path/PathSelector.vue";
 import BioComponent from "@/components/Player/Bio.vue";
 import FeatureSelector from "@/components/Player/FeatureSelector.vue";
 import ActionPointAllocator from "@/components/Player/ActionPointsComponent.vue";
@@ -100,7 +100,7 @@ export default {
         },
         {
           label: "Path",
-          component: PathSelector,
+          component: PathPathSelector,
           data: {
             paths: this.availablePaths || [],
             selectedPathId: this.playerData?.data.path,
@@ -279,109 +279,89 @@ export default {
 /* Character Creation Container */
 .character-creation {
   width: 100%;
-  flex: 1;
+  max-width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-/* Step Loader */
+/* Step Loader - Mobile First Responsive */
 .step-loader {
   display: flex;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.4);
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 0.5rem;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  border: 1px solid rgba(127, 255, 22, 0.2);
   backdrop-filter: blur(2px);
-  position: relative;
-  overflow: hidden;
 }
 
-/* Flow border effect for step loader */
-.step-loader::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 0.5rem;
-  background: linear-gradient(45deg,
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent,
-    rgba(127, 255, 22, 0.1),
-    transparent
-  );
-  background-size: 300% 300%;
-  animation: flowBorder 6s ease-in-out infinite;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-@keyframes flowBorder {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+/* Responsive breakpoints for step loader */
+@media (min-width: 768px) {
+  .step-loader {
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
 }
 
 .step {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  z-index: 2;
-  padding: 0.5rem;
+  padding: 0.25rem;
   border-radius: 0.25rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .step:hover {
-  background: rgba(127, 255, 22, 0.1);
-  transform: translateY(-2px);
+  transform: scale(1.05);
 }
 
 .step.completed .step-number {
   background: linear-gradient(45deg, #7fff16, #fada95);
   color: #000;
-  box-shadow: 0 2px 8px rgba(127, 255, 22, 0.4);
+  box-shadow: 0 1px 4px rgba(127, 255, 22, 0.3);
 }
 
 .step.active .step-number {
   background: linear-gradient(45deg, #fada95, #7fff16);
   color: #000;
-  box-shadow: 0 2px 8px rgba(250, 218, 149, 0.4);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  box-shadow: 0 1px 4px rgba(250, 218, 149, 0.3);
 }
 
 .step-number {
   display: inline-block;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
+  width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
   border-radius: 50%;
   background: rgba(127, 255, 22, 0.2);
   color: #fada95;
-  font-size: 18px;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 0.25rem;
   transition: all 0.3s ease;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  border: 1px solid rgba(127, 255, 22, 0.3);
 }
 
 .step-label {
   color: rgba(250, 218, 149, 0.8);
-  font-size: 14px;
+  font-size: 0.75rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 500;
   transition: all 0.3s ease;
+  word-break: break-word;
+  padding-left: 0.5em;
 }
 
 .step.active .step-label {
@@ -393,99 +373,112 @@ export default {
   color: #fada95;
 }
 
-/* Step Content */
+/* Responsive step sizing */
+@media (min-width: 768px) {
+  .step {
+    padding: 0.5rem;
+    flex: none;
+  }
+
+  .step-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-label {
+    font-size: 0.875rem;
+  }
+}
+
+/* Step Content - Responsive */
 .step-content {
-  margin: 2rem 0;
-  padding: 2rem;
+  flex: 1;
+  margin: 1rem 0;
+  padding: 1rem;
   border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.2);
   color: #fada95;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  border: 1px solid rgba(127, 255, 22, 0.2);
   backdrop-filter: blur(2px);
-  position: relative;
-  overflow: hidden;
+  overflow-y: auto;
 }
 
-/* Flow border effect for step content */
-.step-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 0.5rem;
-  background: linear-gradient(45deg,
-    transparent,
-    rgba(127, 255, 22, 0.05),
-    transparent,
-    rgba(127, 255, 22, 0.05),
-    transparent
-  );
-  background-size: 300% 300%;
-  animation: flowBorder 8s ease-in-out infinite;
-  opacity: 0.3;
-  pointer-events: none;
+/* Responsive step content */
+@media (min-width: 768px) {
+  .step-content {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+  }
 }
 
-/* Navigation Buttons */
+@media (min-width: 1024px) {
+  .step-content {
+    margin: 2rem 0;
+    padding: 2rem;
+  }
+}
+
+/* Navigation Buttons - Responsive */
 .navigation-buttons {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  gap: 0.75rem;
+  margin-top: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  padding: 0 1rem;
 }
 
-/* Override default button styles */
+/* Responsive navigation spacing */
+@media (min-width: 768px) {
+  .navigation-buttons {
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .navigation-buttons {
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+}
+
+/* Simplified button styles */
 button {
-  padding: 0.75rem 2rem;
-  border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 25px;
-  font-size: 16px;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   color: #fada95;
   backdrop-filter: blur(2px);
+  min-width: 80px;
+}
+
+/* Responsive button sizing */
+@media (min-width: 768px) {
+  button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    min-width: 100px;
+  }
 }
 
 button:hover {
   background: rgba(127, 255, 22, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
-  border-color: #7fff16;
+  border-color: rgba(127, 255, 22, 0.5);
 }
 
 button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 5px rgba(127, 255, 22, 0.2);
-}
-
-.back-button {
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(250, 218, 149, 0.8);
-  border-color: rgba(127, 255, 22, 0.2);
-}
-
-.back-button:hover {
-  background: rgba(127, 255, 22, 0.05);
-  color: #fada95;
-  border-color: rgba(127, 255, 22, 0.4);
-}
-
-.next-button, .finish-button {
-  background: linear-gradient(45deg, rgba(250, 218, 149, 0.1), rgba(127, 255, 22, 0.1));
-  color: #fada95;
-  border-color: #7fff16;
-}
-
-.next-button:hover, .finish-button:hover {
-  background: linear-gradient(45deg, rgba(250, 218, 149, 0.2), rgba(127, 255, 22, 0.2));
-  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
+  transform: scale(0.98);
 }
 </style>

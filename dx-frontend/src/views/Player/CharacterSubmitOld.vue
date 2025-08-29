@@ -91,11 +91,11 @@
 
 <script>
 import AttributesAllocator from "@/components/Player/AttributesAllocator.vue";
-import PathSelector from "@/components/Path/Selector.vue";
+import PathPathSelector from "@/components/Path/PathSelector.vue";
 
 export default {
   components: {
-    PathSelector,
+    PathSelector: PathPathSelector,
     AttributesAllocator: AttributesAllocator,
   },
   data() {
