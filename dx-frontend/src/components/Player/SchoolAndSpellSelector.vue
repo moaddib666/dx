@@ -47,7 +47,7 @@
               :class="['spell-item', { disabled: spell.grade < playerRank, selected: selectedSpells.includes(spell.id) }]"
               @click="spell.grade < playerRank ? null : toggleSpell(spell.id)"
           >
-            <SkillIcon :skill="spell" :fade="spell.grade < playerRank"/>
+            <RPGSkilPreview :skill="spell" :fade="spell.grade < playerRank"/>
             <!--            <span>{{ spell.name }}</span>-->
             <!--            <div-->
             <!--                class="spell-hover"-->
@@ -75,10 +75,11 @@
 <script>
 import SkillIcon from "@/components/Action/ActionIcon.vue";
 import { useI18n } from 'vue-i18n';
+import RPGSkilPreview from "@/components/RPGSkill/RPGSkilPreview.vue";
 
 export default {
   name: "SchoolAndSpellSelector",
-  components: {SkillIcon},
+  components: {RPGSkilPreview, SkillIcon},
   setup() {
     const { t } = useI18n();
     return { t };
@@ -449,11 +450,6 @@ h2 {
   transition: all 0.3s ease;
   border: 1px solid rgba(127, 255, 22, 0.2);
   box-sizing: border-box;
-}
-
-.spell-item:hover {
-  transform: translateY(-1px);
-  border-color: rgba(127, 255, 22, 0.5);
 }
 
 .spell-item.disabled {
