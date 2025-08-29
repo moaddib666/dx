@@ -6,15 +6,11 @@
     <div v-if="isCharacterValid" class="review-content">
       <!-- Left Section: Avatar and Info -->
       <div class="left-section">
+        <img :src="path.icon" alt="Path Icon" class="path-icon" />
         <div class="avatar-wrapper">
           <!-- Avatar Image -->
           <div class="avatar-container">
             <img :src="avatar" alt="Character Avatar" class="avatar-image"/>
-            <div class="avatar-overlay"></div>
-          </div>
-          <!-- Path Icon -->
-          <div class="path-icon-wrapper">
-            <img :src="path.icon" alt="Path Icon" class="path-icon" />
           </div>
         </div>
         <div class="character-info">
@@ -251,6 +247,7 @@ export default {
 
 /* Left Section - Responsive */
 .left-section {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -283,45 +280,18 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-}
-
-/* Responsive avatar wrapper */
-@media (min-width: 768px) {
-  .avatar-wrapper {
-    margin-bottom: 1.25rem;
-    gap: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .avatar-wrapper {
-    margin-bottom: 1.5rem;
-  }
+  z-index: 1;
 }
 
 .avatar-container {
   position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  border-radius: 0.8rem;
   overflow: hidden;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  max-width: 30%;
+  aspect-ratio: 1 / 1.77;
 }
 
 /* Responsive avatar sizing */
-@media (min-width: 768px) {
-  .avatar-container {
-    width: 120px;
-    height: 120px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .avatar-container {
-    width: 150px;
-    height: 150px;
-  }
-}
 
 .avatar-image {
   width: 100%;
@@ -329,41 +299,21 @@ export default {
   object-fit: cover;
 }
 
-.path-icon-wrapper {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 0.4rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(127, 255, 22, 0.3);
-}
 
 .path-icon {
-  width: 24px;
-  height: 24px;
-}
-
-/* Responsive path icon */
-@media (min-width: 768px) {
-  .path-icon-wrapper {
-    padding: 0.5rem;
-  }
-
-  .path-icon {
-    width: 28px;
-    height: 28px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .path-icon {
-    width: 32px;
-    height: 32px;
-  }
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  object-fit: cover;
+  mask: radial-gradient(circle at center, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 80%);
+  opacity: 0.3;
 }
 
 .character-info {
+  z-index: 1;
   margin-top: 0.75rem;
 }
 
