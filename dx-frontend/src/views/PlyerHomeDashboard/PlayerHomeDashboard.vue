@@ -364,9 +364,9 @@ export default {
 
 .player-home-dashboard {
   width: 100%;
-  max-width: 90vw;
+  max-width: 95vw;
   margin: 0 auto;
-  padding: 60px;
+  padding: 40px;
   position: relative;
   color: white;
   z-index: 1;
@@ -385,7 +385,7 @@ export default {
 /* Top section: Campaign selector */
 .campaign-selector-section {
   margin-bottom: 1rem;
-  padding: 3rem;
+  padding: 1.5rem;
 }
 
 .section-title {
@@ -428,7 +428,6 @@ export default {
 
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
   width: 100%;
@@ -436,6 +435,44 @@ export default {
   padding-right: 10px;
   grid-auto-rows: 1fr;
   align-items: stretch;
+
+  /* Mobile first - 1 column */
+  grid-template-columns: 1fr;
+}
+
+/* Small tablets and large phones - 2 columns */
+@media (min-width: 640px) {
+  .characters-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablets - 3 columns */
+@media (min-width: 768px) {
+  .characters-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Small desktops - 4 columns */
+@media (min-width: 1024px) {
+  .characters-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Large desktops - 5 columns */
+@media (min-width: 1280px) {
+  .characters-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Extra large screens - 6 columns */
+@media (min-width: 1536px) {
+  .characters-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }
 
 /* Scrollbar styling is now handled globally in global.css */
@@ -455,7 +492,6 @@ export default {
 }
 
 .no-campaigns-content {
-  max-width: 600px;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 0.5rem;
   padding: 2.5rem;
@@ -781,7 +817,6 @@ export default {
   }
 
   .characters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 0.75rem;
   }
 
@@ -809,7 +844,6 @@ export default {
 
 @media (max-width: 480px) {
   .characters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 0.5rem;
   }
 
