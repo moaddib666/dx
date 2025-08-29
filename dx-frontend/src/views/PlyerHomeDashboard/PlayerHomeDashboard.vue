@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="hero-background"></div>
+    <div class="hero-background" :style="{ backgroundImage: `url(${heroBackgroundUrl})` }"></div>
     <div class="player-home-dashboard">
       <!-- Loading overlay -->
       <Loader
@@ -132,6 +132,18 @@ export default {
         // If all criteria are equal, sort by name
         return a.name.localeCompare(b.name);
       });
+    },
+    heroBackgroundUrl() {
+      // Get the selected campaign
+      const selectedCampaign = this.campaigns.find(campaign => campaign.id === this.selectedCampaignId);
+
+      // Return campaign background if available, otherwise default
+      if (selectedCampaign && selectedCampaign.background_image) {
+        return selectedCampaign.background_image;
+      }
+
+      // Default background
+      return '@/assets/images/dashbaord/dashboard-2.png';
     }
   },
   async mounted() {
@@ -141,12 +153,35 @@ export default {
       ClientManagerService.clearClientInfoCache();
       // Fetch campaigns data
       await this.fetchCampaigns();
-      // Additional initialization if needed
 
-      // For testing, let's automatically select the first campaign
+      // Campaign memorization logic
       if (this.campaigns.length > 0) {
-        console.log('Auto-selecting first campaign for testing');
-        this.selectCampaign(this.campaigns[0].id);
+        let campaignToSelect = null;
+
+        // 1. Check localStorage for saved campaign
+        const savedCampaignId = localStorage.getItem('selectedCampaignId');
+        if (savedCampaignId && this.campaigns.find(c => c.id === savedCampaignId)) {
+          campaignToSelect = savedCampaignId;
+          console.log('Restored campaign from localStorage:', savedCampaignId);
+        }
+
+        // 2. If no saved campaign or saved campaign not found, use current character's campaign
+        if (!campaignToSelect) {
+          const clientInfo = await ClientManagerService.getCurrentClientInfo();
+          if (clientInfo.current_campaign && this.campaigns.find(c => c.id === clientInfo.current_campaign.id)) {
+            campaignToSelect = clientInfo.current_campaign.id;
+            console.log('Using current character campaign:', campaignToSelect);
+          }
+        }
+
+        // 3. If still no campaign, select the first available campaign
+        if (!campaignToSelect) {
+          campaignToSelect = this.campaigns[0].id;
+          console.log('Using first available campaign:', campaignToSelect);
+        }
+
+        // Select the determined campaign
+        this.selectCampaign(campaignToSelect);
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
@@ -196,6 +231,9 @@ export default {
     async selectCampaign(campaignId) {
       console.log('Campaign selected:', campaignId);
       this.selectedCampaignId = campaignId;
+
+      // Save selected campaign to localStorage for persistence
+      localStorage.setItem('selectedCampaignId', campaignId);
 
       // Update selected status for all campaigns
       this.campaigns.forEach(campaign => {
@@ -307,7 +345,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('@/assets/images/dashbaord/dashboard-2.png');
   background-size: cover;
   background-position: center 10%;
   background-attachment: fixed;
