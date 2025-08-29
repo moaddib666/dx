@@ -273,9 +273,6 @@ onBeforeUnmount(() => {
   characterTemplatesService.off('templatesLoaded', onTemplatesLoaded);
   characterTemplatesService.off('loadingFailed', onLoadingFailed);
 
-  // Clean up drag event listeners if they're still active
-  document.removeEventListener('mousemove', onDrag);
-  document.removeEventListener('mouseup', endDrag);
 });
 </script>
 
