@@ -390,7 +390,8 @@ export default {
 
 .section-title {
   font-size: 1.3rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   margin-bottom: 0.75rem;
   text-align: center;
   font-weight: 600;
@@ -420,7 +421,9 @@ export default {
 .subsection-title {
   font-size: 18px;
   margin-bottom: 15px;
-  color: #555;
+  color: rgba(250, 218, 149, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
 }
 
 .characters-grid {
@@ -453,12 +456,13 @@ export default {
 
 .no-campaigns-content {
   max-width: 600px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
   padding: 2.5rem;
   text-align: center;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(127, 255, 22, 0.3);
   animation: fadeIn 0.5s ease-out;
+  backdrop-filter: blur(2px);
 }
 
 @keyframes fadeIn {
@@ -469,21 +473,24 @@ export default {
 .warning-icon {
   font-size: 48px;
   margin-bottom: 20px;
-  color: var(--cyber-yellow, #ffd700);
+  color: #fada95;
 }
 
 .warning-title {
   font-size: 24px;
-  color: var(--cyber-yellow, #ffd700);
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   margin-bottom: 15px;
   font-weight: 600;
 }
 
 .warning-message {
   font-size: 16px;
-  color: var(--light-steel-blue, #b0c4de);
+  color: rgba(250, 218, 149, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   margin-bottom: 25px;
   line-height: 1.5;
+  font-weight: 400;
 }
 
 .action-buttons {
@@ -498,53 +505,58 @@ export default {
 .discord-button {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: linear-gradient(45deg, var(--cyber-yellow, #ffd700), #00ffff);
+  background: linear-gradient(45deg, #fada95, #7fff16);
   color: #000;
   text-decoration: none;
   border-radius: 25px;
   font-weight: bold;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid rgba(127, 255, 22, 0.3);
 }
 
 .discord-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(127, 255, 22, 0.4);
   text-decoration: none;
   color: #000;
+  border-color: #7fff16;
 }
 
 .discord-button:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(127, 255, 22, 0.2);
 }
 
 /* FAQ button styling */
 .faq-button {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--cyber-yellow, #ffd700);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
   text-decoration: none;
   border-radius: 25px;
   font-weight: bold;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 2px solid rgba(127, 255, 22, 0.3);
 }
 
 .faq-button:hover {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(127, 255, 22, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
-  color: white;
+  box-shadow: 0 4px 10px rgba(127, 255, 22, 0.3);
+  color: #fada95;
   text-decoration: none;
+  border-color: #7fff16;
 }
 
 .faq-button:active {
   transform: translateY(1px);
-  box-shadow: 0 2px 5px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 2px 5px rgba(127, 255, 22, 0.2);
 }
 
 .discord-icon {
@@ -575,9 +587,9 @@ export default {
   width: 100%;
   height: 200px;
   padding: 0.75rem 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -589,9 +601,10 @@ export default {
 }
 
 .add-character-placeholder:hover {
-  background: rgba(255, 215, 0, 0.1);
+  background: rgba(127, 255, 22, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: #7fff16;
 }
 
 .add-character-content {
@@ -607,7 +620,7 @@ export default {
 
 .add-icon {
   font-size: 3rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #fada95;
   margin-bottom: 10px;
   transition: all 0.3s ease;
 }
@@ -615,7 +628,8 @@ export default {
 .add-text {
   font-size: 1.2rem;
   font-weight: 600;
-  color: white;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
 }
 
 .add-character-placeholder:hover .add-icon {
@@ -629,12 +643,12 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   background: linear-gradient(45deg,
     transparent,
-    rgba(255, 215, 0, 0.1),
+    rgba(127, 255, 22, 0.1),
     transparent,
-    rgba(255, 215, 0, 0.1),
+    rgba(127, 255, 22, 0.1),
     transparent
   );
   background-size: 300% 300%;
@@ -660,11 +674,11 @@ export default {
   left: -2px;
   right: -2px;
   bottom: -2px;
-  border-radius: 14px;
+  border-radius: 0.6rem;
   background: linear-gradient(45deg,
-    rgba(255, 215, 0, 0.3),
-    rgba(255, 215, 0, 0.2),
-    rgba(255, 215, 0, 0.3)
+    rgba(127, 255, 22, 0.3),
+    rgba(127, 255, 22, 0.2),
+    rgba(127, 255, 22, 0.3)
   );
   background-size: 300% 300%;
   opacity: 0;
@@ -701,10 +715,11 @@ export default {
 .debug-message {
   padding: 0.5rem;
   margin-bottom: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--light-steel-blue, #b0c4de);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(250, 218, 149, 0.8);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-radius: 0.5rem;
   font-weight: 500;
   font-size: 0.9rem;
   text-align: center;
