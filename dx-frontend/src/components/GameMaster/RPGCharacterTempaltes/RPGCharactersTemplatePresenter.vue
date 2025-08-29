@@ -97,19 +97,13 @@ const handleImageError = (event: Event) => {
     :class="{ 'selected': selected }"
     @click="handleClick"
   >
-    <div class="template-avatar">
-      <img
+    <img
         v-if="template.avatar"
         :src="template.avatar"
         :alt="template.name"
         class="template-image"
         @error="handleImageError"
-      />
-      <div v-else class="template-placeholder fancy-placeholder">
-        <span class="initials">{{ getTemplateInitials(template.name) }}</span>
-      </div>
-    </div>
-
+    />
     <div class="template-info">
       <div class="template-name" :title="template.name">
         {{ template.name }}
@@ -191,26 +185,20 @@ const handleImageError = (event: Event) => {
 
 .template-card.selected {
   border-color: #7fff16;
-  background: rgba(127, 255, 22, 0.1);
   box-shadow: 0 0 15px rgba(127, 255, 22, 0.3);
 }
 
-.template-avatar {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 2px solid rgba(127, 255, 22, 0.3);
-}
-
 .template-image {
-  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
+  mask: linear-gradient(to right, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 0) 100%);
+  z-index: -1;
+  opacity: 0.9;
 }
 
 .template-placeholder {
@@ -279,7 +267,7 @@ const handleImageError = (event: Event) => {
 
 .template-info {
   flex: 1;
-  text-align: center;
+  text-align: right;
 }
 
 .template-name {
