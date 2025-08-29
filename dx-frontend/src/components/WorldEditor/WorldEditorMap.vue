@@ -23,8 +23,17 @@
         @mouseup="onMouseUp"
         @wheel.prevent="onWheel"
     >
+      <!-- Pattern definitions -->
+      <defs>
+        <pattern id="worldEditorTexture" patternUnits="userSpaceOnUse" width="1050" height="1050">
+          <image href="@/assets/images/backgrounds/world-editor-texture.png" width="1050" height="1050"/>
+        </pattern>
+      </defs>
+
       <!-- Transform group for pan/zoom -->
       <g :transform="finalTransform">
+        <!-- Background texture -->
+        <rect x="-5000" y="-5000" width="10000" height="10000" fill="url(#worldEditorTexture)" opacity="0.35"/>
         <!-- Grid -->
         <g v-if="showGrid" class="grid-layer">
           <line
@@ -953,7 +962,7 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #1e1e1e;
+  background: #000000;
   overflow: hidden;
 }
 
