@@ -65,6 +65,7 @@
         }"
             :shields="shields"
             :effects="activeEffects"
+            :resetBaseStats="playerGeneralInfo.resetting_base_stats || false"
             @openInfo="openInfo"
         ></CharacterRPGBars>
       </div>

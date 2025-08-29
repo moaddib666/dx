@@ -24,6 +24,7 @@ interface Props {
   character: Character;
   shields?: ActiveShield[];
   effects?: ActiveEffect[];
+  resetBaseStats: boolean;
 }
 
 
@@ -40,6 +41,7 @@ const props = withDefaults(defineProps<Props>(), {});
     <!-- Character Avatar -->
     <RPGAvatar
         :avatar-url="props.character.avatar"
+        :statsIncrementIcon="props.resetBaseStats"
         @click="emits('openInfo', props.character)"
     />
     <!-- Bars -->
