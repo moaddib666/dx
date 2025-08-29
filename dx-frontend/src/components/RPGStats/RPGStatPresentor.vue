@@ -69,13 +69,13 @@ export default {
 
 <template>
   <div class="stat-presenter">
+    <img
+        class="stat-icon"
+        :src="statsService.getCachedStatImage(stat.name)"
+        :alt="stat.name"
+        :title="stat.name"
+    />
     <div class="left-section">
-      <img
-          class="stat-icon"
-          :src="statsService.getCachedStatImage(stat.name)"
-          :alt="stat.name"
-          :title="stat.name"
-      />
       <span class="stat-name">{{ stat.name }}</span>
     </div>
     <div class="right-section">
@@ -97,11 +97,13 @@ export default {
   padding: 0.3rem;
   gap: 0.25rem;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .stat-presenter:hover {
   border-color: rgba(127, 255, 22, 0.5);
   background: rgba(0, 0, 0, 0.6);
+
 }
 
 .left-section {
@@ -109,6 +111,7 @@ export default {
   align-items: center;
   gap: 0.5rem;
   flex: 1;
+  z-index: 1;
 }
 
 .right-section {
@@ -119,24 +122,27 @@ export default {
 }
 
 .stat-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  object-fit: contain;
-  border: 2px solid rgba(127, 255, 22, 0.3);
+  height: 100%;
+  width: 60%;
+  object-fit: cover;
   flex-shrink: 0;
+  position: absolute;
+  mask: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(100, 100, 100, 0));
+  z-index: 0;
 }
 
 .stat-name {
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  font-size: 0.64rem;
+  font-size: 1em;
+  padding: 0.3rem;
   font-weight: 600;
   color: #fada95;
   text-transform: capitalize;
-  max-width: 7.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-shadow: 0 0 1em rgb(0, 0, 0);
+  box-shadow: 0 0 1em rgba(0, 0, 0, 1);
 }
 
 .dice-results {

@@ -84,7 +84,7 @@ export default {
   flex: 1;
   color: white;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 1.2em;
   text-transform: capitalize;
 }
 

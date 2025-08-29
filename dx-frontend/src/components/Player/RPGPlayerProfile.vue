@@ -50,7 +50,7 @@ const emit = defineEmits<{
 const loading = ref(true)
 const playerInfo = ref<Player | null>(null)
 const playerStats = ref<Stat[]>([])
-const upgradePoints = ref(0) // Example starting upgrade points
+const upgradePoints = ref(0)
 
 const isModalOpen = computed(() => props.isOpen)
 
@@ -96,35 +96,6 @@ const syncPlayerData = async () => {
 
   } catch (error) {
     console.error("Failed to fetch player data:", error)
-    // Fallback mock data for development
-    playerInfo.value = {
-      id: "player-1",
-      name: "Adventurer",
-      biography: {
-        avatar: "/src/assets/images/avatar/placeholder.webp"
-      },
-      path: {
-        id: "path-1",
-        name: "Warrior",
-        description: "A brave warrior on the path of strength",
-        icon: "/src/assets/images/paths/warrior.webp"
-      },
-      rank: {
-        name: "Novice",
-        level: 1
-      },
-      experience: 150,
-      tags: ["Brave", "Strong"]
-    }
-
-    playerStats.value = [
-      { id: "str", name: "Strength", dice_rolls: [], additional_value: 2, base_value: 10 },
-      { id: "dex", name: "Dexterity", dice_rolls: [], additional_value: 1, base_value: 8 },
-      { id: "int", name: "Intelligence", dice_rolls: [], additional_value: 0, base_value: 12 },
-      { id: "wis", name: "Wisdom", dice_rolls: [], additional_value: 1, base_value: 9 },
-      { id: "con", name: "Constitution", dice_rolls: [], additional_value: 3, base_value: 11 },
-      { id: "cha", name: "Charisma", dice_rolls: [], additional_value: 0, base_value: 7 }
-    ]
   } finally {
     loading.value = false
   }
@@ -237,7 +208,7 @@ watch(() => props.isOpen, (newValue) => {
 .player-profile-modal {
   width: 100%;
   max-width: 900px;
-  max-height: 90vh;
+  max-height: 95vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
