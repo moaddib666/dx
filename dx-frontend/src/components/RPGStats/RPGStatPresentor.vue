@@ -68,9 +68,9 @@ export default {
   justify-content: space-between;
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.4rem;
-  padding: 0.4rem;
-  gap: 0.5rem;
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+  gap: 0.375rem;
   transition: all 0.3s ease;
 }
 
@@ -80,8 +80,8 @@ export default {
 }
 
 .stat-icon {
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   object-fit: contain;
   border: 2px solid rgba(127, 255, 22, 0.3);
@@ -91,11 +91,11 @@ export default {
 .stat-name {
   flex: 1;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  font-size: 0.85rem;
+  font-size: 0.64rem;
   font-weight: 600;
   color: #fada95;
   text-transform: capitalize;
-  max-width: 10rem;
+  max-width: 7.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -104,16 +104,16 @@ export default {
 .stat-value {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
 }
 
 .adjust-button {
   background: rgba(127, 255, 22, 0.2);
   color: #7fff16;
   border: 1px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.3rem;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.9rem;
+  border-radius: 0.225rem;
+  padding: 0.15rem 0.375rem;
+  font-size: 0.675rem;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
@@ -131,15 +131,15 @@ export default {
 }
 
 .value {
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #fada95;
-  min-width: 2.5rem;
+  min-width: 1.88rem;
   text-align: center;
   background: rgba(250, 218, 149, 0.1);
   border: 1px solid rgba(250, 218, 149, 0.3);
-  border-radius: 0.3rem;
-  padding: 0.2rem 0.4rem;
+  border-radius: 0.225rem;
+  padding: 0.15rem 0.3rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 

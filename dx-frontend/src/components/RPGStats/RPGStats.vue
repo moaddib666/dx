@@ -109,25 +109,25 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
 .rpg-stats-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.375rem;
   background: rgba(0, 0, 0, 0.4);
   border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.5rem;
-  padding: 0.7rem;
+  border-radius: 0.375rem;
+  padding: 0.525rem;
   min-height: auto;
 }
 
 .stats-header {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.225rem;
   border-bottom: 1px solid rgba(127, 255, 22, 0.2);
-  padding-bottom: 0.4rem;
+  padding-bottom: 0.3rem;
 }
 
 .stats-title {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 600;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
@@ -139,14 +139,14 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
   justify-content: space-between;
   align-items: center;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  font-size: 0.875rem;
+  font-size: 0.656rem;
 }
 
 .upgrade-points,
 .total-stats {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.225rem;
 }
 
 .points-label,
@@ -158,8 +158,8 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
   color: #7fff16;
   font-weight: 600;
   background: rgba(127, 255, 22, 0.1);
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.3rem;
+  padding: 0.15rem 0.375rem;
+  border-radius: 0.225rem;
   border: 1px solid rgba(127, 255, 22, 0.3);
 }
 
@@ -167,15 +167,15 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
   color: #fada95;
   font-weight: 600;
   background: rgba(250, 218, 149, 0.1);
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.3rem;
+  padding: 0.15rem 0.375rem;
+  border-radius: 0.225rem;
   border: 1px solid rgba(250, 218, 149, 0.3);
 }
 
 .stats-list {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.3rem;
   flex: 1;
 }
 
@@ -189,14 +189,14 @@ const handleSwitch = ({ fromStatId, toStatId }: { fromStatId: string, toStatId: 
 
 .stats-footer {
   text-align: center;
-  padding-top: 0.7rem;
+  padding-top: 0.525rem;
   border-top: 1px solid rgba(127, 255, 22, 0.2);
 }
 
 .no-points-message {
   margin: 0;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
-  font-size: 0.875rem;
+  font-size: 0.656rem;
   color: rgba(250, 218, 149, 0.5);
   font-style: italic;
 }

@@ -97,18 +97,22 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer; /* Indicate interactivity */
+  padding: 0.2em; /* Proper padding from parent */
 }
 
 .dice {
-  width: 2em;
-  height: 2em;
+  width: 1.5em;
+  height: 1.5em;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, silver, lightgray);
+  background: linear-gradient(135deg, #fada95, #e8c478);
+  border: 1px solid #333;
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  font-weight: bold;
-  color: #000;
+  font-weight: 600;
+  color: #222;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.75em;
   transition: all 0.3s ease-in-out; /* Smooth transition */
   position: absolute;
   z-index: 10;
@@ -119,22 +123,24 @@ export default {
 }
 
 .dice.faded {
-  opacity: 0.7;
-  color: #555;
-  background: linear-gradient(135deg, rgba(200, 200, 200, 0.9), rgba(160, 160, 160, 0.9)) !important;
-  border: 1px solid rgba(0, 0, 0, 0.3);
+  color: #666;
+  background: linear-gradient(135deg, #c4b085, #b5a078) !important;
+  border: 1px solid #888;
 }
 
 .dice.summary {
-  width: 3em;
-  height: 3em;
+  width: 2.25em;
+  height: 2.25em;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, silver, lightgray);
+  background: linear-gradient(135deg, #fada95, #e8c478);
+  border: 2px solid #333;
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  font-weight: bold;
-  color: #000;
+  font-weight: 700;
+  color: #222;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.9em;
   position: relative;
   z-index: 5;
 }
@@ -144,37 +150,37 @@ export default {
 }
 
 .dice:not(.summary):not(.hidden):nth-child(2) {
-  right: 3.5em; /* Position first expanded dice */
+  right: 2.625em; /* Position first expanded dice (3.5 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
 
 .dice:not(.summary):not(.hidden):nth-child(3) {
-  right: 6em; /* Position second expanded dice */
+  right: 4.5em; /* Position second expanded dice (6 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
 
 .dice:not(.summary):not(.hidden):nth-child(4) {
-  right: 8.5em; /* Position third expanded dice */
+  right: 6.375em; /* Position third expanded dice (8.5 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
 
 .dice:not(.summary):not(.hidden):nth-child(5) {
-  right: 11em; /* Position fourth expanded dice */
+  right: 8.25em; /* Position fourth expanded dice (11 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
 
 .dice:not(.summary):not(.hidden):nth-child(6) {
-  right: 13.5em; /* Position fifth expanded dice */
+  right: 10.125em; /* Position fifth expanded dice (13.5 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
 
 .dice:not(.summary):not(.hidden):nth-child(7) {
-  right: 16em; /* Position sixth expanded dice */
+  right: 12em; /* Position sixth expanded dice (16 * 0.75) */
   top: 50%;
   transform: translateY(-50%);
 }
