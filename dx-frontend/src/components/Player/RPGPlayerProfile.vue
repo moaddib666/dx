@@ -50,7 +50,7 @@ const emit = defineEmits<{
 const loading = ref(true)
 const playerInfo = ref<Player | null>(null)
 const playerStats = ref<Stat[]>([])
-const upgradePoints = ref(5) // Example starting upgrade points
+const upgradePoints = ref(0) // Example starting upgrade points
 
 const isModalOpen = computed(() => props.isOpen)
 
