@@ -10,7 +10,7 @@
 
 <style scoped>
 .container {
-  padding: 2.5rem;
+  padding: 1.5rem;
   display: flex;
   border-image-source: url("@/assets/rpg/bordertemplate.png");
   border-image-slice: 120 150 120 150 fill;

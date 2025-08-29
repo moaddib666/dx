@@ -45,8 +45,6 @@
 
         <!-- Middle section: 90/10 split with characters and selected character info -->
         <RPGContainer class="characters-section">
-          <div class="characters-container">
-            <!-- Left side (90%): Available characters -->
             <div class="available-characters">
               <!-- Debug message -->
               <div v-if="characters.length === 0" class="debug-message">
@@ -59,7 +57,7 @@
               </div>
               <div class="characters-grid">
                 <!-- Placeholder for adding a new character (positioned first) -->
-                <div class="add-character-placeholder" @click="createCharacter">
+                <div class="character-card-wrapper" @click="createCharacter">
                   <div class="add-character-content">
                     <div class="add-icon">+</div>
                     <div class="add-text">{{ t('playerDashboard.addCharacter') }}</div>
@@ -76,7 +74,6 @@
                 </div>
               </div>
             </div>
-          </div>
         </RPGContainer>
         <!-- No continue button needed as character selection will automatically continue -->
       </div>
@@ -364,9 +361,9 @@ export default {
 
 .player-home-dashboard {
   width: 100%;
-  max-width: 95vw;
+  max-width: 98vw;
   margin: 0 auto;
-  padding: 40px;
+  padding: 20px;
   position: relative;
   color: white;
   z-index: 1;
@@ -379,7 +376,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  overflow-x: hidden;
 }
 
 /* Top section: Campaign selector */
@@ -400,21 +396,19 @@ export default {
 /* Middle section: Characters */
 .characters-section {
   width: 100%;
-  overflow-x: hidden;
   margin-bottom: 1rem;
   overflow-y: auto;
   display: flex;
+  padding: 3em ;
 }
 
 .characters-container {
   display: flex;
   gap: 20px;
-  overflow-x: hidden;
 }
 
 .available-characters {
   flex: 9; /* 90% of the space */
-  overflow-x: hidden;
 }
 
 
@@ -431,48 +425,13 @@ export default {
   gap: 1rem;
   margin-bottom: 1.5rem;
   width: 100%;
-  overflow-x: hidden;
-  padding-right: 10px;
   grid-auto-rows: 1fr;
   align-items: stretch;
+  justify-content: space-between;
 
-  /* Mobile first - 1 column */
-  grid-template-columns: 1fr;
-}
-
-/* Small tablets and large phones - 2 columns */
-@media (min-width: 640px) {
-  .characters-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Tablets - 3 columns */
-@media (min-width: 768px) {
-  .characters-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Small desktops - 4 columns */
-@media (min-width: 1024px) {
-  .characters-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* Large desktops - 5 columns */
-@media (min-width: 1280px) {
-  .characters-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-/* Extra large screens - 6 columns */
-@media (min-width: 1536px) {
-  .characters-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
+  /* Responsive grid that automatically fits columns based on available space */
+  /* Minimum column width of 320px (character card width) with auto-fit */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 /* Scrollbar styling is now handled globally in global.css */
@@ -601,47 +560,6 @@ export default {
   align-items: center;
 }
 
-.character-placeholder, .add-character-placeholder {
-  height: 150px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.character-placeholder:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.add-character-placeholder {
-  width: 100%;
-  height: 200px;
-  padding: 0.75rem 0.5rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.add-character-placeholder:hover {
-  background: rgba(127, 255, 22, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border-color: #7fff16;
-}
 
 .add-character-content {
   height: 100%;
@@ -668,10 +586,6 @@ export default {
   color: #fada95;
 }
 
-.add-character-placeholder:hover .add-icon {
-  transform: scale(1.1);
-}
-
 /* Flow border effect for add character placeholder */
 .flow-border-add {
   position: absolute;
@@ -694,49 +608,11 @@ export default {
   pointer-events: none;
 }
 
-.add-character-placeholder:hover .flow-border-add {
-  opacity: 1;
-}
-
 @keyframes flowBorderAdd {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
 
-/* Hover glow effect for add character placeholder */
-.hover-glow-add {
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border-radius: 0.6rem;
-  background: linear-gradient(45deg,
-    rgba(127, 255, 22, 0.3),
-    rgba(127, 255, 22, 0.2),
-    rgba(127, 255, 22, 0.3)
-  );
-  background-size: 300% 300%;
-  opacity: 0;
-  z-index: -1;
-  animation: glowPulseAdd 3s ease-in-out infinite;
-  transition: opacity 0.3s ease;
-}
-
-.add-character-placeholder:hover .hover-glow-add {
-  opacity: 1;
-}
-
-@keyframes glowPulseAdd {
-  0%, 100% {
-    background-position: 0% 50%;
-    opacity: 0.5;
-  }
-  50% {
-    background-position: 100% 50%;
-    opacity: 0.8;
-  }
-}
 
 .character-card-wrapper {
   width: 100%;
@@ -761,107 +637,4 @@ export default {
   text-align: center;
 }
 
-.character-info-placeholder {
-  height: 300px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: #666;
-  padding: 15px;
-  text-align: center;
-}
-
-/* No continue button section needed */
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .add-character-placeholder {
-    height: 190px;
-  }
-
-  .character-card-wrapper {
-    height: 190px;
-  }
-}
-
-@media (max-width: 900px) {
-  .add-character-placeholder {
-    height: 180px;
-  }
-
-  .character-card-wrapper {
-    height: 180px;
-  }
-
-  .add-character-content {
-    padding: 14px;
-  }
-
-  .add-text {
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .characters-container {
-    flex-direction: column;
-    overflow-x: hidden;
-  }
-
-  .available-characters, .selected-character-info {
-    flex: 1 1 100%;
-    overflow-x: hidden;
-  }
-
-  .characters-grid {
-    gap: 0.75rem;
-  }
-
-  .add-character-placeholder {
-    height: 170px;
-  }
-
-  .character-card-wrapper {
-    height: 170px;
-  }
-
-  .add-character-content {
-    padding: 12px;
-  }
-
-  .add-text {
-    font-size: 1rem;
-  }
-
-  .add-icon {
-    font-size: 2.5rem;
-    margin-bottom: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .characters-grid {
-    gap: 0.5rem;
-  }
-
-  .add-character-placeholder {
-    height: 160px;
-  }
-
-  .character-card-wrapper {
-    height: 160px;
-  }
-
-  .add-icon {
-    font-size: 2rem;
-    margin-bottom: 6px;
-  }
-
-  .add-text {
-    font-size: 0.9rem;
-  }
-}
 </style>
