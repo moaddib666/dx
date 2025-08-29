@@ -2539,13 +2539,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -5365,6 +5365,287 @@ export interface ModifierRequest {
     'formula': FormulaRequest;
 }
 /**
+ * Serializer for NPCSpawner model for Game Master API.  This serializer provides complete functionality for creating and managing NPC spawners with position, campaign, character template, and spawn settings.
+ * @export
+ * @interface NPCGenericSpawner
+ */
+export interface NPCGenericSpawner {
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {Position}
+     * @memberof NPCGenericSpawner
+     */
+    'position_details': Position;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawner
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'dimension_name': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCGenericSpawner
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'campaign': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'campaign_name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawner
+     */
+    'spawn_limit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawner
+     */
+    'respawn_cycles'?: number;
+    /**
+     * Cycle number when the next spawn should occur
+     * @type {number}
+     * @memberof NPCGenericSpawner
+     */
+    'next_spawn_cycle_number': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'character_template': string;
+    /**
+     * 
+     * @type {CharacterTemplateGameMaster}
+     * @memberof NPCGenericSpawner
+     */
+    'character_template_details': CharacterTemplateGameMaster;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'updated_at': string;
+}
+/**
+ * Serializer for NPCSpawner model for Game Master API.  This serializer provides complete functionality for creating and managing NPC spawners with position, campaign, character template, and spawn settings.
+ * @export
+ * @interface NPCGenericSpawnerRequest
+ */
+export interface NPCGenericSpawnerRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'campaign': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'spawn_limit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'respawn_cycles'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'character_template': string;
+}
+/**
+ * Simplified serializer for creating NPC spawners.  This serializer focuses on the essential fields needed to create a spawner, with sensible defaults for spawn settings.
+ * @export
+ * @interface NPCSpawnerCreate
+ */
+export interface NPCSpawnerCreate {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCSpawnerCreate
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreate
+     */
+    'spawn_limit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreate
+     */
+    'respawn_cycles'?: number;
+}
+/**
+ * Simplified serializer for creating NPC spawners.  This serializer focuses on the essential fields needed to create a spawner, with sensible defaults for spawn settings.
+ * @export
+ * @interface NPCSpawnerCreateRequest
+ */
+export interface NPCSpawnerCreateRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'position_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'character_template_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'campaign_id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'dimension_id'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'spawn_limit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'respawn_cycles'?: number;
+}
+/**
+ * Lightweight serializer for listing NPC spawners.  This serializer provides essential information for spawner lists without heavy nested data.
+ * @export
+ * @interface NPCSpawnerList
+ */
+export interface NPCSpawnerList {
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'position_coordinates': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'position_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'character_template_name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'campaign_name': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCSpawnerList
+     */
+    'is_active': boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerList
+     */
+    'spawn_limit': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerList
+     */
+    'respawn_cycles': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'created_at': string;
+}
+/**
  * * `Path of John` - Path of John * `Path of JSon` - Path of JSon * `Not Chosen` - Not Chosen
  * @export
  * @enum {string}
@@ -7137,6 +7418,55 @@ export interface PatchedNPCBehaviorRequest {
 
 
 /**
+ * Serializer for NPCSpawner model for Game Master API.  This serializer provides complete functionality for creating and managing NPC spawners with position, campaign, character template, and spawn settings.
+ * @export
+ * @interface PatchedNPCGenericSpawnerRequest
+ */
+export interface PatchedNPCGenericSpawnerRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'is_active'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'campaign'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'spawn_limit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'respawn_cycles'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'character_template'?: string;
+}
+/**
  * Serializer for Note model.
  * @export
  * @interface PatchedNoteRequest
@@ -7473,12 +7803,6 @@ export interface PatchedSubLocationRequest {
      * @memberof PatchedSubLocationRequest
      */
     'description'?: string;
-    /**
-     * 
-     * @type {File}
-     * @memberof PatchedSubLocationRequest
-     */
-    'image'?: File | null;
     /**
      * 
      * @type {string}
@@ -9089,7 +9413,7 @@ export interface SubLocation {
      * @type {string}
      * @memberof SubLocation
      */
-    'image'?: string | null;
+    'image': string;
     /**
      * 
      * @type {string}
@@ -9133,12 +9457,6 @@ export interface SubLocationRequest {
      * @memberof SubLocationRequest
      */
     'description': string;
-    /**
-     * 
-     * @type {File}
-     * @memberof SubLocationRequest
-     */
-    'image'?: File | null;
     /**
      * 
      * @type {string}
@@ -18212,6 +18530,714 @@ export class GMWorldEditiorPositionsApi extends BaseAPI {
      */
     public gamemasterWorldPositionsUpdate(id: string, positionRequest: PositionRequest, options?: RawAxiosRequestConfig) {
         return GMWorldEditiorPositionsApiFp(this.configuration).gamemasterWorldPositionsUpdate(id, positionRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GMWorldEditorSpawnersApi - axios parameter creator
+ * @export
+ */
+export const GMWorldEditorSpawnersApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcActivateCreate: async (id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcActivateCreate', 'id', id)
+            // verify required parameter 'nPCGenericSpawnerRequest' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcActivateCreate', 'nPCGenericSpawnerRequest', nPCGenericSpawnerRequest)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/activate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(nPCGenericSpawnerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcCreate: async (nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'nPCSpawnerCreateRequest' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcCreate', 'nPCSpawnerCreateRequest', nPCSpawnerCreateRequest)
+            const localVarPath = `/api/gamemaster/spawners/npc/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(nPCSpawnerCreateRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcDeactivateCreate: async (id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcDeactivateCreate', 'id', id)
+            // verify required parameter 'nPCGenericSpawnerRequest' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcDeactivateCreate', 'nPCGenericSpawnerRequest', nPCGenericSpawnerRequest)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/deactivate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(nPCGenericSpawnerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcDestroy', 'id', id)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} [campaign] 
+         * @param {string} [characterTemplate] 
+         * @param {number} [dimension] 
+         * @param {boolean} [isActive] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcList: async (campaign?: string, characterTemplate?: string, dimension?: number, isActive?: boolean, position?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/gamemaster/spawners/npc/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (campaign !== undefined) {
+                localVarQueryParameter['campaign'] = campaign;
+            }
+
+            if (characterTemplate !== undefined) {
+                localVarQueryParameter['character_template'] = characterTemplate;
+            }
+
+            if (dimension !== undefined) {
+                localVarQueryParameter['dimension'] = dimension;
+            }
+
+            if (isActive !== undefined) {
+                localVarQueryParameter['is_active'] = isActive;
+            }
+
+            if (position !== undefined) {
+                localVarQueryParameter['position'] = position;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {PatchedNPCGenericSpawnerRequest} [patchedNPCGenericSpawnerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcPartialUpdate: async (id: string, patchedNPCGenericSpawnerRequest?: PatchedNPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcPartialUpdate', 'id', id)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedNPCGenericSpawnerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcRetrieve', 'id', id)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcUpdate: async (id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcUpdate', 'id', id)
+            // verify required parameter 'nPCGenericSpawnerRequest' is not null or undefined
+            assertParamExists('gamemasterSpawnersNpcUpdate', 'nPCGenericSpawnerRequest', nPCGenericSpawnerRequest)
+            const localVarPath = `/api/gamemaster/spawners/npc/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(nPCGenericSpawnerRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GMWorldEditorSpawnersApi - functional programming interface
+ * @export
+ */
+export const GMWorldEditorSpawnersApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GMWorldEditorSpawnersApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcActivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCSpawnerCreate>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcDeactivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} [campaign] 
+         * @param {string} [characterTemplate] 
+         * @param {number} [dimension] 
+         * @param {boolean} [isActive] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcList(campaign?: string, characterTemplate?: string, dimension?: number, isActive?: boolean, position?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<NPCSpawnerList>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcList(campaign, characterTemplate, dimension, isActive, position, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {PatchedNPCGenericSpawnerRequest} [patchedNPCGenericSpawnerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcPartialUpdate(id: string, patchedNPCGenericSpawnerRequest?: PatchedNPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcPartialUpdate(id, patchedNPCGenericSpawnerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersNpcUpdate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcUpdate(id, nPCGenericSpawnerRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorSpawnersApi.gamemasterSpawnersNpcUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GMWorldEditorSpawnersApi - factory interface
+ * @export
+ */
+export const GMWorldEditorSpawnersApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GMWorldEditorSpawnersApiFp(configuration)
+    return {
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
+            return localVarFp.gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options?: any): AxiosPromise<NPCSpawnerCreate> {
+            return localVarFp.gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
+            return localVarFp.gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.gamemasterSpawnersNpcDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} [campaign] 
+         * @param {string} [characterTemplate] 
+         * @param {number} [dimension] 
+         * @param {boolean} [isActive] 
+         * @param {string} [position] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcList(campaign?: string, characterTemplate?: string, dimension?: number, isActive?: boolean, position?: string, options?: any): AxiosPromise<Array<NPCSpawnerList>> {
+            return localVarFp.gamemasterSpawnersNpcList(campaign, characterTemplate, dimension, isActive, position, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {PatchedNPCGenericSpawnerRequest} [patchedNPCGenericSpawnerRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcPartialUpdate(id: string, patchedNPCGenericSpawnerRequest?: PatchedNPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
+            return localVarFp.gamemasterSpawnersNpcPartialUpdate(id, patchedNPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcRetrieve(id: string, options?: any): AxiosPromise<NPCGenericSpawner> {
+            return localVarFp.gamemasterSpawnersNpcRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersNpcUpdate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
+            return localVarFp.gamemasterSpawnersNpcUpdate(id, nPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * GMWorldEditorSpawnersApi - object-oriented interface
+ * @export
+ * @class GMWorldEditorSpawnersApi
+ * @extends {BaseAPI}
+ */
+export class GMWorldEditorSpawnersApi extends BaseAPI {
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} [campaign] 
+     * @param {string} [characterTemplate] 
+     * @param {number} [dimension] 
+     * @param {boolean} [isActive] 
+     * @param {string} [position] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcList(campaign?: string, characterTemplate?: string, dimension?: number, isActive?: boolean, position?: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcList(campaign, characterTemplate, dimension, isActive, position, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {PatchedNPCGenericSpawnerRequest} [patchedNPCGenericSpawnerRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcPartialUpdate(id: string, patchedNPCGenericSpawnerRequest?: PatchedNPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcPartialUpdate(id, patchedNPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorSpawnersApi
+     */
+    public gamemasterSpawnersNpcUpdate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorSpawnersApiFp(this.configuration).gamemasterSpawnersNpcUpdate(id, nPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
