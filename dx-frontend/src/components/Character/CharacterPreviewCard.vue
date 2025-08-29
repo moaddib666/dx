@@ -1,7 +1,6 @@
 <template>
   <div
       class="character-card"
-      :style="{ backgroundImage: `url(${avatarUrl})` }"
   >
     <!-- Main backdrop overlay for readability -->
     <div class="character-backdrop"></div>
@@ -9,6 +8,7 @@
     <!-- Flow energy border effect -->
     <div class="flow-border"></div>
 
+    <img :src="avatarUrl" alt="Character Avatar" class="character-avatar"/>
     <!-- Content container -->
     <div class="character-content">
       <!-- Header section -->
@@ -132,23 +132,23 @@ export default {
   position: relative;
   width: 320px;
   height: 200px;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #0a0a0a;
+  background-color: rgba(0, 0, 0, 0.4);
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
 }
 
 .character-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 215, 0, 0.5);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  border-color: #7fff16;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Enhanced backdrop for better text readability */
@@ -169,7 +169,7 @@ export default {
 }
 
 .character-card:hover .character-backdrop {
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
 }
 
 /* Flow energy border effect */
@@ -179,12 +179,12 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   background: linear-gradient(45deg,
   transparent,
-  rgba(255, 215, 0, 0.1),
+  rgba(127, 255, 22, 0.1),
   transparent,
-  rgba(255, 215, 0, 0.1),
+  rgba(127, 255, 22, 0.1),
   transparent
   );
   background-size: 300% 300%;
@@ -225,13 +225,15 @@ export default {
 .character-title {
   margin: 0 0 4px 0;
   font-size: 1.2rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 600;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
   text-shadow:
       0 2px 4px rgba(0, 0, 0, 0.8),
       0 0 8px rgba(255, 255, 255, 0.1);
   letter-spacing: 0.5px;
   line-height: 1.2;
+  max-width: 60%;
 }
 
 .character-path {
@@ -246,7 +248,7 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.3));
+  background: linear-gradient(135deg, rgba(127, 255, 22, 0.2), rgba(127, 255, 22, 0.3));
   padding: 2px;
   display: flex;
   align-items: center;
@@ -262,12 +264,12 @@ export default {
 }
 
 .path-name {
-  color: var(--cyber-yellow, #ffd700);
+  color: rgba(250, 218, 149, 0.7);
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 400;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 /* Bio section */
@@ -283,9 +285,10 @@ export default {
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.4;
-  color: #e1e1e1;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: rgba(250, 218, 149, 0.8);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-  opacity: 0.9;
+  font-weight: 400;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -318,9 +321,10 @@ export default {
   border-radius: 3px;
   font-size: 0.6rem;
   font-weight: 500;
-  background: rgba(255, 215, 0, 0.15);
-  color: var(--light-steel-blue, #b0c4de);
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  background: rgba(127, 255, 22, 0.1);
+  color: #fada95;
+  border: 1px solid rgba(127, 255, 22, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.2px;
   transition: all 0.2s ease;
@@ -333,25 +337,25 @@ export default {
 }
 
 .tag-badge:hover {
-  background: rgba(255, 215, 0, 0.25);
-  border-color: rgba(255, 215, 0, 0.5);
+  background: rgba(127, 255, 22, 0.15);
+  border-color: rgba(127, 255, 22, 0.5);
   transform: translateY(-1px);
 }
 
 .tag-more {
-  background: rgba(255, 215, 0, 0.1);
-  color: var(--cyber-yellow, #ffd700);
-  border-color: rgba(255, 215, 0, 0.2);
+  background: rgba(127, 255, 22, 0.1);
+  color: #fada95;
+  border-color: rgba(127, 255, 22, 0.2);
 }
 
 .rank-badge {
   padding: 3px 6px;
   border-radius: 4px;
   background: linear-gradient(135deg,
-  rgba(255, 215, 0, 0.2),
-  rgba(255, 215, 0, 0.3)
+  rgba(127, 255, 22, 0.2),
+  rgba(127, 255, 22, 0.3)
   );
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(127, 255, 22, 0.3);
   backdrop-filter: blur(1px);
   position: relative;
   overflow: hidden;
@@ -379,9 +383,10 @@ export default {
 }
 
 .rank-text {
-  color: #ffffff;
+  color: #fada95;
   font-size: 0.5rem;
   font-weight: 600;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
@@ -400,11 +405,11 @@ export default {
   left: -2px;
   right: -2px;
   bottom: -2px;
-  border-radius: 14px;
+  border-radius: 0.6rem;
   background: linear-gradient(45deg,
-  rgba(255, 215, 0, 0.3),
-  rgba(255, 215, 0, 0.2),
-  rgba(255, 215, 0, 0.3)
+  rgba(127, 255, 22, 0.3),
+  rgba(127, 255, 22, 0.2),
+  rgba(127, 255, 22, 0.3)
   );
   background-size: 300% 300%;
   opacity: 0;
@@ -535,10 +540,17 @@ export default {
 
 /* Performance optimizations */
 .character-card * {
-  will-change: transform;
+  will-change: auto;
 }
 
-.character-card:hover * {
-  will-change: auto;
+.character-avatar {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  right: 0;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  mask: linear-gradient(to left, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0) 100%);
 }
 </style>

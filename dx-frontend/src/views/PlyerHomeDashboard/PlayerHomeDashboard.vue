@@ -44,7 +44,7 @@
         </section>
 
         <!-- Middle section: 90/10 split with characters and selected character info -->
-        <section class="characters-section">
+        <RPGContainer class="characters-section">
           <div class="characters-container">
             <!-- Left side (90%): Available characters -->
             <div class="available-characters">
@@ -77,8 +77,7 @@
               </div>
             </div>
           </div>
-        </section>
-
+        </RPGContainer>
         <!-- No continue button needed as character selection will automatically continue -->
       </div>
     </div>
@@ -91,10 +90,12 @@ import CharacterPreviewCard from "@/components/Character/CharacterPreviewCard.vu
 import Loader from "@/components/Loader.vue";
 import ClientManagerService from "@/services/clientManagerService.js";
 import { useI18n } from "vue-i18n";
+import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 
 export default {
   name: "PlayerHomeDashboard",
   components: {
+    RPGContainer,
     CampaignCardHolder,
     CharacterPreviewCard,
     Loader
@@ -403,11 +404,8 @@ export default {
   width: 100%;
   overflow-x: hidden;
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
   overflow-y: auto;
+  display: flex;
 }
 
 .characters-container {
