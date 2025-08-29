@@ -1,0 +1,864 @@
+{
+    "title": "The Maze of Shattered Memories",
+    "description": "A dimensional anomaly traps heroes in an endless mirror maze between the 2nd and 3rd dimensions, where they must navigate echoes of their forgotten past and face Kael Vortex, the fractured Flow Guardian, in a desperate rescue mission that will determine the fate of the City of Memories.",
+    "tags": [
+        "one_shot",
+        "dimensional_horror",
+        "memory_mystery", 
+        "rescue_mission",
+        "psychological_thriller"
+    ],
+    "chapters": [
+        {
+            "title": "Chapter 1: The Awakening & Mirror Maze",
+            "description": "Heroes awaken in an endless maze of mirrors showing alternate versions of themselves, encountering echoes of past events while their memories remain fragmentary. They must navigate dimensional instability and energy drain to reach the maze's heart.",
+            "image": "/media/maze-chapter-1.png",
+            "quests": [
+                {
+                    "title": "Awakening in the Mirror Maze",
+                    "description": "The heroes wake simultaneously in the dimensional anomaly, discovering their fragmented memories and the strange mirror maze that surrounds them.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "position",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Wake up in the Fractured Sanctum mirror maze",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Examine the mirrors showing alternate selves",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Test basic Flow Connection abilities",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You've awakened in the dimensional anomaly and discovered your basic abilities remain intact despite your fragmented memories. The mirror maze stretches endlessly ahead.",
+                        "experience": 50,
+                        "items": [
+                            {
+                                "itemId": "memory_fragment_basic",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "dimensional_instability",
+                                "duration": 3600
+                            }
+                        ]
+                    },
+                    "onFailure": {
+                        "description": "Confusion overwhelms you. The maze seems even more disorienting than before.",
+                        "experience": 10,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 15
+                },
+                {
+                    "title": "Echo 1: The Betrayal at MediServ",
+                    "description": "A mirror reveals a scene of betrayal at a MediServ facility. Characters can investigate this echo to learn more about their forgotten past.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Approach the mirror showing the MediServ betrayal scene",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Touch the mirror to experience the betrayer's emotions (costs 10 energy)",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Use Flow Probe to sense dimensional signature",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Ignore the echo and continue forward",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You gain insight into the echo. The 'betrayal' was actually the memory wipe protocol activation - part of your mission to rescue Kael Vortex safely.",
+                        "experience": 75,
+                        "items": [
+                            {
+                                "itemId": "memory_fragment_mediServ",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "The echo remains mysterious. You continue with incomplete understanding of your past.",
+                        "experience": 25,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 25
+                },
+                {
+                    "title": "Echo 2: The Heist Gone Wrong",
+                    "description": "Another mirror reveals the Big Bang Incident orchestrated by Dig Collins, showing the characters' involvement in the chaos that created this dimensional anomaly.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Examine the mirror showing the Big Bang Incident",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Witness your role as responders to Dig Collins' heist",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Connect the dimensional disruption to the current anomaly",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You realize the Big Bang Incident's energy cascade created the dimensional anomaly trapping Kael Vortex. This knowledge will be crucial for understanding your mission.",
+                        "experience": 100,
+                        "items": [
+                            {
+                                "itemId": "memory_fragment_bigBang",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "The connection between past events and your current situation remains unclear.",
+                        "experience": 35,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 20
+                },
+                {
+                    "title": "Echo 3: The Choice",
+                    "description": "The final major echo shows a massive chamber where a Flow manipulator offers the characters a deal involving a glowing artifact.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Observe the distorted echo of the original choice",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Try to clarify the distorted audio",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Recognize the glowing artifact as a Resonance Anchor device",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You remember volunteering for this dangerous mission. The artifact made you Resonance Anchors capable of stabilizing dimensional anomalies.",
+                        "experience": 125,
+                        "items": [
+                            {
+                                "itemId": "memory_fragment_mission",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "The echo remains too distorted to fully understand your original motivation.",
+                        "experience": 40,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 30
+                },
+                {
+                    "title": "Navigate to the Heart",
+                    "description": "Having explored the echoes, navigate through dozens of mirror corridors while managing energy drain to reach the maze's center.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Begin navigating toward the maze's center",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Successfully manage energy conservation while exploring",
+                                    "location": null
+                                },
+                                {
+                                    "type": "position",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Reach the circular chamber at the maze's heart",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You've successfully navigated the maze's treacherous corridors and reached the heart chamber where mirrors form a dome overhead. A figure awaits in the center.",
+                        "experience": 150,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "Energy depletion forces you to rest. The journey to the center takes longer than anticipated.",
+                        "experience": 50,
+                        "items": [],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "energy_exhaustion",
+                                "duration": 300
+                            }
+                        ]
+                    },
+                    "image": null,
+                    "cycleLimit": 40
+                }
+            ]
+        },
+        {
+            "title": "Chapter 2: The Guardian's Domain",
+            "description": "In the maze's heart, the heroes encounter Kael Vortex, the fractured Flow Guardian whose consciousness spans multiple dimensions. They must discover the truth about their mission while facing the psychological horror of his fragmented existence.",
+            "image": "/media/maze-chapter-2.png",
+            "quests": [
+                {
+                    "title": "Encounter Kael Vortex",
+                    "description": "Meet the legendary Flow Guardian whose madness has created this dimensional prison. Witness his tragic state and begin to understand the scope of the catastrophe.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Approach Kael Vortex in the center chamber",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Withstand the psychological impact of his fractured consciousness",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Use Flow Connection to sense his dimensional distress",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You've made contact with Kael Vortex. His voice echoes from multiple dimensions simultaneously as he recognizes you as his potential salvation - or executioners.",
+                        "experience": 200,
+                        "items": [
+                            {
+                                "itemId": "kael_dimensional_signature",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "dimensional_awareness",
+                                "duration": 1800
+                            }
+                        ]
+                    },
+                    "onFailure": {
+                        "description": "Kael's fractured consciousness overwhelms you. His multi-dimensional existence is too alien to fully comprehend.",
+                        "experience": 75,
+                        "items": [],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "dimensional_disorientation",
+                                "duration": 600
+                            }
+                        ]
+                    },
+                    "image": null,
+                    "cycleLimit": 35
+                },
+                {
+                    "title": "Discover the Truth",
+                    "description": "Through careful investigation of evidence, discover your true identities as Resonance Anchors on a MediServ/FlowGuard rescue mission.",
+                    "starters": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "useItem",
+                                    "gameObject": "memory_fragment_mediServ",
+                                    "position": null,
+                                    "description": "Examine your equipment for MediServ healing sigils",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useItem",
+                                    "gameObject": "memory_fragment_mission",
+                                    "position": null,
+                                    "description": "Analyze the memory fragments you've collected",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "search",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Find FlowGuard authority markers on your gear",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Connect personal memory anchors to mission purpose",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Confirm the truth with Kael's fragmented recollections",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "The truth crystallizes: you are Resonance Anchors who volunteered for this rescue mission. Eva Lightbringer authorized the memory wipe to protect you from Kael's dimensional madness.",
+                        "experience": 250,
+                        "items": [
+                            {
+                                "itemId": "mission_authorization_token",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "memory_clarity",
+                                "duration": 7200
+                            }
+                        ]
+                    },
+                    "onFailure": {
+                        "description": "The full truth remains elusive. You understand pieces but lack the complete picture of your mission.",
+                        "experience": 100,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 45
+                },
+                {
+                    "title": "Mirror Wraith Confrontation",
+                    "description": "Face the psychological manifestations of your past selves - echoes that have gained hostile sentience from the dimensional instability.",
+                    "starters": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Trigger the mirror wraiths through high energy use",
+                                    "location": null
+                                },
+                                {
+                                    "type": "position",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Remain in the center chamber too long",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "kill",
+                                    "gameObject": "mirror_wraith_tech",
+                                    "position": null,
+                                    "description": "Defeat the cybernetic-enhanced wraith version",
+                                    "location": null
+                                },
+                                {
+                                    "type": "kill",
+                                    "gameObject": "mirror_wraith_flow",
+                                    "position": null,
+                                    "description": "Defeat the Flow manipulator wraith version",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Use dimensional knowledge to dispel the wraiths peacefully",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You've overcome the manifestations of your fractured identity. Defeating your shadow selves strengthens your resolve and clarifies your purpose.",
+                        "experience": 175,
+                        "items": [
+                            {
+                                "itemId": "wraith_essence",
+                                "quantity": 2
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "The wraiths overwhelm you, forcing a retreat. The psychological wounds of fighting yourself leave lasting trauma.",
+                        "experience": 50,
+                        "items": [],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "identity_crisis",
+                                "duration": 900
+                            }
+                        ]
+                    },
+                    "image": null,
+                    "cycleLimit": 30
+                }
+            ]
+        },
+        {
+            "title": "Chapter 3: The Final Choice",
+            "description": "Kael presents his desperate solution while the characters discover an alternative path. The final decision will determine not only Kael's fate but the future of the City of Memories and the heroes' own destinies.",
+            "image": "/media/maze-chapter-3.png",
+            "quests": [
+                {
+                    "title": "Kael's Desperate Gambit",
+                    "description": "Listen to Kael's proposal for the Dimensional Collapse Protocol - a solution that would end his suffering but at terrible cost.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Engage Kael in conversation about escape options",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Listen to his arguments for ending his multi-dimensional existence",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Assess the potential collateral damage to City of Memories",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You understand Kael's desperation. He's been screaming across dimensions for 180 sols, and his very existence threatens the city above. His proposal is both merciful and catastrophic.",
+                        "experience": 150,
+                        "items": [
+                            {
+                                "itemId": "collapse_protocol_data",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "Kael's multi-dimensional communication is too fractured to fully comprehend his plan.",
+                        "experience": 50,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 25
+                },
+                {
+                    "title": "The Alternative Discovery",
+                    "description": "Through investigation and Flow manipulation, discover the Resonance Restoration Protocol - a dangerous but potentially saving alternative.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Investigate alternative solutions using combined Flow abilities",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Map Kael's consciousness fragments across dimensions",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Discover the anchor binding requirements",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Test synchronization with Kael's Flow signature",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "You've discovered the Resonance Restoration Protocol! It's incredibly dangerous and requires one of you to become a permanent dimensional anchor, but it could save Kael without destroying the city.",
+                        "experience": 300,
+                        "items": [
+                            {
+                                "itemId": "restoration_protocol_data",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "The alternative solution remains beyond your current understanding. The collapse protocol seems like the only option.",
+                        "experience": 75,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 40
+                },
+                {
+                    "title": "The Final Decision",
+                    "description": "Choose between the three possible paths: merciful death, heroic salvation, or ambitious gamble. The fate of Kael, the city, and your own futures hangs in the balance.",
+                    "starters": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "useItem",
+                                    "gameObject": "collapse_protocol_data",
+                                    "position": null,
+                                    "description": "Choose the Merciful End - activate collapse protocol",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useItem",
+                                    "gameObject": "restoration_protocol_data",
+                                    "position": null,
+                                    "description": "Choose Heroic Salvation - attempt restoration",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Choose Ambitious Gamble - try to absorb Kael's abilities",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "any",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": "kael_vortex_fractured",
+                                    "position": null,
+                                    "description": "Successfully execute the chosen protocol",
+                                    "location": null
+                                },
+                                {
+                                    "type": "useSkill",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Coordinate team effort for restoration",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "Your choice determines the outcome. Whether through mercy, heroism, or ambition, the dimensional crisis resolves and Kael's fate is decided. The consequences will echo through time.",
+                        "experience": 500,
+                        "items": [
+                            {
+                                "itemId": "dimensional_mastery_token",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [
+                            {
+                                "tokenId": "mission_completion",
+                                "quantity": 1
+                            }
+                        ],
+                        "effects": [
+                            {
+                                "effectId": "dimensional_touched",
+                                "duration": -1
+                            }
+                        ]
+                    },
+                    "onFailure": {
+                        "description": "The protocol fails catastrophically. The dimensional anomaly becomes unstable, but you've learned invaluable lessons about the nature of reality itself.",
+                        "experience": 200,
+                        "items": [],
+                        "tokens": [],
+                        "effects": [
+                            {
+                                "effectId": "dimensional_scarring",
+                                "duration": -1
+                            }
+                        ]
+                    },
+                    "image": null,
+                    "cycleLimit": 60
+                },
+                {
+                    "title": "Memory Restoration & Resolution",
+                    "description": "As the dimensional anomaly resolves, your full memories return. Discover your true backgrounds, the real mission parameters, and face the consequences of your choices.",
+                    "starters": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "position",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Experience the memory restoration as dimensions stabilize",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "objectives": [
+                        {
+                            "type": "all",
+                            "triggers": [
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Recover memories of Eva Lightbringer's authorization",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Remember your personal stakes in saving Kael",
+                                    "location": null
+                                },
+                                {
+                                    "type": "interaction",
+                                    "gameObject": null,
+                                    "position": null,
+                                    "description": "Understand the volunteer decision that brought you here",
+                                    "location": null
+                                }
+                            ]
+                        }
+                    ],
+                    "onSuccess": {
+                        "description": "Your memories flood back completely. You remember everything: your real identities, the mission briefing, and why you risked everything to save Kael Vortex. The consequences of your choice become clear.",
+                        "experience": 400,
+                        "items": [
+                            {
+                                "itemId": "complete_mission_records",
+                                "quantity": 1
+                            }
+                        ],
+                        "tokens": [
+                            {
+                                "tokenId": "hero_of_dimensions",
+                                "quantity": 1
+                            }
+                        ],
+                        "effects": []
+                    },
+                    "onFailure": {
+                        "description": "Some memories remain fragmented, but you retain the most important lessons from your experience in the maze.",
+                        "experience": 200,
+                        "items": [],
+                        "tokens": [],
+                        "effects": []
+                    },
+                    "image": null,
+                    "cycleLimit": 20
+                }
+            ]
+        }
+    ],
+    "image": "/media/maze-story.png",
+    "canonical": true
+}
