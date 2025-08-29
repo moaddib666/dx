@@ -35,13 +35,13 @@
 
       <div v-else class="dashboard-content">
         <!-- Top section: Campaign selector with CampaignCardHolder -->
-        <section class="campaign-selector-section">
+        <RPGContainer class="campaign-selector-section">
           <CampaignCardHolder
             :campaigns="sortedCampaigns"
             :selectedCampaignId="selectedCampaignId"
             @campaign-selected="selectCampaign"
           />
-        </section>
+        </RPGContainer>
 
         <!-- Middle section: 90/10 split with characters and selected character info -->
         <RPGContainer class="characters-section">
@@ -385,10 +385,7 @@ export default {
 /* Top section: Campaign selector */
 .campaign-selector-section {
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 3rem;
 }
 
 .section-title {
