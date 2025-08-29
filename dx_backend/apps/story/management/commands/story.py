@@ -151,7 +151,7 @@ class Command(BaseCommand):
             chapters_count = story.chapters.count()
 
             self.stdout.write(
-                f'ID: {str(story.id)[:8]} | {story.title}{canonical_mark}'
+                f'ID: {str(story.id)} | {story.title}{canonical_mark}'
             )
             self.stdout.write(
                 f'      Chapters: {chapters_count} | Tags: {", ".join(story.tags) if story.tags else "None"}')

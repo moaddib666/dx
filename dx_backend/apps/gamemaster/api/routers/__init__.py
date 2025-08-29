@@ -8,6 +8,7 @@ from apps.gamemaster.api.views.impersonation import GameMasterImpersonationViewS
 from apps.gamemaster.api.views.items import GameMasterItemViewSet
 from apps.gamemaster.api.views.npc import NPCViewSet
 from apps.gamemaster.api.views.skills import SkillFactoryViewSet
+from apps.gamemaster.api.views.spawners import GameMasterNPCSpawnerViewSet
 from apps.gamemaster.api.views.world import WorldMapViewSet, PositionManagementViewSet, \
     PositionConnectionManagementViewSet, SubLocationManagementViewSet
 
@@ -56,3 +57,6 @@ GameMasterRouter.register("world-sub-locations", SubLocationManagementViewSet,
                           basename='gamemaster-world-sub-locations')
 # Impersonation viewset
 GameMasterRouter.register('impersonation', GameMasterImpersonationViewSet, basename='gamemaster-impersonation')
+
+# Spawner viewsets
+GameMasterRouter.register('spawners/npc', GameMasterNPCSpawnerViewSet, basename='gamemaster-npc-spawners')
