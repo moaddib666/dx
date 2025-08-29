@@ -90,7 +90,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .dice-container {
   position: relative;
   display: inline-flex;
