@@ -60,7 +60,7 @@ class CharacterAbilities:
         return CharacterAbility(
             type=skill_type,
             skills=(skill.skill.id for skill in sorted_skills),
-            items=(item.world_item.item.id for item in sorted_items)
+            items=(item.world_item.id for item in sorted_items)
         )
 
     def can_with_power_details(self, character: "CharacterService", skill_type: "SkillTypes") -> dict:
@@ -103,7 +103,8 @@ class CharacterAbilities:
                 power = get_skill_power(item_obj.world_item.item.skill)
                 possible_items.append({
                     'item_obj': item_obj,
-                    'item_id': item_obj.world_item.item.id,
+                    'world_item_id': item_obj.world_item.id,  # WorldItem ID for CharacterAction
+                    'item_id': item_obj.world_item.item.id,  # Item ID for reference
                     'skill_id': item_obj.world_item.item.skill.id,
                     'power_rating': power,
                     'grade': item_obj.world_item.item.skill.grade
@@ -118,7 +119,8 @@ class CharacterAbilities:
             'skills': sorted_skills,
             'items': sorted_items,
             'skill_ids': [s['skill_id'] for s in sorted_skills],
-            'item_ids': [i['item_id'] for i in sorted_items]
+            'item_ids': [i['item_id'] for i in sorted_items],  # Item IDs for reference
+            'world_item_ids': [i['world_item_id'] for i in sorted_items]  # WorldItem IDs for CharacterAction
         }
 
     def get_best_skill(self, character: "CharacterService", skill_type: "SkillTypes"):
