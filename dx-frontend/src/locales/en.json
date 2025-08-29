@@ -551,7 +551,7 @@
       "schools": "Schools",
       "selectPath": "Select a path to view schools and spells.",
       "spells": "Spells",
-      "spellLimitWarning": "Only {maxSpells} active spells can be selected."
+      "spellLimitWarning": "You Have Chosen Maximum allowed numbers of spell good to go to the next step"
     }
   }
 }

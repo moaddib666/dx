@@ -153,14 +153,30 @@ export default {
   methods: {
     toggleSchool(schoolId) {
       let updatedSchools;
+      let updatedSpells = [];
+
       if (this.selectedSchools.includes(schoolId)) {
+        // Deselecting a school - remove it and clear spells from that school
         updatedSchools = this.selectedSchools.filter((id) => id !== schoolId);
+        // Keep only spells that belong to remaining selected schools
+        updatedSpells = this.selectedSpells.filter(spellId => {
+          const spell = this.spells.find(s => s.id === spellId);
+          return spell && updatedSchools.includes(spell.school);
+        });
       } else if (this.selectedSchools.length < this.maxSchools) {
+        // Selecting a new school when under limit
         updatedSchools = [...this.selectedSchools, schoolId];
+        // Keep existing spells
+        updatedSpells = [...this.selectedSpells];
       } else {
-        return;
+        // At max schools limit - replace current selection with new school
+        // Clear all selected schools and spells, then select the new school
+        updatedSchools = [schoolId];
+        updatedSpells = [];
       }
+
       this.setPlayerSchools(updatedSchools);
+      this.setPlayerSpells(updatedSpells);
     },
     toggleSpell(spellId) {
       let updatedSpells;
@@ -507,7 +523,7 @@ h2 {
 .spell-limit-warning {
   margin-top: 1rem;
   font-size: 0.9rem;
-  color: #ff6b6b;
+  color: #7fff16;
   text-align: center;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-weight: 500;
