@@ -310,6 +310,12 @@ h2 {
   top: 0;
   mask: linear-gradient(to left, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0) 100%);
   z-index: 0;
+  opacity: 0.5;
+}
+
+.school-details {
+  position: relative;
+  z-index: 1;
 }
 
 .school-details h3 {
