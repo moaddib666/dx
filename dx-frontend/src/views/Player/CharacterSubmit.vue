@@ -1,51 +1,54 @@
 <template>
+  <HeroBackground></HeroBackground>
   <div class="character-creation" v-if="loaded">
     <!-- Step Loader -->
-    <div class="step-loader">
-      <div
-          v-for="(step, index) in steps"
-          :key="index"
-          :class="['step', { active: currentStep === index, completed: index < currentStep }]"
-          @click="goToStep(index)"
-      >
-        <span class="step-number">{{ index + 1 }}</span>
-        <span class="step-label">{{ step.label }}</span>
+    <div class="character-creation__header">
+      <RPGContainer class="step-loader">
+        <div
+            v-for="(step, index) in steps"
+            :key="index"
+            :class="['step', { active: currentStep === index, completed: index < currentStep }]"
+            @click="goToStep(index)"
+        >
+          <span class="step-number">{{ index + 1 }}</span>
+          <span class="step-label">{{ step.label }}</span>
+        </div>
+      </RPGContainer>
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <CompactButton
+            buttonType="default"
+            :class="{ 'invisible': currentStep === 0 }"
+            @click="goToPreviousStep"
+        >
+          Back
+        </CompactButton>
+        <CharacterTool :character="playerData.data" @import="updatePlayerData"/>
+        <CompactButton
+            v-if="currentStep < steps.length - 1"
+            buttonType="default"
+            @click="goToNextStep"
+        >
+          Next
+        </CompactButton>
+        <CompactButton
+            v-if="currentStep === steps.length - 1"
+            buttonType="default"
+            @click="finishCreation"
+        >
+          Finish
+        </CompactButton>
       </div>
     </div>
-    <!-- Navigation Buttons -->
-    <div class="navigation-buttons">
-      <CompactButton
-          v-if="currentStep > 0"
-          buttonType="default"
-          @click="goToPreviousStep"
-      >
-        Back
-      </CompactButton>
-      <CharacterTool :character="playerData.data" @import="updatePlayerData" />
-      <CompactButton
-          v-if="currentStep < steps.length - 1"
-          buttonType="default"
-          @click="goToNextStep"
-      >
-        Next
-      </CompactButton>
-      <CompactButton
-          v-if="currentStep === steps.length - 1"
-          buttonType="default"
-          @click="finishCreation"
-      >
-        Finish
-      </CompactButton>
-    </div>
     <!-- Step Content -->
-    <div class="step-content">
+    <RPGContainer class="step-content">
       <component :is="steps[currentStep].component"
                  v-if="steps[currentStep] && steps[currentStep].component"
                  v-bind="steps[currentStep].data"
                  @back="goToPreviousStep"
                  @next="goToNextStep"
       />
-    </div>
+    </RPGContainer>
 
 
   </div>
@@ -61,10 +64,12 @@ import {CharacterGameApi, CoreGameApi, ModificatorsGameApi, SchoolGameApi} from 
 import CharacterReview from "@/components/Player/CharacterReview.vue";
 import CharacterTool from "@/components/Player/Transfer.vue";
 import CompactButton from "@/components/btn/CompactButton.vue";
+import HeroBackground from "@/components/WhatIsIt/HeroBackground.vue";
+import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 
 export default {
   name: "CharacterCreation",
-  components: {CompactButton, CharacterTool},
+  components: {RPGContainer, HeroBackground, CompactButton, CharacterTool},
   computed: {
     loaded() {
       return this.playerData !== null && this.availablePaths !== null && this.availiableModificators !== null && this.availableStats !== null
@@ -280,13 +285,12 @@ export default {
 .character-creation {
   width: 100%;
   max-width: 100vw;
-  min-height: 100vh;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   color: #fada95;
-  padding: 1rem;
-  box-sizing: border-box;
+  padding: 2em 1em;
 }
 
 /* Step Loader - Mobile First Responsive */
@@ -296,31 +300,16 @@ export default {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
-  border: 1px solid rgba(127, 255, 22, 0.2);
   backdrop-filter: blur(2px);
-}
-
-/* Responsive breakpoints for step loader */
-@media (min-width: 768px) {
-  .step-loader {
-    flex-wrap: nowrap;
-    justify-content: space-around;
-    padding: 1.5rem;
-    gap: 1rem;
-  }
 }
 
 .step {
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 0.25rem;
   border-radius: 0.25rem;
   min-width: 0;
-  flex: 1;
+  padding: 0.35rem;
 }
 
 .step:hover {
@@ -341,15 +330,15 @@ export default {
 
 .step-number {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  line-height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
   border-radius: 50%;
   background: rgba(127, 255, 22, 0.2);
   color: #fada95;
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  margin: 0.5em;
   transition: all 0.3s ease;
   border: 1px solid rgba(127, 255, 22, 0.3);
 }
@@ -373,52 +362,12 @@ export default {
   color: #fada95;
 }
 
-/* Responsive step sizing */
-@media (min-width: 768px) {
-  .step {
-    padding: 0.5rem;
-    flex: none;
-  }
-
-  .step-number {
-    width: 2.5rem;
-    height: 2.5rem;
-    line-height: 2.5rem;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .step-label {
-    font-size: 0.875rem;
-  }
-}
-
 /* Step Content - Responsive */
 .step-content {
-  flex: 1;
-  margin: 1rem 0;
   padding: 1rem;
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.2);
   color: #fada95;
-  border: 1px solid rgba(127, 255, 22, 0.2);
-  backdrop-filter: blur(2px);
-  overflow-y: auto;
-}
-
-/* Responsive step content */
-@media (min-width: 768px) {
-  .step-content {
-    margin: 1.5rem 0;
-    padding: 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .step-content {
-    margin: 2rem 0;
-    padding: 2rem;
-  }
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Navigation Buttons - Responsive */
@@ -426,26 +375,9 @@ export default {
   display: flex;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 1rem;
   align-items: center;
   flex-wrap: wrap;
   padding: 0 1rem;
-}
-
-/* Responsive navigation spacing */
-@media (min-width: 768px) {
-  .navigation-buttons {
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .navigation-buttons {
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
 }
 
 /* Simplified button styles */
@@ -480,5 +412,17 @@ button:hover {
 
 button:active {
   transform: scale(0.98);
+}
+
+.character-creation__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.invisible {
+  visibility: hidden;
 }
 </style>
