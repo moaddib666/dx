@@ -44,6 +44,7 @@ class SkillAdmin(admin.ModelAdmin):
     search_fields = ('name', 'type', 'school__name')
     list_filter = ('type', 'multi_target', 'grade', 'school')
     readonly_fields = ('id', 'created_at', 'updated_at')
+    autocomplete_fields = ('school',)
     fieldsets = (
         (None, {
             'fields': ('name', 'grade', 'description', 'type', 'special', 'immediate', 'multi_target', 'school', 'icon')

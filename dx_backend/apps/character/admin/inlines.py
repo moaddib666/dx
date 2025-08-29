@@ -2,12 +2,56 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from django import forms
 
 from ..models import Stat, StatModifier, CharacterBiography
 from ...effects.models import ActiveEffect
 from ...items.models import CharacterItem
 from ...shields.models import ActiveShield
 from ...skills.models import LearnedSchool, LearnedSkill
+from ...school.models import Skill, School
+
+
+class LearnedSkillForm(forms.ModelForm):
+    """
+    Custom form for LearnedSkill with improved skill selection and filtering.
+    """
+    school_filter = forms.ModelChoiceField(
+        queryset=School.objects.all(),
+        required=False,
+        empty_label="All Schools",
+        help_text="Filter skills by school"
+    )
+    
+    class Meta:
+        model = LearnedSkill
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Improve skill field widget with better help text
+        self.fields['skill'].help_text = "Search by skill name or use the school filter above"
+        
+        # Add CSS classes for better styling
+        self.fields['skill'].widget.attrs.update({
+            'class': 'skill-autocomplete',
+            'data-placeholder': 'Search for skills...'
+        })
+        
+        # If we have a school filter value, filter the skills
+        if 'school_filter' in self.data and self.data['school_filter']:
+            try:
+                school_id = int(self.data['school_filter'])
+                self.fields['skill'].queryset = Skill.objects.filter(school_id=school_id)
+            except (ValueError, TypeError):
+                pass
+    
+    class Media:
+        js = ('admin/js/learned_skills_filter.js',)
+        css = {
+            'all': ('admin/css/learned_skills.css',)
+        }
 
 
 class CharacterBiographyInline(admin.StackedInline):
@@ -145,7 +189,7 @@ class LearnedSchoolsInline(admin.TabularInline):
     """
     model = LearnedSchool
     extra = 1  # Number of extra blank rows
-    fields = ('school_details',)
+    fields = ('school', 'is_base', 'school_details')
     readonly_fields = ('school_details',)
     can_delete = True  # Allow deletion of rows
 
@@ -183,10 +227,12 @@ class LearnedSkillsInline(admin.TabularInline):
     Inline for displaying and editing learned skills directly in the Character admin interface.
     """
     model = LearnedSkill
+    form = LearnedSkillForm
     extra = 1  # Number of extra blank rows
-    fields = ('skill_details',)
+    fields = ('school_filter', 'skill', 'is_base', 'skill_details')
     readonly_fields = ('skill_details',)
     can_delete = True  # Allow deletion of rows
+    autocomplete_fields = ('skill',)
 
     def skill_details(self, obj):
         """

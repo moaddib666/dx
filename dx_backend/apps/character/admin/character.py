@@ -9,12 +9,13 @@ from .inlines import (
     CharacterBiographyInline, StatInline, StatModifierInline, OwnedItemsInline,
     LearnedSchoolsInline, LearnedSkillsInline, ActiveEffectsInline, ActiveShieldsInline
 )
+from .skill_selection import SkillSelectionMixin
 from ..models import Character, CharacterBiography
 from ...core.models import GameObject
 
 
 @admin.register(Character)
-class CharacterAdmin(CampaignAdminMixin, PolymorphicChildModelAdmin):
+class CharacterAdmin(SkillSelectionMixin, CampaignAdminMixin, PolymorphicChildModelAdmin):
     """
     Admin interface for Character with integrated CharacterBiography.
     """
