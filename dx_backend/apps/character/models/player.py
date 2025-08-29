@@ -12,7 +12,7 @@ class CharacterBiography(BaseModel):
     gender = models.CharField(max_length=50, choices=GenderEnum.choices, default=GenderEnum.OTHER)
     background = models.TextField(blank=True)
     appearance = models.TextField(blank=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, default='avatars/placeholder.png')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, default='avatars/placeholder/other.png')
     character = models.OneToOneField('character.Character', to_field='gameobject_ptr', on_delete=models.CASCADE,
                                      related_name='biography')
 

@@ -14,8 +14,6 @@ class CharacterCreator:
         character = Character.objects.create(
             owner=self.client,
             name=name,
-            age=age,
-            gender=gender,
             organization=None,  # Set as needed
             rank=rank,
             experience=0,
@@ -23,6 +21,24 @@ class CharacterCreator:
             current_energy_points=0,
             current_active_points=10,
             campaign=self.client.current_campaign,
+        )
+
+        # Map gender to appropriate avatar
+        gender_avatar_map = {
+            'Male': 'avatars/placeholder/male.png',
+            'Female': 'avatars/placeholder/female.png',
+            'Other': 'avatars/placeholder/other.png',
+        }
+        avatar_path = gender_avatar_map.get(gender, 'avatars/placeholder/other.png')
+        
+        # Create CharacterBiography with gender and appropriate avatar
+        CharacterBiography.objects.create(
+            age=age,
+            gender=gender,
+            background='',
+            appearance='',
+            avatar=avatar_path,
+            character=character,
         )
 
         if not self.client.main_character:
@@ -49,10 +65,21 @@ class CharacterCreator:
         )
         character.position = position
         character.save()
+        
+        # Map gender to appropriate avatar
+        gender_avatar_map = {
+            'Male': 'avatars/placeholder/male.png',
+            'Female': 'avatars/placeholder/female.png',
+            'Other': 'avatars/placeholder/other.png',
+        }
+        avatar_path = gender_avatar_map.get(dto.bio.gender, 'avatars/placeholder/other.png')
+        
         CharacterBiography(
             age=dto.bio.age,
+            gender=dto.bio.gender,
             background=dto.bio.background,
             appearance=dto.bio.appearance,
+            avatar=avatar_path,
             character=character,
         ).save()
         return character
