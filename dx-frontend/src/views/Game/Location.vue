@@ -81,6 +81,10 @@
         </ItemHolder>
         <DiceRollerModal :visible="isDiceVisible" :challenge="currentChallenge" @close="toogleDice"
                          @roll-complete="onDiceRollComplete"/>
+        <RPGPlayerProfile
+            :is-open="playerProfileVisible"
+            @close="closePlayerProfile"
+        />
         <CompassRPG
             v-if="isCompassVisible"
             :position="position"
@@ -109,6 +113,12 @@
     </div>
     <!-- Dice Component (Bottom, Right) -->
   </div>
+
+  <!-- Player Profile Modal -->
+  <RPGPlayerProfile
+    :isOpen="isPlayerProfileVisible"
+    @close="handlePlayerProfileClose"
+  />
 </template>
 
 
@@ -164,6 +174,7 @@ import FightStartOverlay from "@/components/Fight/FightStartOverlay.vue";
 import {FightService} from "@/services/PlayerFight";
 import FightOverlay from "@/components/Fight/FightOverlay.vue";
 import CharacterCurrentLocationService from "@/services/CharacterCurrentLocationService";
+import RPGPlayerProfile from "@/components/Player/RPGPlayerProfile.vue";
 export default {
   name: 'LocationView',
   components: {
@@ -200,7 +211,8 @@ export default {
     BackgroundView,
     PlayerComponent,
     CharacterCardHolder,
-    CompassComponent
+    CompassComponent,
+    RPGPlayerProfile
   },
   data() {
     return {
@@ -225,6 +237,7 @@ export default {
       diceVisible: false,
       bargainVisible: false,
       inventoryVisible: false,
+      playerProfileVisible: false,
       isMoving: false,
       mapData: {},
       actionLog: [],
@@ -238,6 +251,7 @@ export default {
       fightParticipants: [],
       currentChallenge: null,
       showNoTargetFeedback: false,
+      isPlayerProfileVisible: false,
     };
   },
   async mounted() {
@@ -737,10 +751,11 @@ export default {
       await this.refreshBargains();
     },
     openInfo() {
-      // open window with character info
-      const routePath = this.$router.resolve({name: 'CharacterInfo'}).href;
-      // Open in a new floating window
-      window.open(routePath, '_blank', 'width=1024,height=1280,scrollbars=yes,resizable=yes');
+      // Show player profile modal instead of opening new window
+      this.playerProfileVisible = true;
+    },
+    closePlayerProfile() {
+      this.playerProfileVisible = false;
     },
     async diceRoll({dice, index}) {
       try {
