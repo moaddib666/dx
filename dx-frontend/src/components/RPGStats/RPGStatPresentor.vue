@@ -25,39 +25,64 @@ export default {
       statsService: StatsGameService,
     };
   },
+  computed: {
+    // Calculate the base value from dice rolls
+    baseValue() {
+      if (!this.stat.dice_rolls || this.stat.dice_rolls.length === 0) {
+        return this.stat.base_value || 0;
+      }
+      // Use the same calculation as DiceNRolls component
+      const fadeCount = 1; // Assuming 1 dice is faded out
+      const sorted = [...this.stat.dice_rolls.map(d => d.dice_side)].sort((a, b) => a - b);
+      return sorted.slice(fadeCount).reduce((sum, roll) => sum + roll, 0);
+    },
+
+    // Calculate the total value (base + modifier)
+    totalValue() {
+      return this.baseValue + (this.stat.additional_value || 0);
+    },
+
+    // Get modifier value
+    modifierValue() {
+      return this.stat.additional_value || 0;
+    },
+
+    // Format the modifier with appropriate color class
+    modifierText() {
+      const additional = this.stat.additional_value || 0;
+      if (additional === 0) {
+        return '';
+      }
+      return additional > 0 ? `+${additional}` : `${additional}`;
+    },
+
+    // Get modifier color class
+    modifierColorClass() {
+      const additional = this.stat.additional_value || 0;
+      if (additional > 0) return 'modifier-positive';
+      if (additional < 0) return 'modifier-negative';
+      return '';
+    }
+  },
 };
 </script>
 
 <template>
   <div class="stat-presenter">
-    <img
-        class="stat-icon"
-        :src="statsService.getCachedStatImage(stat.name)"
-        :alt="stat.name"
-        :title="stat.name"
-    />
-    <span class="stat-name">{{ stat.name }}</span>
-    <DiceNRolls  :dice-rolls="stat.dice_rolls" :stat="stat.name" class="base-value"/>
-    <SwipeIcon @click="$emit('switchBaseStats', stat.id)" class="swap-icon" v-if="allowResetBaseStats"/>
-
-    <div class="stat-value">
-<!--      <button-->
-<!--          class="adjust-button"-->
-<!--          :disabled="!editable"-->
-<!--          @click="$emit('decrement', stat.id)"-->
-<!--      >-->
-<!--        &lt;-->
-<!--      </button>-->
-      <span class="value"> + {{ stat.additional_value }}</span>
-<!--      <button-->
-<!--          class="adjust-button"-->
-<!--          :disabled="!editable"-->
-<!--          @click="$emit('increment', stat.id)"-->
-<!--      >-->
-<!--        &gt;-->
-<!--      </button>-->
+    <div class="left-section">
+      <img
+          class="stat-icon"
+          :src="statsService.getCachedStatImage(stat.name)"
+          :alt="stat.name"
+          :title="stat.name"
+      />
+      <span class="stat-name">{{ stat.name }}</span>
     </div>
-
+    <div class="right-section">
+      <span v-if="modifierText" class="modifier" :class="modifierColorClass">{{ modifierText }}</span>
+      <DiceNRolls :dice-rolls="stat.dice_rolls" :stat="stat.name" class="dice-results"/>
+      <SwipeIcon @click="$emit('switchBaseStats', stat.id)" class="swap-icon" v-if="allowResetBaseStats"/>
+    </div>
   </div>
 </template>
 
@@ -70,13 +95,27 @@ export default {
   border: 2px solid rgba(127, 255, 22, 0.3);
   border-radius: 0.3rem;
   padding: 0.3rem;
-  gap: 0.375rem;
+  gap: 0.25rem;
   transition: all 0.3s ease;
 }
 
 .stat-presenter:hover {
   border-color: rgba(127, 255, 22, 0.5);
   background: rgba(0, 0, 0, 0.6);
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
 .stat-icon {
@@ -89,7 +128,6 @@ export default {
 }
 
 .stat-name {
-  flex: 1;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
   font-size: 0.64rem;
   font-weight: 600;
@@ -101,51 +139,29 @@ export default {
   white-space: nowrap;
 }
 
-.stat-value {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-}
-
-.adjust-button {
-  background: rgba(127, 255, 22, 0.2);
-  color: #7fff16;
-  border: 1px solid rgba(127, 255, 22, 0.3);
-  border-radius: 0.225rem;
-  padding: 0.15rem 0.375rem;
-  font-size: 0.675rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.dice-results {
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
-.adjust-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
-  border-color: rgba(127, 255, 22, 0.1);
-}
-
-.adjust-button:not(:disabled):hover {
-  background: rgba(127, 255, 22, 0.4);
-  border-color: #7fff16;
-}
-
-.value {
-  font-size: 0.75rem;
+.modifier {
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #fada95;
-  min-width: 1.88rem;
-  text-align: center;
-  background: rgba(250, 218, 149, 0.1);
-  border: 1px solid rgba(250, 218, 149, 0.3);
-  border-radius: 0.225rem;
-  padding: 0.15rem 0.3rem;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  border-radius: 0.2rem;
+  padding: 0.1rem 0.25rem;
+  border: 1px solid;
 }
 
+.modifier-positive {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+}
 
-.base-value {
-  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+.modifier-negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .swap-icon {
