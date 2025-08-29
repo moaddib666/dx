@@ -243,9 +243,9 @@ class WorldPositionSerializer(serializers.ModelSerializer):
         """Retrieve all NPC spawners in the current position."""
         return [
             NPCSpawnerSerializer(t).data for t in
-            obj.npcspawner_set.filter(
+            obj.spawner_set.filter(
                 campaign=self._client.current_campaign,
-            )
+            ).instance_of(NPCSpawner)
         ]
 
     @extend_schema_field(serializers.ListField(child=serializers.UUIDField()))
