@@ -127,7 +127,7 @@ export default {
   object-fit: cover;
   flex-shrink: 0;
   position: absolute;
-  mask: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(100, 100, 100, 0));
+  mask: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(100, 100, 100, 0));
   z-index: 0;
 }
 
@@ -142,7 +142,6 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-shadow: 0 0 1em rgb(0, 0, 0);
-  box-shadow: 0 0 1em rgba(0, 0, 0, 1);
 }
 
 .dice-results {
