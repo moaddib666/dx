@@ -30,7 +30,7 @@ function preloadAssets() {
 
   // Preload campfire image
   const campfireImg = new Image();
-  campfireImg.src = 'src/assets/images/loader/campfire_mini.png';
+  campfireImg.src = '/src/assets/images/loader/campfire_mini.png';
   campfireImg.onload = () => {
     assetCache.set('campfire', campfireImg.src);
   };
@@ -58,7 +58,7 @@ export function showLoader(elementId = 'app', options = {}) {
     <div class="global-loading-overlay">
       <div class="loading-container">
         <div class="campfire-container">
-          <img src="src/assets/images/loader/campfire_mini.png"
+          <img src="/src/assets/images/loader/campfire_mini.png"
                alt="Campfire"
                class="campfire-image">
           <div class="shadow-effect" id="shadowEffect"></div>
