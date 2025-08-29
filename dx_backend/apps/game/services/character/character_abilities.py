@@ -21,7 +21,8 @@ class CharacterAbilities:
         ).order_by("skill__grade")
 
         owned_items = character.character.equipped_items.filter(
-            world_item__item__skill__type=skill_type
+            world_item__item__skill__type=skill_type,
+            world_item__charges_left__gt=0
         ).order_by("world_item__item__skill__grade")
 
         # Filter skills and items that character can afford
@@ -73,7 +74,8 @@ class CharacterAbilities:
         ).order_by("skill__grade")
 
         owned_items = character.character.equipped_items.filter(
-            world_item__item__skill__type=skill_type
+            world_item__item__skill__type=skill_type,
+            world_item__charges_left__gt=0
         ).order_by("world_item__item__skill__grade")
 
         # Filter and collect skills with power ratings
