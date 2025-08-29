@@ -92,11 +92,10 @@ export default {
 
 <style>
 .dice-container {
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: row-reverse; /* Reverse to expand left */
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   cursor: pointer; /* Indicate interactivity */
 }
 
@@ -111,16 +110,19 @@ export default {
   font-weight: bold;
   color: #000;
   transition: all 0.3s ease-in-out; /* Smooth transition */
+  position: absolute;
+  z-index: 10;
 }
 
 .dice.hidden {
-  opacity: 0; /* Hidden dice are invisible */
-  transform: scale(0); /* Collapse hidden dice */
+  display: none; /* Completely remove from layout */
 }
 
 .dice.faded {
-  opacity: 0.4;
-  color: #888;
+  opacity: 0.7;
+  color: #555;
+  background: linear-gradient(135deg, rgba(200, 200, 200, 0.9), rgba(160, 160, 160, 0.9)) !important;
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
 
 .dice.summary {
@@ -133,11 +135,60 @@ export default {
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   font-weight: bold;
   color: #000;
+  position: relative;
+  z-index: 5;
+}
+
+.dice:not(.summary):not(.hidden) {
+  /* Position expanded dice to the left of the summary */
+}
+
+.dice:not(.summary):not(.hidden):nth-child(2) {
+  right: 3.5em; /* Position first expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dice:not(.summary):not(.hidden):nth-child(3) {
+  right: 6em; /* Position second expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dice:not(.summary):not(.hidden):nth-child(4) {
+  right: 8.5em; /* Position third expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dice:not(.summary):not(.hidden):nth-child(5) {
+  right: 11em; /* Position fourth expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dice:not(.summary):not(.hidden):nth-child(6) {
+  right: 13.5em; /* Position fifth expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dice:not(.summary):not(.hidden):nth-child(7) {
+  right: 16em; /* Position sixth expanded dice */
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .dice:hover {
   box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.3);
-  transform: scale(1.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dice.summary:hover {
+  transform: scale(1.1);
+}
+
+.dice:not(.summary):not(.hidden):hover {
+  transform: translateY(-50%) scale(1.1);
 }
 </style>

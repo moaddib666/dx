@@ -95,7 +95,7 @@ export default {
   font-weight: 600;
   color: #fada95;
   text-transform: capitalize;
-  max-width: 6rem;
+  max-width: 10rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
