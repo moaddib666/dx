@@ -9,7 +9,7 @@
 
 
     <div class="not-accepted-label status-label" v-if="!action.accepted">Not Accepted</div>
-    <div class="not-performed-label status-label" v-else-if="action.performed">Not Performed</div>
+    <div class="not-performed-label status-label" v-else-if="!action.performed">Not Performed</div>
 
     <GameMasterActionLogImage :action="action" class="action-image"/>
     <div class="action-content">
@@ -25,91 +25,18 @@
                               :char-id="target.id" :gm-mode="true" v-if="hasTarget"/>
       <div v-else class="info" id="target-info"></div>
     </div>
-    <!--    <div class="action-info">-->
-    <!--      <ActionIconMini class="action-icon" v-if="action.skill" :skill="action.skill"/>-->
-    <!--      <div v-else-if="action.action_type === 'MOVE'" class="action-icon">-->
-    <!--        <img alt="Move" src="@/assets/images/action/move.png"/>-->
-    <!--        <span> Move </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'LONG_REST'" class="action-icon">-->
-    <!--        <img alt="Move" src="@/assets/images/action/long_rest.webp"/>-->
-    <!--        <span> Long Rest </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'SNATCH_ITEM'" class="action-icon">-->
-    <!--        <img alt="Move" src="@/assets/images/action/snatch.webp"/>-->
-    <!--        <span> Snatch </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'GIFT'" class="action-icon">-->
-    <!--        <img alt="Move" src="@/assets/images/action/gift.webp"/>-->
-    <!--        <span> Gift </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'BACK_TO_SAFE_ZONE'" class="action-icon">-->
-    <!--        <img alt="Move" src="@/assets/images/action/safe.webp"/>-->
-    <!--        <span> Teleport To Safety </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'INSPECT'" class="action-icon">-->
-    <!--        <img alt="Inspect" src="@/assets/images/action/inspect.webp"/>-->
-    <!--        <span> Inspect </span>-->
-    <!--        <div class="inspection-result">-->
-    <!--          <SmallCharPreview-->
-    <!--              v-for="hasTarget in action.targets"-->
-    <!--              :key="hasTarget.id"-->
-    <!--              :char="hasTarget"-->
-    <!--              :gmMode="gmMode"-->
-    <!--              @select="handleSelect"-->
-    <!--          />-->
-    <!--          <InspectionResult :characters="action.data.characters"/>-->
 
-    <!--        </div>-->
-
-
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">-->
-    <!--        <DiceComponent/>-->
-    <!--        <span> Dice Roll </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'ANOMALY'" class="action-icon">-->
-    <!--        <img alt="Anomaly" src="@/assets/images/action/anomaly.png"/>-->
-    <!--        <span> Anomaly </span>-->
-    <!--      </div>-->
-    <!--      <div v-else-if="action.action_type === 'GOD_INTERVENTION'" class="action-icon">-->
-    <!--        <img alt="God Intervention" src="@/assets/images/action/godintervention.png"/>-->
-    <!--        <span> God Intervention </span>-->
-    <!--      </div>-->
-    <!--      <div v-else>-->
-    <!--        <span class="action-id">ID: {{ action.id }}</span>-->
-    <!--        <span class="action-type">Type: {{ action.action_type }}</span>-->
-    <!--        <span class="cycle">Cycle: {{ action.cycle.id }}</span>-->
-    <!--      </div>-->
-    <!--      <span class="status">-->
-    <!--          <span :class="{ 'status-true': action.accepted, 'status-false': !action.accepted }">-->
-    <!--            Accepted: {{ action.accepted ? 'Yes' : 'No' }}-->
-    <!--          </span>-->
-    <!--          <span :class="{ 'status-true': action.performed, 'status-false': !action.performed }">-->
-    <!--            Performed: {{ action.performed ? 'Yes' : 'No' }}-->
-    <!--          </span>-->
-    <!--        </span>-->
-    <!--    </div>-->
-    <!--    <div v-if="action.accepted && !action.performed" class="targets-row">-->
-    <!--      <SmallCharPreview-->
-    <!--          v-for="hasTarget in action.targets"-->
-    <!--          :key="hasTarget.id"-->
-    <!--          :char="hasTarget"-->
-    <!--          :gmMode="gmMode"-->
-    <!--          @select="handleSelect"-->
-    <!--      />-->
-    <!--    </div>-->
-    <!--    <div v-if="action.performed" class="impacts-row">-->
-    <!--      <ImpactComponent-->
-    <!--          v-for="impact in action.impacts"-->
-    <!--          :key="impact.id"-->
-    <!--          :impact="impact"-->
-    <!--          @selectTarget="handleSelect"-->
-    <!--      />-->
-    <!--      <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
-    <!--                    :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
-    <!--    </div>-->
   </div>
+  <div v-if="action.performed" class="impacts">
+    <ImpactComponent
+        v-for="impact in action.impacts"
+        :key="impact.id"
+        :impact="impact"
+    />
+    <!--          <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
+    <!--                        :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
+  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -119,6 +46,8 @@ import GameMasterActionLogImage from "@/components/GameMaster/ActionLog/GameMast
 import {computed} from "vue";
 import CharacterInlineDetails from "@/components/Character/CharacterInlineDetails.vue";
 import { useI18n } from 'vue-i18n';
+import ImpactComponent from "@/components/GameMaster/ActionLog/ImpactComponent.vue";
+import SnatchAction from "@/components/GameMaster/ActionLog/SnatchAction.vue";
 
 interface Props {
   action: GameMasterCharacterActionLog;

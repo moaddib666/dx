@@ -1,8 +1,7 @@
 <template>
   <div class="dice-roll-result compact">
-    <span class="dice"><br> {{ result.dice_side }}</span>
-    <span class="multiplier">x{{ result.multiplier }}</span>
-    <span class="outcome"> {{ result.outcome }}</span>
+    <span class="dice">{{ result.dice_side }}
+    </span>
   </div>
 </template>
 
@@ -17,15 +16,11 @@ export default {
 
 <style scoped>
 .dice-roll-result.compact {
+  margin: 0 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #444;
-  border-radius: 4px;
-  background: #1e1e1e;
-  font-size: 0.7rem;
   color: #e0e0e0;
   text-align: center;
 }
@@ -47,6 +42,7 @@ export default {
   font-weight: bold;
   font-size: 0.5rem;
   color: #ff6666;
+  text-shadow: rgba(0, 0, 0, 0.7) 1px 1px 2px;
 }
 
 .dice {
