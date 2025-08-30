@@ -119,25 +119,8 @@
       </div>
 
       <!-- Right Panel - Entity Management (only visible when it has content and not in edit mode) -->
-      <div v-if="!isEditMode && (showStatsPanel || showLayersPanel || showItemsPanel || showNPCTemplatesPanel)"
+      <div v-if="!isEditMode && (showItemsPanel || showNPCTemplatesPanel)"
            class="right-panel">
-
-        <!-- World Statistics -->
-        <WorldEditorStats
-            v-if="showStatsPanel"
-            :stats="worldStats"
-            class="world-stats"
-            @refresh-stats="refreshWorld"
-        />
-
-        <!-- Layer Controls -->
-        <WorldEditorLayers
-            v-if="showLayersPanel"
-            :activeLayers="activeLayers"
-            :layerCounts="layerCounts"
-            class="layer-controls"
-            @layer-toggled="onLayerToggled"
-        />
 
         <!-- Items List -->
         <WorldEditorItemsList
@@ -183,12 +166,6 @@
         <span class="status-item">Rooms: {{ totalRooms }}</span>
         <span class="status-item">Connections: {{ totalConnections }}</span>
         <span class="status-item">Selected: {{ selectedRooms.length }}</span>
-        <button class="stats-toggle-btn" title="Toggle Statistics Panel" @click="toggleStatsPanel">
-          <i class="icon-stats"></i>
-        </button>
-        <button class="layers-toggle-btn" title="Toggle Layers Panel" @click="toggleLayersPanel">
-          <i class="icon-layers"></i>
-        </button>
         <button class="items-toggle-btn" title="Toggle Items Panel" @click="toggleItemsPanel">
           <i class="icon-items"></i>
         </button>
@@ -212,11 +189,9 @@ import {ActionGameApi, GMWorldSubLocationsApi} from "@/api/backendService.js";
 
 // Import WorldEditor components (to be created)
 import WorldEditorToolbar from '@/components/WorldEditor/WorldEditorToolbar.vue';
-import WorldEditorLayers from '@/components/WorldEditor/WorldEditorLayers.vue';
 import WorldEditorRoomInfo from '@/components/WorldEditor/WorldEditorRoomInfo.vue';
 import WorldEditorMap from '@/components/WorldEditor/WorldEditorMap.vue';
 import WorldEditorEntitySpawner from '@/components/WorldEditor/WorldEditorEntitySpawner.vue';
-import WorldEditorStats from '@/components/WorldEditor/WorldEditorStats.vue';
 import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.vue';
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
@@ -227,11 +202,9 @@ export default {
   name: 'WorldEditor',
   components: {
     WorldEditorToolbar,
-    WorldEditorLayers,
     WorldEditorRoomInfo,
     WorldEditorMap,
     WorldEditorEntitySpawner,
-    WorldEditorStats,
     WorldEditorItemsList,
     NPCTemplatesList,
     GameMasterCharacterCard,
@@ -252,8 +225,6 @@ export default {
       hasUnsavedChanges: false,
       lastAction: '',
       currentTime: new Date().toLocaleTimeString(),
-      showStatsPanel: false, // Stats panel visibility state
-      showLayersPanel: false, // Layers panel visibility state
       showItemsPanel: true, // Items panel visibility state
       showNPCTemplatesPanel: false, // NPC Templates panel visibility state
       autoConnectEnabled: true, // Auto-connect toggle state (default enabled)
@@ -793,17 +764,6 @@ export default {
         }
       }, 5000);
     },
-
-    toggleStatsPanel() {
-      this.showStatsPanel = !this.showStatsPanel;
-      this.setLastAction(this.showStatsPanel ? 'Statistics panel opened' : 'Statistics panel closed');
-    },
-
-    toggleLayersPanel() {
-      this.showLayersPanel = !this.showLayersPanel;
-      this.setLastAction(this.showLayersPanel ? 'Layers panel opened' : 'Layers panel closed');
-    },
-
 
     /**
      * Handle item selection from the items list
