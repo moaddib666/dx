@@ -46,6 +46,67 @@
           @npc-click="onNpcClick"
       />
 
+      <!-- Room Spawners -->
+      <div class="info-section">
+        <h4>Spawners ({{ room.spawners?.length || 0 }})</h4>
+        <div v-if="room.spawners && room.spawners.length > 0" class="spawners-list">
+          <div v-for="spawner in room.spawners" :key="spawner.id" class="spawner-row">
+            <div class="spawner-info">
+              <div class="spawner-main">
+                <span class="spawner-type">{{ getSpawnerTypeName(spawner) }}</span>
+                <span class="spawner-status" :class="{ 'active': spawner.is_active, 'inactive': !spawner.is_active }">
+                  {{ spawner.is_active ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+              <div class="spawner-details">
+                <span class="spawner-limit">Limit: {{ spawner.spawn_limit || 1 }}</span>
+                <span class="spawner-cycles">Cycles: {{ spawner.respawn_cycles || 1 }}</span>
+                <span class="spawner-spawned">Spawned: {{ spawner.spawned_entities?.length || 0 }}</span>
+              </div>
+            </div>
+            <div class="spawner-actions">
+              <button
+                v-if="editable"
+                class="spawner-btn setup-btn"
+                @click="openSpawnerSetup(spawner)"
+                title="Setup Spawner">
+                <i class="icon-cog"></i>
+              </button>
+              <EditInDjangoAdmin
+                v-if="editable"
+                :app="spawner.object_type?.app_label || 'spawner'"
+                :model="spawner.object_type?.model || 'npcspawner'"
+                :id="spawner.id"
+                class="spawner-admin-btn"
+              />
+              <button
+                v-if="editable"
+                class="spawner-btn"
+                :class="spawner.is_active ? 'deactivate-btn' : 'activate-btn'"
+                @click="toggleSpawnerStatus(spawner)"
+                :title="spawner.is_active ? 'Deactivate Spawner' : 'Activate Spawner'">
+                <i :class="spawner.is_active ? 'icon-pause' : 'icon-play'"></i>
+              </button>
+              <button
+                v-if="editable"
+                class="spawner-btn delete-btn"
+                @click="confirmDeleteSpawner(spawner)"
+                title="Delete Spawner">
+                <i class="icon-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div v-else class="no-spawners">
+          <p>No spawners in this room</p>
+        </div>
+        <div v-if="editable" class="spawner-create-section">
+          <button class="action-btn create-spawner-btn" @click="openCreateSpawner">
+            <i class="icon-plus"></i> Create Spawner
+          </button>
+        </div>
+      </div>
+
       <!-- Room Connections -->
       <Connections
           :room="room"
@@ -92,6 +153,19 @@
         </div>
       </div>
     </div>
+
+
+    <!-- Delete Spawner Confirmation Modal -->
+    <div v-if="showDeleteSpawnerConfirm" class="modal-overlay" @click="cancelDeleteSpawner">
+      <div class="modal-content" @click.stop>
+        <h3>Confirm Delete Spawner</h3>
+        <p>Are you sure you want to delete this spawner? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="modal-btn" @click="cancelDeleteSpawner">Cancel</button>
+          <button class="modal-btn danger" @click="deleteSpawner">Delete</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -101,6 +175,7 @@ import EditInDjangoAdmin from '@/components/EditInDjangoAdmin.vue';
 import {gameMasterItemSpawnerService} from '@/services/GameMasterItemSpawnerService.js';
 import {dragDropService} from '@/services/DragDropService.js';
 import {characterTemplatesService} from '@/services/CharacterTemplatesService.ts';
+import {GMWorldGenericSpawnersApi, GMWorldNPCSpawnersApi} from '@/api/backendService.js';
 
 // Import the new components
 import BasicInformation from '@/components/WorldEditor/WorldEditorRoomInfo/BasicInformation.vue';
@@ -137,7 +212,10 @@ export default {
       localRoom: null,
       showDeleteConfirm: false,
       selectedConnection: null,
-      isDraggingItem: false // Flag to track if an item is being dragged
+      isDraggingItem: false, // Flag to track if an item is being dragged
+      // Spawner-related data
+      showDeleteSpawnerConfirm: false,
+      spawnerToDelete: null
     };
   },
   computed: {
@@ -291,6 +369,100 @@ export default {
 
     cancelDelete() {
       this.showDeleteConfirm = false;
+    },
+
+    // Spawner Management Methods
+    openCreateSpawner() {
+      // Emit event to open spawner modal for creating new spawner
+      this.$emit('open-spawner-modal', {
+        positionId: this.room.id,
+        npcSpawnerId: null
+      });
+    },
+
+    openSpawnerSetup(spawner) {
+      // Emit event to open spawner modal for editing existing spawner
+      this.$emit('open-spawner-modal', {
+        positionId: this.room.id,
+        npcSpawnerId: spawner.id
+      });
+    },
+
+    async toggleSpawnerStatus(spawner) {
+      try {
+        if (spawner.is_active) {
+          // Deactivate spawner
+          await GMWorldGenericSpawnersApi.gamemasterSpawnersAllDeactivateCreate(spawner.id);
+          spawner.is_active = false;
+        } else {
+          // Activate spawner
+          await GMWorldGenericSpawnersApi.gamemasterSpawnersAllActivateCreate(spawner.id);
+          spawner.is_active = true;
+        }
+
+        // Update the local room data
+        this.updateLocalRoomSpawner(spawner);
+
+        console.log(`Spawner ${spawner.id} ${spawner.is_active ? 'activated' : 'deactivated'}`);
+      } catch (error) {
+        console.error('Failed to toggle spawner status:', error);
+        // Revert the status change on error
+        spawner.is_active = !spawner.is_active;
+      }
+    },
+
+    confirmDeleteSpawner(spawner) {
+      this.spawnerToDelete = spawner;
+      this.showDeleteSpawnerConfirm = true;
+    },
+
+    cancelDeleteSpawner() {
+      this.showDeleteSpawnerConfirm = false;
+      this.spawnerToDelete = null;
+    },
+
+    async deleteSpawner() {
+      if (!this.spawnerToDelete) return;
+
+      try {
+        await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcDestroy(this.spawnerToDelete.id);
+
+        // Remove spawner from local room data
+        const spawnerIndex = this.localRoom.spawners.findIndex(s => s.id === this.spawnerToDelete.id);
+        if (spawnerIndex !== -1) {
+          this.localRoom.spawners.splice(spawnerIndex, 1);
+        }
+
+        console.log('Spawner deleted:', this.spawnerToDelete.id);
+        this.cancelDeleteSpawner();
+
+        // Refresh room data
+        this.$emit('refresh-room');
+      } catch (error) {
+        console.error('Failed to delete spawner:', error);
+      }
+    },
+
+    // Helper Methods
+    getSpawnerTypeName(spawner) {
+      if (spawner.object_type?.name) {
+        return spawner.object_type.name;
+      }
+      if (spawner.object_type?.model) {
+        return spawner.object_type.model.replace(/([A-Z])/g, ' $1').trim();
+      }
+      if (spawner.spawner_type) {
+        return spawner.spawner_type.replace(/([A-Z])/g, ' $1').trim();
+      }
+      return 'Unknown Spawner';
+    },
+
+    updateLocalRoomSpawner(updatedSpawner) {
+      const spawnerIndex = this.localRoom.spawners.findIndex(s => s.id === updatedSpawner.id);
+      if (spawnerIndex !== -1) {
+        // Update the spawner in the local room data
+        this.localRoom.spawners[spawnerIndex] = { ...this.localRoom.spawners[spawnerIndex], ...updatedSpawner };
+      }
     },
 
     deleteRoom() {
@@ -1140,5 +1312,180 @@ export default {
 
 .icon-trash::before {
   content: '🗑';
+}
+
+.icon-cog::before {
+  content: '⚙️';
+}
+
+.icon-play::before {
+  content: '▶️';
+}
+
+.icon-pause::before {
+  content: '⏸️';
+}
+
+/* Spawner Section Styles */
+.spawners-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.spawner-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #3a3a3a;
+  border: 1px solid #555;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.spawner-row:hover {
+  background: #404040;
+  border-color: #666;
+}
+
+.spawner-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.spawner-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spawner-type {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.spawner-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.spawner-status.active {
+  background: #4caf50;
+  color: #fff;
+}
+
+.spawner-status.inactive {
+  background: #f44336;
+  color: #fff;
+}
+
+.spawner-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.spawner-details span {
+  display: flex;
+  align-items: center;
+}
+
+.spawner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spawner-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+}
+
+.spawner-btn:hover {
+  background: #555;
+  border-color: #666;
+}
+
+.spawner-btn.setup-btn:hover {
+  background: #2196f3;
+  border-color: #2196f3;
+}
+
+.spawner-btn.activate-btn:hover {
+  background: #4caf50;
+  border-color: #4caf50;
+}
+
+.spawner-btn.deactivate-btn:hover {
+  background: #ff9800;
+  border-color: #ff9800;
+}
+
+.spawner-btn.delete-btn:hover {
+  background: #f44336;
+  border-color: #f44336;
+}
+
+.spawner-admin-btn {
+  margin: 0 !important;
+}
+
+.no-spawners {
+  text-align: center;
+  padding: 1rem;
+  color: #888;
+  font-style: italic;
+}
+
+.spawner-create-section {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #555;
+}
+
+.create-spawner-btn {
+  width: 100%;
+  background: #2196f3;
+  border-color: #2196f3;
+}
+
+.create-spawner-btn:hover {
+  background: #1976d2;
+  border-color: #1976d2;
+}
+
+/* Responsive adjustments for spawners */
+@media (max-width: 768px) {
+  .spawner-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .spawner-actions {
+    justify-content: center;
+  }
+
+  .spawner-details {
+    justify-content: space-between;
+  }
 }
 </style>

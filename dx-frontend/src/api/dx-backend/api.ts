@@ -2576,13 +2576,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -14398,6 +14398,84 @@ export class CharacterApi extends BaseAPI {
 export const ClientApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Google OAuth login endpoint that handles Google ID token verification, user creation/authentication, and JWT token generation with cookie setting.  Expected request data: {     \"id_token\": \"google_id_token_from_frontend\" }  Returns JWT tokens and sets dx_backend_token cookie for seamless integration with existing authentication system.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientAuthGoogleLoginCreate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/client/auth/google/login/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Returns the Google OAuth URL for frontend to redirect users to. This is optional - frontend can construct this URL directly.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientAuthGoogleUrlCreate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/client/auth/google/url/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Get the current campaign for the client.  Returns the current campaign ID and its details. If no current campaign is set, the current_campaign field will be null.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -14869,6 +14947,28 @@ export const ClientApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ClientApiAxiosParamCreator(configuration)
     return {
         /**
+         * Google OAuth login endpoint that handles Google ID token verification, user creation/authentication, and JWT token generation with cookie setting.  Expected request data: {     \"id_token\": \"google_id_token_from_frontend\" }  Returns JWT tokens and sets dx_backend_token cookie for seamless integration with existing authentication system.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async clientAuthGoogleLoginCreate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.clientAuthGoogleLoginCreate(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClientApi.clientAuthGoogleLoginCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Returns the Google OAuth URL for frontend to redirect users to. This is optional - frontend can construct this URL directly.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async clientAuthGoogleUrlCreate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.clientAuthGoogleUrlCreate(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ClientApi.clientAuthGoogleUrlCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Get the current campaign for the client.  Returns the current campaign ID and its details. If no current campaign is set, the current_campaign field will be null.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15009,6 +15109,22 @@ export const ClientApiFactory = function (configuration?: Configuration, basePat
     const localVarFp = ClientApiFp(configuration)
     return {
         /**
+         * Google OAuth login endpoint that handles Google ID token verification, user creation/authentication, and JWT token generation with cookie setting.  Expected request data: {     \"id_token\": \"google_id_token_from_frontend\" }  Returns JWT tokens and sets dx_backend_token cookie for seamless integration with existing authentication system.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientAuthGoogleLoginCreate(options?: any): AxiosPromise<void> {
+            return localVarFp.clientAuthGoogleLoginCreate(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns the Google OAuth URL for frontend to redirect users to. This is optional - frontend can construct this URL directly.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        clientAuthGoogleUrlCreate(options?: any): AxiosPromise<void> {
+            return localVarFp.clientAuthGoogleUrlCreate(options).then((request) => request(axios, basePath));
+        },
+        /**
          * Get the current campaign for the client.  Returns the current campaign ID and its details. If no current campaign is set, the current_campaign field will be null.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15115,6 +15231,26 @@ export const ClientApiFactory = function (configuration?: Configuration, basePat
  * @extends {BaseAPI}
  */
 export class ClientApi extends BaseAPI {
+    /**
+     * Google OAuth login endpoint that handles Google ID token verification, user creation/authentication, and JWT token generation with cookie setting.  Expected request data: {     \"id_token\": \"google_id_token_from_frontend\" }  Returns JWT tokens and sets dx_backend_token cookie for seamless integration with existing authentication system.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientApi
+     */
+    public clientAuthGoogleLoginCreate(options?: RawAxiosRequestConfig) {
+        return ClientApiFp(this.configuration).clientAuthGoogleLoginCreate(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns the Google OAuth URL for frontend to redirect users to. This is optional - frontend can construct this URL directly.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ClientApi
+     */
+    public clientAuthGoogleUrlCreate(options?: RawAxiosRequestConfig) {
+        return ClientApiFp(this.configuration).clientAuthGoogleUrlCreate(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Get the current campaign for the client.  Returns the current campaign ID and its details. If no current campaign is set, the current_campaign field will be null.
      * @param {*} [options] Override http request option.
@@ -18710,6 +18846,92 @@ export const GMWorldEditorAllSpawnersApiAxiosParamCreator = function (configurat
     return {
         /**
          * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersAllActivateCreate: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersAllActivateCreate', 'id', id)
+            const localVarPath = `/api/gamemaster/spawners/all/{id}/activate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersAllDeactivateCreate: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('gamemasterSpawnersAllDeactivateCreate', 'id', id)
+            const localVarPath = `/api/gamemaster/spawners/all/{id}/deactivate/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * API for managing spawners in DX world editor.
          * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {boolean} [isActive] 
@@ -18822,6 +19044,30 @@ export const GMWorldEditorAllSpawnersApiFp = function(configuration?: Configurat
     return {
         /**
          * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersAllActivateCreate(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersAllActivateCreate(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorAllSpawnersApi.gamemasterSpawnersAllActivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async gamemasterSpawnersAllDeactivateCreate(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GenericSpawner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersAllDeactivateCreate(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorAllSpawnersApi.gamemasterSpawnersAllDeactivateCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * API for managing spawners in DX world editor.
          * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {boolean} [isActive] 
@@ -18859,6 +19105,24 @@ export const GMWorldEditorAllSpawnersApiFactory = function (configuration?: Conf
     return {
         /**
          * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersAllActivateCreate(id: string, options?: any): AxiosPromise<GenericSpawner> {
+            return localVarFp.gamemasterSpawnersAllActivateCreate(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
+         * @param {string} id A UUID string identifying this npc spawner.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        gamemasterSpawnersAllDeactivateCreate(id: string, options?: any): AxiosPromise<GenericSpawner> {
+            return localVarFp.gamemasterSpawnersAllDeactivateCreate(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * API for managing spawners in DX world editor.
          * @param {string} [campaign] 
          * @param {number} [dimension] 
          * @param {boolean} [isActive] 
@@ -18888,6 +19152,28 @@ export const GMWorldEditorAllSpawnersApiFactory = function (configuration?: Conf
  * @extends {BaseAPI}
  */
 export class GMWorldEditorAllSpawnersApi extends BaseAPI {
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorAllSpawnersApi
+     */
+    public gamemasterSpawnersAllActivateCreate(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorAllSpawnersApiFp(this.configuration).gamemasterSpawnersAllActivateCreate(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * API for managing spawners in DX world editor.
+     * @param {string} id A UUID string identifying this npc spawner.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GMWorldEditorAllSpawnersApi
+     */
+    public gamemasterSpawnersAllDeactivateCreate(id: string, options?: RawAxiosRequestConfig) {
+        return GMWorldEditorAllSpawnersApiFp(this.configuration).gamemasterSpawnersAllDeactivateCreate(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * API for managing spawners in DX world editor.
      * @param {string} [campaign] 
@@ -18922,55 +19208,6 @@ export class GMWorldEditorAllSpawnersApi extends BaseAPI {
  */
 export const GMWorldEditorNPCSpawnersApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
-        /**
-         * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gamemasterSpawnersNpcActivateCreate: async (id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('gamemasterSpawnersNpcActivateCreate', 'id', id)
-            // verify required parameter 'nPCGenericSpawnerRequest' is not null or undefined
-            assertParamExists('gamemasterSpawnersNpcActivateCreate', 'nPCGenericSpawnerRequest', nPCGenericSpawnerRequest)
-            const localVarPath = `/api/gamemaster/spawners/npc/{id}/activate/`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(nPCGenericSpawnerRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
         /**
          * API for managing spawners in DX world editor.
          * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
@@ -19010,55 +19247,6 @@ export const GMWorldEditorNPCSpawnersApiAxiosParamCreator = function (configurat
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(nPCSpawnerCreateRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gamemasterSpawnersNpcDeactivateCreate: async (id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('gamemasterSpawnersNpcDeactivateCreate', 'id', id)
-            // verify required parameter 'nPCGenericSpawnerRequest' is not null or undefined
-            assertParamExists('gamemasterSpawnersNpcDeactivateCreate', 'nPCGenericSpawnerRequest', nPCGenericSpawnerRequest)
-            const localVarPath = `/api/gamemaster/spawners/npc/{id}/deactivate/`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication basicAuth required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-            // authentication cookieAuth required
-
-            // authentication jwtAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(nPCGenericSpawnerRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -19323,19 +19511,6 @@ export const GMWorldEditorNPCSpawnersApiFp = function(configuration?: Configurat
     return {
         /**
          * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorNPCSpawnersApi.gamemasterSpawnersNpcActivateCreate']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * API for managing spawners in DX world editor.
          * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -19344,19 +19519,6 @@ export const GMWorldEditorNPCSpawnersApiFp = function(configuration?: Configurat
             const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['GMWorldEditorNPCSpawnersApi.gamemasterSpawnersNpcCreate']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<NPCGenericSpawner>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['GMWorldEditorNPCSpawnersApi.gamemasterSpawnersNpcDeactivateCreate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -19437,32 +19599,12 @@ export const GMWorldEditorNPCSpawnersApiFactory = function (configuration?: Conf
     return {
         /**
          * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
-            return localVarFp.gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * API for managing spawners in DX world editor.
          * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options?: any): AxiosPromise<NPCSpawnerCreate> {
             return localVarFp.gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * API for managing spawners in DX world editor.
-         * @param {string} id A UUID string identifying this npc spawner.
-         * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: any): AxiosPromise<NPCGenericSpawner> {
-            return localVarFp.gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * API for managing spawners in DX world editor.
@@ -19527,18 +19669,6 @@ export const GMWorldEditorNPCSpawnersApiFactory = function (configuration?: Conf
 export class GMWorldEditorNPCSpawnersApi extends BaseAPI {
     /**
      * API for managing spawners in DX world editor.
-     * @param {string} id A UUID string identifying this npc spawner.
-     * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GMWorldEditorNPCSpawnersApi
-     */
-    public gamemasterSpawnersNpcActivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
-        return GMWorldEditorNPCSpawnersApiFp(this.configuration).gamemasterSpawnersNpcActivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * API for managing spawners in DX world editor.
      * @param {NPCSpawnerCreateRequest} nPCSpawnerCreateRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -19546,18 +19676,6 @@ export class GMWorldEditorNPCSpawnersApi extends BaseAPI {
      */
     public gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest: NPCSpawnerCreateRequest, options?: RawAxiosRequestConfig) {
         return GMWorldEditorNPCSpawnersApiFp(this.configuration).gamemasterSpawnersNpcCreate(nPCSpawnerCreateRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * API for managing spawners in DX world editor.
-     * @param {string} id A UUID string identifying this npc spawner.
-     * @param {NPCGenericSpawnerRequest} nPCGenericSpawnerRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof GMWorldEditorNPCSpawnersApi
-     */
-    public gamemasterSpawnersNpcDeactivateCreate(id: string, nPCGenericSpawnerRequest: NPCGenericSpawnerRequest, options?: RawAxiosRequestConfig) {
-        return GMWorldEditorNPCSpawnersApiFp(this.configuration).gamemasterSpawnersNpcDeactivateCreate(id, nPCGenericSpawnerRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -83,6 +83,8 @@
             @connection-updated="onConnectionUpdated"
             @room-selected="onRoomSelected"
             @character-selected="openCharacterCard"
+            @open-spawner-modal="onOpenSpawnerModal"
+            @refresh-room="onRefreshRoom"
         />
       </div>
 
@@ -158,6 +160,17 @@
           />
         </div>
       </div>
+
+      <!-- Spawner Constructor Modal -->
+      <RPGSpawnerConstructorModal
+          v-if="showSpawnerModal"
+          :position-id="spawnerModalData.positionId"
+          :campaign-id="spawnerModalData.campaignId"
+          :npc-spawner-id="spawnerModalData.npcSpawnerId"
+          @spawner-created="onSpawnerCreated"
+          @spawner-updated="onSpawnerUpdated"
+          @close="closeSpawnerModal"
+      />
     </div>
 
     <!-- Status Bar -->
@@ -196,6 +209,7 @@ import WorldEditorItemsList from '@/components/WorldEditor/WorldEditorItemsList.
 import NPCTemplatesList from '@/components/shared/NPCTemplatesList.vue';
 import GameMasterCharacterCard from '@/components/WorldEditor/GameMasterCharacterCard.vue';
 import GMSubLocationSelector from '@/components/GameMaster/Character/GMSubLocationSelector.vue';
+import RPGSpawnerConstructorModal from '@/components/GameMaster/RPGSpawners/RPGSpawnerConstructorModal.vue';
 import Loader from '@/components/Loader.vue';
 
 export default {
@@ -209,6 +223,7 @@ export default {
     NPCTemplatesList,
     GameMasterCharacterCard,
     GMSubLocationSelector,
+    RPGSpawnerConstructorModal,
     Loader
   },
   data() {
@@ -246,7 +261,15 @@ export default {
       subLocations: [],
       currentSubLocation: null,
       isSubLocationsLoading: false,
-      showSubLocationModal: false
+      showSubLocationModal: false,
+
+      // Spawner modal management
+      showSpawnerModal: false,
+      spawnerModalData: {
+        positionId: null,
+        campaignId: 'current',
+        npcSpawnerId: null
+      }
     };
   },
   computed: {
@@ -442,6 +465,52 @@ export default {
     onSubLocationSelected(subLocation) {
       this.selectSubLocation(subLocation);
       this.closeSubLocationModal();
+    },
+
+    // Spawner modal methods
+    openSpawnerModal(positionId, npcSpawnerId = null) {
+      this.spawnerModalData = {
+        positionId: positionId,
+        campaignId: 'current', // This should be dynamically set based on current campaign
+        npcSpawnerId: npcSpawnerId
+      };
+      this.showSpawnerModal = true;
+    },
+
+    closeSpawnerModal() {
+      this.showSpawnerModal = false;
+      this.spawnerModalData = {
+        positionId: null,
+        campaignId: 'current',
+        npcSpawnerId: null
+      };
+    },
+
+    async onSpawnerCreated(spawnerId) {
+      console.log('Spawner created:', spawnerId);
+      this.closeSpawnerModal();
+      this.setLastAction('Spawner created successfully');
+      // Refresh world data to show the new spawner
+      await this.refreshWorld();
+    },
+
+    async onSpawnerUpdated(spawnerId) {
+      console.log('Spawner updated:', spawnerId);
+      this.closeSpawnerModal();
+      this.setLastAction('Spawner updated successfully');
+      // Refresh world data to show the updated spawner
+      await this.refreshWorld();
+    },
+
+    // Event handlers for spawner-related events from WorldEditorRoomInfo
+    onOpenSpawnerModal(data) {
+      const { positionId, npcSpawnerId } = data;
+      this.openSpawnerModal(positionId, npcSpawnerId);
+    },
+
+    async onRefreshRoom() {
+      // Refresh world data to update room information
+      await this.refreshWorld();
     },
 
     setupEventListeners() {
