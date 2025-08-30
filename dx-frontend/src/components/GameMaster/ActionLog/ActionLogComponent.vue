@@ -46,11 +46,11 @@ export default {
   computed: {
     groupedActions() {
       return this.actions.reduce((groups, action) => {
-        const cycleId = action.cycle.id;
-        if (!groups[cycleId]) {
-          groups[cycleId] = [];
+        const cycleNumber = action.cycle.number;
+        if (!groups[cycleNumber]) {
+          groups[cycleNumber] = [];
         }
-        groups[cycleId].push(action);
+        groups[cycleNumber].push(action);
         return groups;
       }, {});
     },

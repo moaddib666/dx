@@ -63,6 +63,31 @@ export interface AbstractSpawner {
 /**
  * 
  * @export
+ * @interface ActionCycle
+ */
+export interface ActionCycle {
+    /**
+     * 
+     * @type {number}
+     * @memberof ActionCycle
+     */
+    'id': number;
+    /**
+     * Cycle number in the campaign
+     * @type {number}
+     * @memberof ActionCycle
+     */
+    'number': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActionCycle
+     */
+    'campaign': string;
+}
+/**
+ * 
+ * @export
  * @interface ActionImpactModel
  */
 export interface ActionImpactModel {
@@ -1067,10 +1092,10 @@ export interface CharacterActionLog {
     'impacts': Array<CharacterLogActionImpact>;
     /**
      * 
-     * @type {number}
+     * @type {ActionCycle}
      * @memberof CharacterActionLog
      */
-    'cycle': number;
+    'cycle': ActionCycle;
 }
 
 

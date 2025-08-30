@@ -3,7 +3,7 @@
     <div v-for="(action, index) in actions" :key="action.id">
       <!-- Separator if cycle changes -->
       <div v-if="shouldInsertSeparator(index)" class="cycle-separator">
-        Cycle: {{ action.cycle }}
+        Cycle: {{ action.cycle.number }}
       </div>
 
       <!-- UserActionLogItem Component -->
