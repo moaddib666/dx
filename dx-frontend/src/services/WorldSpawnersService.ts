@@ -2,7 +2,6 @@ import {GMWorldGenericSpawnersApi, GMWorldNPCSpawnersApi} from '@/api/backendSer
 import {AxiosResponse} from 'axios';
 import type {
     GenericSpawner,
-    NPCGenericSpawner,
     NPCGenericSpawnerRequest,
     PatchedNPCGenericSpawnerRequest,
     GameObjectType,
@@ -37,14 +36,12 @@ type EventCallback = (data?: any) => void;
  */
 export class WorldSpawnersService {
     private genericSpawners: GenericSpawner[];
-    private npcSpawners: NPCGenericSpawner[];
     private isLoading: boolean;
     private lastLoaded: Date | null;
     private eventListeners: Map<WorldSpawnersServiceEventType, EventCallback[]>;
 
     constructor() {
         this.genericSpawners = [];
-        this.npcSpawners = [];
         this.isLoading = false;
         this.lastLoaded = null;
         this.eventListeners = new Map();
@@ -53,14 +50,11 @@ export class WorldSpawnersService {
     /**
      * Initialize the service and load all spawners
      */
-    async initialize(): Promise<{generic: GenericSpawner[], npc: NPCGenericSpawner[]}> {
+    async initialize(): Promise<GenericSpawner[]> {
         try {
             console.log('Initializing WorldSpawnersService...');
             await this.loadSpawners();
-            return {
-                generic: this.genericSpawners,
-                npc: this.npcSpawners
-            };
+            return this.genericSpawners;
         } catch (error) {
             console.error('Failed to initialize WorldSpawnersService:', error);
             throw error;
@@ -70,13 +64,10 @@ export class WorldSpawnersService {
     /**
      * Load all spawners from the backend
      */
-    async loadSpawners(): Promise<{generic: GenericSpawner[], npc: NPCGenericSpawner[]}> {
+    async loadSpawners(): Promise<GenericSpawner[]> {
         if (this.isLoading) {
             console.log('Spawners already loading, waiting for completion...');
-            return {
-                generic: this.genericSpawners,
-                npc: this.npcSpawners
-            };
+            return this.genericSpawners;
         }
 
         try {
@@ -85,24 +76,15 @@ export class WorldSpawnersService {
 
             console.log('Loading spawners from server...');
 
-            // Load generic spawners
+            // Load generic spawners (includes NPC spawners)
             await this.loadGenericSpawners();
 
-            // Load NPC spawners
-            await this.loadNPCSpawners();
-
             this.lastLoaded = new Date();
-            console.log(`Loaded ${this.genericSpawners.length} generic spawners and ${this.npcSpawners.length} NPC spawners`);
+            console.log(`Loaded ${this.genericSpawners.length} generic spawners`);
 
-            this.emit('spawnersLoaded', {
-                generic: this.genericSpawners,
-                npc: this.npcSpawners
-            });
+            this.emit('spawnersLoaded', this.genericSpawners);
 
-            return {
-                generic: this.genericSpawners,
-                npc: this.npcSpawners
-            };
+            return this.genericSpawners;
         } catch (error) {
             console.error('Failed to load spawners:', error);
             this.emit('loadingFailed', error);
@@ -152,113 +134,40 @@ export class WorldSpawnersService {
         }
     }
 
-    /**
-     * Load NPC spawners from the backend
-     */
-    private async loadNPCSpawners(): Promise<void> {
-        try {
-            console.log('Loading NPC spawners...');
-            const response = await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcList();
-
-            if (!response.data) {
-                console.warn('NPC Spawners API response is empty');
-                this.npcSpawners = [];
-                return;
-            }
-
-            // Handle response format (array or object with results)
-            let spawners: NPCGenericSpawner[] = [];
-            if (Array.isArray(response.data)) {
-                spawners = response.data;
-            } else if (response.data.results) {
-                spawners = response.data.results;
-            } else {
-                console.warn('NPC Spawners API response has unexpected format:', response.data);
-                this.npcSpawners = [];
-                return;
-            }
-
-            this.npcSpawners = spawners;
-            console.log(`Loaded ${this.npcSpawners.length} NPC spawners`);
-
-            // Log sample spawner for debugging
-            if (this.npcSpawners.length > 0) {
-                console.log('Sample NPC spawner:', this.npcSpawners[0]);
-            }
-        } catch (error) {
-            console.error('Failed to load NPC spawners:', error);
-            this.npcSpawners = [];
-            throw error;
-        }
-    }
 
     /**
-     * Get all generic spawners
+     * Get all spawners
      */
-    getGenericSpawners(): GenericSpawner[] {
+    getAllSpawners(): GenericSpawner[] {
         return this.genericSpawners;
     }
 
     /**
-     * Get all NPC spawners
+     * Get spawner by ID
      */
-    getNPCSpawners(): NPCGenericSpawner[] {
-        return this.npcSpawners;
-    }
-
-    /**
-     * Get all spawners (both generic and NPC)
-     */
-    getAllSpawners(): (GenericSpawner | NPCGenericSpawner)[] {
-        return [...this.genericSpawners, ...this.npcSpawners];
-    }
-
-    /**
-     * Get spawner by ID (searches both generic and NPC spawners)
-     */
-    getSpawnerById(id: string): GenericSpawner | NPCGenericSpawner | undefined {
-        // First check NPC spawners
-        const npcSpawner = this.npcSpawners.find(spawner => spawner.id === id);
-        if (npcSpawner) {
-            return npcSpawner;
-        }
-
-        // Then check generic spawners
+    getSpawnerById(id: string): GenericSpawner | undefined {
         return this.genericSpawners.find(spawner => spawner.id === id);
-    }
-
-    /**
-     * Get NPC spawner by ID with character template details
-     */
-    getNPCSpawnerById(id: string): NPCGenericSpawner | undefined {
-        return this.npcSpawners.find(spawner => spawner.id === id);
     }
 
     /**
      * Get spawners by position ID
      */
-    getSpawnersByPosition(positionId: string): (GenericSpawner | NPCGenericSpawner)[] {
-        const genericByPosition = this.genericSpawners.filter(spawner => spawner.position === positionId);
-        const npcByPosition = this.npcSpawners.filter(spawner => spawner.position === positionId);
-        return [...genericByPosition, ...npcByPosition];
+    getSpawnersByPosition(positionId: string): GenericSpawner[] {
+        return this.genericSpawners.filter(spawner => spawner.position === positionId);
     }
 
     /**
      * Get spawners by campaign ID
      */
-    getSpawnersByCampaign(campaignId: string): (GenericSpawner | NPCGenericSpawner)[] {
-        const genericByCampaign = this.genericSpawners.filter(spawner => spawner.campaign === campaignId);
-        const npcByCampaign = this.npcSpawners.filter(spawner => spawner.campaign === campaignId);
-        return [...genericByCampaign, ...npcByCampaign];
+    getSpawnersByCampaign(campaignId: string): GenericSpawner[] {
+        return this.genericSpawners.filter(spawner => spawner.campaign === campaignId);
     }
 
     /**
      * Get active spawners only
      */
-    getActiveSpawners(): (GenericSpawner | NPCGenericSpawner)[] {
-        const activeGeneric = this.genericSpawners.filter(spawner => spawner.is_active);
-        const activeNPC = this.npcSpawners.filter(spawner => spawner.is_active);
-        return [...activeGeneric, ...activeNPC];
+    getActiveSpawners(): GenericSpawner[] {
+        return this.genericSpawners.filter(spawner => spawner.is_active);
     }
 
     /**
@@ -272,7 +181,7 @@ export class WorldSpawnersService {
         is_active?: boolean;
         spawn_limit?: number;
         respawn_cycles?: number;
-    }): Promise<NPCGenericSpawner> {
+    }): Promise<GenericSpawner> {
         try {
             console.log('Creating NPC spawner:', spawnerData);
 
@@ -287,15 +196,19 @@ export class WorldSpawnersService {
             };
 
             const response: AxiosResponse = await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcCreate(request);
+            const createdSpawner = response.data;
 
-            const newSpawner = response.data as NPCGenericSpawner;
+            console.log('NPC spawner created successfully:', createdSpawner);
+
+            // Now fetch the generic spawner representation by ID
+            const genericSpawnerResponse = await GMWorldGenericSpawnersApi.gamemasterSpawnersAllRetrieve(createdSpawner.id);
+            const genericSpawner = genericSpawnerResponse.data as GenericSpawner;
 
             // Add to cache
-            this.npcSpawners.push(newSpawner);
+            this.genericSpawners.push(genericSpawner);
 
-            console.log('NPC spawner created successfully:', newSpawner);
-            this.emit('spawnerCreated', newSpawner);
-            return newSpawner;
+            this.emit('spawnerCreated', genericSpawner);
+            return genericSpawner;
         } catch (error) {
             console.error('Failed to create NPC spawner:', error);
             this.emit('spawnerCreationFailed', error);
@@ -306,7 +219,7 @@ export class WorldSpawnersService {
     /**
      * Update an existing NPC spawner
      */
-    async updateNPCSpawner(spawnerId: string, spawnerData: PatchedNPCGenericSpawnerRequest): Promise<NPCGenericSpawner> {
+    async updateNPCSpawner(spawnerId: string, spawnerData: PatchedNPCGenericSpawnerRequest): Promise<GenericSpawner> {
         try {
             console.log(`Updating NPC spawner ${spawnerId}:`, spawnerData);
 
@@ -315,17 +228,20 @@ export class WorldSpawnersService {
                 spawnerData
             );
 
-            const updatedSpawner = response.data as NPCGenericSpawner;
+            console.log('NPC spawner updated successfully');
+
+            // Now fetch the generic spawner representation by ID
+            const genericSpawnerResponse = await GMWorldGenericSpawnersApi.gamemasterSpawnersAllRetrieve(spawnerId);
+            const genericSpawner = genericSpawnerResponse.data as GenericSpawner;
 
             // Update in cache
-            const index = this.npcSpawners.findIndex(spawner => spawner.id === spawnerId);
+            const index = this.genericSpawners.findIndex(spawner => spawner.id === spawnerId);
             if (index !== -1) {
-                this.npcSpawners[index] = updatedSpawner;
+                this.genericSpawners[index] = genericSpawner;
             }
 
-            console.log('NPC spawner updated successfully:', updatedSpawner);
-            this.emit('spawnerUpdated', updatedSpawner);
-            return updatedSpawner;
+            this.emit('spawnerUpdated', genericSpawner);
+            return genericSpawner;
         } catch (error) {
             console.error('Failed to update NPC spawner:', error);
             this.emit('spawnerUpdateFailed', error);
@@ -336,7 +252,7 @@ export class WorldSpawnersService {
     /**
      * Refresh spawners from the server
      */
-    async refresh(): Promise<{generic: GenericSpawner[], npc: NPCGenericSpawner[]}> {
+    async refresh(): Promise<GenericSpawner[]> {
         try {
             console.log('Refreshing spawners...');
             const result = await this.loadSpawners();
@@ -394,7 +310,6 @@ export class WorldSpawnersService {
      */
     reset(): void {
         this.genericSpawners = [];
-        this.npcSpawners = [];
         this.isLoading = false;
         this.lastLoaded = null;
         console.log('WorldSpawnersService reset');

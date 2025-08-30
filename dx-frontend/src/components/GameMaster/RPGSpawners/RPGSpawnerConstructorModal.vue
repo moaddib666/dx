@@ -8,7 +8,6 @@ import { worldSpawnersService } from '@/services/WorldSpawnersService';
 import type {
   NPCSpawnerCreateRequest,
   GenericSpawner,
-  NPCGenericSpawner,
   NPCGenericSpawnerRequest,
   PatchedNPCGenericSpawnerRequest,
   NPCSpawnerMinimalPreview
@@ -48,7 +47,7 @@ const spawnLimit = ref<number>(1);
 const respawnCycles = ref<number>(1);
 
 // Spawner data state
-const currentSpawner = ref<GenericSpawner | NPCGenericSpawner | null>(null);
+const currentSpawner = ref<GenericSpawner | null>(null);
 const spawnerType = ref<string | null>(null);
 
 // UI state
