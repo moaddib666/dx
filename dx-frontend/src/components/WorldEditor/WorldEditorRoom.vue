@@ -146,6 +146,28 @@
         >{{ room.objects.length }}
         </text>
       </g>
+
+      <!-- Spawners indicator (bottom middle) - PURPLE DIAMOND -->
+      <g v-if="showSpawners && room.spawners.length > 0" class="spawner-indicator entity-group"
+         @click="showEntityDetails('spawners')">
+        <title>{{ getSpawnerTooltip() }}</title>
+        <polygon
+            :fill="layerColors.spawners"
+            :points="`${roomLeft + roomWidth/2},${roomTop + roomHeight - 8} ${roomLeft + roomWidth/2 + 8},${roomTop + roomHeight} ${roomLeft + roomWidth/2},${roomTop + roomHeight + 8} ${roomLeft + roomWidth/2 - 8},${roomTop + roomHeight}`"
+            class="entity-diamond"
+            stroke="#000"
+            stroke-width="1"
+        />
+        <text
+            :x="roomLeft + roomWidth/2"
+            :y="roomTop + roomHeight + 3"
+            fill="#fff"
+            font-size="8"
+            font-weight="bold"
+            text-anchor="middle"
+        >{{ room.spawners.length }}
+        </text>
+      </g>
     </g>
 
     <!-- Stairs indicators (bottom of room) -->
@@ -319,6 +341,22 @@ export default {
       }
 
       return tooltip;
+    },
+    getSpawnerTooltip() {
+      if (!this.room.spawners.length) return 'No spawners';
+
+      let tooltip = `Spawners (${this.room.spawners.length}):\n`;
+      const spawnerNames = this.room.spawners
+          .map(spawner => spawner.spawner_type || 'Unknown Spawner')
+          .slice(0, 5);
+
+      tooltip += spawnerNames.join('\n');
+
+      if (this.room.spawners.length > 5) {
+        tooltip += `\n...and ${this.room.spawners.length - 5} more`;
+      }
+
+      return tooltip;
     }
   },
   computed: {
@@ -396,13 +434,17 @@ export default {
     showAnomalies() {
       return this.activeLayers.has(WorldEditorLayer.ANOMALIES);
     },
+    showSpawners() {
+      return this.activeLayers.has(WorldEditorLayer.SPAWNERS);
+    },
 
     // Entity presence
     hasEntities() {
       return this.room.players.length > 0 ||
           this.room.npcs.length > 0 ||
           this.room.objects.length > 0 ||
-          this.room.anomalies.length > 0;
+          this.room.anomalies.length > 0 ||
+          this.room.spawners.length > 0;
     },
 
     // Layer colors
@@ -412,6 +454,7 @@ export default {
         npcs: '#ffff00',      // Yellow
         objects: '#0088ff',   // Blue
         anomalies: '#ff0000', // Red
+        spawners: '#8800ff',  // Purple
         stairs: '#ffffff'     // White
       };
     },

@@ -202,6 +202,16 @@
           </div>
           <div class="legend-label">Items (Left-Middle)</div>
         </div>
+        <div :class="{ 'inactive': !isLayerActive(WorldEditorLayer.SPAWNERS) }" class="legend-item"
+             @click="toggleLayer(WorldEditorLayer.SPAWNERS, $event)">
+          <div class="legend-icon">
+            <svg height="20" viewBox="0 0 20 20" width="20">
+              <polygon class="entity-diamond" fill="#8800ff" points="10,2 18,10 10,18 2,10" stroke="#000" stroke-width="1"/>
+              <text fill="#fff" font-size="8" font-weight="bold" text-anchor="middle" x="10" y="13">1</text>
+            </svg>
+          </div>
+          <div class="legend-label">Spawners (Bottom-Middle)</div>
+        </div>
       </div>
     </div>
 
