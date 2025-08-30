@@ -19,7 +19,14 @@ class BaseNotifier:
         event = GameEvent.create(
             name="new_cycle",
             category=EventCategory.WORLD,
-            data=NewCycleData(id=cycle.id),
+            data=NewCycleData(
+                id=cycle.id,
+                number=cycle.number,
+                campaign=cycle.campaign.id,
+                created_at=cycle.created_at,
+                updated_at=cycle.updated_at,
+                is_current=True,
+            ),
         )
         self.bus.publish(event)
 

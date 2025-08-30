@@ -1,5 +1,6 @@
 import uuid
 from typing import Optional, Union
+from datetime import datetime
 
 from apps.core.bus.base import GameEventData
 from apps.core.models import CharacterActionType
@@ -7,6 +8,11 @@ from apps.core.models import CharacterActionType
 
 class NewCycleData(GameEventData):
     id: int
+    number: int
+    campaign: uuid.UUID
+    created_at: datetime
+    updated_at: datetime
+    is_current: bool
 
 
 class ActionAcceptedData(GameEventData):
