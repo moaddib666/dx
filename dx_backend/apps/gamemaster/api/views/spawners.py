@@ -51,6 +51,28 @@ class GameMasterSpawnerViewSet(ReadOnlyModelViewSet):
                 queryset = queryset.filter(campaign=self.request.user.current_campaign)
         return queryset
 
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """
+        Activate a spawner.
+        """
+        spawner = self.get_object()
+        spawner.is_active = True
+        spawner.save()
+        serializer = self.get_serializer(spawner)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def deactivate(self, request, pk=None):
+        """
+        Deactivate a spawner.
+        """
+        spawner = self.get_object()
+        spawner.is_active = False
+        spawner.save()
+        serializer = self.get_serializer(spawner)
+        return Response(serializer.data)
+
 
 @extend_schema(
     description="API for managing spawners in DX world editor.",
@@ -103,24 +125,4 @@ class GameMasterNPCSpawnerViewSet(ModelViewSet):
                 queryset = queryset.filter(campaign=self.request.user.current_campaign)
         return queryset
 
-    @action(detail=True, methods=['post'])
-    def activate(self, request, pk=None):
-        """
-        Activate a spawner.
-        """
-        spawner = self.get_object()
-        spawner.is_active = True
-        spawner.save()
-        serializer = self.get_serializer(spawner)
-        return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
-    def deactivate(self, request, pk=None):
-        """
-        Deactivate a spawner.
-        """
-        spawner = self.get_object()
-        spawner.is_active = False
-        spawner.save()
-        serializer = self.get_serializer(spawner)
-        return Response(serializer.data)
