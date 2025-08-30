@@ -2576,13 +2576,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
 }
 /**
  * 
@@ -3403,6 +3403,49 @@ export interface FullCharacterInfo {
      * @memberof FullCharacterInfo
      */
     'fight': string | null;
+}
+/**
+ * 
+ * @export
+ * @interface GameCycle
+ */
+export interface GameCycle {
+    /**
+     * 
+     * @type {number}
+     * @memberof GameCycle
+     */
+    'id': number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof GameCycle
+     */
+    'is_current': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameCycle
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameCycle
+     */
+    'updated_at': string;
+    /**
+     * Cycle number in the campaign
+     * @type {number}
+     * @memberof GameCycle
+     */
+    'number': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof GameCycle
+     */
+    'campaign': string;
 }
 /**
  * 
@@ -11167,7 +11210,7 @@ export const ActionApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async actionCurrentCycleRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterAction>> {
+        async actionCurrentCycleRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GameCycle>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.actionCurrentCycleRetrieve(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ActionApi.actionCurrentCycleRetrieve']?.[localVarOperationServerIndex]?.url;
@@ -11378,7 +11421,7 @@ export const ActionApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        actionCurrentCycleRetrieve(options?: any): AxiosPromise<CharacterAction> {
+        actionCurrentCycleRetrieve(options?: any): AxiosPromise<GameCycle> {
             return localVarFp.actionCurrentCycleRetrieve(options).then((request) => request(axios, basePath));
         },
         /**
