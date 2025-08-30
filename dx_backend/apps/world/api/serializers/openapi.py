@@ -5,7 +5,6 @@ from rest_framework import serializers
 from apps.character.models import Character
 from apps.game.services.character.core import CharacterService
 from apps.game.services.world.position_connection import PositionConnectionService
-from apps.spawner.models import NPCSpawner
 from apps.world.models import Area, Location, Dimension, City, SubLocation, MapPosition, Map
 
 
