@@ -7,7 +7,9 @@
 export const WorldEditorMode = {
     VIEW: 'view',
     EDIT: 'edit'
-};
+} as const;
+
+export type WorldEditorModeType = typeof WorldEditorMode[keyof typeof WorldEditorMode];
 
 /**
  * Enum for WorldEditor tools (used in edit mode)
@@ -25,7 +27,9 @@ export const WorldEditorTool = {
     EDIT_NPC: 'edit_npc',
     SPAWN_ANOMALY: 'spawn_anomaly',
     EDIT_ANOMALY: 'edit_anomaly'
-};
+} as const;
+
+export type WorldEditorToolType = typeof WorldEditorTool[keyof typeof WorldEditorTool];
 
 /**
  * Enum for WorldEditor layers
@@ -36,13 +40,79 @@ export const WorldEditorLayer = {
     OBJECTS: 'objects',
     ANOMALIES: 'anomalies',
     TBD: 'tbd'
-};
+} as const;
+
+export type WorldEditorLayerType = typeof WorldEditorLayer[keyof typeof WorldEditorLayer];
+
+/**
+ * Position interface for room coordinates
+ */
+export interface Position {
+    x: number;
+    y: number;
+    z: number;
+    grid_x: number;
+    grid_y: number;
+    grid_z: number;
+}
+
+/**
+ * Entity interface for room entities (players, NPCs, objects, anomalies)
+ */
+export interface Entity {
+    id: string;
+    [key: string]: any;
+}
+
+/**
+ * Room data interface for constructor
+ */
+export interface WorldEditorRoomData {
+    id?: string | null;
+    position?: Partial<Position>;
+    type?: string;
+    labels?: string[];
+    icons?: string[];
+    players?: Entity[];
+    npcs?: Entity[];
+    objects?: Entity[];
+    anomalies?: Entity[];
+    connections?: WorldEditorConnection[];
+    metadata?: Record<string, any>;
+}
+
+/**
+ * Connection data interface for constructor
+ */
+export interface WorldEditorConnectionData {
+    id?: string | null;
+    fromRoomId?: string | null;
+    toRoomId?: string | null;
+    position_from?: string | null;
+    position_to?: string | null;
+    isVertical?: boolean;
+    is_vertical?: boolean;
+    type?: string;
+    metadata?: Record<string, any>;
+}
 
 /**
  * Room data structure for WorldEditor
  */
 export class WorldEditorRoom {
-    constructor(data = {}) {
+    public id: string | null;
+    public position: Position;
+    public type: string;
+    public labels: string[];
+    public icons: string[];
+    public players: Entity[];
+    public npcs: Entity[];
+    public objects: Entity[];
+    public anomalies: Entity[];
+    public connections: WorldEditorConnection[];
+    public metadata: Record<string, any>;
+
+    constructor(data: WorldEditorRoomData = {}) {
         this.id = data.id || null;
         this.position = {
             x: data.position?.x || 0,
@@ -66,7 +136,7 @@ export class WorldEditorRoom {
     /**
      * Get room display name
      */
-    getDisplayName() {
+    getDisplayName(): string {
         if (this.labels && this.labels.length > 0) {
             return this.labels[this.labels.length - 1];
         }
@@ -76,7 +146,7 @@ export class WorldEditorRoom {
     /**
      * Check if room has entities of a specific layer type
      */
-    hasLayerEntities(layer) {
+    hasLayerEntities(layer: WorldEditorLayerType): boolean {
         switch (layer) {
             case WorldEditorLayer.PLAYERS:
                 return this.players.length > 0;
@@ -96,7 +166,14 @@ export class WorldEditorRoom {
  * Connection data structure for WorldEditor
  */
 export class WorldEditorConnection {
-    constructor(data = {}) {
+    public id: string | null;
+    public fromRoomId: string | null;
+    public toRoomId: string | null;
+    public isVertical: boolean;
+    public type: string;
+    public metadata: Record<string, any>;
+
+    constructor(data: WorldEditorConnectionData = {}) {
         this.id = data.id || null;
         this.fromRoomId = data.fromRoomId || data.position_from || null;
         this.toRoomId = data.toRoomId || data.position_to || null;
@@ -107,9 +184,29 @@ export class WorldEditorConnection {
 }
 
 /**
+ * History entry interface for undo/redo functionality
+ */
+export interface HistoryEntry {
+    action: string;
+    data: any;
+    timestamp: number;
+}
+
+/**
  * WorldEditor state management class
  */
 export class WorldEditorState {
+    public mode: WorldEditorModeType;
+    public selectedTool: WorldEditorToolType;
+    public activeLayers: Set<WorldEditorLayerType>;
+    public selectedRooms: Set<string>;
+    public currentFloor: number;
+    public rooms: Map<string, WorldEditorRoom>;
+    public connections: Map<string, WorldEditorConnection>;
+    public clipboard: any;
+    public history: HistoryEntry[];
+    public historyIndex: number;
+
     constructor() {
         this.mode = WorldEditorMode.VIEW;
         this.selectedTool = WorldEditorTool.SELECT;
@@ -131,7 +228,7 @@ export class WorldEditorState {
     /**
      * Toggle editor mode
      */
-    toggleMode() {
+    toggleMode(): void {
         this.mode = this.mode === WorldEditorMode.VIEW ? WorldEditorMode.EDIT : WorldEditorMode.VIEW;
         if (this.mode === WorldEditorMode.VIEW) {
             this.selectedTool = WorldEditorTool.SELECT;
@@ -142,7 +239,7 @@ export class WorldEditorState {
     /**
      * Set active tool
      */
-    setTool(tool) {
+    setTool(tool: WorldEditorToolType): void {
         if (this.mode === WorldEditorMode.EDIT) {
             this.selectedTool = tool;
         }
@@ -151,7 +248,7 @@ export class WorldEditorState {
     /**
      * Toggle layer visibility
      */
-    toggleLayer(layer) {
+    toggleLayer(layer: WorldEditorLayerType): void {
         if (this.activeLayers.has(layer)) {
             this.activeLayers.delete(layer);
         } else {
@@ -162,14 +259,14 @@ export class WorldEditorState {
     /**
      * Check if layer is active
      */
-    isLayerActive(layer) {
+    isLayerActive(layer: WorldEditorLayerType): boolean {
         return this.activeLayers.has(layer);
     }
 
     /**
      * Select/deselect room
      */
-    toggleRoomSelection(roomId) {
+    toggleRoomSelection(roomId: string): void {
         if (this.selectedRooms.has(roomId)) {
             this.selectedRooms.delete(roomId);
         } else {
@@ -180,24 +277,24 @@ export class WorldEditorState {
     /**
      * Clear room selection
      */
-    clearSelection() {
+    clearSelection(): void {
         this.selectedRooms.clear();
     }
 
     /**
      * Get rooms for current floor
      */
-    getRoomsForFloor(floor = this.currentFloor) {
+    getRoomsForFloor(floor: number = this.currentFloor): WorldEditorRoom[] {
         return Array.from(this.rooms.values()).filter(room => room.position.grid_z === floor);
     }
 
     /**
      * Get connections for current floor
      */
-    getConnectionsForFloor(floor = this.currentFloor) {
+    getConnectionsForFloor(floor: number = this.currentFloor): WorldEditorConnection[] {
         return Array.from(this.connections.values()).filter(connection => {
-            const fromRoom = this.rooms.get(connection.fromRoomId);
-            const toRoom = this.rooms.get(connection.toRoomId);
+            const fromRoom = this.rooms.get(connection.fromRoomId!);
+            const toRoom = this.rooms.get(connection.toRoomId!);
             return fromRoom && toRoom &&
                 fromRoom.position.grid_z === floor &&
                 toRoom.position.grid_z === floor &&
@@ -208,17 +305,17 @@ export class WorldEditorState {
     /**
      * Add room to state
      */
-    addRoom(room) {
+    addRoom(room: WorldEditorRoom | WorldEditorRoomData): void {
         if (!(room instanceof WorldEditorRoom)) {
             room = new WorldEditorRoom(room);
         }
-        this.rooms.set(room.id, room);
+        this.rooms.set(room.id!, room);
     }
 
     /**
      * Remove room from state
      */
-    removeRoom(roomId) {
+    removeRoom(roomId: string): void {
         this.rooms.delete(roomId);
         this.selectedRooms.delete(roomId);
         // Remove connections involving this room
@@ -232,15 +329,15 @@ export class WorldEditorState {
     /**
      * Add connection to state
      */
-    addConnection(connection) {
+    addConnection(connection: WorldEditorConnection | WorldEditorConnectionData): void {
         if (!(connection instanceof WorldEditorConnection)) {
             connection = new WorldEditorConnection(connection);
         }
-        this.connections.set(connection.id, connection);
+        this.connections.set(connection.id!, connection);
 
         // Add connection to the source and target rooms' connections arrays
-        const sourceRoom = this.rooms.get(connection.fromRoomId);
-        const targetRoom = this.rooms.get(connection.toRoomId);
+        const sourceRoom = this.rooms.get(connection.fromRoomId!);
+        const targetRoom = this.rooms.get(connection.toRoomId!);
 
         if (sourceRoom) {
             // Check if connection already exists in the array
@@ -260,12 +357,12 @@ export class WorldEditorState {
     /**
      * Remove connection from state
      */
-    removeConnection(connectionId) {
+    removeConnection(connectionId: string): void {
         const connection = this.connections.get(connectionId);
         if (connection) {
             // Remove connection from the source and target rooms' connections arrays
-            const sourceRoom = this.rooms.get(connection.fromRoomId);
-            const targetRoom = this.rooms.get(connection.toRoomId);
+            const sourceRoom = this.rooms.get(connection.fromRoomId!);
+            const targetRoom = this.rooms.get(connection.toRoomId!);
 
             if (sourceRoom) {
                 sourceRoom.connections = sourceRoom.connections.filter(conn => conn.id !== connectionId);
@@ -281,9 +378,49 @@ export class WorldEditorState {
 }
 
 /**
+ * Room colors configuration interface
+ */
+export interface RoomColorsConfig {
+    default: string;
+    selected: string;
+    current: string;
+}
+
+/**
+ * Connection colors configuration interface
+ */
+export interface ConnectionColorsConfig {
+    normal: string;
+    vertical: string;
+}
+
+/**
+ * Layer colors configuration interface
+ */
+export interface LayerColorsConfig {
+    [WorldEditorLayer.PLAYERS]: string;
+    [WorldEditorLayer.NPCS]: string;
+    [WorldEditorLayer.OBJECTS]: string;
+    [WorldEditorLayer.ANOMALIES]: string;
+    [WorldEditorLayer.TBD]: string;
+}
+
+/**
+ * WorldEditor configuration interface
+ */
+export interface WorldEditorConfigType {
+    cellSize: number;
+    cellPadding: number;
+    gridColor: string;
+    roomColors: RoomColorsConfig;
+    connectionColors: ConnectionColorsConfig;
+    layerColors: LayerColorsConfig;
+}
+
+/**
  * WorldEditor configuration
  */
-export const WorldEditorConfig = {
+export const WorldEditorConfig: WorldEditorConfigType = {
     cellSize: 80,
     cellPadding: 35,
     gridColor: '#aaa',

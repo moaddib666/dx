@@ -192,7 +192,7 @@
 </template>
 
 <script>
-import {WorldEditorLayer} from '@/models/WorldEditorModels.js';
+import {WorldEditorLayer} from '@/models/WorldEditorModels.ts';
 import {RoomLabel} from "@/utils/mapData.js";
 
 export default {

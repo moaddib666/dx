@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {WorldEditorTool} from '@/models/WorldEditorModels.js';
+import {WorldEditorTool} from '@/models/WorldEditorModels.ts';
 
 export default {
   name: 'WorldEditorToolbar',

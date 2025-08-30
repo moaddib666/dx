@@ -182,8 +182,8 @@
 </template>
 
 <script>
-import {worldEditorService} from '@/services/WorldEditorService.js';
-import {WorldEditorLayer, WorldEditorMode, WorldEditorTool} from '@/models/WorldEditorModels.js';
+import {worldEditorService} from '@/services/WorldEditorService.ts';
+import {WorldEditorLayer, WorldEditorMode, WorldEditorTool} from '@/models/WorldEditorModels.ts';
 import {ensureConnection} from "@/api/dx-websocket/index.ts";
 import {ActionGameApi, GMWorldSubLocationsApi} from "@/api/backendService.js";
 

@@ -225,7 +225,7 @@
 </template>
 
 <script>
-import {WorldEditorConfig, WorldEditorLayer, WorldEditorTool} from '@/models/WorldEditorModels.js';
+import {WorldEditorConfig, WorldEditorLayer, WorldEditorTool} from '@/models/WorldEditorModels.ts';
 import WorldEditorRoom from './WorldEditorRoom.vue';
 import WorldEditorMinimap from './WorldEditorMinimap.vue';
 import CurrentTurnComponent from '@/components/Game/CurrentTurnComponent.vue';
