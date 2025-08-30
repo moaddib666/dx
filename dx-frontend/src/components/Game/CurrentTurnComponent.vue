@@ -18,9 +18,12 @@ export default {
   methods: {
     async fetchCurrentTurn() {
       try {
-        const newTurn = (await ActionGameApi.actionCurrentCycleRetrieve()).data;
+        const response = (await ActionGameApi.actionCurrentCycleRetrieve()).data;
+        // Return the cycle number from the new GameCycle structure
+        return response.number;
       } catch (error) {
         console.error("Failed to fetch current turn:", error);
+        return null;
       }
     },
   },

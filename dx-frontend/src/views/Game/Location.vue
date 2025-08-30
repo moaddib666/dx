@@ -259,7 +259,7 @@ export default {
     this.bus = ensureConnection();
     this.bus.on("world::new_cycle", this.handleCycleChange);
     this.bus.on("character::challenge_created", this.handleChallengeCreated);
-    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id;
+    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.number;
   },
   beforeUnmount() {
   },
@@ -482,15 +482,22 @@ export default {
     async handleCycleChange(data) {
       try {
         console.log("Cycle change event received", data);
-        if (!data || !data.id) {
+        if (!data || !data.number) {
           console.error("Invalid cycle data received:", data);
           return;
         }
-        if (data.id === this.currentCycleNumber) {
+
+        // Only react to cycles in current campaign
+        if (!data.is_current) {
+          console.debug("Cycle is not current, skipping update");
+          return;
+        }
+
+        if (data.number === this.currentCycleNumber) {
           console.debug("Cycle number is the same, skipping update");
           return;
         }
-        this.currentCycleNumber = data.id;
+        this.currentCycleNumber = data.number;
         await this.updateAll();
       } catch (error) {
         console.error("Error handling cycle change:", error);

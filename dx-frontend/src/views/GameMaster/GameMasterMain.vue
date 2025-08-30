@@ -190,6 +190,11 @@ interface AdditionalCharacterData {
 
 interface CycleChangeData {
   id: number;
+  is_current: boolean;
+  created_at: string;
+  updated_at: string;
+  number: number;
+  campaign: string;
 }
 
 interface CharacterChangeData {
@@ -251,7 +256,7 @@ export default {
     await this.refreshActions();
     await this.refreshCharacters();
     await this.refreshActivePlayersCharacters();
-    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.id
+    this.currentCycleNumber = (await ActionGameApi.actionCurrentCycleRetrieve()).data.number
     // Subscribe to the event bus when component mounts
     this.bus = ensureConnection();
     this.bus.on("world::new_cycle", this.handleCycleChange);
@@ -285,8 +290,15 @@ export default {
     },
     async handleCycleChange(data: CycleChangeData): Promise<void> {
       console.debug("New Cycle:", {data});
-      if (data.id !== this.currentCycleNumber) {
-        this.currentCycleNumber = data.id;
+
+      // Only react to cycles in current campaign
+      if (!data.is_current) {
+        console.debug("Cycle is not current, skipping update");
+        return;
+      }
+
+      if (data.number !== this.currentCycleNumber) {
+        this.currentCycleNumber = data.number;
         await this.refresh();
       }
     },

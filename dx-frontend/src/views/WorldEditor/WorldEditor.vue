@@ -408,7 +408,7 @@ export default {
     async fetchCurrentCycle() {
       try {
         const response = await ActionGameApi.actionCurrentCycleRetrieve();
-        this.currentCycleNumber = response.data.id;
+        this.currentCycleNumber = response.data.number;
       } catch (error) {
         console.error("Failed to fetch current cycle:", error);
       }
@@ -416,11 +416,18 @@ export default {
 
     async handleCycleChange(data) {
       console.log("Cycle change event received", data);
-      if (data.id === this.currentCycleNumber) {
+
+      // Only react to cycles in current campaign
+      if (!data.is_current) {
+        console.debug("Cycle is not current, skipping update");
+        return;
+      }
+
+      if (data.number === this.currentCycleNumber) {
         console.debug("Cycle number is the same, skipping update");
         return;
       }
-      this.currentCycleNumber = data.id;
+      this.currentCycleNumber = data.number;
 
       // Refresh world data when cycle changes
       await this.refreshWorld();
