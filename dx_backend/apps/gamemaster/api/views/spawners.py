@@ -3,19 +3,58 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from apps.gamemaster.api.serializers.spawners import (
     NPCGenericSpawnerSerializer,
     NPCSpawnerCreateSerializer,
-    NPCSpawnerListSerializer,
+    NPCSpawnerListSerializer, GenericSpawnerSerializer,
 )
 from apps.spawner.models import NPCSpawner
 
 
 @extend_schema(
     description="API for managing spawners in DX world editor.",
-    tags=["GM World Editor - Spawners"],
+    tags=["GM World Editor - All Spawners"],
+)
+class GameMasterSpawnerViewSet(ReadOnlyModelViewSet):
+    """
+    ViewSet for managing all spawners in the Game Master API.
+
+    Provides read-only access to spawners with filtering capabilities.
+    """
+    queryset = NPCSpawner.objects.select_related(
+        'position__sub_location',
+        'campaign',
+        'dimension'
+    ).all()
+    serializer_class = GenericSpawnerSerializer
+    permission_classes = [permissions.IsAdminUser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        'campaign',
+        'position',
+        'is_active',
+        'dimension',
+    ]
+
+    def get_queryset(self):
+        """
+        Override to filter spawners by the current campaign if applicable.
+        Also supports additional filtering via query parameters.
+        """
+        queryset = super().get_queryset()
+
+        # Filter by current campaign if user has one
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            if self.request.user.current_campaign:
+                queryset = queryset.filter(campaign=self.request.user.current_campaign)
+        return queryset
+
+
+@extend_schema(
+    description="API for managing spawners in DX world editor.",
+    tags=["GM World Editor - NPC Spawners"],
 )
 class GameMasterNPCSpawnerViewSet(ModelViewSet):
     """

@@ -1,6 +1,26 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from apps.spawner.models import NPCSpawner, SpawnedEntity
+from apps.spawner.models import NPCSpawner, SpawnedEntity, Spawner
+
+
+class AbstractSpawnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Spawner
+        fields = [
+            'id',
+            'position',
+            'dimension',
+            'is_active',
+            'campaign',
+        ]
+        read_only_fields = fields
+
+
+class GameObjectTypeSerializer(serializers.Serializer):
+    model = serializers.CharField()
+    app_label = serializers.CharField()
+    name = serializers.CharField()
 
 
 class SpawnedEntitySerializer(serializers.ModelSerializer):
@@ -78,3 +98,48 @@ class NPCSpawnerListSerializer(serializers.ModelSerializer):
             'campaign',
         ]
         read_only_fields = fields
+
+
+class GenericSpawnerSerializer(serializers.ModelSerializer):
+    # Add a field to get the polymorphic type of the object
+    object_type = serializers.SerializerMethodField()
+    # Add a field to get the real instance data
+    real_instance = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Spawner
+        fields = ['id', 'position', 'dimension', 'is_active', 'campaign', 'object_type', 'real_instance']
+
+    @extend_schema_field(GameObjectTypeSerializer)
+    def get_object_type(self, obj):
+        # Get the real instance using Django Polymorphic's get_real_instance method
+        real_instance = obj.get_real_instance()
+        # Get the content type information
+        content_type = real_instance.polymorphic_ctype
+        # Return a dictionary with detailed type information
+        return GameObjectTypeSerializer({
+            'model': str(content_type.model),
+            'app_label': str(content_type.app_label),
+            'name': str(real_instance.__class__.__name__),
+        }).data
+
+    # Union AnyOf[NPCGenericSpawnerSerializer, AbstractSpawnerSerializer]
+    @extend_schema_field({
+        'oneOf': [
+            NPCGenericSpawnerSerializer,
+            AbstractSpawnerSerializer
+        ],
+        'description': 'The serialized data for the real instance of the polymorphic GameObject'
+    })
+    def get_real_instance(self, obj):
+        """
+        Return the serialized data for the real instance of the GameObject.
+        This allows clients to access the specific fields of the subclass.
+        """
+        real_instance = obj.get_real_instance()
+        instance_class = real_instance.__class__
+        if instance_class == NPCSpawner:
+            serializer = NPCGenericSpawnerSerializer(real_instance)
+        else:
+            serializer = AbstractSpawnerSerializer(real_instance)
+        return serializer.data
