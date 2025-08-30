@@ -41,10 +41,10 @@ export default {
   width: 2em;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #555;
 }
 
 .small-char-preview {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;

@@ -5378,46 +5378,10 @@ export interface NPCGenericSpawner {
     'id': string;
     /**
      * 
-     * @type {string}
-     * @memberof NPCGenericSpawner
-     */
-    'position'?: string | null;
-    /**
-     * 
-     * @type {Position}
-     * @memberof NPCGenericSpawner
-     */
-    'position_details': Position;
-    /**
-     * 
-     * @type {number}
-     * @memberof NPCGenericSpawner
-     */
-    'dimension'?: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCGenericSpawner
-     */
-    'dimension_name': string;
-    /**
-     * 
      * @type {boolean}
      * @memberof NPCGenericSpawner
      */
     'is_active'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCGenericSpawner
-     */
-    'campaign': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCGenericSpawner
-     */
-    'campaign_name': string;
     /**
      * 
      * @type {number}
@@ -5431,6 +5395,12 @@ export interface NPCGenericSpawner {
      */
     'respawn_cycles'?: number;
     /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawner
+     */
+    'character_template': string;
+    /**
      * Cycle number when the next spawn should occur
      * @type {number}
      * @memberof NPCGenericSpawner
@@ -5438,28 +5408,28 @@ export interface NPCGenericSpawner {
     'next_spawn_cycle_number': number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof NPCGenericSpawner
      */
-    'character_template': string;
-    /**
-     * 
-     * @type {CharacterTemplateGameMaster}
-     * @memberof NPCGenericSpawner
-     */
-    'character_template_details': CharacterTemplateGameMaster;
+    'dimension'?: number | null;
     /**
      * 
      * @type {string}
      * @memberof NPCGenericSpawner
      */
-    'created_at': string;
+    'position'?: string | null;
     /**
      * 
      * @type {string}
      * @memberof NPCGenericSpawner
      */
-    'updated_at': string;
+    'campaign': string;
+    /**
+     * 
+     * @type {Array<SpawnedEntity>}
+     * @memberof NPCGenericSpawner
+     */
+    'spawned_entities': Array<SpawnedEntity>;
 }
 /**
  * Serializer for NPCSpawner model for Game Master API.  This serializer provides complete functionality for creating and managing NPC spawners with position, campaign, character template, and spawn settings.
@@ -5469,28 +5439,10 @@ export interface NPCGenericSpawner {
 export interface NPCGenericSpawnerRequest {
     /**
      * 
-     * @type {string}
-     * @memberof NPCGenericSpawnerRequest
-     */
-    'position'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof NPCGenericSpawnerRequest
-     */
-    'dimension'?: number | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof NPCGenericSpawnerRequest
      */
     'is_active'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCGenericSpawnerRequest
-     */
-    'campaign': string;
     /**
      * 
      * @type {number}
@@ -5509,6 +5461,24 @@ export interface NPCGenericSpawnerRequest {
      * @memberof NPCGenericSpawnerRequest
      */
     'character_template': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCGenericSpawnerRequest
+     */
+    'campaign': string;
 }
 /**
  * 
@@ -5536,19 +5506,13 @@ export interface NPCSpawner {
     'character_template': string;
 }
 /**
- * Simplified serializer for creating NPC spawners.  This serializer focuses on the essential fields needed to create a spawner, with sensible defaults for spawn settings.
+ * 
  * @export
  * @interface NPCSpawnerCreate
  */
 export interface NPCSpawnerCreate {
     /**
      * 
-     * @type {boolean}
-     * @memberof NPCSpawnerCreate
-     */
-    'is_active'?: boolean;
-    /**
-     * 
      * @type {number}
      * @memberof NPCSpawnerCreate
      */
@@ -5559,45 +5523,51 @@ export interface NPCSpawnerCreate {
      * @memberof NPCSpawnerCreate
      */
     'respawn_cycles'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreate
+     */
+    'character_template': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreate
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreate
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreate
+     */
+    'campaign': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NPCSpawnerCreate
+     */
+    'is_active': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreate
+     */
+    'id': string;
 }
 /**
- * Simplified serializer for creating NPC spawners.  This serializer focuses on the essential fields needed to create a spawner, with sensible defaults for spawn settings.
+ * 
  * @export
  * @interface NPCSpawnerCreateRequest
  */
 export interface NPCSpawnerCreateRequest {
     /**
      * 
-     * @type {string}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'position_id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'character_template_id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'campaign_id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'dimension_id'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'is_active'?: boolean;
-    /**
-     * 
      * @type {number}
      * @memberof NPCSpawnerCreateRequest
      */
@@ -5608,9 +5578,33 @@ export interface NPCSpawnerCreateRequest {
      * @memberof NPCSpawnerCreateRequest
      */
     'respawn_cycles'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'character_template': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerCreateRequest
+     */
+    'campaign': string;
 }
 /**
- * Lightweight serializer for listing NPC spawners.  This serializer provides essential information for spawner lists without heavy nested data.
+ * 
  * @export
  * @interface NPCSpawnerList
  */
@@ -5621,30 +5615,6 @@ export interface NPCSpawnerList {
      * @memberof NPCSpawnerList
      */
     'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerList
-     */
-    'position_coordinates': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerList
-     */
-    'position_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerList
-     */
-    'character_template_name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerList
-     */
-    'campaign_name': string;
     /**
      * 
      * @type {boolean}
@@ -5668,7 +5638,31 @@ export interface NPCSpawnerList {
      * @type {string}
      * @memberof NPCSpawnerList
      */
-    'created_at': string;
+    'character_template': string;
+    /**
+     * Cycle number when the next spawn should occur
+     * @type {number}
+     * @memberof NPCSpawnerList
+     */
+    'next_spawn_cycle_number': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof NPCSpawnerList
+     */
+    'dimension': number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'position': string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof NPCSpawnerList
+     */
+    'campaign': string;
 }
 /**
  * * `Path of John` - Path of John * `Path of JSon` - Path of JSon * `Not Chosen` - Not Chosen
@@ -7450,28 +7444,10 @@ export interface PatchedNPCBehaviorRequest {
 export interface PatchedNPCGenericSpawnerRequest {
     /**
      * 
-     * @type {string}
-     * @memberof PatchedNPCGenericSpawnerRequest
-     */
-    'position'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof PatchedNPCGenericSpawnerRequest
-     */
-    'dimension'?: number | null;
-    /**
-     * 
      * @type {boolean}
      * @memberof PatchedNPCGenericSpawnerRequest
      */
     'is_active'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchedNPCGenericSpawnerRequest
-     */
-    'campaign'?: string;
     /**
      * 
      * @type {number}
@@ -7490,6 +7466,24 @@ export interface PatchedNPCGenericSpawnerRequest {
      * @memberof PatchedNPCGenericSpawnerRequest
      */
     'character_template'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'dimension'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'position'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedNPCGenericSpawnerRequest
+     */
+    'campaign'?: string;
 }
 /**
  * Serializer for Note model.
@@ -9050,6 +9044,25 @@ export interface SpawnItemRequest {
      * @memberof SpawnItemRequest
      */
     'to_position_id'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface SpawnedEntity
+ */
+export interface SpawnedEntity {
+    /**
+     * 
+     * @type {string}
+     * @memberof SpawnedEntity
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpawnedEntity
+     */
+    'game_object': string;
 }
 /**
  * 

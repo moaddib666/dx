@@ -1,6 +1,8 @@
 // WorldEditor Data Models
 // Based on requirements from WorldEditor.MD
 
+import { Position as ApiPosition } from '@/api/dx-backend';
+
 /**
  * Enum for WorldEditor modes
  */
@@ -46,11 +48,12 @@ export type WorldEditorLayerType = typeof WorldEditorLayer[keyof typeof WorldEdi
 
 /**
  * Position interface for room coordinates
+ * Extends API Position with additional WorldEditor-specific properties
  */
-export interface Position {
-    x: number;
-    y: number;
-    z: number;
+export interface Position extends Omit<ApiPosition, 'id' | 'sub_location' | 'sub_location_details' | 'labels' | 'is_safe' | 'image' | 'coordinates'> {
+    x?: number;
+    y?: number;
+    z?: number;
     grid_x: number;
     grid_y: number;
     grid_z: number;

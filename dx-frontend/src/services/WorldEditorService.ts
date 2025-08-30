@@ -1,6 +1,12 @@
 import {GameMasterApi} from '@/api/backendService';
 import {WorldEditorConnection, WorldEditorRoom, WorldEditorState} from '@/models/WorldEditorModels';
 import {AxiosResponse} from 'axios';
+import {
+    WorldPosition,
+    PositionConnection,
+    PositionConnectionCreateRequest,
+    GameObject as ApiGameObject
+} from '@/api/dx-backend';
 
 /**
  * Event types for the WorldEditorService
@@ -33,71 +39,19 @@ type WorldEditorServiceEventType =
  */
 type EventCallback = (data?: any) => void;
 
-/**
- * Position data interface from API
- */
-interface PositionData {
-  id: string;
-  position?: {
-    id: string;
-    x?: number;
-    y?: number;
-    z?: number;
-    grid_x?: number;
-    grid_y?: number;
-    grid_z?: number;
-    coordinates?: string;
-  };
-  x?: number;
-  y?: number;
-  z?: number;
-  grid_x?: number;
-  grid_y?: number;
-  grid_z?: number;
-  coordinates?: string;
-  labels?: string[];
-  players?: any[];
-  npcs?: any[];
-  objects?: any[];
-  anomalies?: any[];
-}
+// Using WorldPosition from dx-backend API instead of custom PositionData interface
 
-/**
- * Connection data interface from API
- */
-interface ConnectionData {
-  id: string;
-  position_from: string;
-  position_to: string;
-  is_vertical?: boolean;
-  type?: string;
-}
+// Using PositionConnection from dx-backend API instead of custom ConnectionData interface
 
 /**
  * Map data interface from API
  */
 interface MapData {
-  positions?: PositionData[];
-  connections?: ConnectionData[];
+  positions?: WorldPosition[];
+  connections?: PositionConnection[];
 }
 
-/**
- * Game object interface from API
- */
-interface GameObject {
-  id: string;
-  object_type?: {
-    model?: string;
-  };
-  real_instance?: {
-    id: string;
-    position?: string | { id: string };
-    npc?: boolean;
-    [key: string]: any;
-  };
-  position?: string | { id: string };
-  [key: string]: any;
-}
+// Using ApiGameObject from dx-backend API instead of custom GameObject interface
 
 /**
  * Room creation data interface
@@ -117,16 +71,7 @@ interface RoomUpdateData {
   [key: string]: any;
 }
 
-/**
- * Connection creation request interface
- */
-interface ConnectionCreationRequest {
-  position_from: string;
-  position_to: string;
-  is_active: boolean;
-  is_public: boolean;
-  locked: boolean;
-}
+// Using PositionConnectionCreateRequest from dx-backend API instead of custom ConnectionCreationRequest interface
 
 /**
  * Entity data interface for spawning
@@ -189,7 +134,7 @@ interface LayerToggledData {
 export class WorldEditorService {
     private state: WorldEditorState;
     private eventListeners: Map<WorldEditorServiceEventType, EventCallback[]>;
-    private gameObjects: GameObject[];
+    private gameObjects: ApiGameObject[];
     private isInitialized: boolean;
 
     constructor() {
@@ -231,10 +176,10 @@ export class WorldEditorService {
     /**
      * Load game objects from the backend
      */
-    async loadGameObjects(): Promise<GameObject[]> {
+    async loadGameObjects(): Promise<ApiGameObject[]> {
         try {
             // Fetch all game objects with no filters to get everything
-            const response: AxiosResponse<GameObject[] | { results: GameObject[] }> = await GameMasterApi.gamemasterGameObjectsList();
+            const response: AxiosResponse<ApiGameObject[] | { results: ApiGameObject[] }> = await GameMasterApi.gamemasterGameObjectsList();
             console.log('Game objects data:', response.data);
 
             // Handle both response formats: array directly or object with results property
@@ -243,7 +188,7 @@ export class WorldEditorService {
                 return [];
             }
 
-            let gameObjects: GameObject[] = [];
+            let gameObjects: ApiGameObject[] = [];
             // Check if response.data is an array or has a results property
             if (Array.isArray(response.data)) {
                 gameObjects = response.data;
@@ -478,7 +423,7 @@ export class WorldEditorService {
     /**
      * Extract entities of a specific type from position data
      */
-    extractEntitiesFromPosition(positionData: PositionData, entityType: 'players' | 'npcs' | 'objects' | 'anomalies'): any[] {
+    extractEntitiesFromPosition(positionData: WorldPosition, entityType: 'players' | 'npcs' | 'objects' | 'anomalies'): any[] {
         if (!this.gameObjects || !this.gameObjects.length) {
             console.log(`No game objects available for extraction (${entityType})`);
             return [];
@@ -717,7 +662,7 @@ export class WorldEditorService {
             }
 
             // Create connection via backend API
-            const connectionRequest: ConnectionCreationRequest = {
+            const connectionRequest: PositionConnectionCreateRequest = {
                 position_from: fromRoomId,
                 position_to: toRoomId,
                 is_active: true,
