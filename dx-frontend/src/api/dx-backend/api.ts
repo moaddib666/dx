@@ -2576,13 +2576,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -5608,12 +5608,6 @@ export interface NPCGenericSpawnerRequest {
      * @memberof NPCGenericSpawnerRequest
      */
     'position'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCGenericSpawnerRequest
-     */
-    'campaign': string;
 }
 /**
  * 
@@ -5706,12 +5700,6 @@ export interface NPCSpawnerCreateRequest {
      * @memberof NPCSpawnerCreateRequest
      */
     'position'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawnerCreateRequest
-     */
-    'campaign': string;
 }
 /**
  * 
@@ -7607,12 +7595,6 @@ export interface PatchedNPCGenericSpawnerRequest {
      * @memberof PatchedNPCGenericSpawnerRequest
      */
     'position'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof PatchedNPCGenericSpawnerRequest
-     */
-    'campaign'?: string;
 }
 /**
  * Serializer for Note model.
