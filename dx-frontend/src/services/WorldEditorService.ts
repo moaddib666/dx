@@ -1,11 +1,197 @@
-import {GameMasterApi} from '@/api/backendService.js';
-import {WorldEditorConnection, WorldEditorRoom, WorldEditorState} from '@/models/WorldEditorModels.js';
+import {GameMasterApi} from '@/api/backendService';
+import {WorldEditorConnection, WorldEditorRoom, WorldEditorState} from '@/models/WorldEditorModels';
+import {AxiosResponse} from 'axios';
+
+/**
+ * Event types for the WorldEditorService
+ */
+type WorldEditorServiceEventType =
+  | 'initialized'
+  | 'stateUpdated'
+  | 'roomCreated'
+  | 'roomDeleted'
+  | 'roomUpdated'
+  | 'roomMoved'
+  | 'connectionCreated'
+  | 'connectionDeleted'
+  | 'connectionUpdated'
+  | 'itemSpawned'
+  | 'npcSpawned'
+  | 'anomalySpawned'
+  | 'modeChanged'
+  | 'toolChanged'
+  | 'layerToggled'
+  | 'floorChanged'
+  | 'floorChangeFailed'
+  | 'selectionChanged'
+  | 'refreshed'
+  | 'refreshFailed'
+  | 'reset';
+
+/**
+ * Event callback function type
+ */
+type EventCallback = (data?: any) => void;
+
+/**
+ * Position data interface from API
+ */
+interface PositionData {
+  id: string;
+  position?: {
+    id: string;
+    x?: number;
+    y?: number;
+    z?: number;
+    grid_x?: number;
+    grid_y?: number;
+    grid_z?: number;
+    coordinates?: string;
+  };
+  x?: number;
+  y?: number;
+  z?: number;
+  grid_x?: number;
+  grid_y?: number;
+  grid_z?: number;
+  coordinates?: string;
+  labels?: string[];
+  players?: any[];
+  npcs?: any[];
+  objects?: any[];
+  anomalies?: any[];
+}
+
+/**
+ * Connection data interface from API
+ */
+interface ConnectionData {
+  id: string;
+  position_from: string;
+  position_to: string;
+  is_vertical?: boolean;
+  type?: string;
+}
+
+/**
+ * Map data interface from API
+ */
+interface MapData {
+  positions?: PositionData[];
+  connections?: ConnectionData[];
+}
+
+/**
+ * Game object interface from API
+ */
+interface GameObject {
+  id: string;
+  object_type?: {
+    model?: string;
+  };
+  real_instance?: {
+    id: string;
+    position?: string | { id: string };
+    npc?: boolean;
+    [key: string]: any;
+  };
+  position?: string | { id: string };
+  [key: string]: any;
+}
+
+/**
+ * Room creation data interface
+ */
+interface RoomCreationData {
+  grid_x: number;
+  grid_y: number;
+  grid_z: number;
+  sub_location?: string;
+}
+
+/**
+ * Room update data interface
+ */
+interface RoomUpdateData {
+  labels?: string[];
+  [key: string]: any;
+}
+
+/**
+ * Connection creation request interface
+ */
+interface ConnectionCreationRequest {
+  position_from: string;
+  position_to: string;
+  is_active: boolean;
+  is_public: boolean;
+  locked: boolean;
+}
+
+/**
+ * Entity data interface for spawning
+ */
+interface EntityData {
+  id?: string;
+  [key: string]: any;
+}
+
+/**
+ * Floor change failed event data interface
+ */
+interface FloorChangeFailedData {
+  targetFloor: number;
+  currentFloor: number;
+  error: Error;
+}
+
+/**
+ * Room moved event data interface
+ */
+interface RoomMovedData {
+  room: WorldEditorRoom;
+  oldPosition: { grid_x: number; grid_y: number; grid_z: number };
+  newPosition: { grid_x: number; grid_y: number; grid_z: number };
+}
+
+/**
+ * Room/Connection deleted event data interface
+ */
+interface DeletedEventData {
+  roomId?: string;
+  connectionId?: string;
+  room?: WorldEditorRoom;
+  connection?: WorldEditorConnection;
+}
+
+/**
+ * Spawn event data interface
+ */
+interface SpawnEventData {
+  roomId: string;
+  itemData?: EntityData;
+  npcData?: EntityData;
+  anomalyData?: EntityData;
+}
+
+/**
+ * Layer toggled event data interface
+ */
+interface LayerToggledData {
+  layer: string;
+  active: boolean;
+}
 
 /**
  * WorldEditor Service
  * Handles world data management, API interactions, and state synchronization
  */
 export class WorldEditorService {
+    private state: WorldEditorState;
+    private eventListeners: Map<WorldEditorServiceEventType, EventCallback[]>;
+    private gameObjects: GameObject[];
+    private isInitialized: boolean;
+
     constructor() {
         this.state = new WorldEditorState();
         this.eventListeners = new Map();
@@ -16,7 +202,7 @@ export class WorldEditorService {
     /**
      * Initialize the WorldEditor with data from the backend
      */
-    async initialize() {
+    async initialize(): Promise<WorldEditorState> {
         try {
             console.log('Initializing WorldEditor...');
 
@@ -45,10 +231,10 @@ export class WorldEditorService {
     /**
      * Load game objects from the backend
      */
-    async loadGameObjects() {
+    async loadGameObjects(): Promise<GameObject[]> {
         try {
             // Fetch all game objects with no filters to get everything
-            const response = await GameMasterApi.gamemasterGameObjectsList();
+            const response: AxiosResponse<GameObject[] | { results: GameObject[] }> = await GameMasterApi.gamemasterGameObjectsList();
             console.log('Game objects data:', response.data);
 
             // Handle both response formats: array directly or object with results property
@@ -57,12 +243,12 @@ export class WorldEditorService {
                 return [];
             }
 
-            let gameObjects = [];
+            let gameObjects: GameObject[] = [];
             // Check if response.data is an array or has a results property
             if (Array.isArray(response.data)) {
                 gameObjects = response.data;
-            } else if (response.data.results) {
-                gameObjects = response.data.results;
+            } else if ((response.data as any).results) {
+                gameObjects = (response.data as any).results;
             } else {
                 console.warn('Game objects API response has unexpected format:', response.data);
                 return [];
@@ -77,7 +263,7 @@ export class WorldEditorService {
                 console.log('Sample game object:', this.gameObjects[0]);
 
                 // Count objects by type for debugging
-                const typeCount = {};
+                const typeCount: Record<string, number> = {};
                 this.gameObjects.forEach(obj => {
                     const type = obj.object_type?.model || 'unknown';
                     typeCount[type] = (typeCount[type] || 0) + 1;
@@ -100,13 +286,13 @@ export class WorldEditorService {
 
     /**
      * Load world map data from the backend
-     * @param {Number} floor - The floor level to load (grid_z value)
+     * @param floor - The floor level to load (grid_z value)
      */
-    async loadWorldMap(floor = null) {
+    async loadWorldMap(floor: number | null = null): Promise<MapData> {
         try {
             // If floor is provided, use gamemasterWorldMapList with gridZ parameter
             // Otherwise, use gamemasterWorldMapMapRetrieve to get all floors
-            let response;
+            let response: AxiosResponse<MapData>;
             if (floor !== null) {
                 response = await GameMasterApi.gamemasterWorldMapMapRetrieve(floor);
                 console.log(`World map data for floor ${floor}:`, response.data);
@@ -123,11 +309,11 @@ export class WorldEditorService {
 
     /**
      * Sync internal state with map data from backend
-     * @param {Object} mapData - The map data from the backend
-     * @param {Number} [floor] - The floor level being loaded, used as default for positions without grid_z
-     * @param {Boolean} [preserveState] - Whether to preserve existing state on error
+     * @param mapData - The map data from the backend
+     * @param floor - The floor level being loaded, used as default for positions without grid_z
+     * @param preserveState - Whether to preserve existing state on error
      */
-    syncStateWithMapData(mapData, floor = null, preserveState = false) {
+    syncStateWithMapData(mapData: MapData, floor: number | null = null, preserveState: boolean = false): void {
         // Validate mapData before proceeding
         if (!mapData || typeof mapData !== 'object') {
             console.error('Invalid map data provided to syncStateWithMapData:', mapData);
@@ -146,16 +332,16 @@ export class WorldEditorService {
 
         try {
             // Create new state collections
-            const newRooms = new Map();
+            const newRooms = new Map<string, WorldEditorRoom>();
             // if flour is not null add newRooms with grid_z != floor to make vertical connections work properly
-            if (floor !== null) {
+            if (floor !== null && stateBackup) {
                 stateBackup.rooms.forEach((room) => {
                     if (room.position.grid_z !== floor) {
                         newRooms.set(room.id, room);
                     }
                 })
             }
-            const newConnections = new Map();
+            const newConnections = new Map<string, WorldEditorConnection>();
 
             // Add rooms from map data
             if (mapData.positions && Array.isArray(mapData.positions)) {
@@ -292,7 +478,7 @@ export class WorldEditorService {
     /**
      * Extract entities of a specific type from position data
      */
-    extractEntitiesFromPosition(positionData, entityType) {
+    extractEntitiesFromPosition(positionData: PositionData, entityType: 'players' | 'npcs' | 'objects' | 'anomalies'): any[] {
         if (!this.gameObjects || !this.gameObjects.length) {
             console.log(`No game objects available for extraction (${entityType})`);
             return [];
@@ -375,9 +561,9 @@ export class WorldEditorService {
     /**
      * Create a new room at the specified coordinates
      */
-    async createRoom(gridX, gridY, gridZ = this.state.currentFloor, subLocationId = null) {
+    async createRoom(gridX: number, gridY: number, gridZ: number = this.state.currentFloor, subLocationId: string | null = null): Promise<WorldEditorRoom> {
         try {
-            const roomData = {
+            const roomData: RoomCreationData = {
                 grid_x: gridX,
                 grid_y: gridY,
                 grid_z: gridZ
@@ -385,34 +571,13 @@ export class WorldEditorService {
 
             // Add sub_location if provided
             if (subLocationId) {
-                roomData.sub_location = subLocationId;
+                (roomData as any).sub_location = subLocationId;
             }
 
-            const response = await GameMasterApi.gamemasterWorldMapCreate(roomData);
+            const response: AxiosResponse<any> = await GameMasterApi.gamemasterWorldMapCreate(roomData);
 
             // Validate response data
             if (!response.data || !response.data.id) {
-                // {
-                //     "id": "4a5b2b67-b144-47b5-9b42-9cd2c4d77876",
-                //     "grid_x": -2,
-                //     "grid_y": -2,
-                //     "grid_z": -3,
-                //     "sub_location": "8250bb97-2543-497b-8355-4e41dfe03be7",
-                //     "sub_location_details": {
-                //         "id": "8250bb97-2543-497b-8355-4e41dfe03be7",
-                //         "name": "Mirror Trap Rooms",
-                //         "description": "The infinite maze",
-                //         "image": "http://localhost:8000/media/locations/C9D53EB8-83F4-4F01-BD3B-492D734B8BD8.PNG",
-                //         "location": "7ea5aa62-8e5f-49a6-b86a-1e86f5faee66",
-                //         "is_active": true,
-                //         "created_at": "2025-08-28T12:49:35Z",
-                //         "updated_at": "2025-08-28T12:50:08.368352Z"
-                //     },
-                //     "labels": [],
-                //     "is_safe": false,
-                //     "image": null,
-                //     "coordinates": "-2x-2x-3"
-                // }
                 console.error('Invalid response data from gamemasterWorldMapCreate:', {response});
                 throw new Error('Failed to create room: Invalid response data');
             }
@@ -440,7 +605,7 @@ export class WorldEditorService {
     /**
      * Delete a room
      */
-    async deleteRoom(roomId) {
+    async deleteRoom(roomId: string): Promise<boolean> {
         try {
             await GameMasterApi.gamemasterWorldMapDestroy(roomId);
 
@@ -460,7 +625,7 @@ export class WorldEditorService {
     /**
      * Update room properties
      */
-    async updateRoom(roomId, updates) {
+    async updateRoom(roomId: string, updates: RoomUpdateData): Promise<WorldEditorRoom> {
         try {
             const room = this.state.rooms.get(roomId);
             if (!room) {
@@ -469,7 +634,7 @@ export class WorldEditorService {
 
             // Update room labels if provided
             if (updates.labels) {
-                const response = await GameMasterApi.gamemasterWorldMapUpdate(roomId, {
+                const response: AxiosResponse<any> = await GameMasterApi.gamemasterWorldMapUpdate(roomId, {
                     labels: updates.labels
                 });
 
@@ -498,7 +663,7 @@ export class WorldEditorService {
     /**
      * Move room to new coordinates
      */
-    async moveRoom(roomId, newGridX, newGridY, newGridZ) {
+    async moveRoom(roomId: string, newGridX: number, newGridY: number, newGridZ: number): Promise<WorldEditorRoom> {
         try {
             // This would need a backend API endpoint for moving rooms
             // For now, we'll update the local state
@@ -512,7 +677,20 @@ export class WorldEditorService {
             room.position.grid_y = newGridY;
             room.position.grid_z = newGridZ;
 
-            this.emit('roomMoved', {room, oldPosition, newPosition: room.position});
+            const eventData: RoomMovedData = {
+                room,
+                oldPosition: {
+                    grid_x: oldPosition.grid_x,
+                    grid_y: oldPosition.grid_y,
+                    grid_z: oldPosition.grid_z
+                },
+                newPosition: {
+                    grid_x: room.position.grid_x,
+                    grid_y: room.position.grid_y,
+                    grid_z: room.position.grid_z
+                }
+            };
+            this.emit('roomMoved', eventData);
             this.emit('stateUpdated', this.state);
 
             return room;
@@ -525,7 +703,7 @@ export class WorldEditorService {
     /**
      * Create connection between two rooms
      */
-    async createConnection(fromRoomId, toRoomId, isVertical = false) {
+    async createConnection(fromRoomId: string, toRoomId: string, isVertical: boolean = false): Promise<WorldEditorConnection> {
         try {
             // Get room objects to validate they exist
             const fromRoom = this.state.rooms.get(fromRoomId);
@@ -539,7 +717,7 @@ export class WorldEditorService {
             }
 
             // Create connection via backend API
-            const connectionRequest = {
+            const connectionRequest: ConnectionCreationRequest = {
                 position_from: fromRoomId,
                 position_to: toRoomId,
                 is_active: true,
@@ -547,7 +725,7 @@ export class WorldEditorService {
                 locked: false
             };
 
-            const response = await GameMasterApi.gamemasterWorldMapCreateConnectionCreate(connectionRequest);
+            const response: AxiosResponse<any> = await GameMasterApi.gamemasterWorldMapCreateConnectionCreate(connectionRequest);
 
             // Validate response data
             if (!response.data || !response.data.id) {
@@ -578,7 +756,7 @@ export class WorldEditorService {
     /**
      * Delete connection
      */
-    async deleteConnection(connectionId) {
+    async deleteConnection(connectionId: string): Promise<boolean> {
         try {
             const connection = this.state.connections.get(connectionId);
             if (!connection) {
@@ -604,7 +782,7 @@ export class WorldEditorService {
     /**
      * Update connection properties
      */
-    async updateConnection(connectionId, updates) {
+    async updateConnection(connectionId: string, updates: Partial<WorldEditorConnection>): Promise<WorldEditorConnection> {
         try {
             const connection = this.state.connections.get(connectionId);
             if (!connection) {
@@ -645,7 +823,7 @@ export class WorldEditorService {
     /**
      * Spawn item in room
      */
-    async spawnItem(roomId, itemData) {
+    async spawnItem(roomId: string, itemData: EntityData): Promise<EntityData> {
         try {
             // This would integrate with ItemsApi
             const room = this.state.rooms.get(roomId);
@@ -669,7 +847,7 @@ export class WorldEditorService {
     /**
      * Spawn NPC in room
      */
-    async spawnNPC(roomId, npcData) {
+    async spawnNPC(roomId: string, npcData: EntityData): Promise<EntityData> {
         try {
             // This would integrate with CharacterApi for NPCs
             const room = this.state.rooms.get(roomId);
@@ -693,7 +871,7 @@ export class WorldEditorService {
     /**
      * Spawn anomaly in room
      */
-    async spawnAnomaly(roomId, anomalyData) {
+    async spawnAnomaly(roomId: string, anomalyData: EntityData): Promise<EntityData> {
         try {
             const room = this.state.rooms.get(roomId);
             if (!room) {
@@ -716,7 +894,7 @@ export class WorldEditorService {
     /**
      * Toggle editor mode
      */
-    toggleMode() {
+    toggleMode(): void {
         this.state.toggleMode();
         this.emit('modeChanged', this.state.mode);
         this.emit('stateUpdated', this.state);
@@ -725,7 +903,7 @@ export class WorldEditorService {
     /**
      * Set active tool
      */
-    setTool(tool) {
+    setTool(tool: string): void {
         this.state.setTool(tool);
         this.emit('toolChanged', tool);
         this.emit('stateUpdated', this.state);
@@ -734,17 +912,18 @@ export class WorldEditorService {
     /**
      * Toggle layer visibility
      */
-    toggleLayer(layer) {
+    toggleLayer(layer: string): void {
         this.state.toggleLayer(layer);
-        this.emit('layerToggled', {layer, active: this.state.isLayerActive(layer)});
+        const eventData: LayerToggledData = {layer, active: this.state.isLayerActive(layer)};
+        this.emit('layerToggled', eventData);
         this.emit('stateUpdated', this.state);
     }
 
     /**
      * Change current floor and load floor-specific data
-     * @param {Number} floor - The floor level to set
+     * @param floor - The floor level to set
      */
-    async setFloor(floor) {
+    async setFloor(floor: number): Promise<void> {
         if (!this.isInitialized) {
             console.warn('WorldEditor not initialized, calling initialize first');
             await this.initialize();
@@ -777,7 +956,8 @@ export class WorldEditorService {
             this.state.currentFloor = previousFloor;
 
             // Still emit the floor change event to notify UI of the failure
-            this.emit('floorChangeFailed', {targetFloor: floor, currentFloor: previousFloor, error});
+            const eventData: FloorChangeFailedData = {targetFloor: floor, currentFloor: previousFloor, error: error as Error};
+            this.emit('floorChangeFailed', eventData);
 
             throw error;
         }
@@ -786,7 +966,7 @@ export class WorldEditorService {
     /**
      * Select/deselect room
      */
-    toggleRoomSelection(roomId) {
+    toggleRoomSelection(roomId: string): void {
         this.state.toggleRoomSelection(roomId);
         this.emit('selectionChanged', Array.from(this.state.selectedRooms));
         this.emit('stateUpdated', this.state);
@@ -795,7 +975,7 @@ export class WorldEditorService {
     /**
      * Clear room selection
      */
-    clearSelection() {
+    clearSelection(): void {
         this.state.clearSelection();
         this.emit('selectionChanged', []);
         this.emit('stateUpdated', this.state);
@@ -804,26 +984,26 @@ export class WorldEditorService {
     /**
      * Get current state
      */
-    getState() {
+    getState(): WorldEditorState {
         return this.state;
     }
 
     /**
      * Event system for components to listen to changes
      */
-    on(event, callback) {
+    on(event: WorldEditorServiceEventType, callback: EventCallback): void {
         if (!this.eventListeners.has(event)) {
             this.eventListeners.set(event, []);
         }
-        this.eventListeners.get(event).push(callback);
+        this.eventListeners.get(event)!.push(callback);
     }
 
     /**
      * Remove event listener
      */
-    off(event, callback) {
+    off(event: WorldEditorServiceEventType, callback: EventCallback): void {
         if (this.eventListeners.has(event)) {
-            const listeners = this.eventListeners.get(event);
+            const listeners = this.eventListeners.get(event)!;
             const index = listeners.indexOf(callback);
             if (index > -1) {
                 listeners.splice(index, 1);
@@ -834,9 +1014,9 @@ export class WorldEditorService {
     /**
      * Emit event to listeners
      */
-    emit(event, data) {
+    private emit(event: WorldEditorServiceEventType, data?: any): void {
         if (this.eventListeners.has(event)) {
-            this.eventListeners.get(event).forEach(callback => {
+            this.eventListeners.get(event)!.forEach(callback => {
                 try {
                     callback(data);
                 } catch (error) {
@@ -848,9 +1028,9 @@ export class WorldEditorService {
 
     /**
      * Refresh data from backend
-     * @param {Boolean} forceFullReload - Whether to force a complete reload (like initialize)
+     * @param forceFullReload - Whether to force a complete reload (like initialize)
      */
-    async refresh(forceFullReload = false) {
+    async refresh(forceFullReload: boolean = false): Promise<WorldEditorState> {
         if (!this.isInitialized && !forceFullReload) {
             console.log('WorldEditor not initialized, calling initialize instead of refresh');
             return await this.initialize();
@@ -890,7 +1070,7 @@ export class WorldEditorService {
     /**
      * Reset the service to initial state
      */
-    reset() {
+    reset(): void {
         this.state = new WorldEditorState();
         this.gameObjects = [];
         this.isInitialized = false;
