@@ -34,8 +34,8 @@
           :impact="impact"
 
       />
-      <!--          <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
-      <!--                        :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
+                <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"
+                              :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>
     </div>
   </div>
 

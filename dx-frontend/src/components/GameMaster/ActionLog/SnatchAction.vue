@@ -1,25 +1,10 @@
 <template>
   <div class="snatch-action" v-if="!loading">
-    <!-- Character Preview -->
-    <SmallCharPreview :char="{ id: data.target }" :gmMode="true" class="char-preview" />
-
     <!-- Success Status -->
     <div class="success-section" :class="{ success: data.success, failure: !data.success }">
       {{ data.success ? "Done" : "Fail" }}
     </div>
 
-    <!-- Discovered and Snatched Items -->
-    <div class="items-container" v-if="data.success">
-      <div class="items-section">
-        <span class="items-label">Discovered:</span>
-        <div class="item-icons">
-          <ItemIconWithHover
-              v-for="itemId in data.discovered"
-              :key="itemId"
-              :itemData="itemsService.getCachedWorldItem(itemId)"
-          />
-        </div>
-      </div>
       <div class="items-section" v-if="data.success">
         <span class="items-label">Snatched:</span>
         <div class="item-icons">
@@ -30,7 +15,6 @@
           />
         </div>
       </div>
-    </div>
   </div>
 
   <div class="loading-state" v-else>
