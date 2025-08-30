@@ -2,6 +2,7 @@
 from rest_framework import serializers
 
 from apps.core.models import ImpactType, ImpactViolationType
+from apps.skills.api.serializers.openapi import SkillSerializer
 from ...models import CharacterAction, ActionImpact, SpecialAction, DiceRollResult
 
 
@@ -37,6 +38,7 @@ class CharacterLogActionImpactSerializer(serializers.ModelSerializer):
 
 class GameMasterCharacterActionLogSerializer(serializers.ModelSerializer):
     impacts = GameMasterCharacterLogActionImpactSerializer(many=True, read_only=True)
+    skill = SkillSerializer(read_only=True)
 
     class Meta:
         model = CharacterAction
@@ -71,9 +73,16 @@ class ActionCycleSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'number', 'campaign']
 
 
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacterAction.skill.field.related_model
+        exclude = ['created_at', 'updated_at', 'description']
+
+
 class CharacterActionLogSerializer(serializers.ModelSerializer):
     impacts = CharacterLogActionImpactSerializer(many=True, read_only=True)
     cycle = ActionCycleSerializer(read_only=True)
+    skill = SkillSerializer(read_only=True)
 
     class Meta:
         model = CharacterAction
