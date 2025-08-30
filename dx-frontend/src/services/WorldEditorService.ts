@@ -1,11 +1,13 @@
-import {GameMasterApi} from '@/api/backendService';
+import {GameMasterApi, GMWorldGenericSpawnersApi, GMWorldNPCSpawnersApi} from '@/api/backendService';
 import {WorldEditorConnection, WorldEditorRoom, WorldEditorState} from '@/models/WorldEditorModels';
 import {AxiosResponse} from 'axios';
 import {
     WorldPosition,
     PositionConnection,
     PositionConnectionCreateRequest,
-    GameObject as ApiGameObject
+    GameObject as ApiGameObject,
+    GenericSpawner,
+    NPCSpawnerCreateRequest
 } from '@/api/dx-backend';
 
 /**
@@ -24,6 +26,9 @@ type WorldEditorServiceEventType =
   | 'itemSpawned'
   | 'npcSpawned'
   | 'anomalySpawned'
+  | 'spawnerCreated'
+  | 'spawnerDeleted'
+  | 'spawnerUpdated'
   | 'modeChanged'
   | 'toolChanged'
   | 'layerToggled'
@@ -135,12 +140,14 @@ export class WorldEditorService {
     private state: WorldEditorState;
     private eventListeners: Map<WorldEditorServiceEventType, EventCallback[]>;
     private gameObjects: ApiGameObject[];
+    private spawners: GenericSpawner[];
     private isInitialized: boolean;
 
     constructor() {
         this.state = new WorldEditorState();
         this.eventListeners = new Map();
         this.gameObjects = [];
+        this.spawners = [];
         this.isInitialized = false;
     }
 
@@ -151,14 +158,15 @@ export class WorldEditorService {
         try {
             console.log('Initializing WorldEditor...');
 
-            // Load both map data and game objects in parallel
+            // Load map data, game objects, and spawners in parallel
             // Initially load all floors to get a complete view
-            const [mapData, gameObjects] = await Promise.all([
+            const [mapData, gameObjects, spawners] = await Promise.all([
                 this.loadWorldMap(),
-                this.loadGameObjects()
+                this.loadGameObjects(),
+                this.loadSpawners()
             ]);
 
-            console.log(`Initialization data loaded: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
+            console.log(`Initialization data loaded: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects, ${spawners.length || 0} spawners`);
 
             // Sync state with the loaded data
             this.syncStateWithMapData(mapData);
@@ -225,6 +233,62 @@ export class WorldEditorService {
             return this.gameObjects;
         } catch (error) {
             console.error('Failed to load game objects:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Load spawners from the backend
+     */
+    async loadSpawners(): Promise<GenericSpawner[]> {
+        try {
+            // Fetch all spawners with no filters to get everything
+            const response: AxiosResponse<GenericSpawner[] | { results: GenericSpawner[] }> = await GMWorldGenericSpawnersApi.gamemasterSpawnersAllList();
+            console.log('Spawners data:', response.data);
+
+            // Handle both response formats: array directly or object with results property
+            if (!response.data) {
+                console.warn('Spawners API response is empty');
+                return [];
+            }
+
+            let spawners: GenericSpawner[] = [];
+            // Check if response.data is an array or has a results property
+            if (Array.isArray(response.data)) {
+                spawners = response.data;
+            } else if ((response.data as any).results) {
+                spawners = (response.data as any).results;
+            } else {
+                console.warn('Spawners API response has unexpected format:', response.data);
+                return [];
+            }
+
+            // Only update this.spawners if we successfully loaded data
+            this.spawners = spawners;
+            console.log(`Loaded ${this.spawners.length} spawners`);
+
+            // Log some sample spawners to understand their structure
+            if (this.spawners.length > 0) {
+                console.log('Sample spawner:', this.spawners[0]);
+
+                // Count spawners by type for debugging
+                const typeCount: Record<string, number> = {};
+                this.spawners.forEach(spawner => {
+                    const type = spawner.object_type?.model || 'unknown';
+                    typeCount[type] = (typeCount[type] || 0) + 1;
+                });
+                console.log('Spawners by type:', typeCount);
+
+                // Count spawners with positions
+                const spawnersWithPosition = this.spawners.filter(spawner =>
+                    spawner.position
+                ).length;
+                console.log(`Spawners with position: ${spawnersWithPosition}/${this.spawners.length}`);
+            }
+
+            return this.spawners;
+        } catch (error) {
+            console.error('Failed to load spawners:', error);
             throw error;
         }
     }
@@ -333,7 +397,8 @@ export class WorldEditorService {
                             players: this.extractEntitiesFromPosition(positionData, 'players'),
                             npcs: this.extractEntitiesFromPosition(positionData, 'npcs'),
                             objects: this.extractEntitiesFromPosition(positionData, 'objects'),
-                            anomalies: this.extractEntitiesFromPosition(positionData, 'anomalies')
+                            anomalies: this.extractEntitiesFromPosition(positionData, 'anomalies'),
+                            spawners: this.extractSpawnersFromPosition(positionData)
                         });
                         newRooms.set(room.id, room);
                     } catch (error) {
@@ -501,6 +566,59 @@ export class WorldEditorService {
         }
 
         return filteredObjects;
+    }
+
+    /**
+     * Extract spawners from position data
+     */
+    extractSpawnersFromPosition(positionData: WorldPosition): any[] {
+        if (!this.spawners || !this.spawners.length) {
+            console.log('No spawners available for extraction');
+            return [];
+        }
+
+        // Handle different position data formats
+        let positionInfo = positionData.position || positionData;
+
+        // Check if essential position data is missing
+        if (!positionInfo || !positionInfo.id) {
+            console.warn('Invalid position data in extractSpawnersFromPosition:', positionData);
+            return [];
+        }
+
+        const positionId = positionInfo.id;
+
+        // Log the position ID we're filtering for
+        console.log(`Extracting spawners for position: ${positionId}`);
+
+        // Filter spawners by position
+        const filteredSpawners = this.spawners
+            .filter(spawner => {
+                // Check if the spawner has a position property
+                if (!spawner.position) {
+                    return false;
+                }
+
+                // Check if the spawner is in this position
+                const spawnerPositionId = typeof spawner.position === 'string' ? spawner.position : (spawner.position?.id || '');
+                return spawnerPositionId === positionId;
+            })
+            .map(spawner => {
+                // Return the spawner with additional metadata
+                return {
+                    ...spawner,
+                    spawner_type: spawner.object_type?.model || 'unknown'
+                };
+            });
+
+        console.log(`Found ${filteredSpawners.length} spawners for position ${positionId}`);
+
+        // Log the first few spawners for debugging
+        if (filteredSpawners.length > 0) {
+            console.log('Sample spawners:', filteredSpawners.slice(0, 3));
+        }
+
+        return filteredSpawners;
     }
 
     /**
@@ -837,6 +955,55 @@ export class WorldEditorService {
     }
 
     /**
+     * Create spawner in room
+     */
+    async createSpawner(roomId: string, characterTemplateId: string, spawnLimit: number = 1, respawnCycles: number = 3): Promise<GenericSpawner> {
+        try {
+            const room = this.state.rooms.get(roomId);
+            if (!room) {
+                throw new Error(`Room with id ${roomId} not found`);
+            }
+
+            // Create spawner via backend API
+            const spawnerRequest: NPCSpawnerCreateRequest = {
+                character_template: characterTemplateId,
+                campaign: 'current', // This should be dynamically set based on current campaign
+                position: roomId,
+                spawn_limit: spawnLimit,
+                respawn_cycles: respawnCycles,
+                dimension: room.position.grid_z
+            };
+
+            const response: AxiosResponse<GenericSpawner> = await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcCreate(spawnerRequest);
+
+            // Validate response data
+            if (!response.data || !response.data.id) {
+                console.error('Invalid response data from gamemasterSpawnersNpcCreate:', {response});
+                throw new Error('Failed to create spawner: Invalid response data');
+            }
+
+            const newSpawner = response.data;
+
+            // Add spawner to room's spawners array
+            room.spawners.push({
+                ...newSpawner,
+                spawner_type: newSpawner.object_type?.model || 'npcspawner'
+            });
+
+            // Add to local spawners array
+            this.spawners.push(newSpawner);
+
+            this.emit('spawnerCreated', {roomId, spawnerData: newSpawner});
+            this.emit('stateUpdated', this.state);
+
+            return newSpawner;
+        } catch (error) {
+            console.error('Failed to create spawner:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Toggle editor mode
      */
     toggleMode(): void {
@@ -991,13 +1158,14 @@ export class WorldEditorService {
                 console.log('Force reloading all data...');
                 return await this.initialize();
             } else {
-                // Smart refresh: reload current floor data and game objects
-                const [mapData, gameObjects] = await Promise.all([
+                // Smart refresh: reload current floor data, game objects, and spawners
+                const [mapData, gameObjects, spawners] = await Promise.all([
                     this.loadWorldMap(currentFloor),
-                    this.loadGameObjects()
+                    this.loadGameObjects(),
+                    this.loadSpawners()
                 ]);
 
-                console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects`);
+                console.log(`Refresh complete: ${mapData.positions?.length || 0} positions, ${gameObjects.length || 0} game objects, ${spawners.length || 0} spawners`);
 
                 // Sync state with the new data, preserving state on errors
                 this.syncStateWithMapData(mapData, currentFloor, true);
@@ -1018,6 +1186,7 @@ export class WorldEditorService {
     reset(): void {
         this.state = new WorldEditorState();
         this.gameObjects = [];
+        this.spawners = [];
         this.isInitialized = false;
         console.log('WorldEditor service reset');
         this.emit('reset');

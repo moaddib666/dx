@@ -601,6 +601,12 @@ export default {
 
     // Map event handlers
     onRoomSelected(room, shiftKey = false) {
+      // Handle spawner creation if CREATE_SPAWNER tool is active
+      if (this.currentTool === WorldEditorTool.CREATE_SPAWNER) {
+        this.onCreateSpawnerInRoom(room);
+        return;
+      }
+
       this.selectedRoom = room;
 
       // If shift key is not pressed, clear selection before selecting the new room
@@ -640,6 +646,26 @@ export default {
       } catch (error) {
         console.error('Failed to create room:', error);
         this.setLastAction('Failed to create room');
+      }
+    },
+
+    async onCreateSpawnerInRoom(room) {
+      try {
+        // For now, use a default character template ID
+        // In a real implementation, this should open a dialog to select character template
+        const defaultCharacterTemplateId = '0c772e55-920d-4e7f-918a-89fb01f32b76'; // From the example in issue description
+
+        const newSpawner = await this.service.createSpawner(room.id, defaultCharacterTemplateId);
+
+        if (newSpawner) {
+          this.setLastAction(`Created spawner in ${room.getDisplayName?.() || 'room'}`);
+
+          // Optionally switch back to select tool after creating spawner
+          this.service.setTool(WorldEditorTool.SELECT);
+        }
+      } catch (error) {
+        console.error('Failed to create spawner:', error);
+        this.setLastAction('Failed to create spawner');
       }
     },
 

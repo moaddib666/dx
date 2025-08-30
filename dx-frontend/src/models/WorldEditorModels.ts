@@ -28,7 +28,8 @@ export const WorldEditorTool = {
     SPAWN_NPC: 'spawn_npc',
     EDIT_NPC: 'edit_npc',
     SPAWN_ANOMALY: 'spawn_anomaly',
-    EDIT_ANOMALY: 'edit_anomaly'
+    EDIT_ANOMALY: 'edit_anomaly',
+    CREATE_SPAWNER: 'create_spawner'
 } as const;
 
 export type WorldEditorToolType = typeof WorldEditorTool[keyof typeof WorldEditorTool];
@@ -41,6 +42,7 @@ export const WorldEditorLayer = {
     NPCS: 'npcs',
     OBJECTS: 'objects',
     ANOMALIES: 'anomalies',
+    SPAWNERS: 'spawners',
     TBD: 'tbd'
 } as const;
 
@@ -80,6 +82,7 @@ export interface WorldEditorRoomData {
     npcs?: Entity[];
     objects?: Entity[];
     anomalies?: Entity[];
+    spawners?: Entity[];
     connections?: WorldEditorConnection[];
     metadata?: Record<string, any>;
 }
@@ -112,6 +115,7 @@ export class WorldEditorRoom {
     public npcs: Entity[];
     public objects: Entity[];
     public anomalies: Entity[];
+    public spawners: Entity[];
     public connections: WorldEditorConnection[];
     public metadata: Record<string, any>;
 
@@ -132,6 +136,7 @@ export class WorldEditorRoom {
         this.npcs = data.npcs || [];
         this.objects = data.objects || [];
         this.anomalies = data.anomalies || [];
+        this.spawners = data.spawners || [];
         this.connections = data.connections || [];
         this.metadata = data.metadata || {};
     }
@@ -159,6 +164,8 @@ export class WorldEditorRoom {
                 return this.objects.length > 0;
             case WorldEditorLayer.ANOMALIES:
                 return this.anomalies.length > 0;
+            case WorldEditorLayer.SPAWNERS:
+                return this.spawners.length > 0;
             default:
                 return false;
         }
@@ -217,7 +224,8 @@ export class WorldEditorState {
             WorldEditorLayer.PLAYERS,
             WorldEditorLayer.NPCS,
             WorldEditorLayer.OBJECTS,
-            WorldEditorLayer.ANOMALIES
+            WorldEditorLayer.ANOMALIES,
+            WorldEditorLayer.SPAWNERS
         ]);
         this.selectedRooms = new Set();
         this.currentFloor = 1;
@@ -405,6 +413,7 @@ export interface LayerColorsConfig {
     [WorldEditorLayer.NPCS]: string;
     [WorldEditorLayer.OBJECTS]: string;
     [WorldEditorLayer.ANOMALIES]: string;
+    [WorldEditorLayer.SPAWNERS]: string;
     [WorldEditorLayer.TBD]: string;
 }
 
@@ -441,6 +450,7 @@ export const WorldEditorConfig: WorldEditorConfigType = {
         [WorldEditorLayer.NPCS]: '#ffff00',
         [WorldEditorLayer.OBJECTS]: '#ff8800',
         [WorldEditorLayer.ANOMALIES]: '#ff0088',
+        [WorldEditorLayer.SPAWNERS]: '#8800ff',
         [WorldEditorLayer.TBD]: '#888888'
     }
 };
