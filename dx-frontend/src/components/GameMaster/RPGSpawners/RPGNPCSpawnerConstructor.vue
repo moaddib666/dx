@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import RPGCharactersTemplatePresenter from "@/components/GameMaster/RPGCharacterTempaltes/RPGCharactersTemplatePresenter.vue";
 import RPGCharactersTemplatesModal from "@/components/GameMaster/RPGCharacterTempaltes/RPGCharactersTemplatesModal.vue";
-import { GMWorldSpawnersApi } from '@/api/backendService.js';
+import { GMWorldNPCSpawnersApi } from '@/api/backendService.js';
 import type { NPCSpawnerCreateRequest } from '@/api/dx-backend';
 
 interface CharacterTemplate {
@@ -89,7 +89,7 @@ const createSpawner = async () => {
       respawn_cycles: respawnCycles.value
     };
 
-    const response = await GMWorldSpawnersApi.gamemasterSpawnersNpcCreate(request);
+    const response = await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcCreate(request);
 
     if (response.data) {
       emit('spawnerCreated', response.data.id || 'unknown');

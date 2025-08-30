@@ -12,7 +12,8 @@ import {
     GMWorldEditiorPositionConnectionsApi,
     GMWorldEditiorPositionsApi,
     GMWorldEditorSubLocationsApi,
-    GMWorldEditorSpawnersApi,
+    GMWorldEditorAllSpawnersApi,
+    GMWorldEditorNPCSpawnersApi,
     ItemsApi,
     ModificatorsApi,
     SchoolApi,
@@ -44,7 +45,8 @@ export const GameMasterApi = new GamemasterApi(GameApiConfig);
 export const GMWorldPositionConnectionsApi = new GMWorldEditiorPositionConnectionsApi(GameApiConfig);
 export const GMWorldPositionsApi = new GMWorldEditiorPositionsApi(GameApiConfig);
 export const GMWorldSubLocationsApi = new GMWorldEditorSubLocationsApi(GameApiConfig);
-export const GMWorldSpawnersApi = new GMWorldEditorSpawnersApi(GameApiConfig);
+export const GMWorldGenericSpawnersApi = new GMWorldEditorAllSpawnersApi(GameApiConfig);
+export const GMWorldNPCSpawnersApi = new GMWorldEditorNPCSpawnersApi(GameApiConfig);
 export const StoryGameApi = new StoryApi(GameApiConfig);
-export const FightGameApi = new FightApi(GameApiConfig); // Assuming FightGameApi is the same as GameMasterApi for fights
-export const DiceGameApi = new DiceApi(GameApiConfig); // Assuming DiceGameApi is the same as GameMasterApi for dice
+export const FightGameApi = new FightApi(GameApiConfig);
+export const DiceGameApi = new DiceApi(GameApiConfig);

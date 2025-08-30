@@ -2576,13 +2576,13 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
 }
 /**
  * 
@@ -5614,31 +5614,6 @@ export interface NPCGenericSpawnerRequest {
      * @memberof NPCGenericSpawnerRequest
      */
     'campaign': string;
-}
-/**
- * 
- * @export
- * @interface NPCSpawner
- */
-export interface NPCSpawner {
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawner
-     */
-    'id': string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof NPCSpawner
-     */
-    'is_active'?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof NPCSpawner
-     */
-    'character_template': string;
 }
 /**
  * 
@@ -10434,12 +10409,6 @@ export interface WorldPosition {
      * @memberof WorldPosition
      */
     'anomalies': Array<string>;
-    /**
-     * 
-     * @type {Array<NPCSpawner>}
-     * @memberof WorldPosition
-     */
-    'npc_spawners': Array<NPCSpawner>;
 }
 
 /**
