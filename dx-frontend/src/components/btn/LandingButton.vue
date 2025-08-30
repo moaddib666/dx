@@ -37,7 +37,7 @@ export default {
   background-image: linear-gradient(145deg, #404040, #292929);
   border: 2px solid #444;
   text-align: center;
-  min-height: 33px; /* Minimum touch target size */
+  min-height: 33px; /* Minimum touch hasTarget size */
   min-width: 90px;
   white-space: nowrap;
 }
@@ -62,7 +62,7 @@ export default {
   .dx-button {
     font-size: 0.75rem;
     padding: 0.75rem 1.125rem;
-    min-height: 36px; /* Larger touch target on mobile */
+    min-height: 36px; /* Larger touch hasTarget on mobile */
     width: 100%;
     max-width: 210px;
   }

@@ -97,7 +97,7 @@ class ActionService {
             throw new Error("Skill is required for USE_SKILL action.");
         }
         if (!Array.isArray(targets) || targets.length === 0) {
-            throw new Error("At least one target is required for USE_SKILL action.");
+            throw new Error("At least one hasTarget is required for USE_SKILL action.");
         }
         return await this.performAction({
             actionType: "USE_SKILL",

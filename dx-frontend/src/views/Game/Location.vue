@@ -428,7 +428,7 @@ export default {
 
     async handleSkillSelected(skill) {
       if (!this.selectedGameObjectId) {
-        console.warn("Cannot use skill without a selected target");
+        console.warn("Cannot use skill without a selected hasTarget");
         this.triggerNoTargetFeedback();
         return;
       }
@@ -443,7 +443,7 @@ export default {
     },
     async handleItemSelected(item) {
       if (!this.selectedGameObjectId) {
-        console.warn("Cannot use item without a selected target");
+        console.warn("Cannot use item without a selected hasTarget");
         this.triggerNoTargetFeedback();
         return;
       }
@@ -458,7 +458,7 @@ export default {
     },
     async handleSpecialSelected(special) {
       if (!this.selectedGameObjectId) {
-        console.warn("Cannot use special ability without a selected target");
+        console.warn("Cannot use special ability without a selected hasTarget");
         this.triggerNoTargetFeedback();
         return;
       }
@@ -472,7 +472,7 @@ export default {
       await this.applyAction(action);
     },
     triggerNoTargetFeedback() {
-      // Trigger visual feedback for no target selected
+      // Trigger visual feedback for no hasTarget selected
       this.showNoTargetFeedback = true;
       // Reset the feedback after animation duration (1 second)
       setTimeout(() => {
@@ -1187,7 +1187,7 @@ export default {
   margin-left: 0.5rem;
 }
 
-/* Visual feedback for no target selected */
+/* Visual feedback for no hasTarget selected */
 .no-target-feedback {
   animation: shake-highlight 1s ease-in-out;
 }

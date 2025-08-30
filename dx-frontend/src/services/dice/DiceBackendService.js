@@ -45,7 +45,7 @@ export class DiceBackendService {
       const result = {
         number: diceValue,
         rollTime: 0, // Not provided by API, using 0 as default
-        targetNumber: 11, // Default target for D20 rolls
+        targetNumber: 11, // Default hasTarget for D20 rolls
         outcome: mappedOutcome,
         isDeterministic: true // API rolls are deterministic
       };

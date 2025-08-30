@@ -346,7 +346,7 @@ export class WorldEditorState {
         }
         this.connections.set(connection.id!, connection);
 
-        // Add connection to the source and target rooms' connections arrays
+        // Add connection to the source and hasTarget rooms' connections arrays
         const sourceRoom = this.rooms.get(connection.fromRoomId!);
         const targetRoom = this.rooms.get(connection.toRoomId!);
 
@@ -371,7 +371,7 @@ export class WorldEditorState {
     removeConnection(connectionId: string): void {
         const connection = this.connections.get(connectionId);
         if (connection) {
-            // Remove connection from the source and target rooms' connections arrays
+            // Remove connection from the source and hasTarget rooms' connections arrays
             const sourceRoom = this.rooms.get(connection.fromRoomId!);
             const targetRoom = this.rooms.get(connection.toRoomId!);
 

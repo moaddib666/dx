@@ -113,7 +113,7 @@ export class RollStateService {
         this.state.currentSpeed = this.state.baseSpeed * slowdown
         this.state.angularVelocity.multiplyScalar(slowdown)
 
-        // Update display number with increasing bias toward target
+        // Update display number with increasing bias toward hasTarget
         if (this.state.rollTime - this.state.lastNumberChange > this.state.numberChangeInterval) {
             const targetProbability = Math.min(0.9, settleTime * 0.6)
             this.state.currentDisplayNumber = Math.random() < targetProbability
@@ -140,7 +140,7 @@ export class RollStateService {
             const targetRotation = calculateTargetRotation(targetIndex)
 
             // Aggressive interpolation for complete settling
-            // Use higher interpolation factor to ensure dice reach target rotation
+            // Use higher interpolation factor to ensure dice reach hasTarget rotation
             const lerpFactor = Math.min(0.3, settleTime * 0.2)  // Much more aggressive convergence
 
             this.state.rotation.x += (targetRotation.x - this.state.rotation.x) * lerpFactor

@@ -145,7 +145,7 @@ export default {
           // Multiple dice with individual targets
           result = await this.$refs.diceCanvas.rollToTargets(targetNumbers)
         } else {
-          // Single dice or same target for all
+          // Single dice or same hasTarget for all
           result = await this.$refs.diceCanvas.rollToTarget(targetNumbers)
         }
 

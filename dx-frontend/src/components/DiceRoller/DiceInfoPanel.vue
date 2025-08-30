@@ -1,28 +1,28 @@
 <template>
   <div class="dice-info-panel">
     <h3 class="panel-title">🎲 Realistic D20 Roll</h3>
-    
+
     <div class="info-content">
       <div class="info-item">
         <span class="bullet">•</span>
-        <span>Choose target number (1‑20)</span>
+        <span>Choose hasTarget number (1‑20)</span>
       </div>
-      
+
       <div class="info-item">
         <span class="bullet">•</span>
         <span>Load a texture to skin the dice</span>
       </div>
-      
+
       <div class="info-item">
         <span class="bullet">•</span>
         <span>Click «Roll Dice» for realistic roll</span>
       </div>
-      
+
       <div class="info-item">
         <span class="bullet">•</span>
         <span>Minimum 3.5s roll with natural settling</span>
       </div>
-      
+
       <div class="info-item">
         <span class="bullet">•</span>
         <span>Guaranteed to land on your choice!</span>

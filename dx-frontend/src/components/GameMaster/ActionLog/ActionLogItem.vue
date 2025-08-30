@@ -1,156 +1,127 @@
 <template>
   <div class="action-log-item">
-    <div class="action-row">
-      <SmallCharPreview :char="action.initiator" :gmMode="gmMode" class="initiator" @select="handleSelect"/>
-      <div class="action-info">
-        <ActionIconMini v-if="action.skill" :skill="action.skill"/>
-        <div v-else-if="action.action_type === 'MOVE'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/move.png"/>
-          <span> Move </span>
-        </div>
-        <div v-else-if="action.action_type === 'LONG_REST'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/long_rest.webp"/>
-          <span> Long Rest </span>
-        </div>
-        <div v-else-if="action.action_type === 'SNATCH_ITEM'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/snatch.webp"/>
-          <span> Snatch </span>
-        </div>
-        <div v-else-if="action.action_type === 'GIFT'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/gift.webp"/>
-          <span> Gift </span>
-        </div>
-        <div v-else-if="action.action_type === 'BACK_TO_SAFE_ZONE'" class="action-icon">
-          <img alt="Move" src="@/assets/images/action/safe.webp"/>
-          <span> Teleport To Safety </span>
-        </div>
-        <div v-else-if="action.action_type === 'INSPECT'" class="action-icon">
-          <img alt="Inspect" src="@/assets/images/action/inspect.webp"/>
-          <span> Inspect </span>
-          <div class="inspection-result" >
-            <SmallCharPreview
-                v-for="target in action.targets"
-                :key="target.id"
-                :char="target"
-                :gmMode="gmMode"
-                @select="handleSelect"
-            />
-            <InspectionResult :characters="action.data.characters" />
-
-          </div>
+    <AvatarImage :char-id="action.initiator.id" :gm-mode="true" class="initiator-image" v-if="action.initiator"/>
+    <!-- TODO: Add support multitarget actions -->
+    <AvatarImage v-if="hasTarget"
+                 :char-id="action.targets[0].id"
+                 :gm-mode="true" class="target-image"/>
+    <div class="npc-label" v-if="action.initiator.npc">NPC</div>
 
 
-        </div>
-        <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">
-          <DiceComponent/>
-          <span> Dice Roll </span>
-        </div>
-        <div v-else-if="action.action_type === 'ANOMALY'" class="action-icon">
-          <img alt="Anomaly" src="@/assets/images/action/anomaly.png"/>
-          <span> Anomaly </span>
-        </div>
-        <div v-else-if="action.action_type === 'GOD_INTERVENTION'" class="action-icon">
-          <img alt="God Intervention" src="@/assets/images/action/godintervention.png"/>
-          <span> God Intervention </span>
-        </div>
-        <div v-else>
-          <span class="action-id">ID: {{ action.id }}</span>
-          <span class="action-type">Type: {{ action.action_type }}</span>
-          <span class="cycle">Cycle: {{ action.cycle.id }}</span>
-        </div>
-        <span class="status">
-          <span :class="{ 'status-true': action.accepted, 'status-false': !action.accepted }">
-            Accepted: {{ action.accepted ? 'Yes' : 'No' }}
-          </span>
-          <span :class="{ 'status-true': action.performed, 'status-false': !action.performed }">
-            Performed: {{ action.performed ? 'Yes' : 'No' }}
-          </span>
-        </span>
+    <div class="not-accepted-label status-label" v-if="!action.accepted">Not Accepted</div>
+    <div class="not-performed-label status-label" v-else-if="action.performed">Not Performed</div>
+
+    <GameMasterActionLogImage :action="action" class="action-image"/>
+    <div class="action-content">
+      <CharacterInlineDetails @click="() => {console.debug('selected', action.initiator.id)}" class="info"
+                              id="initiator-info"
+                              :char-id="action.initiator.id" :gm-mode="true"/>
+      <div id="action-information">
+        <span>{{ getActionTypeTranslation() }}</span>
+        <h3 v-if="action.skill">{{ action.skill.name }}</h3>
       </div>
-      <div v-if="action.accepted && !action.performed" class="targets-row">
-        <SmallCharPreview
-            v-for="target in action.targets"
-            :key="target.id"
-            :char="target"
-            :gmMode="gmMode"
-            @select="handleSelect"
-        />
-      </div>
-      <div v-if="action.performed" class="impacts-row">
-        <ImpactComponent
-            v-for="impact in action.impacts"
-            :key="impact.id"
-            :impact="impact"
-            @selectTarget="handleSelect"
-        />
-        <SnatchAction  class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data" :data="target" v-for="target in action.data.targets" :key="target.id"/>
-      </div>
+
+      <CharacterInlineDetails @click="() => { console.debug('selected',target.id )}" class="info" id="target-info"
+                              :char-id="target.id" :gm-mode="true" v-if="hasTarget"/>
+      <div v-else class="info" id="target-info"></div>
     </div>
+    <!--    <div class="action-info">-->
+    <!--      <ActionIconMini class="action-icon" v-if="action.skill" :skill="action.skill"/>-->
+    <!--      <div v-else-if="action.action_type === 'MOVE'" class="action-icon">-->
+    <!--        <img alt="Move" src="@/assets/images/action/move.png"/>-->
+    <!--        <span> Move </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'LONG_REST'" class="action-icon">-->
+    <!--        <img alt="Move" src="@/assets/images/action/long_rest.webp"/>-->
+    <!--        <span> Long Rest </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'SNATCH_ITEM'" class="action-icon">-->
+    <!--        <img alt="Move" src="@/assets/images/action/snatch.webp"/>-->
+    <!--        <span> Snatch </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'GIFT'" class="action-icon">-->
+    <!--        <img alt="Move" src="@/assets/images/action/gift.webp"/>-->
+    <!--        <span> Gift </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'BACK_TO_SAFE_ZONE'" class="action-icon">-->
+    <!--        <img alt="Move" src="@/assets/images/action/safe.webp"/>-->
+    <!--        <span> Teleport To Safety </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'INSPECT'" class="action-icon">-->
+    <!--        <img alt="Inspect" src="@/assets/images/action/inspect.webp"/>-->
+    <!--        <span> Inspect </span>-->
+    <!--        <div class="inspection-result">-->
+    <!--          <SmallCharPreview-->
+    <!--              v-for="hasTarget in action.targets"-->
+    <!--              :key="hasTarget.id"-->
+    <!--              :char="hasTarget"-->
+    <!--              :gmMode="gmMode"-->
+    <!--              @select="handleSelect"-->
+    <!--          />-->
+    <!--          <InspectionResult :characters="action.data.characters"/>-->
+
+    <!--        </div>-->
+
+
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'DICE_ROLL'" class="action-icon">-->
+    <!--        <DiceComponent/>-->
+    <!--        <span> Dice Roll </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'ANOMALY'" class="action-icon">-->
+    <!--        <img alt="Anomaly" src="@/assets/images/action/anomaly.png"/>-->
+    <!--        <span> Anomaly </span>-->
+    <!--      </div>-->
+    <!--      <div v-else-if="action.action_type === 'GOD_INTERVENTION'" class="action-icon">-->
+    <!--        <img alt="God Intervention" src="@/assets/images/action/godintervention.png"/>-->
+    <!--        <span> God Intervention </span>-->
+    <!--      </div>-->
+    <!--      <div v-else>-->
+    <!--        <span class="action-id">ID: {{ action.id }}</span>-->
+    <!--        <span class="action-type">Type: {{ action.action_type }}</span>-->
+    <!--        <span class="cycle">Cycle: {{ action.cycle.id }}</span>-->
+    <!--      </div>-->
+    <!--      <span class="status">-->
+    <!--          <span :class="{ 'status-true': action.accepted, 'status-false': !action.accepted }">-->
+    <!--            Accepted: {{ action.accepted ? 'Yes' : 'No' }}-->
+    <!--          </span>-->
+    <!--          <span :class="{ 'status-true': action.performed, 'status-false': !action.performed }">-->
+    <!--            Performed: {{ action.performed ? 'Yes' : 'No' }}-->
+    <!--          </span>-->
+    <!--        </span>-->
+    <!--    </div>-->
+    <!--    <div v-if="action.accepted && !action.performed" class="targets-row">-->
+    <!--      <SmallCharPreview-->
+    <!--          v-for="hasTarget in action.targets"-->
+    <!--          :key="hasTarget.id"-->
+    <!--          :char="hasTarget"-->
+    <!--          :gmMode="gmMode"-->
+    <!--          @select="handleSelect"-->
+    <!--      />-->
+    <!--    </div>-->
+    <!--    <div v-if="action.performed" class="impacts-row">-->
+    <!--      <ImpactComponent-->
+    <!--          v-for="impact in action.impacts"-->
+    <!--          :key="impact.id"-->
+    <!--          :impact="impact"-->
+    <!--          @selectTarget="handleSelect"-->
+    <!--      />-->
+    <!--      <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
+    <!--                    :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script setup lang="ts">
-import SmallCharPreview from './SmallCharPreview.vue';
-import ImpactComponent from './ImpactComponent.vue';
-import SkillIcon from "@/components/Action/ActionIcon.vue";
-import ActionIconMini from "@/components/Action/ActionIconMini.vue";
-import DiceComponent from "@/components/Dice/DiceComponent.vue";
-import InspectionResult from "@/components/GameMaster/ActionLog/InspectionResult.vue";
-import SnatchAction from "@/components/GameMaster/ActionLog/SnatchAction.vue";
-
-// TypeScript Interfaces
-interface Character {
-  id: string | number;
-  name: string;
-  npc?: boolean;
-}
-
-interface Skill {
-  id: string | number;
-  name: string;
-  // Add other skill properties as needed
-}
-
-interface Cycle {
-  id: string | number;
-  // Add other cycle properties as needed
-}
-
-interface DiceRollResult {
-  // Define dice roll result properties as needed
-  [key: string]: any;
-}
-
-interface Impact {
-  id: string | number;
-  target: Character;
-  type: string;
-  violation: string;
-  size: string;
-  dice_roll_result?: DiceRollResult;
-}
-
-interface ActionData {
-  characters?: Character[];
-  targets?: Character[];
-  [key: string]: any;
-}
-
-interface Action {
-  id: string | number;
-  action_type: string;
-  initiator: Character;
-  targets?: Character[];
-  impacts?: Impact[];
-  skill?: Skill;
-  cycle: Cycle;
-  accepted: boolean;
-  performed: boolean;
-  data?: ActionData;
-}
+import AvatarImage from "@/components/Character/AvatarImage.vue";
+import {GameMasterCharacterActionLog} from "@/api/dx-backend";
+import GameMasterActionLogImage from "@/components/GameMaster/ActionLog/GameMasterActionLogImage.vue";
+import {computed} from "vue";
+import CharacterInlineDetails from "@/components/Character/CharacterInlineDetails.vue";
+import { useI18n } from 'vue-i18n';
 
 interface Props {
-  action: Action;
+  action: GameMasterCharacterActionLog;
   gmMode?: boolean;
 }
 
@@ -159,14 +130,32 @@ const props = withDefaults(defineProps<Props>(), {
   gmMode: false
 });
 
-// Methods
-const mapTargetById = (id: string | number): Character | undefined => {
-  return props.action.targets?.find(target => target.id === id);
-};
+const action = props.action;
 
-const handleSelect = (id: string | number): void => {
-  console.log('Selected ID:', id);
-};
+// i18n setup
+const { t } = useI18n();
+
+const hasTarget = computed(() => {
+  return action.targets && action.targets.length > 0 && action.targets[0].id != action.initiator.id
+})
+const target = computed(() => {
+  return hasTarget.value ? action.targets[0] : null;
+})
+
+// Method to get the appropriate translation based on action status
+const getActionTypeTranslation = () => {
+  // If action was accepted and performed, use past tense (successful)
+  if (action.accepted && action.performed) {
+    return t('actionTypeEnumPerformed.' + action.action_type);
+  }
+  // If action was not accepted or not performed, use attempted tense (failed)
+  else {
+    return t('actionTypeEnumAttempted.' + action.action_type);
+  }
+}
+const emit = defineEmits<{
+  characterSelected: [charId: string];
+}>();
 </script>
 
 <style scoped>
@@ -178,97 +167,126 @@ const handleSelect = (id: string | number): void => {
   background: #1c1c1c;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
+  min-height: 10vh;
+  font-size: 0.8rem;
 }
 
-.action-row {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.6rem;
+.initiator-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  mask: linear-gradient(to right, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 90%);
 }
 
-.initiator {
-  flex: 0 0 3rem; /* Fixed size for SmallCharPreview */
+.target-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  mask: linear-gradient(to left, rgba(0, 0, 0, 1) 35%, rgba(0, 0, 0, 0) 90%);
 }
 
-.action-info {
-  flex: 0 0 6rem; /* Fixed size for action-info */
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  font-size: 0.75rem;
-  color: #ccc;
-}
 
-.action-id {
-  font-weight: bold;
-  color: #ffcc00;
-}
-
-.action-type, .cycle {
-  color: #aaa;
-}
-
-.status {
-  display: flex;
-  gap: 0.2rem;
+.npc-label {
+  background: rgba(255, 204, 0, 1);
+  color: #1c1c1c;
   font-size: 0.6rem;
-  flex-direction: column;
-}
-
-.status-true {
-  color: #00ff00;
-}
-
-.status-false {
-  color: #ff0000;
-}
-
-.targets-row, .impacts-row {
-  flex: 1; /* Dynamic size for targets or impacts */
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-}
-
-.targets-row > *:not(:last-child), .impacts-row > *:not(:last-child) {
-  margin-right: 0.3rem;
-}
-
-h4 {
-  font-size: 0.8rem;
-  color: #ffcc00;
-}
-
-.action-info .action-icon {
-  display: flex;
-  flex-direction: row;
-  gap: 0.2rem;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.action-info .action-icon span {
-  font-size: 0.8rem;
   font-weight: bold;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  margin-left: 0.3rem;
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+}
+
+
+.action-image {
+  width: 45%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  mask: radial-gradient(circle at top, rgba(0, 0, 0, 8) 20%, rgba(0, 0, 0, 0) 66%);
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.3;
+}
+
+.status-label {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  font-size: 0.6rem;
+  font-weight: bold;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+.not-accepted-label {
+  background: rgba(255, 69, 0, 0.8);
   color: white;
 }
 
-.action-info .action-icon img {
-  width: 2em;
-  height: 2em;
+.not-performed-label {
+  background: rgba(90, 90, 89, 0.8);
+  color: white;
 }
 
-.inspection-result {
+.action-content {
   display: flex;
-  justify-content: flex-start;
   flex-direction: row;
+  z-index: 1;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 1rem;
 }
 
-.snatch-action-impact {
+.info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-width: 25%;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex:1;
+}
+
+#initiator-info {
+  align-items: flex-start;
+  text-align: left;
+}
+
+#target-info {
+  align-items: flex-end;
+  text-align: right;
+}
+
+#action-information {
+  flex: 1;
+  text-align: center;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  text-shadow: 1px 1px 2px #000;
+  align-self: center;
+  justify-self: center;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.info {
+  cursor: pointer;
 }
 </style>

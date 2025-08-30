@@ -47,15 +47,15 @@ export class DragDropService {
   }
 
   /**
-   * Register a drop target element
-   * @param {HTMLElement} element - The drop target element
+   * Register a drop hasTarget element
+   * @param {HTMLElement} element - The drop hasTarget element
    */
   registerDropTarget(element) {
     console.log('DragDropService.registerDropTarget called with element:', element);
 
     if (element && !this.dropTargets.has(element)) {
       this.dropTargets.add(element);
-      console.log('Drop target registered. Total targets:', this.dropTargets.size);
+      console.log('Drop hasTarget registered. Total targets:', this.dropTargets.size);
 
       // If currently dragging, highlight this element immediately
       if (this.isDragging) {
@@ -68,8 +68,8 @@ export class DragDropService {
   }
 
   /**
-   * Unregister a drop target element
-   * @param {HTMLElement} element - The drop target element to unregister
+   * Unregister a drop hasTarget element
+   * @param {HTMLElement} element - The drop hasTarget element to unregister
    */
   unregisterDropTarget(element) {
     console.log('DragDropService.unregisterDropTarget called with element:', element);
@@ -77,7 +77,7 @@ export class DragDropService {
     if (element) {
       this.dropTargets.delete(element);
       element.classList.remove('drag-over-highlight');
-      console.log('Drop target unregistered. Remaining targets:', this.dropTargets.size);
+      console.log('Drop hasTarget unregistered. Remaining targets:', this.dropTargets.size);
     }
   }
 
@@ -121,11 +121,11 @@ export class DragDropService {
       element.contains(event.target) || element === event.target
     );
 
-    console.log('Is drop target?', isDropTarget);
+    console.log('Is drop hasTarget?', isDropTarget);
 
     if (!isDropTarget && this.isDragging) {
       event.preventDefault();
-      console.warn('Drop failure: Unsupported drop target', {
+      console.warn('Drop failure: Unsupported drop hasTarget', {
         item: this.draggedItem,
         target: event.target
       });
@@ -133,12 +133,12 @@ export class DragDropService {
       this.emit('dropFailure', {
         item: this.draggedItem,
         target: event.target,
-        reason: 'Unsupported drop target'
+        reason: 'Unsupported drop hasTarget'
       });
 
       this.endDrag();
     } else if (isDropTarget) {
-      console.log('Drop on valid target, letting the target handle it');
+      console.log('Drop on valid hasTarget, letting the hasTarget handle it');
       // Don't call endDrag here, let the component handle it
     }
   }
@@ -146,7 +146,7 @@ export class DragDropService {
   /**
    * Handle drag end event (cleanup)
    * This is called when the drag operation ends without a drop
-   * or when the drop is on an invalid target
+   * or when the drop is on an invalid hasTarget
    */
   handleDocumentDragEnd(event) {
     console.log('DragDropService.handleDocumentDragEnd called', {

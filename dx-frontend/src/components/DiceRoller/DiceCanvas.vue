@@ -188,7 +188,7 @@ export default {
           this.rollStateServices[0].startRoll(targetNumber, true)
         })
       } else {
-        // Multiple dice roll - each dice gets the same target for now
+        // Multiple dice roll - each dice gets the same hasTarget for now
         // For different targets per dice, use rollToTargets() method
         return this.rollMultipleDice([targetNumber, targetNumber], true)
       }
@@ -222,7 +222,7 @@ export default {
       }
 
       if (this.diceCount === 1) {
-        // Single dice random roll - use deterministic animation with random target
+        // Single dice random roll - use deterministic animation with random hasTarget
         const randomTarget = Math.floor(Math.random() * 20) + 1
         return new Promise((resolve) => {
           this.pendingRollResolve = resolve
@@ -251,10 +251,10 @@ export default {
             // Individual targets for each dice
             diceTarget = targetNumbers[i] || (Math.floor(Math.random() * 20) + 1)
           } else if (targetNumbers !== null) {
-            // Same target for all dice
+            // Same hasTarget for all dice
             diceTarget = targetNumbers
           } else {
-            // Random target for each dice
+            // Random hasTarget for each dice
             diceTarget = Math.floor(Math.random() * 20) + 1
           }
 
@@ -458,7 +458,7 @@ export default {
     },
 
     highlightMultipleDice(results, finalResult) {
-      // Create highlight faces array with each dice's target number
+      // Create highlight faces array with each dice's hasTarget number
       const highlightFaces = results.map(result => result.number)
 
       // Use the new individual highlighting method

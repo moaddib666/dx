@@ -474,7 +474,7 @@ export default {
         console.error('Error performing action:', error);
         // You could add user notification here if needed
       }
-      // Note: We don't reset the custom action state anymore to keep the current target and action selected
+      // Note: We don't reset the custom action state anymore to keep the current hasTarget and action selected
     },
     handleCancelAction(): void {
       // Reset state when canceling

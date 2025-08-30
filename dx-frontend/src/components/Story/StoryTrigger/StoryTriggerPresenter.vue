@@ -87,7 +87,7 @@ const resolvers: triggerTargetResolver[] = [
 
 const triggerTarget = computed((): TriggerTarget | null => {
   for (const resolver of resolvers) {
-    const target = resolver(props.trigger);
+    const hasTarget = resolver(props.trigger);
     if (target) {
       return target;
     }
@@ -137,7 +137,7 @@ const unresolvedTriggerText = computed((): string => {
       </div>
       <div v-else class="trigger-content-placeholder">
         <div class="placeholder-icon">!</div>
-        <div class="placeholder-text">No target</div>
+        <div class="placeholder-text">No hasTarget</div>
       </div>
     </div>
   </div>

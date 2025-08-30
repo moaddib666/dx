@@ -45,7 +45,7 @@ export default {
       const targetX = this.room.grid_x + dx;
       const targetY = this.room.grid_y + dy;
 
-      // Check if a room exists at the target location
+      // Check if a room exists at the hasTarget location
       const existingRoom = this.$parent.mapData.rooms.find(
           (r) => r.grid_x === targetX && r.grid_y === targetY && r.floor === this.room.floor
       );

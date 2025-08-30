@@ -45,7 +45,7 @@ export default {
         {
           "action_type": "SNATCH_ITEM",
           "name": "Snatch",
-          "description": "The Snatch Item skill is a cunning and opportunistic ability that allows players to inspect a target for valuable items and attempt to steal them under the right conditions. It demands precision, stealth, and quick reflexes, making it a favorite among thieves, rogues, and those with a flair for seizing opportunities.",
+          "description": "The Snatch Item skill is a cunning and opportunistic ability that allows players to inspect a hasTarget for valuable items and attempt to steal them under the right conditions. It demands precision, stealth, and quick reflexes, making it a favorite among thieves, rogues, and those with a flair for seizing opportunities.",
           "immediate": true,
           "final": false,
           "icon": "http://localhost:8000/media/icons/specialActions/Snatch.webp",
@@ -63,7 +63,7 @@ export default {
         {
           "action_type": "INSPECT",
           "name": "Inspect",
-          "description": "The Inspect action is a utility skill that allows players to gather detailed information about a target object or character. However, its effectiveness depends on the target's level, protection mechanisms, and the player's stats. While not all inspections yield useful results, a successful attempt can reveal critical details, providing a strategic edge.",
+          "description": "The Inspect action is a utility skill that allows players to gather detailed information about a hasTarget object or character. However, its effectiveness depends on the hasTarget's level, protection mechanisms, and the player's stats. While not all inspections yield useful results, a successful attempt can reveal critical details, providing a strategic edge.",
           "immediate": true,
           "final": false,
           "icon": "http://localhost:8000/media/icons/specialActions/inspect.webp",

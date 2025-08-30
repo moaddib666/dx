@@ -120,7 +120,7 @@
 <!-- ===== INFO PANEL ===== -->
 <div id="info">
     <h3>Realistic D20 Roll</h3>
-    <p>• Choose target number (1‑20)</p>
+    <p>• Choose hasTarget number (1‑20)</p>
     <p>• Load a texture to skin the dice</p>
     <p>• Click «Roll Dice» for realistic roll</p>
     <p>• Minimum 3.5 s roll with natural settling</p>
@@ -503,7 +503,7 @@
     /***********************************************************
      * === ROLL ENTRY POINTS ===
      ***********************************************************/
-    function startRoll(target, deterministic) {
+    function startRoll(hasTarget, deterministic) {
         rollState.targetNumber = target;
         rollState.isDeterministic = deterministic;
         rollState.rollTime = 0;

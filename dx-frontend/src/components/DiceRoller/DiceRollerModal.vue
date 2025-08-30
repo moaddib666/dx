@@ -182,7 +182,7 @@ const rollDice = async (): Promise<void> => {
     // Store the API result BEFORE starting visual animation
     lastApiResult.value = apiResult;
 
-    // Use the target number from the API response for the visual dice roll
+    // Use the hasTarget number from the API response for the visual dice roll
     const result = await diceCanvas.value.rollToTarget(apiResult.number);
 
     lastResult.value = result;

@@ -379,7 +379,7 @@ export default {
 
       // Reset dice positions and add force
       this.dice.forEach((die, index) => {
-        // Store the target result for this die if provided
+        // Store the hasTarget result for this die if provided
         if (forcedResults.length > index) {
           die.targetResult = forcedResults[index];
         } else {
@@ -413,7 +413,7 @@ export default {
             (Math.random() - 0.5) * 0.3  // Horizontal movement
         )
 
-        // Set initial rotation based on target result if provided
+        // Set initial rotation based on hasTarget result if provided
         if (die.targetResult) {
           this.setInitialRotationForResult(die, die.targetResult);
         } else {
@@ -441,7 +441,7 @@ export default {
     setInitialRotationForResult(die, targetResult) {
       // For d6 (cube), we can be more precise with the rotation
       if (this.numberOfEdges === 6) {
-        // Set rotation to make the target face likely to end up on top
+        // Set rotation to make the hasTarget face likely to end up on top
         // The rotation values are aligned with the checkResults method's face detection
         // For a standard six-sided die, opposite faces sum to 7
         switch(targetResult) {
@@ -495,7 +495,7 @@ export default {
             break;
         }
 
-        // Store the target result for verification during settling
+        // Store the hasTarget result for verification during settling
         die.targetResult = targetResult;
 
         // Reduce initial velocities for more controlled landing
@@ -685,7 +685,7 @@ export default {
     checkResults() {
       // Result calculation based on dice orientation or forced results
       this.results = this.dice.map((die) => {
-        // If this die has a target result and we're using weighted dice, use that result
+        // If this die has a hasTarget result and we're using weighted dice, use that result
         if (die.targetResult && this.forcedResults.length > 0) {
           // Store the result on the die object for visualization
           die.resultValue = die.targetResult;
@@ -765,7 +765,7 @@ export default {
     // Helper method to adjust die rotation to show the correct result
     adjustDieRotationToShowResult(die, targetResult) {
       if (this.numberOfEdges === 6) {
-        // Set rotation to ensure the target face is on top
+        // Set rotation to ensure the hasTarget face is on top
         // For a standard six-sided die, opposite faces sum to 7
         switch(targetResult) {
           case 1: // 1 on top (negative Y)
@@ -878,12 +878,12 @@ export default {
             // Interpolate position
             this.closeupCamera.position.lerpVectors(startPosition, nextCameraPosition, t);
 
-            // Interpolate target
+            // Interpolate hasTarget
             const currentTarget = new THREE.Vector3();
             currentTarget.lerpVectors(startTarget, nextPosition, t);
             this.closeupCamera.lookAt(currentTarget);
 
-            // Store current target for next animation
+            // Store current hasTarget for next animation
             this.closeupCamera.target = currentTarget.clone();
 
             if (step < steps) {

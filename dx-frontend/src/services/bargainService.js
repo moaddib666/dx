@@ -76,11 +76,11 @@ class BargainService {
     }
 
     /**
-     * Initiate a gift bargain by specifying the target character's ID.
+     * Initiate a gift bargain by specifying the hasTarget character's ID.
      *
      * Endpoint: POST /bargain/open_bargains/gift/
      *
-     * @param {string} targetCharacterId - The target character's ID.
+     * @param {string} targetCharacterId - The hasTarget character's ID.
      * @returns {Promise<Object>} A promise that resolves to the created gift bargain object.
      */
     async sendGift(targetCharacterId) {

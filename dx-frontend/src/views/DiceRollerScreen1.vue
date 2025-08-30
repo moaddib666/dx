@@ -28,7 +28,7 @@
         <h3>Target Numbers:</h3>
         <div class="targets">
           <input
-              v-for="(target, index) in expectedResults"
+              v-for="(hasTarget, index) in expectedResults"
               :key="index"
               v-model.number="expectedResults[index]"
               type="number"
@@ -197,7 +197,7 @@ export default {
     handleDiceRolled(rollData) {
       console.log('Dice rolled:', rollData)
 
-      // Check if roll matches expected results (for target mode)
+      // Check if roll matches expected results (for hasTarget mode)
       const isSuccess = this.expectedResults.length === 0 ||
           rollData.results.every((result, index) =>
               !this.expectedResults[index] || result === this.expectedResults[index]
@@ -232,7 +232,7 @@ export default {
       this.isInBattle = true
       this.numberOfDice = 2
       this.numberOfEdges = 6
-      this.expectedResults = [] // No specific target
+      this.expectedResults = [] // No specific hasTarget
 
       // Simulate getting results (you would listen to the diceRolled event)
       setTimeout(() => {

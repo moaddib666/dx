@@ -133,7 +133,7 @@ export default {
       //
       // const impact = {
       //   initiator: this.initiator,
-      //   target: this.target,
+      //   hasTarget: this.hasTarget,
       //   impact_type: this.impactType,
       //   impact_violation: this.impactViolation,
       // };

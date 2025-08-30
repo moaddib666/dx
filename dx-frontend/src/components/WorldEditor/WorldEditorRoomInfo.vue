@@ -485,7 +485,7 @@ export default {
       const dropZone = event.currentTarget.closest('.room-drop-zone');
       if (dropZone) {
         // Only remove if we're actually leaving the drop zone area
-        // Check if the related target is outside the drop zone
+        // Check if the related hasTarget is outside the drop zone
         if (!dropZone.contains(event.relatedTarget)) {
           dropZone.classList.remove('drag-active');
         }

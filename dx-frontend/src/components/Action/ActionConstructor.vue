@@ -92,7 +92,7 @@ export default {
           actionData: this.selectedSpecial.actionData,
           skill: null,
           item: null,
-          targets: [this.selectedGameObjectId], // Selected game object as target
+          targets: [this.selectedGameObjectId], // Selected game object as hasTarget
         };
       }
       return {
@@ -100,7 +100,7 @@ export default {
         actionData: {},
         skill: this.selectedItem ? null : this.selectedSkill.id,
         item: this.selectedItem ? this.selectedItem.id : null,
-        targets: [this.selectedGameObjectId], // Selected game object as target
+        targets: [this.selectedGameObjectId], // Selected game object as hasTarget
       };
     },
   },
