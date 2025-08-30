@@ -4,7 +4,15 @@ import RPGContainer from "@/components/RPGContainer/RPGContainer.vue";
 import RPGCharactersTemplatePresenter from "@/components/GameMaster/RPGCharacterTempaltes/RPGCharactersTemplatePresenter.vue";
 import RPGCharactersTemplatesModal from "@/components/GameMaster/RPGCharacterTempaltes/RPGCharactersTemplatesModal.vue";
 import { GMWorldNPCSpawnersApi } from '@/api/backendService.js';
-import type { NPCSpawnerCreateRequest } from '@/api/dx-backend';
+import { worldSpawnersService } from '@/services/WorldSpawnersService';
+import type {
+  NPCSpawnerCreateRequest,
+  GenericSpawner,
+  NPCGenericSpawner,
+  NPCGenericSpawnerRequest,
+  PatchedNPCGenericSpawnerRequest,
+  NPCSpawnerMinimalPreview
+} from '@/api/dx-backend';
 
 interface CharacterTemplate {
   id?: string;
@@ -38,6 +46,10 @@ const dimensionId = ref<number>(1);
 const isActive = ref<boolean>(true);
 const spawnLimit = ref<number>(1);
 const respawnCycles = ref<number>(1);
+
+// Spawner data state
+const currentSpawner = ref<GenericSpawner | NPCGenericSpawner | null>(null);
+const spawnerType = ref<string | null>(null);
 
 // UI state
 const isTemplateModalOpen = ref(false);
@@ -79,20 +91,20 @@ const createSpawner = async () => {
   error.value = null;
 
   try {
-    const request: NPCSpawnerCreateRequest = {
-      position_id: props.positionId,
-      character_template_id: selectedTemplate.value.id,
-      campaign_id: props.campaignId,
-      dimension_id: dimensionId.value || undefined,
+    const spawnerData = {
+      position: props.positionId,
+      character_template: selectedTemplate.value.id,
+      campaign: props.campaignId,
+      dimension: dimensionId.value || undefined,
       is_active: isActive.value,
       spawn_limit: spawnLimit.value,
       respawn_cycles: respawnCycles.value
     };
 
-    const response = await GMWorldNPCSpawnersApi.gamemasterSpawnersNpcCreate(request);
+    const newSpawner = await worldSpawnersService.createNPCSpawner(spawnerData);
 
-    if (response.data) {
-      emit('spawnerCreated', response.data.id || 'unknown');
+    if (newSpawner) {
+      emit('spawnerCreated', newSpawner.id || 'unknown');
     }
   } catch (err: any) {
     console.error('Error creating NPC spawner:', err);
@@ -103,8 +115,34 @@ const createSpawner = async () => {
 };
 
 const updateSpawner = async () => {
-  // TODO: Implement update functionality when the API endpoint is available
-  console.log('Update spawner functionality not yet implemented');
+  if (!isFormValid.value || !selectedTemplate.value?.id || !props.npcSpawnerId) {
+    error.value = 'Please select a character template';
+    return;
+  }
+
+  isSubmitting.value = true;
+  error.value = null;
+
+  try {
+    const updateData: PatchedNPCGenericSpawnerRequest = {
+      character_template: selectedTemplate.value.id,
+      dimension: dimensionId.value || undefined,
+      is_active: isActive.value,
+      spawn_limit: spawnLimit.value,
+      respawn_cycles: respawnCycles.value
+    };
+
+    const updatedSpawner = await worldSpawnersService.updateNPCSpawner(props.npcSpawnerId, updateData);
+
+    if (updatedSpawner) {
+      emit('spawnerUpdated', updatedSpawner.id || 'unknown');
+    }
+  } catch (err: any) {
+    console.error('Error updating NPC spawner:', err);
+    error.value = err.response?.data?.message || err.message || 'Failed to update NPC spawner';
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const handleSubmit = async () => {
@@ -118,8 +156,64 @@ const handleSubmit = async () => {
 // Load existing spawner data if editing
 onMounted(async () => {
   if (props.npcSpawnerId) {
-    // TODO: Load existing spawner data when the API endpoint is available
-    console.log('Loading existing spawner:', props.npcSpawnerId);
+    try {
+      isLoading.value = true;
+      console.log('Loading existing spawner:', props.npcSpawnerId);
+
+      // Initialize the spawners service if needed
+      await worldSpawnersService.initialize();
+
+      // Try to find the spawner (could be generic or NPC)
+      const spawner = worldSpawnersService.getSpawnerById(props.npcSpawnerId);
+
+      if (spawner) {
+        currentSpawner.value = spawner;
+
+        // Check if it's a generic spawner with object_type
+        if ('object_type' in spawner && spawner.object_type) {
+          spawnerType.value = spawner.object_type.model;
+
+          // If it's an NPC spawner, extract template from real_instance
+          if (spawner.real_instance && typeof spawner.real_instance === 'object') {
+            const realInstance = spawner.real_instance as any;
+            if (realInstance.character_template) {
+              // Set the template ID for prefilling
+              selectedTemplate.value = {
+                id: realInstance.character_template,
+                name: 'Loading...' // Will be updated when template loads
+              };
+            }
+          }
+        }
+
+        // If it's an NPCGenericSpawner, get template directly
+        if ('character_template' in spawner && spawner.character_template) {
+          selectedTemplate.value = {
+            id: spawner.character_template,
+            name: 'Loading...' // Will be updated when template loads
+          };
+        }
+
+        // Populate form fields
+        if (spawner.dimension !== undefined) {
+          dimensionId.value = spawner.dimension || 1;
+        }
+        isActive.value = spawner.is_active ?? true;
+        spawnLimit.value = spawner.spawn_limit || 1;
+        respawnCycles.value = spawner.respawn_cycles || 1;
+
+        console.log('Loaded spawner data:', spawner);
+        console.log('Spawner type:', spawnerType.value);
+      } else {
+        console.warn('Spawner not found:', props.npcSpawnerId);
+        error.value = 'Spawner not found';
+      }
+    } catch (err) {
+      console.error('Failed to load spawner data:', err);
+      error.value = 'Failed to load spawner data';
+    } finally {
+      isLoading.value = false;
+    }
   }
 });
 </script>
@@ -134,6 +228,11 @@ onMounted(async () => {
         <button @click="emit('close')" class="close-btn" title="Close Spawner Constructor">
           ×
         </button>
+      </div>
+      <!-- Spawner Type Display -->
+      <div v-if="spawnerType && npcSpawnerId" class="spawner-type-info">
+        <span class="spawner-type-label">Spawner Type:</span>
+        <span class="spawner-type-value">{{ spawnerType }}</span>
       </div>
     </div>
 
@@ -280,6 +379,28 @@ onMounted(async () => {
 .header {
   flex-shrink: 0;
   margin-bottom: 1rem;
+}
+
+.spawner-type-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.spawner-type-label {
+  font-weight: bold;
+  color: #ccc;
+  margin-right: 0.5rem;
+}
+
+.spawner-type-value {
+  color: #fff;
+  background-color: rgba(0, 123, 255, 0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 123, 255, 0.3);
 }
 
 .header-top {
