@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { characterTemplatesService } from '@/services/CharacterTemplatesService.ts';
 
 interface CharacterTemplate {
   id?: string;
@@ -14,12 +15,22 @@ interface CharacterTemplate {
 }
 
 interface Props {
-  template: CharacterTemplate;
+  templateId: string;
   selected?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   selected: false,
+});
+
+// Get template data from service using the ID
+const template = computed(() => {
+  return characterTemplatesService.getTemplateById(props.templateId);
+});
+
+// Check if template is loaded
+const isTemplateLoaded = computed(() => {
+  return template.value !== null && template.value !== undefined;
 });
 
 const emit = defineEmits<{
@@ -83,7 +94,7 @@ const handleImageError = (event: Event) => {
   // Add initials
   const initials = document.createElement('span');
   initials.className = 'initials';
-  initials.textContent = getTemplateInitials(props.template.name);
+  initials.textContent = getTemplateInitials(template.value?.name || '');
   placeholder.appendChild(initials);
 
   // Replace the image with the placeholder
@@ -94,68 +105,79 @@ const handleImageError = (event: Event) => {
 <template>
   <div
     class="template-card"
-    :class="{ 'selected': selected }"
+    :class="{ 'selected': selected, 'loading': !isTemplateLoaded }"
     @click="handleClick"
   >
-    <img
-        v-if="template.avatar"
-        :src="template.avatar"
-        :alt="template.name"
-        class="template-image"
-        @error="handleImageError"
-    />
-    <div class="template-info">
-      <div class="template-name" :title="template.name">
-        {{ template.name }}
-      </div>
-
-      <div v-if="template.behavior" class="template-behavior">
-        {{ formatBehavior(template.behavior) }}
-      </div>
-
-      <div v-if="template.category" class="template-category">
-        {{ template.category }}
-      </div>
-
-      <div v-if="template.level" class="template-level">
-        Level {{ template.level }}
-      </div>
-
-      <div class="template-details">
-        <span v-if="template.race" class="template-race">{{ template.race }}</span>
-        <span v-if="template.class" class="template-class">{{ template.class }}</span>
+    <!-- Loading state -->
+    <div v-if="!isTemplateLoaded" class="template-loading">
+      <div class="loading-placeholder">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="template-actions">
-      <button
-        v-if="template.id"
-        @click="handleCopyId"
-        class="action-btn copy-btn"
-        title="Copy Template ID"
-      >
-        📋
-      </button>
+    <!-- Template content -->
+    <template v-else>
+      <img
+          v-if="template.avatar"
+          :src="template.avatar"
+          :alt="template.name"
+          class="template-image"
+          @error="handleImageError"
+      />
+      <div class="template-info">
+        <div class="template-name" :title="template.name">
+          {{ template.name }}
+        </div>
 
-      <button
-        v-if="template.category"
-        @click="handleFilterByCategory"
-        class="action-btn filter-btn"
-        title="Filter by Category"
-      >
-        🏷️
-      </button>
+        <div v-if="template.behavior" class="template-behavior">
+          {{ formatBehavior(template.behavior) }}
+        </div>
 
-      <button
-        v-if="template.behavior"
-        @click="handleFilterByBehavior"
-        class="action-btn filter-btn"
-        title="Filter by Behavior"
-      >
-        🎭
-      </button>
-    </div>
+        <div v-if="template.category" class="template-category">
+          {{ template.category }}
+        </div>
+
+        <div v-if="template.level" class="template-level">
+          Level {{ template.level }}
+        </div>
+
+        <div class="template-details">
+          <span v-if="template.race" class="template-race">{{ template.race }}</span>
+          <span v-if="template.class" class="template-class">{{ template.class }}</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="template-actions">
+        <button
+          v-if="template.id"
+          @click="handleCopyId"
+          class="action-btn copy-btn"
+          title="Copy Template ID"
+        >
+          📋
+        </button>
+
+        <button
+          v-if="template.category"
+          @click="handleFilterByCategory"
+          class="action-btn filter-btn"
+          title="Filter by Category"
+        >
+          🏷️
+        </button>
+
+        <button
+          v-if="template.behavior"
+          @click="handleFilterByBehavior"
+          class="action-btn filter-btn"
+          title="Filter by Behavior"
+        >
+          🎭
+        </button>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -186,6 +208,47 @@ const handleImageError = (event: Event) => {
 .template-card.selected {
   border-color: #7fff16;
   box-shadow: 0 0 15px rgba(127, 255, 22, 0.3);
+}
+
+.template-card.loading {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.template-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 140px;
+}
+
+.loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(127, 255, 22, 0.3);
+  border-top: 2px solid #7fff16;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-size: 0.8rem;
+  color: rgba(250, 218, 149, 0.7);
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .template-image {

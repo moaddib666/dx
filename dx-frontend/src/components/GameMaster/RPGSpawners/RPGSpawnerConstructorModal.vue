@@ -151,7 +151,7 @@ onMounted(async () => {
           <div class="template-selection">
             <div v-if="selectedTemplate" class="selected-template">
               <RPGCharactersTemplatePresenter
-                :template="selectedTemplate"
+                :template-id="selectedTemplate.id"
                 :selected="true"
                 class="template-display"
                 @click="openTemplateModal"

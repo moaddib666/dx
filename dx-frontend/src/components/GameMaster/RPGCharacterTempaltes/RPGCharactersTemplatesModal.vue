@@ -37,7 +37,6 @@ const emit = defineEmits<{
 }>();
 
 // State
-const templates = ref<CharacterTemplate[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
@@ -54,7 +53,7 @@ const categories = ref<string[]>([]);
 
 // Filtered and sorted templates
 const filteredTemplates = computed(() => {
-  let result = templates.value;
+  let result = characterTemplatesService.getTemplates();
 
   // Apply search query (name, description, behavior, category)
   if (searchQuery.value.trim()) {
@@ -151,7 +150,6 @@ const onLoadingStarted = () => {
 };
 
 const onTemplatesLoaded = (loadedTemplates: CharacterTemplate[]) => {
-  templates.value = loadedTemplates;
   isLoading.value = false;
 
   // Extract unique behaviors for the filter
@@ -402,7 +400,7 @@ onBeforeUnmount(() => {
         <RpgCharactersTemplatePresenter
           v-for="template in filteredTemplates"
           :key="template.id || template.name"
-          :template="template"
+          :template-id="template.id"
           :selected="template.id === props.selectedTemplateId"
           class="template-card"
           @click="selectTemplate(template)"
