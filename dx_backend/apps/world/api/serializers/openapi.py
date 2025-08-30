@@ -211,12 +211,6 @@ class CharacterOnPositionSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'is_active', "avatar", 'npc', 'alive')
 
 
-class NPCSpawnerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = NPCSpawner
-        fields = ('id', 'is_active', 'character_template')
-
-
 class WorldPositionSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -228,7 +222,6 @@ class WorldPositionSerializer(serializers.ModelSerializer):
     location = serializers.UUIDField(source='sub_location.location_id')
     characters = serializers.SerializerMethodField()
     characters_on_position = serializers.SerializerMethodField()
-    npc_spawners = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
     anomalies = serializers.SerializerMethodField()
 
@@ -236,17 +229,7 @@ class WorldPositionSerializer(serializers.ModelSerializer):
         model = Position
         fields = (
             'id', 'grid_x', 'grid_y', 'grid_z', 'sub_location', "location", 'labels', 'connections', 'characters',
-            'characters_on_position', "image", 'is_safe', 'anomalies', 'npc_spawners')
-
-    @extend_schema_field(NPCSpawnerSerializer(many=True))
-    def get_npc_spawners(self, obj):
-        """Retrieve all NPC spawners in the current position."""
-        return [
-            NPCSpawnerSerializer(t).data for t in
-            obj.spawner_set.filter(
-                campaign=self._client.current_campaign,
-            ).instance_of(NPCSpawner)
-        ]
+            'characters_on_position', "image", 'is_safe', 'anomalies')
 
     @extend_schema_field(serializers.ListField(child=serializers.UUIDField()))
     def get_anomalies(self, obj):
