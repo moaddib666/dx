@@ -15,6 +15,7 @@ from apps.game.services.action import special
 from apps.game.services.action.factory import GameMasterActionFactory
 from apps.game.services.character.core import CharacterService
 from apps.gamemaster.tools import ACTION_PIPELINE_TOOL
+from ..serializers.cycle import GameCycleSerializer
 from ..serializers.openapi import CharacterActionSerializer, GameMasterCharacterActionLogSerializer, \
     RegisterImpactActionSerializer, GameMasterCharacterActionSerializer, SpecialActionSerializer, \
     CharacterActionLogSerializer, DiceRollResultSerializer
@@ -129,21 +130,25 @@ class CharacterActionsViewSet(
 
         current_cycle = Cycle.objects.current(campaign=campaign)
         svc = ACTION_PIPELINE_TOOL.cycle_player_factory(
-            cycle=current_cycle, 
+            cycle=current_cycle,
             factory=ACTION_PIPELINE_TOOL.action_factory
         )
         cycle = svc.play()
         return Response(data={'id': cycle.id})
 
+    @extend_schema(
+        responses={
+            200: GameCycleSerializer(),
+        }
+    )
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def current_cycle(self, request):
         # Get the campaign from the user's main character
         campaign = None
         if request.user.is_authenticated and hasattr(request.user, 'main_character') and request.user.main_character:
             campaign = request.user.main_character.campaign
-
         cycle = Cycle.objects.current(campaign=campaign)
-        return Response(data={'id': cycle.id})
+        return Response(data=GameCycleSerializer(cycle).data)
 
     @action(detail=False, methods=['get'], permission_classes=[permissions.IsAdminUser])
     def scheduled_actions(self, request):
@@ -238,6 +243,7 @@ class GameMasterActionsViewSet(
             cycle__campaign=campaign,
             cycle__isnull=False,
         )
+
     @action(detail=False, methods=['post'], permission_classes=[permissions.IsAdminUser],
             serializer_class=RegisterImpactActionSerializer)
     @transaction.atomic
