@@ -156,12 +156,6 @@ export class WorldSpawnersService {
         return this.genericSpawners.filter(spawner => spawner.position === positionId);
     }
 
-    /**
-     * Get spawners by campaign ID
-     */
-    getSpawnersByCampaign(campaignId: string): GenericSpawner[] {
-        return this.genericSpawners.filter(spawner => spawner.campaign === campaignId);
-    }
 
     /**
      * Get active spawners only
@@ -176,7 +170,6 @@ export class WorldSpawnersService {
     async createNPCSpawner(spawnerData: {
         position: string;
         character_template: string;
-        campaign: string;
         dimension?: number;
         is_active?: boolean;
         spawn_limit?: number;
@@ -188,7 +181,6 @@ export class WorldSpawnersService {
             const request: NPCGenericSpawnerRequest = {
                 position: spawnerData.position,
                 character_template: spawnerData.character_template,
-                campaign: spawnerData.campaign,
                 dimension: spawnerData.dimension,
                 is_active: spawnerData.is_active ?? true,
                 spawn_limit: spawnerData.spawn_limit ?? 1,

@@ -165,7 +165,6 @@
       <RPGSpawnerConstructorModal
           v-if="showSpawnerModal"
           :position-id="spawnerModalData.positionId"
-          :campaign-id="spawnerModalData.campaignId"
           :npc-spawner-id="spawnerModalData.npcSpawnerId"
           @spawner-created="onSpawnerCreated"
           @spawner-updated="onSpawnerUpdated"
@@ -267,7 +266,6 @@ export default {
       showSpawnerModal: false,
       spawnerModalData: {
         positionId: null,
-        campaignId: 'current',
         npcSpawnerId: null
       }
     };

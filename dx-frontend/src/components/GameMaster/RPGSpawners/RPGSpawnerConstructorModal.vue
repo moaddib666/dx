@@ -27,7 +27,6 @@ interface CharacterTemplate {
 
 interface Props {
   positionId: string;
-  campaignId: string;
   npcSpawnerId?: string;
 }
 
@@ -93,7 +92,6 @@ const createSpawner = async () => {
     const spawnerData = {
       position: props.positionId,
       character_template: selectedTemplate.value.id,
-      campaign: props.campaignId,
       dimension: dimensionId.value || undefined,
       is_active: isActive.value,
       spawn_limit: spawnLimit.value,
