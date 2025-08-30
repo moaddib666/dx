@@ -64,8 +64,16 @@ class GameMasterCharacterActionLogSerializer(serializers.ModelSerializer):
         }
 
 
+class ActionCycleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CharacterAction.cycle.field.related_model
+        fields = ['id', 'number', 'campaign']
+        read_only_fields = ['id', 'number', 'campaign']
+
+
 class CharacterActionLogSerializer(serializers.ModelSerializer):
     impacts = CharacterLogActionImpactSerializer(many=True, read_only=True)
+    cycle = ActionCycleSerializer(read_only=True)
 
     class Meta:
         model = CharacterAction
