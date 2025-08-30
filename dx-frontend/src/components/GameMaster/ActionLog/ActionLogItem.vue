@@ -89,7 +89,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import SmallCharPreview from './SmallCharPreview.vue';
 import ImpactComponent from './ImpactComponent.vue';
 import SkillIcon from "@/components/Action/ActionIcon.vue";
@@ -98,32 +98,74 @@ import DiceComponent from "@/components/Dice/DiceComponent.vue";
 import InspectionResult from "@/components/GameMaster/ActionLog/InspectionResult.vue";
 import SnatchAction from "@/components/GameMaster/ActionLog/SnatchAction.vue";
 
-export default {
-  name: 'ActionLogItem',
-  components: {
-    SnatchAction,
-    InspectionResult,
-    DiceComponent,
-    ActionIconMini,
-    SkillIcon,
-    SmallCharPreview,
-    ImpactComponent,
-  },
-  props: {
-    action: Object,
-    gmMode: {
-      type: Boolean,
-      default: false,
-    }
-  },
-  methods: {
-    mapTargetById(id) {
-      return this.action.targets.find(target => target.id === id);
-    },
-    handleSelect(id) {
-      console.log('Selected ID:', id);
-    },
-  },
+// TypeScript Interfaces
+interface Character {
+  id: string | number;
+  name: string;
+  npc?: boolean;
+}
+
+interface Skill {
+  id: string | number;
+  name: string;
+  // Add other skill properties as needed
+}
+
+interface Cycle {
+  id: string | number;
+  // Add other cycle properties as needed
+}
+
+interface DiceRollResult {
+  // Define dice roll result properties as needed
+  [key: string]: any;
+}
+
+interface Impact {
+  id: string | number;
+  target: Character;
+  type: string;
+  violation: string;
+  size: string;
+  dice_roll_result?: DiceRollResult;
+}
+
+interface ActionData {
+  characters?: Character[];
+  targets?: Character[];
+  [key: string]: any;
+}
+
+interface Action {
+  id: string | number;
+  action_type: string;
+  initiator: Character;
+  targets?: Character[];
+  impacts?: Impact[];
+  skill?: Skill;
+  cycle: Cycle;
+  accepted: boolean;
+  performed: boolean;
+  data?: ActionData;
+}
+
+interface Props {
+  action: Action;
+  gmMode?: boolean;
+}
+
+// Props definition
+const props = withDefaults(defineProps<Props>(), {
+  gmMode: false
+});
+
+// Methods
+const mapTargetById = (id: string | number): Character | undefined => {
+  return props.action.targets?.find(target => target.id === id);
+};
+
+const handleSelect = (id: string | number): void => {
+  console.log('Selected ID:', id);
 };
 </script>
 

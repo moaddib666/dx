@@ -72,13 +72,6 @@ export default {
 </script>
 
 <style scoped>
-.action-log {
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 0.75rem;
-  background: #1a1a1a;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
 
 .action-log-header {
   display: flex;
@@ -106,14 +99,10 @@ export default {
 .action-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
 }
 
 .cycle-group {
-  border: 1px solid #555;
-  border-radius: 4px;
-  background: #1f1f1f;
-  padding: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .cycle-header {
