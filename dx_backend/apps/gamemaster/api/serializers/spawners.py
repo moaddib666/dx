@@ -61,6 +61,7 @@ class NPCGenericSpawnerSerializer(serializers.ModelSerializer):
             "id",
             "next_spawn_cycle_number",
             "spawned_entities",
+            "campaign",
         ]
 
 
@@ -80,6 +81,7 @@ class NPCSpawnerCreateSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "is_active",
+            "campaign",
         ]
 
 

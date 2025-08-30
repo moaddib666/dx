@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions
+from rest_framework import serializers as drf_serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -125,4 +126,26 @@ class GameMasterNPCSpawnerViewSet(ModelViewSet):
                 queryset = queryset.filter(campaign=self.request.user.current_campaign)
         return queryset
 
+    def perform_create(self, serializer):
+        """
+        Override to automatically set campaign from current user's current_campaign.
+        """
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            if self.request.user.current_campaign:
+                serializer.save(campaign=self.request.user.current_campaign)
+            else:
+                raise drf_serializers.ValidationError("User must have a current campaign to create spawners.")
+        else:
+            raise drf_serializers.ValidationError("User must be authenticated and have a current campaign.")
 
+    def perform_update(self, serializer):
+        """
+        Override to automatically set campaign from current user's current_campaign.
+        """
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'current_campaign'):
+            if self.request.user.current_campaign:
+                serializer.save(campaign=self.request.user.current_campaign)
+            else:
+                raise drf_serializers.ValidationError("User must have a current campaign to update spawners.")
+        else:
+            raise drf_serializers.ValidationError("User must be authenticated and have a current campaign.")
