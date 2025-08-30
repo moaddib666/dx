@@ -1,7 +1,7 @@
 <template>
   <div class="test-screen">
     <HeroBackground></HeroBackground>
-    <RPGNPCSpawnerConstructor position-id="111" campaign-id="111"/>
+    <RpgSpawnerConstructorModal position-id="111"/>
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { ref } from 'vue'
 import HeroBackground from "@/components/WhatIsIt/HeroBackground.vue"
 import RPGCharactersTemplatesModal from "@/components/GameMaster/RPGCharacterTempaltes/RPGCharactersTemplatesModal.vue";
-import RPGNPCSpawnerConstructor from "@/components/GameMaster/RPGSpawners/RPGNPCSpawnerConstructor.vue";
+import RpgSpawnerConstructorModal from "@/components/GameMaster/RPGSpawners/RPGSpawnerConstructorModal.vue";
 </script>
 
 <style scoped>
