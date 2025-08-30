@@ -1,7 +1,14 @@
 <template>
   <div class="dashboard">
     <!-- Left Full Height Section -->
-    <ActionLog class="left-section" :actions="actions" :gmMode="true" @refresh="refreshActions"/>
+    <ActionLog
+      class="left-section"
+      :actions="actions"
+      :gmMode="true"
+      :characters="characters"
+      :npc-characters="npcCharacters"
+      @refresh="refreshActions"
+    />
     <!-- Center Full Height Section -->
     <div class="center-section">
       <!-- Top Bar -->

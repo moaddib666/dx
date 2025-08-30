@@ -4,6 +4,15 @@
       <h3>Action Log</h3>
       <button class="refresh-button" @click="$emit('refresh')">Refresh</button>
     </div>
+
+    <!-- Character Filter Component -->
+    <ActionLogCharacterFilter
+      v-if="characters && characters.length > 0"
+      :characters="characters"
+      :npc-characters="npcCharacters"
+      @filter-change="handleFilterChange"
+    />
+
     <div v-if="sortedCycleKeys.length > 0" class="action-list">
       <div v-for="cycleId in sortedCycleKeys" :key="cycleId" class="cycle-group">
         <div class="cycle-header">Cycle: {{ cycleId }}</div>
@@ -27,11 +36,13 @@
 
 <script>
 import ActionLogItem from "./ActionLogItem.vue";
+import ActionLogCharacterFilter from "./ActionLogCharacterFilter.vue";
 
 export default {
   name: "ActionLog",
   components: {
     ActionLogItem,
+    ActionLogCharacterFilter,
   },
   props: {
     actions: {
@@ -41,11 +52,43 @@ export default {
     gmMode: {
       type: Boolean,
       default: false,
+    },
+    characters: {
+      type: Array,
+      default: () => [],
+    },
+    npcCharacters: {
+      type: Array,
+      default: () => [],
     }
   },
+  data() {
+    return {
+      selectedCharacterIds: [],
+    };
+  },
   computed: {
+    filteredActions() {
+      if (!this.selectedCharacterIds || this.selectedCharacterIds.length === 0) {
+        return this.actions;
+      }
+
+      return this.actions.filter(action => {
+        // Check if initiator matches any of the filter IDs
+        if (this.selectedCharacterIds.includes(action.initiator.id)) {
+          return true;
+        }
+
+        // Check if any target matches any of the filter IDs
+        if (action.targets && action.targets.length > 0) {
+          return action.targets.some(target => this.selectedCharacterIds.includes(target.id));
+        }
+
+        return false;
+      });
+    },
     groupedActions() {
-      return this.actions.reduce((groups, action) => {
+      return this.filteredActions.reduce((groups, action) => {
         const cycleNumber = action.cycle.number;
         if (!groups[cycleNumber]) {
           groups[cycleNumber] = [];
@@ -66,6 +109,9 @@ export default {
     },
     handleTargetSelect(id) {
       console.log("Selected Target ID:", id);
+    },
+    handleFilterChange(characterIds) {
+      this.selectedCharacterIds = characterIds;
     },
   },
 };
