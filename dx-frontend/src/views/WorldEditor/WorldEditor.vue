@@ -266,6 +266,7 @@ export default {
       showSpawnerModal: false,
       spawnerModalData: {
         positionId: null,
+        campaignId: 'current',
         npcSpawnerId: null
       }
     };
