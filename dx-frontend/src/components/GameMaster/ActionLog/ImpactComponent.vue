@@ -44,11 +44,9 @@ const handleSelect = (id: string) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1c1c1c;
-  border: 1px solid #444;
   border-radius: 4px;
-  padding: 0.5rem;
   gap: 0.25rem;
+  padding: 0.1rem 0.3rem;
   font-size: 0.8rem;
   margin: 0.25rem 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
@@ -77,7 +75,7 @@ const handleSelect = (id: string) => {
   color: #ffcc00;
   margin-right: auto;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  font-size: 2rem;
+  font-size: 1.7rem;
   line-height: 1;
 }
 </style>

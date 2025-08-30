@@ -1,40 +1,42 @@
 <template>
-  <div class="action-log-item">
-    <AvatarImage :char-id="action.initiator.id" :gm-mode="true" class="initiator-image" v-if="action.initiator"/>
-    <!-- TODO: Add support multitarget actions -->
-    <AvatarImage v-if="hasTarget"
-                 :char-id="action.targets[0].id"
-                 :gm-mode="true" class="target-image"/>
-    <div class="npc-label" v-if="action.initiator.npc">NPC</div>
+  <div class="action-log--container">
+    <div class="action-log-item">
+      <AvatarImage :char-id="action.initiator.id" :gm-mode="true" class="initiator-image" v-if="action.initiator"/>
+      <!-- TODO: Add support multitarget actions -->
+      <AvatarImage v-if="hasTarget"
+                   :char-id="action.targets[0].id"
+                   :gm-mode="true" class="target-image"/>
+      <div class="npc-label" v-if="action.initiator.npc">NPC</div>
 
 
-    <div class="not-accepted-label status-label" v-if="!action.accepted">Not Accepted</div>
-    <div class="not-performed-label status-label" v-else-if="!action.performed">Not Performed</div>
+      <div class="not-accepted-label status-label" v-if="!action.accepted">Not Accepted</div>
+      <div class="not-performed-label status-label" v-else-if="!action.performed">Not Performed</div>
 
-    <GameMasterActionLogImage :action="action" class="action-image"/>
-    <div class="action-content">
-      <CharacterInlineDetails @click="() => {console.debug('selected', action.initiator.id)}" class="info"
-                              id="initiator-info"
-                              :char-id="action.initiator.id" :gm-mode="true"/>
-      <div id="action-information">
-        <span>{{ getActionTypeTranslation() }}</span>
-        <h3 v-if="action.skill">{{ action.skill.name }}</h3>
+      <GameMasterActionLogImage :action="action" class="action-image"/>
+      <div class="action-content">
+        <CharacterInlineDetails @click="() => {console.debug('selected', action.initiator.id)}" class="info"
+                                id="initiator-info"
+                                :char-id="action.initiator.id" :gm-mode="true"/>
+        <div id="action-information">
+          <span>{{ getActionTypeTranslation() }}</span>
+          <h3 v-if="action.skill">{{ action.skill.name }}</h3>
+        </div>
+
+        <CharacterInlineDetails @click="() => { console.debug('selected',target.id )}" class="info" id="target-info"
+                                :char-id="target.id" :gm-mode="true" v-if="hasTarget"/>
+        <div v-else class="info" id="target-info"></div>
       </div>
-
-      <CharacterInlineDetails @click="() => { console.debug('selected',target.id )}" class="info" id="target-info"
-                              :char-id="target.id" :gm-mode="true" v-if="hasTarget"/>
-      <div v-else class="info" id="target-info"></div>
     </div>
+    <div v-if="action.performed" class="impacts">
+      <ImpactComponent
+          v-for="impact in action.impacts.filter( impact => impact.size && impact.size > 0 )"
+          :key="impact.id"
+          :impact="impact"
 
-  </div>
-  <div v-if="action.performed" class="impacts">
-    <ImpactComponent
-        v-for="impact in action.impacts"
-        :key="impact.id"
-        :impact="impact"
-    />
-    <!--          <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
-    <!--                        :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
+      />
+      <!--          <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"-->
+      <!--                        :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>-->
+    </div>
   </div>
 
 </template>
@@ -45,7 +47,7 @@ import {GameMasterCharacterActionLog} from "@/api/dx-backend";
 import GameMasterActionLogImage from "@/components/GameMaster/ActionLog/GameMasterActionLogImage.vue";
 import {computed} from "vue";
 import CharacterInlineDetails from "@/components/Character/CharacterInlineDetails.vue";
-import { useI18n } from 'vue-i18n';
+import {useI18n} from 'vue-i18n';
 import ImpactComponent from "@/components/GameMaster/ActionLog/ImpactComponent.vue";
 import SnatchAction from "@/components/GameMaster/ActionLog/SnatchAction.vue";
 
@@ -62,7 +64,7 @@ const props = withDefaults(defineProps<Props>(), {
 const action = props.action;
 
 // i18n setup
-const { t } = useI18n();
+const {t} = useI18n();
 
 const hasTarget = computed(() => {
   return action.targets && action.targets.length > 0 && action.targets[0].id != action.initiator.id
@@ -88,17 +90,31 @@ const emit = defineEmits<{
 </script>
 
 <style scoped>
-.action-log-item {
+.action-log--container {
   display: flex;
+  flex-direction: column;
+  margin-bottom: 0.2rem;
   border: 1px solid #444;
   border-radius: 4px;
-  padding: 0.5rem;
   background: #1c1c1c;
+  font-size: 0.68rem;
+}
+
+.action-log-item {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
   position: relative;
-  min-height: 10vh;
-  font-size: 0.8rem;
+  min-height: 6.5vh;
+
+}
+
+.impacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border-top: 1px solid #444;
+  margin: 0;
+  padding-left: 2.3em;
 }
 
 .initiator-image {
@@ -127,14 +143,13 @@ const emit = defineEmits<{
 .npc-label {
   background: rgba(255, 204, 0, 1);
   color: #1c1c1c;
-  font-size: 0.6rem;
+  font-size: 0.5rem;
   font-weight: bold;
   padding: 0.1rem 0.3rem;
   border-radius: 4px;
-  margin-left: 0.3rem;
   position: absolute;
-  top: 0.3rem;
-  left: 0.3rem;
+  top: 0.1rem;
+  left: 0.1rem;
 }
 
 
@@ -188,7 +203,7 @@ const emit = defineEmits<{
   max-width: 25%;
   justify-content: flex-end;
   flex-wrap: wrap;
-  flex:1;
+  flex: 1;
 }
 
 #initiator-info {
@@ -217,5 +232,9 @@ const emit = defineEmits<{
 
 .info {
   cursor: pointer;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

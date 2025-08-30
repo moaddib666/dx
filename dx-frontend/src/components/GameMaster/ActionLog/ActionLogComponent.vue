@@ -118,7 +118,10 @@ export default {
 </script>
 
 <style scoped>
-
+.action-log {
+  min-width: 300px;
+  max-width: 400px;
+}
 .action-log-header {
   display: flex;
   justify-content: space-between;
