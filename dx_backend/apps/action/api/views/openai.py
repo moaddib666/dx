@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, permissions, serializers
@@ -69,21 +70,26 @@ class CharacterActionsLogViewSet(
         main_character = user.main_character
         # Get the campaign from the main character
         campaign = self.request.user.current_campaign
+        cycles = Cycle.objects.filter(campaign=campaign).order_by('-number')[:3]
         current_cycle = Cycle.objects.current(campaign=campaign)
-        depth = 3  # 3 cycles back
-        cycle__in = []
-        for i in range(depth):
-            computed_cycle = current_cycle.id - i
-            if computed_cycle > 0:
-                cycle__in.append(computed_cycle)
-
-        qs = super().get_queryset().filter(
+        # FIXME:
+        #  - show all actions for last 3 cycles
+        #  - Filter our actions form the current cycle that was not initiated by the main character
+        last2cycles = super().get_queryset().filter(
+            cycle__campaign=campaign,
             accepted=True,
-            performed=True,
-            cycle__in=cycle__in,
+            cycle__in=cycles[:2],
             position=main_character.position,
         )
+        current_cycle_qs = super().get_queryset().filter(
+            cycle=current_cycle,
+            accepted=True,
+        ).filter(
+            initiator=main_character
+        )
+        qs = (last2cycles | current_cycle_qs).distinct().order_by('-cycle', 'accepted', 'order')
         return qs
+
 
 
 class CharacterActionsViewSet(

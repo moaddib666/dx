@@ -83,6 +83,7 @@ class CharacterActionLogSerializer(serializers.ModelSerializer):
     impacts = CharacterLogActionImpactSerializer(many=True, read_only=True)
     cycle = ActionCycleSerializer(read_only=True)
     skill = SkillSerializer(read_only=True)
+    targets = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = CharacterAction
@@ -94,6 +95,10 @@ class CharacterActionLogSerializer(serializers.ModelSerializer):
             'data',
             'impacts',
             'cycle',
+            'performed',
+            'accepted',
+            'targets',
+            'order',
         ]
 
 
