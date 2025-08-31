@@ -34,8 +34,8 @@
           :impact="impact"
 
       />
-                <SnatchAction class="snatch-action-impact" v-if="action.action_type === 'SNATCH_ITEM' && action.data"
-                              :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>
+      <SnatchAction class="snatch-action-impact" v-if="action.action_type === ActionSpecialRetrieveActionTypeEnum.SnatchItem && action.data"
+                    :data="hasTarget" v-for="hasTarget in action.data.targets" :key="hasTarget.id"/>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import AvatarImage from "@/components/Character/AvatarImage.vue";
-import {GameMasterCharacterActionLog} from "@/api/dx-backend";
+import {ActionSpecialRetrieveActionTypeEnum, GameMasterCharacterActionLog} from "@/api/dx-backend";
 import GameMasterActionLogImage from "@/components/GameMaster/ActionLog/GameMasterActionLogImage.vue";
 import {computed} from "vue";
 import CharacterInlineDetails from "@/components/Character/CharacterInlineDetails.vue";
