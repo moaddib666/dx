@@ -64,10 +64,15 @@ function shouldInsertSeparator(index: number): boolean {
 
 .cycle-separator {
   font-weight: bold;
-  color: yellow;
-  margin: 0.5rem 0;
-  border-top: 0.2rem solid rgba(255, 255, 255, 0.5);
-  padding-top: 0.5rem;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-size: 0.6rem;
+  text-shadow: 1px 1px 2px #000;
+  margin: 0.2rem 0;
+  border-top: 1px solid #444;
+  padding: 0.25rem 0.5rem;
+  background: #2a2a2a;
+  border-radius: 4px 4px 0 0;
 }
 
 .no-actions {
