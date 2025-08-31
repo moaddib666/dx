@@ -613,5 +613,159 @@
       "spells": "Spells",
       "spellLimitWarning": "You Have Chosen Maximum allowed numbers of spell good to go to the next step"
     }
+  },
+  "actionLog": {
+    "templates": {
+      "useSkill": {
+        "base": " using the {skill} on ",
+        "noTarget": " using the {skill}.",
+        "noSkill": " performing an action on ",
+        "self": " using the {skill} on {target}."
+      },
+      "useItem": {
+        "base": " using the {item} on ",
+        "noTarget": " using the {item}.",
+        "self": " using the {item} on {target}."
+      },
+      "snatchItem": {
+        "base": " crawling and want to snatch something from the ",
+        "noTarget": " attempting to snatch an item.",
+        "self": " examining their own belongings."
+      },
+      "move": {
+        "base": " moving to a new position.",
+        "noTarget": " moving around.",
+        "self": " repositioning themselves."
+      },
+      "diceRoll": {
+        "base": " rolling dice.",
+        "noTarget": " making a dice roll.",
+        "self": " rolling dice for themselves."
+      },
+      "inspect": {
+        "base": " inspecting ",
+        "noTarget": " looking around carefully.",
+        "self": " examining {target}."
+      },
+      "gift": {
+        "base": " giving a gift to ",
+        "noTarget": " preparing a gift.",
+        "self": " keeping something for {target}."
+      },
+      "default": {
+        "base": " performing {actionType} on ",
+        "noTarget": " performing {actionType}.",
+        "self": " performing {actionType} on {target}."
+      }
+    },
+    "outcomes": {
+      "criticalSuccess": {
+        "damage": {
+          "1": "The {skill} been resonating with the Dimensional Anomaly and been increased x2 - {outcome}! Takes {formattedSize} devastating damage by {violation}",
+          "2": "With perfect precision, the {skill} strikes true - {outcome}! Takes {formattedSize} devastating damage from {violation}",
+          "3": "The attack resonates with incredible power - {outcome}! Suffers {formattedSize} critical damage by {violation}"
+        },
+        "heal": {
+          "1": "The healing energy surges with incredible power - {outcome}! Recovers {formattedSize} health through {violation}",
+          "2": "Divine intervention amplifies the healing - {outcome}! Is restored by {formattedSize} health via {violation}"
+        },
+        "shield": {
+          "1": "Exceptional success! Experiences {formattedSizeWithPrep} {type} effect from {violation} - {outcome}"
+        },
+        "default": {
+          "1": "Exceptional success! Experiences {formattedSizeWithPrep} {type} effect from {violation} - {outcome}"
+        }
+      },
+      "goodLuck": {
+        "damage": {
+          "1": "Fortune favors the strike - {outcome}! Takes {formattedSize} damage from {violation}",
+          "2": "A lucky hit connects well - {outcome}! Suffers {formattedSize} damage by {violation}"
+        },
+        "heal": {
+          "1": "The healing flows smoothly - {outcome}! Recovers {formattedSize} health through {violation}"
+        },
+        "default": {
+          "1": "Things go better than expected - {outcome}! Receives {formattedSizeWithPrep} {type} effect from {violation}"
+        }
+      },
+      "baseValue": {
+        "damage": {
+          "1": "The {skill} punched in face with {formattedSize} damage by {violation}",
+          "2": "A solid hit connects - takes {formattedSize} damage from {violation}",
+          "3": "The attack lands as expected, dealing {formattedSize} damage via {violation}"
+        },
+        "heal": {
+          "1": "The {item} healed for {formattedSize} health by {violation}",
+          "2": "Steady healing energy flows, restoring {formattedSize} health through {violation}"
+        },
+        "shield": {
+          "1": "The action succeeds normally, providing {formattedSizeWithPrep} protection via {violation}"
+        },
+        "default": {
+          "1": "The action succeeds normally, affecting with {formattedSizeWithPrep} {type} via {violation}"
+        }
+      },
+      "badLuck": {
+        "damage": {
+          "1": "While casting the initiator was distracted by the noise and the {skill} missed but they were scratched for {formattedSize} damage by {violation}",
+          "2": "Bad timing affects the attack - {outcome}! Only takes {formattedSize} glancing damage from {violation}",
+          "3": "The strike goes awry but still connects for {formattedSize} damage via {violation}"
+        },
+        "heal": {
+          "1": "The healing is disrupted but still provides {formattedSize} health through {violation}",
+          "2": "Despite complications, {formattedSize} health is restored via {violation}"
+        },
+        "shield": {
+          "1": "Things don't go as planned - {outcome}! Still gains {formattedSizeWithPrep} protection from {violation}"
+        },
+        "default": {
+          "1": "Things don't go as planned - {outcome}! Still receives {formattedSizeWithPrep} {type} from {violation}"
+        }
+      },
+      "criticalFail": {
+        "damage": {
+          "1": "While casting the initiator was distracted by the noise and the {skill} missed and hit themselves for {formattedSize} damage by {violation}",
+          "2": "Disaster strikes! - {outcome}! The attack backfires, causing {formattedSize} damage to the initiator via {violation}",
+          "3": "Complete failure! The action goes horribly wrong, resulting in {formattedSize} self-inflicted damage from {violation}"
+        },
+        "heal": {
+          "1": "The healing magic goes awry - {outcome}! Instead of healing, {formattedSize} damage is dealt via {violation}",
+          "2": "Magical backlash occurs, causing {formattedSize} damage instead of healing through {violation}"
+        },
+        "default": {
+          "1": "Everything goes wrong - {outcome}! The action backfires with {formattedSizeWithPrep} {type} effect from {violation}"
+        }
+      },
+      "CRITICAL_SUCCESS": "Critical Success",
+      "GOOD_LUCK": "Good Luck",
+      "BASE_VALUE": "Base Value",
+      "BAD_LUCK": "Bad Luck",
+      "CRITICAL_FAIL": "Critical Fail"
+    },
+    "impactTypes": {
+      "DAMAGE": "damage",
+      "HEAL": "heal",
+      "SHIELD": "shield"
+    },
+    "violationTypes": {
+      "PHYSICAL": "Physical",
+      "MAGICAL": "Magical",
+      "PSYCHIC": "Psychic",
+      "ELEMENTAL": "Elemental"
+    },
+    "actionTypes": {
+      "USE_SKILL": "Skill Usage",
+      "USE_ITEM": "Item Usage",
+      "SNATCH_ITEM": "Item Snatching",
+      "MOVE": "Movement",
+      "DICE_ROLL": "Dice Roll",
+      "INSPECT": "Inspection",
+      "GIFT": "Gift Giving"
+    },
+    "unknownSkill": "Unknown Skill",
+    "unknownItem": "Unknown Item",
+    "unknownOutcome": "Unknown outcome: {outcome}",
+    "noTemplate": "No template for outcome: {outcome}, impact: {impactType}",
+    "self": "themselves"
   }
 }

@@ -66,128 +66,128 @@ const hasNonSelfTargets = computed(() => {
   return hasTargets.value && !isSelfTargeting.value;
 });
 
-// Template definitions for different action types (without character names - handled by components)
-const actionTemplates = {
+// Template keys for different action types (to be translated)
+const actionTemplateKeys = {
   [ActionType5f8Enum.UseSkill]: {
-    base: " using the <span class='highlight-skill'>{skill}</span> on ",
-    noTarget: " using the <span class='highlight-skill'>{skill}</span>.",
-    noSkill: " performing an action on ",
-    self: " using the <span class='highlight-skill'>{skill}</span> on <span class='highlight-target'>self</span>."
+    base: "actionLog.templates.useSkill.base",
+    noTarget: "actionLog.templates.useSkill.noTarget",
+    noSkill: "actionLog.templates.useSkill.noSkill",
+    self: "actionLog.templates.useSkill.self"
   },
   [ActionType5f8Enum.UseItem]: {
-    base: " using the <span class='highlight-item'>{item}</span> on ",
-    noTarget: " using the <span class='highlight-item'>{item}</span>.",
-    self: " using the <span class='highlight-item'>{item}</span> on <span class='highlight-target'>self</span>."
+    base: "actionLog.templates.useItem.base",
+    noTarget: "actionLog.templates.useItem.noTarget",
+    self: "actionLog.templates.useItem.self"
   },
   [ActionType5f8Enum.SnatchItem]: {
-    base: " crawling and want to snatch something from the ",
-    noTarget: " attempting to snatch an item.",
-    self: " examining their own belongings."
+    base: "actionLog.templates.snatchItem.base",
+    noTarget: "actionLog.templates.snatchItem.noTarget",
+    self: "actionLog.templates.snatchItem.self"
   },
   [ActionType5f8Enum.Move]: {
-    base: " moving to a new position.",
-    noTarget: " moving around.",
-    self: " repositioning themselves."
+    base: "actionLog.templates.move.base",
+    noTarget: "actionLog.templates.move.noTarget",
+    self: "actionLog.templates.move.self"
   },
   [ActionType5f8Enum.DiceRoll]: {
-    base: " rolling dice.",
-    noTarget: " making a dice roll.",
-    self: " rolling dice for themselves."
+    base: "actionLog.templates.diceRoll.base",
+    noTarget: "actionLog.templates.diceRoll.noTarget",
+    self: "actionLog.templates.diceRoll.self"
   },
   [ActionType5f8Enum.Inspect]: {
-    base: " inspecting ",
-    noTarget: " looking around carefully.",
-    self: " examining <span class='highlight-target'>themselves</span>."
+    base: "actionLog.templates.inspect.base",
+    noTarget: "actionLog.templates.inspect.noTarget",
+    self: "actionLog.templates.inspect.self"
   },
   [ActionType5f8Enum.Gift]: {
-    base: " giving a gift to ",
-    noTarget: " preparing a gift.",
-    self: " keeping something for <span class='highlight-target'>themselves</span>."
+    base: "actionLog.templates.gift.base",
+    noTarget: "actionLog.templates.gift.noTarget",
+    self: "actionLog.templates.gift.self"
   },
   default: {
-    base: " performing <span class='highlight-skill'>{actionType}</span> on ",
-    noTarget: " performing <span class='highlight-skill'>{actionType}</span>.",
-    self: " performing <span class='highlight-skill'>{actionType}</span> on <span class='highlight-target'>self</span>."
+    base: "actionLog.templates.default.base",
+    noTarget: "actionLog.templates.default.noTarget",
+    self: "actionLog.templates.default.self"
   }
 };
 
-// Outcome templates based on dice roll results and impact types (without character names)
-const outcomeTemplates = {
+// Outcome template keys for different outcomes and impact types
+const outcomeTemplateKeys = {
   [OutcomeEnum.CriticalSuccess]: {
     [ImpactTypeEnum.Damage]: [
-      "The <span class='highlight-skill'>{skill}</span> been resonating with the Dimensional Anomaly and been increased x2 - <span class='highlight-outcome'>Critical Success</span>! Takes <span class='highlight-damage'>{formattedSize}</span> devastating damage by <span class='highlight-violation'>{violation}</span>",
-      "With perfect precision, the <span class='highlight-skill'>{skill}</span> strikes true - <span class='highlight-outcome'>Critical Success</span>! Takes <span class='highlight-damage'>{formattedSize}</span> devastating damage from <span class='highlight-violation'>{violation}</span>",
-      "The attack resonates with incredible power - <span class='highlight-outcome'>Critical Success</span>! Suffers <span class='highlight-damage'>{formattedSize}</span> critical damage by <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.criticalSuccess.damage.1",
+      "actionLog.outcomes.criticalSuccess.damage.2",
+      "actionLog.outcomes.criticalSuccess.damage.3"
     ],
     [ImpactTypeEnum.Heal]: [
-      "The healing energy surges with incredible power - <span class='highlight-outcome'>Critical Success</span>! Recovers <span class='highlight-heal'>{formattedSize}</span> health through <span class='highlight-violation'>{violation}</span>",
-      "Divine intervention amplifies the healing - <span class='highlight-outcome'>Critical Success</span>! Is restored by <span class='highlight-heal'>{formattedSize}</span> health via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.criticalSuccess.heal.1",
+      "actionLog.outcomes.criticalSuccess.heal.2"
     ],
     [ImpactTypeEnum.Shield]: [
-      "Exceptional success! Experiences <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> effect from <span class='highlight-violation'>{violation}</span> - <span class='highlight-outcome'>Critical Success</span>"
+      "actionLog.outcomes.criticalSuccess.shield.1"
     ],
     default: [
-      "Exceptional success! Experiences <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> effect from <span class='highlight-violation'>{violation}</span> - <span class='highlight-outcome'>Critical Success</span>"
+      "actionLog.outcomes.criticalSuccess.default.1"
     ]
   },
   [OutcomeEnum.GoodLuck]: {
     [ImpactTypeEnum.Damage]: [
-      "Fortune favors the strike - <span class='highlight-outcome'>Good Luck</span>! Takes <span class='highlight-damage'>{formattedSize}</span> damage from <span class='highlight-violation'>{violation}</span>",
-      "A lucky hit connects well - <span class='highlight-outcome'>Good Luck</span>! Suffers <span class='highlight-damage'>{formattedSize}</span> damage by <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.goodLuck.damage.1",
+      "actionLog.outcomes.goodLuck.damage.2"
     ],
     [ImpactTypeEnum.Heal]: [
-      "The healing flows smoothly - <span class='highlight-outcome'>Good Luck</span>! Recovers <span class='highlight-heal'>{formattedSize}</span> health through <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.goodLuck.heal.1"
     ],
     default: [
-      "Things go better than expected - <span class='highlight-outcome'>Good Luck</span>! Receives <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> effect from <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.goodLuck.default.1"
     ]
   },
   [OutcomeEnum.BaseValue]: {
     [ImpactTypeEnum.Damage]: [
-      "The <span class='highlight-skill'>{skill}</span> punched in face with <span class='highlight-damage'>{formattedSize}</span> damage by <span class='highlight-violation'>{violation}</span>",
-      "A solid hit connects - takes <span class='highlight-damage'>{formattedSize}</span> damage from <span class='highlight-violation'>{violation}</span>",
-      "The attack lands as expected, dealing <span class='highlight-damage'>{formattedSize}</span> damage via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.baseValue.damage.1",
+      "actionLog.outcomes.baseValue.damage.2",
+      "actionLog.outcomes.baseValue.damage.3"
     ],
     [ImpactTypeEnum.Heal]: [
-      "The <span class='highlight-item'>{item}</span> healed for <span class='highlight-heal'>{formattedSize}</span> health by <span class='highlight-violation'>{violation}</span>",
-      "Steady healing energy flows, restoring <span class='highlight-heal'>{formattedSize}</span> health through <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.baseValue.heal.1",
+      "actionLog.outcomes.baseValue.heal.2"
     ],
     [ImpactTypeEnum.Shield]: [
-      "The action succeeds normally, providing <span class='highlight-damage'>{formattedSizeWithPrep}</span> protection via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.baseValue.shield.1"
     ],
     default: [
-      "The action succeeds normally, affecting with <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.baseValue.default.1"
     ]
   },
   [OutcomeEnum.BadLuck]: {
     [ImpactTypeEnum.Damage]: [
-      "While casting the initiator was distracted by the noise and the <span class='highlight-skill'>{skill}</span> missed but they were scratched for <span class='highlight-damage'>{formattedSize}</span> damage by <span class='highlight-violation'>{violation}</span>",
-      "Bad timing affects the attack - <span class='highlight-outcome'>Bad Luck</span>! Only takes <span class='highlight-damage'>{formattedSize}</span> glancing damage from <span class='highlight-violation'>{violation}</span>",
-      "The strike goes awry but still connects for <span class='highlight-damage'>{formattedSize}</span> damage via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.badLuck.damage.1",
+      "actionLog.outcomes.badLuck.damage.2",
+      "actionLog.outcomes.badLuck.damage.3"
     ],
     [ImpactTypeEnum.Heal]: [
-      "The healing is disrupted but still provides <span class='highlight-heal'>{formattedSize}</span> health through <span class='highlight-violation'>{violation}</span>",
-      "Despite complications, <span class='highlight-heal'>{formattedSize}</span> health is restored via <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.badLuck.heal.1",
+      "actionLog.outcomes.badLuck.heal.2"
     ],
     [ImpactTypeEnum.Shield]: [
-      "Things don't go as planned - <span class='highlight-outcome'>Bad Luck</span>! Still gains <span class='highlight-damage'>{formattedSizeWithPrep}</span> protection from <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.badLuck.shield.1"
     ],
     default: [
-      "Things don't go as planned - <span class='highlight-outcome'>Bad Luck</span>! Still receives <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> from <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.badLuck.default.1"
     ]
   },
   [OutcomeEnum.CriticalFail]: {
     [ImpactTypeEnum.Damage]: [
-      "While casting the initiator was distracted by the noise and the <span class='highlight-skill'>{skill}</span> missed and hit themselves for <span class='highlight-damage'>{formattedSize}</span> damage by <span class='highlight-violation'>{violation}</span>",
-      "Disaster strikes! - <span class='highlight-outcome'>Critical Fail</span>! The attack backfires, causing <span class='highlight-damage'>{formattedSize}</span> damage to the initiator via <span class='highlight-violation'>{violation}</span>",
-      "Complete failure! The action goes horribly wrong, resulting in <span class='highlight-damage'>{formattedSize}</span> self-inflicted damage from <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.criticalFail.damage.1",
+      "actionLog.outcomes.criticalFail.damage.2",
+      "actionLog.outcomes.criticalFail.damage.3"
     ],
     [ImpactTypeEnum.Heal]: [
-      "The healing magic goes awry - <span class='highlight-outcome'>Critical Fail</span>! Instead of healing, <span class='highlight-damage'>{formattedSize}</span> damage is dealt via <span class='highlight-violation'>{violation}</span>",
-      "Magical backlash occurs, causing <span class='highlight-damage'>{formattedSize}</span> damage instead of healing through <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.criticalFail.heal.1",
+      "actionLog.outcomes.criticalFail.heal.2"
     ],
     default: [
-      "Everything goes wrong - <span class='highlight-outcome'>Critical Fail</span>! The action backfires with <span class='highlight-damage'>{formattedSizeWithPrep}</span> <span class='highlight-violation'>{type}</span> effect from <span class='highlight-violation'>{violation}</span>"
+      "actionLog.outcomes.criticalFail.default.1"
     ]
   }
 };
@@ -229,29 +229,31 @@ const replacePlaceholders = (template: string, data: Record<string, any>): strin
 // Generate action description (without character names - handled by components)
 const getActionTemplate = (): string => {
   const actionType = props.action.action_type || 'unknown';
-  const templates = actionTemplates[actionType] || actionTemplates.default;
+  const templateKeys = actionTemplateKeys[actionType] || actionTemplateKeys.default;
 
   const hasSkill = props.action.skill && props.action.skill.name;
 
-  let template: string;
+  let templateKey: string;
 
   if (!hasTargets.value) {
-    template = templates.noTarget || templates.base;
+    templateKey = templateKeys.noTarget || templateKeys.base;
   } else if (isSelfTargeting.value) {
-    template = templates.self || templates.base;
+    templateKey = templateKeys.self || templateKeys.base;
   } else if (actionType === ActionType5f8Enum.UseSkill && !hasSkill) {
-    template = templates.noSkill || templates.base;
+    templateKey = templateKeys.noSkill || templateKeys.base;
   } else {
-    template = templates.base;
+    templateKey = templateKeys.base;
   }
 
   const data = {
-    skill: hasSkill ? props.action.skill.name : t('actionLog.unknownSkill'),
-    item: t('actionLog.unknownItem'), // This would need to be passed from action data
-    actionType: t(`actionLog.actionTypes.${actionType}`) || actionType.replace(/([A-Z])/g, ' $1').trim()
+    skill: hasSkill ? `<span class="highlight-skill">${props.action.skill.name}</span>` : `<span class="highlight-skill">${t('actionLog.unknownSkill')}</span>`,
+    item: `<span class="highlight-item">${t('actionLog.unknownItem')}</span>`, // This would need to be passed from action data
+    actionType: `<span class="highlight-skill">${t(`actionLog.actionTypes.${actionType}`) || actionType.replace(/([A-Z])/g, ' $1').trim()}</span>`,
+    target: `<span class="highlight-target">${t('actionLog.self')}</span>`
   };
 
-  return replacePlaceholders(template, data);
+  const template = t(templateKey, data);
+  return template;
 };
 
 // Generate outcome description for each impact (without character names)
@@ -259,14 +261,14 @@ const getOutcomeTemplate = (impact: any): string => {
   const outcome = impact.dice_roll_result?.outcome;
   const impactType = impact.type;
 
-  // Use general outcome templates
-  const outcomeGroup = outcomeTemplates[outcome];
+  // Use general outcome template keys
+  const outcomeGroup = outcomeTemplateKeys[outcome];
   if (!outcomeGroup) return t('actionLog.unknownOutcome', { outcome });
 
-  const templates = outcomeGroup[impactType] || outcomeGroup.default;
-  if (!templates) return t('actionLog.noTemplate', { outcome, impactType });
+  const templateKeys = outcomeGroup[impactType] || outcomeGroup.default;
+  if (!templateKeys) return t('actionLog.noTemplate', { outcome, impactType });
 
-  const template = getRandomTemplate(templates);
+  const templateKey = getRandomTemplate(templateKeys);
 
   const size = impact.size || 0;
 
@@ -284,15 +286,16 @@ const getOutcomeTemplate = (impact: any): string => {
 
   const data = {
     size: size,
-    formattedSize: formatSize(size, 'damage'),
-    formattedSizeWithPrep: formatSizeWithPreposition(size, typeText),
-    type: typeText,
-    violation: violationText,
-    skill: props.action.skill?.name || t('actionLog.unknownSkill'),
-    item: t('actionLog.unknownItem') // This would need to be passed from action data
+    formattedSize: `<span class="highlight-${impactType === ImpactTypeEnum.Heal ? 'heal' : 'damage'}">${formatSize(size, typeText)}</span>`,
+    formattedSizeWithPrep: `<span class="highlight-${impactType === ImpactTypeEnum.Heal ? 'heal' : 'damage'}">${formatSizeWithPreposition(size, typeText)}</span>`,
+    type: `<span class="highlight-violation">${typeText}</span>`,
+    violation: `<span class="highlight-violation">${violationText}</span>`,
+    skill: `<span class="highlight-skill">${props.action.skill?.name || t('actionLog.unknownSkill')}</span>`,
+    item: `<span class="highlight-item">${t('actionLog.unknownItem')}</span>`, // This would need to be passed from action data
+    outcome: `<span class="highlight-outcome">${t(`actionLog.outcomes.${outcome}`)}</span>`
   };
 
-  return replacePlaceholders(template, data);
+  return t(templateKey, data);
 };
 </script>
 

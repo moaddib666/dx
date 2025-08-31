@@ -613,5 +613,159 @@
       "spells": "Заклинання",
       "spellLimitWarning": "Ви обрали максимальну дозволену кількість заклинань, можна переходити до наступного кроку."
     }
+  },
+  "actionLog": {
+    "templates": {
+      "useSkill": {
+        "base": " використовує {skill} на ",
+        "noTarget": " використовує {skill}.",
+        "noSkill": " виконує дію на ",
+        "self": " використовує {skill} на {target}."
+      },
+      "useItem": {
+        "base": " використовує {item} на ",
+        "noTarget": " використовує {item}.",
+        "self": " використовує {item} на {target}."
+      },
+      "snatchItem": {
+        "base": " повзає і хоче щось вихопити у ",
+        "noTarget": " намагається вихопити предмет.",
+        "self": " оглядає свої речі."
+      },
+      "move": {
+        "base": " переміщується на нову позицію.",
+        "noTarget": " рухається навколо.",
+        "self": " змінює свою позицію."
+      },
+      "diceRoll": {
+        "base": " кидає кубики.",
+        "noTarget": " робить кидок кубиків.",
+        "self": " кидає кубики для себе."
+      },
+      "inspect": {
+        "base": " оглядає ",
+        "noTarget": " уважно дивиться навколо.",
+        "self": " оглядає {target}."
+      },
+      "gift": {
+        "base": " дарує подарунок ",
+        "noTarget": " готує подарунок.",
+        "self": " залишає щось для {target}."
+      },
+      "default": {
+        "base": " виконує {actionType} на ",
+        "noTarget": " виконує {actionType}.",
+        "self": " виконує {actionType} на {target}."
+      }
+    },
+    "outcomes": {
+      "criticalSuccess": {
+        "damage": {
+          "1": "{skill} резонує з Вимірною Аномалією і посилюється в 2 рази - {outcome}! Отримує {formattedSize} нищівної шкоди від {violation}",
+          "2": "З ідеальною точністю {skill} влучає в ціль - {outcome}! Отримує {formattedSize} нищівної шкоди від {violation}",
+          "3": "Атака резонує з неймовірною силою - {outcome}! Зазнає {formattedSize} критичної шкоди від {violation}"
+        },
+        "heal": {
+          "1": "Цілюща енергія сягає неймовірної сили - {outcome}! Відновлює {formattedSize} здоров'я через {violation}",
+          "2": "Божественне втручання посилює зцілення - {outcome}! Відновлено {formattedSize} здоров'я через {violation}"
+        },
+        "shield": {
+          "1": "Виняткове досягнення! Отримує {formattedSizeWithPrep} ефект {type} від {violation} - {outcome}"
+        },
+        "default": {
+          "1": "Виняткове досягнення! Отримує {formattedSizeWithPrep} ефект {type} від {violation} - {outcome}"
+        }
+      },
+      "goodLuck": {
+        "damage": {
+          "1": "Фортуна сприяє удару - {outcome}! Отримує {formattedSize} шкоди від {violation}",
+          "2": "Вдалий удар добре влучає - {outcome}! Зазнає {formattedSize} шкоди від {violation}"
+        },
+        "heal": {
+          "1": "Зцілення проходить гладко - {outcome}! Відновлює {formattedSize} здоров'я через {violation}"
+        },
+        "default": {
+          "1": "Все йде краще, ніж очікувалося - {outcome}! Отримує {formattedSizeWithPrep} ефект {type} від {violation}"
+        }
+      },
+      "baseValue": {
+        "damage": {
+          "1": "{skill} вдарив в обличчя, завдавши {formattedSize} шкоди від {violation}",
+          "2": "Міцний удар влучає - отримує {formattedSize} шкоди від {violation}",
+          "3": "Атака влучає як очікувалося, завдаючи {formattedSize} шкоди через {violation}"
+        },
+        "heal": {
+          "1": "{item} зцілив на {formattedSize} здоров'я через {violation}",
+          "2": "Стабільна цілюща енергія тече, відновлюючи {formattedSize} здоров'я через {violation}"
+        },
+        "shield": {
+          "1": "Дія вдається нормально, забезпечуючи {formattedSizeWithPrep} захисту через {violation}"
+        },
+        "default": {
+          "1": "Дія вдається нормально, впливаючи {formattedSizeWithPrep} {type} через {violation}"
+        }
+      },
+      "badLuck": {
+        "damage": {
+          "1": "Під час кастування ініціатор відволікся на шум і {skill} промахнувся, але його подряпали на {formattedSize} шкоди від {violation}",
+          "2": "Поганий тайминг впливає на атаку - {outcome}! Отримує лише {formattedSize} дотичної шкоди від {violation}",
+          "3": "Удар йде не так, але все ж влучає на {formattedSize} шкоди через {violation}"
+        },
+        "heal": {
+          "1": "Зцілення порушується, але все ж забезпечує {formattedSize} здоров'я через {violation}",
+          "2": "Незважаючи на ускладнення, {formattedSize} здоров'я відновлено через {violation}"
+        },
+        "shield": {
+          "1": "Все йде не за планом - {outcome}! Все ж отримує {formattedSizeWithPrep} захисту від {violation}"
+        },
+        "default": {
+          "1": "Все йде не за планом - {outcome}! Все ж отримує {formattedSizeWithPrep} {type} від {violation}"
+        }
+      },
+      "criticalFail": {
+        "damage": {
+          "1": "Під час кастування ініціатор відволікся на шум і {skill} промахнувся та вдарив себе на {formattedSize} шкоди від {violation}",
+          "2": "Катастрофа! - {outcome}! Атака дає зворотний ефект, завдаючи {formattedSize} шкоди ініціатору через {violation}",
+          "3": "Повна невдача! Дія йде жахливо не так, призводячи до {formattedSize} самозавданої шкоди від {violation}"
+        },
+        "heal": {
+          "1": "Цілюща магія йде не так - {outcome}! Замість зцілення завдається {formattedSize} шкоди через {violation}",
+          "2": "Відбувається магічний зворотний удар, завдаючи {formattedSize} шкоди замість зцілення через {violation}"
+        },
+        "default": {
+          "1": "Все йде не так - {outcome}! Дія дає зворотний ефект з {formattedSizeWithPrep} ефектом {type} від {violation}"
+        }
+      },
+      "CRITICAL_SUCCESS": "Критичний успіх",
+      "GOOD_LUCK": "Удача",
+      "BASE_VALUE": "Базове значення",
+      "BAD_LUCK": "Невдача",
+      "CRITICAL_FAIL": "Критична невдача"
+    },
+    "impactTypes": {
+      "DAMAGE": "шкода",
+      "HEAL": "зцілення",
+      "SHIELD": "щит"
+    },
+    "violationTypes": {
+      "PHYSICAL": "Фізичний",
+      "MAGICAL": "Магічний",
+      "PSYCHIC": "Психічний",
+      "ELEMENTAL": "Елементальний"
+    },
+    "actionTypes": {
+      "USE_SKILL": "Використання навички",
+      "USE_ITEM": "Використання предмета",
+      "SNATCH_ITEM": "Вихоплення предмета",
+      "MOVE": "Рух",
+      "DICE_ROLL": "Кидок кубиків",
+      "INSPECT": "Огляд",
+      "GIFT": "Дарування подарунка"
+    },
+    "unknownSkill": "Невідома навичка",
+    "unknownItem": "Невідомий предмет",
+    "unknownOutcome": "Невідомий результат: {outcome}",
+    "noTemplate": "Немає шаблону для результату: {outcome}, вплив: {impactType}",
+    "self": "себе"
   }
 }
