@@ -16,9 +16,14 @@ const props = withDefaults(defineProps<{
  * @returns True if a separator should be inserted, false otherwise
  */
 function shouldInsertSeparator(index: number): boolean {
-  if (index === 0) return true; // Always add a separator for the first item
-  if (!props.actions || index >= props.actions.length || index <= 0) return false;
-  return props.actions[index].cycle !== props.actions[index - 1].cycle;
+  if (!props.actions || index >= props.actions.length || index < 0) return false;
+  if (index === 0) return true; // Show separator for first item only if it has cycle info
+
+  // Compare cycle numbers instead of cycle objects
+  const currentCycle = props.actions[index].cycle?.number;
+  const previousCycle = props.actions[index - 1].cycle?.number;
+
+  return currentCycle !== previousCycle;
 }
 </script>
 
@@ -35,11 +40,7 @@ function shouldInsertSeparator(index: number): boolean {
 
         <!-- RPGActionLogItem Component -->
         <RPGActionLogItem
-            :initiator="action.initiator"
-            :actionType="action.action_type"
-            :skill="action.skill"
-            :data="action.data"
-            :impacts="action.impacts"
+            :action="action"
         />
       </div>
       <p v-if="actions.length === 0" class="no-actions">No actions logged.</p>
