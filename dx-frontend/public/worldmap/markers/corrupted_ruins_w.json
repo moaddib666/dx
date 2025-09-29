@@ -1,0 +1,9 @@
+{
+  "id": "corrupted_ruins_w",
+  "name": "Dark Ancient Ruins West",
+  "description": "Remnants of civilizations destroyed by Flow corruption. Filled with ancient technology, magical artifacts, and dimensional threats.",
+  "tags": ["corrupted-zone", "ancient-ruins", "artifacts", "pre-active-glow", "dangerous"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/corrupted_ruins_w.png"
+}

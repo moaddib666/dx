@@ -1,0 +1,9 @@
+{
+  "id": "corrupted_cliffs_w",
+  "name": "Corrupted Cliffs West",
+  "description": "Twisted cliff formations where rock shifts and changes from dimensional energy.",
+  "tags": ["corrupted-zone", "cliffs", "dimensional-anomaly", "shifting-terrain", "extreme-danger"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/corrupted_cliffs_w.png"
+}

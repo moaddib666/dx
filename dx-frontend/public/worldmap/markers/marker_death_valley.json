@@ -1,0 +1,9 @@
+{
+  "id": "marker_death_valley",
+  "name": "Death Valley",
+  "description": "Entrance to Death Valley - extreme dimensional instability near City of Memories and Dark Ocean. Legendary difficulty zone. High mortality rate. Only the most skilled adventurers dare enter.",
+  "tags": ["terrain", "extreme-danger", "dimensional-instability", "legendary-difficulty", "high-mortality"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/death_valley.png"
+}

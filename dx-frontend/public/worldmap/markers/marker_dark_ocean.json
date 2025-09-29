@@ -1,0 +1,9 @@
+{
+  "id": "marker_dark_ocean",
+  "name": "Dark Ocean",
+  "description": "Southern ocean with dimensional properties and dangerous creatures. Borders City of Memories, Death Valley, and Black Rock Island. Dark, mysterious waters with unknown depths.",
+  "tags": ["ocean", "dimensional-properties", "dangerous", "mysterious", "deep"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/dark_ocean.png"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "marker_jsons_sanctuary",
+  "name": "JSon's Sanctuary",
+  "description": "Capital of Mystory Heaven continent (separate landmass). Historic birthplace of JSon, the first Chosen One. Sacred city in central mountains. 80% magicians, 15% humans, 5% tech. Magical traditions preserved in harmony with Flow.",
+  "tags": ["city", "capital", "sacred", "historic", "magic-dominated", "birthplace", "mountains"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/jsons_sanctuary.png"
+}

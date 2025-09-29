@@ -1,0 +1,9 @@
+{
+  "id": "marker_shadowveil",
+  "name": "Shadowveil",
+  "description": "Southwestern city existing in both 1st and 2nd dimensions simultaneously. Dimensional research center with twilight atmosphere. 40% tech, 35% magic, 25% humans. Higher crime but best dimensional navigation schools.",
+  "tags": ["city", "dimensional-overlap", "research", "twilight", "navigation-school", "high-crime", "morally-gray"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/shadowveil.png"
+}

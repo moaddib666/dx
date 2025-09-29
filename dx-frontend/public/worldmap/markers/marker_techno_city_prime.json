@@ -1,0 +1,9 @@
+{
+  "id": "marker_techno_city_prime",
+  "name": "Techno-City Prime",
+  "description": "Capital of TechnoEdge continent (separate plateau). Gleaming metropolis of steel, glass, and holograms. 95% tech-augmented, 4% humans, 1% magicians. Center of technological innovation and corporate power.",
+  "tags": ["city", "capital", "tech-dominated", "corporate", "industrial", "innovation-hub", "plateau"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/techno_city_prime.png"
+}

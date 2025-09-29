@@ -1,0 +1,9 @@
+{
+  "id": "marker_starfall_sanctum",
+  "name": "Starfall Sanctum",
+  "description": "Eastern-central Mainland Primus mystical city built on meteor crater. Flow-conductive crystals everywhere. Floating districts held by Flow energy. 65% magicians, 20% humans, 15% tech. Home to Crystal Spires Academy.",
+  "tags": ["city", "mystical", "crater", "crystals", "floating", "magic-dominated", "academy"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/starfall_sanctum.png"
+}

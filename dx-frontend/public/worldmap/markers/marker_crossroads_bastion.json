@@ -1,0 +1,9 @@
+{
+  "id": "marker_crossroads_bastion",
+  "name": "Crossroads Bastion",
+  "description": "Central Mainland Primus trading hub. Perfectly balanced (33% each faction). Dimensional gateway station connecting all continents. Neutral diplomatic ground with elite Flow Guards. Largest mercenary guild HQ outside City of Memories.",
+  "tags": ["city", "trade-hub", "neutral", "diplomatic", "gateway", "mercenary", "balanced"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/crossroads_bastion.png"
+}

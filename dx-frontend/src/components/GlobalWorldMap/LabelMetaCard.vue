@@ -84,11 +84,11 @@ watch(() => props.metadata?.image, () => {
 
 <style scoped>
 .label-meta-card {
-  position: absolute;
-  bottom: 20px; /* 20px padding from bottom edge */
-  left: 20px; /* 20px padding from left edge */
-  width: 300px;
-  height: 450px; /* 2:3 ratio (300x450) */
+  position: fixed;
+  bottom: -0.5rem; /* 20px padding from bottom edge */
+  left: 5rem; /* 20px padding from left edge */
+  width: 20rem;
+  height: 40rem; /* 2:3 ratio (300x450) */
   background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   border: 1px solid #fada95;
   border-radius: 12px;
@@ -131,6 +131,7 @@ watch(() => props.metadata?.image, () => {
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  object-position: center top;
 }
 
 .card-image:hover img {
@@ -202,7 +203,7 @@ watch(() => props.metadata?.image, () => {
 
 .description p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.76rem;
   line-height: 1.4;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -224,37 +225,12 @@ watch(() => props.metadata?.image, () => {
   border: 1px solid #fada95;
   color: #fada95;
   padding: 0.2rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  border-radius: 0.2rem;
+  font-size: 0.5rem;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   backdrop-filter: blur(4px);
-}
-
-.close-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #fada95;
-  border-radius: 50%;
-  color: #fada95;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  transition: all 0.2s ease;
-  z-index: 10;
-  backdrop-filter: blur(4px);
-}
-
-.close-button:hover {
-  background: rgba(250, 218, 149, 0.2);
-  transform: scale(1.1);
 }
 
 .loading-overlay {
@@ -276,43 +252,4 @@ watch(() => props.metadata?.image, () => {
   font-size: 2rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .label-meta-card {
-    width: 250px;
-    height: 375px; /* Maintain 2:3 ratio */
-  }
-
-  .card-title h3 {
-    font-size: 1.2rem;
-  }
-
-  .description p {
-    font-size: 0.8rem;
-  }
-
-  .tag {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.4rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .label-meta-card {
-    width: 200px;
-    height: 300px; /* Maintain 2:3 ratio */
-  }
-
-  .card-title h3 {
-    font-size: 1rem;
-  }
-
-  .content-text {
-    padding: 0.75rem;
-  }
-
-  .description p {
-    font-size: 0.75rem;
-  }
-}
 </style>

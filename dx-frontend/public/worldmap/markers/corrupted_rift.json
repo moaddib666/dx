@@ -1,0 +1,9 @@
+{
+  "id": "corrupted_rift",
+  "name": "Dimensional Rift Zone",
+  "description": "Active dimensional rift creating unstable reality near Mystory Heaven borders.",
+  "tags": ["corrupted-zone", "dimensional-rift", "active-breach", "unstable-reality", "extreme-danger"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/corrupted_rift.png"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "corrupted_ruin_fields",
+  "name": "Ruin Fields",
+  "description": "Vast fields of ancient ruins and broken structures from pre-Active Glow civilizations.",
+  "tags": ["corrupted-zone", "ruins", "ancient", "pre-active-glow", "archaeological"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/corrupted_ruin_fields.png"
+}

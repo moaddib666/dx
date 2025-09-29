@@ -1,0 +1,9 @@
+{
+  "id": "marker_new_dawn",
+  "name": "New Dawn Settlement",
+  "description": "Northern Mainland Primus newest city (founded 2950 HE). Experimental utopian project. Progressive and youth-focused. 45% humans, 30% tech, 25% magic. Most advanced MediServ outside City of Memories. Struggles with wasteland defenses.",
+  "tags": ["city", "new", "utopian", "progressive", "youth-focused", "experimental", "modern"],
+  "created": "2025-09-29T19:47:00.000Z",
+  "modified": "2025-09-29T19:47:00.000Z",
+  "image": "worldmap/images/new_dawn.png"
+}

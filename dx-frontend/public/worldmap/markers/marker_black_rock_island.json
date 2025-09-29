@@ -2,8 +2,8 @@
   "id": "marker_black_rock_island",
   "name": "Black Rock Island",
   "description": "Mysterious island made of black stone that absorbs Flow energy. Located in the Dark Ocean near City of Memories. Famous among adventurers and researchers.",
-  "tags": ["landmark", "mysterious", "flow-energy", "dark-ocean"],
+  "tags": ["island", "mysterious", "flow-absorption", "dark-ocean", "research"],
   "created": "2025-09-29T19:47:00.000Z",
   "modified": "2025-09-29T19:47:00.000Z",
-  "image": ""
+  "image": "worldmap/images/black_rock_island.png"
 }
