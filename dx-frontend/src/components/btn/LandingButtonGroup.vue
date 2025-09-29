@@ -18,12 +18,18 @@ export default {
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #1c1c1c, #333333);
-  border: 2px solid #444;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(8, 12, 18, 0.85), rgba(18, 24, 32, 0.95));
+  border: 2px solid rgba(35, 45, 55, 0.9);
+  border-top: 2px solid rgba(25, 35, 45, 0.7);
+  border-radius: 10px;
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.8),
+    inset 0 2px 4px rgba(30, 40, 50, 0.4),
+    inset 0 -2px 6px rgba(5, 8, 12, 0.8);
   max-width: 90vw;
   margin: 0 auto;
+  position: relative;
 }
 
 /* Mobile-first responsive design */
