@@ -90,7 +90,11 @@ const {
   percentToScreen,
   pointInPolygon,
   pointInCircle,
-  distanceToLine
+  distanceToLine,
+  startDrawing,
+  addDrawingPoint,
+  finishDrawing: finishDrawingPoints,
+  cancelDrawing
 } = useMapInteraction()
 
 // State
@@ -112,6 +116,31 @@ const drawingPointsString = computed(() => {
 
 // Canvas context
 let ctx: CanvasRenderingContext2D | null = null
+
+// Local coordinate transformation methods (using component props)
+const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
+  // Convert screen coordinates to world coordinates using component's pan/zoom
+  const worldX = (screenPoint.x - props.pan.x) / props.zoom
+  const worldY = (screenPoint.y - props.pan.y) / props.zoom
+
+  // Convert world coordinates to percentage
+  return {
+    x: (worldX / canvasWidth.value) * 100,
+    y: (worldY / canvasHeight.value) * 100
+  }
+}
+
+const percentToScreenLocal = (percentPoint: MapPoint): MapPoint => {
+  // Convert percentage to world coordinates
+  const worldX = (percentPoint.x / 100) * canvasWidth.value
+  const worldY = (percentPoint.y / 100) * canvasHeight.value
+
+  // Convert world coordinates to screen coordinates using component's pan/zoom
+  return {
+    x: worldX * props.zoom + props.pan.x,
+    y: worldY * props.zoom + props.pan.y
+  }
+}
 
 // Methods
 const initCanvas = () => {
@@ -575,28 +604,19 @@ const handleMouseDown = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
 
-  // Start dragging for pan (when using select tool and not clicking on an item)
+  // Only handle panning for select tool when not clicking on an item
   if (props.activeTool === 'select') {
-    const percentPoint = screenToPercent(screenPoint, canvasWidth.value, canvasHeight.value)
+    const percentPoint = screenToPercentLocal(screenPoint)
     const hitItem = findItemAtPoint(percentPoint)
 
     if (!hitItem) {
       // Start panning
       isDragging.value = true
       dragStart.value = screenPoint
-    } else {
-      // Select the item
-      emit('item-select', hitItem)
     }
-  } else if (props.activeTool === 'draw-polygon') {
-    handleDrawPolygonTool(event)
-  } else if (props.activeTool === 'draw-route') {
-    handleDrawRouteTool(event)
-  } else if (props.activeTool === 'add-marker') {
-    handleAddMarkerTool(event)
-  } else if (props.activeTool === 'add-label') {
-    handleAddLabelTool(event)
+    // Note: Item selection is handled in handleClick, not here
   }
+  // Note: All other tools are handled in handleClick, not on mousedown
 }
 
 const handleMouseMove = (event: MouseEvent) => {
@@ -688,7 +708,26 @@ const handleTouchEnd = (event: TouchEvent) => {
 }
 
 const handleClick = (event: MouseEvent) => {
-  // Handle single clicks for tools that need them
+  if (!canvasRef.value) return
+
+  // Handle tool-specific click actions
+  switch (props.activeTool) {
+    case 'select':
+      handleSelectTool(event)
+      break
+    case 'draw-polygon':
+      handleDrawPolygonTool(event)
+      break
+    case 'draw-route':
+      handleDrawRouteTool(event)
+      break
+    case 'add-marker':
+      handleAddMarkerTool(event)
+      break
+    case 'add-label':
+      handleAddLabelTool(event)
+      break
+  }
 }
 
 const handleDoubleClick = (event: MouseEvent) => {
@@ -708,14 +747,30 @@ const handleSelectTool = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
 
-  const percentPoint = screenToPercent(screenPoint, canvasWidth.value, canvasHeight.value)
+  const percentPoint = screenToPercentLocal(screenPoint)
   const hitItem = findItemAtPoint(percentPoint)
 
   emit('item-select', hitItem)
 }
 
 const handleDrawPolygonTool = (event: MouseEvent) => {
-  // Implementation for polygon drawing
+  if (!canvasRef.value) return
+
+  const rect = canvasRef.value.getBoundingClientRect()
+  const screenPoint = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  }
+
+  const percentPoint = screenToPercentLocal(screenPoint)
+
+  if (!isDrawing.value) {
+    // Start drawing a new polygon
+    startDrawing(percentPoint)
+  } else {
+    // Add point to current polygon
+    addDrawingPoint(percentPoint)
+  }
 }
 
 const handleDrawRouteTool = (event: MouseEvent) => {
@@ -731,7 +786,7 @@ const handleAddMarkerTool = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
 
-  const percentPoint = screenToPercent(screenPoint, canvasWidth.value, canvasHeight.value)
+  const percentPoint = screenToPercentLocal(screenPoint)
 
   const marker = {
     type: 'marker',
@@ -757,7 +812,7 @@ const handleAddLabelTool = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
 
-  const percentPoint = screenToPercent(screenPoint, canvasWidth.value, canvasHeight.value)
+  const percentPoint = screenToPercentLocal(screenPoint)
 
   const label = {
     type: 'label',
@@ -775,7 +830,49 @@ const handleAddLabelTool = (event: MouseEvent) => {
 }
 
 const finishDrawing = () => {
-  // Implementation for finishing drawing operations
+  if (!isDrawing.value || drawingPoints.value.length < 3) {
+    // Need at least 3 points for a polygon
+    cancelDrawing()
+    return
+  }
+
+  // Get the completed drawing points
+  const points = finishDrawingPoints()
+
+  if (points.length < 3) return
+
+  // Create polygon object based on active tool
+  if (props.activeTool === 'draw-polygon') {
+    const polygon = {
+      type: 'continent',
+      id: `continent-${Date.now()}`,
+      name: 'New Continent',
+      points: points,
+      color: 'rgba(42, 42, 62, 0.6)',
+      visible: true,
+      borderVisible: true,
+      fillVisible: true,
+      borderWidth: 3,
+      borderColor: '#4a5a6a',
+      countries: []
+    }
+
+    emit('item-create', polygon)
+  } else if (props.activeTool === 'draw-route') {
+    const route = {
+      type: 'route',
+      id: `route-${Date.now()}`,
+      name: 'New Route',
+      points: points,
+      color: '#8b5cf6',
+      width: 3,
+      style: 'solid',
+      visible: true,
+      description: ''
+    }
+
+    emit('item-create', route)
+  }
 }
 
 // Hit testing
