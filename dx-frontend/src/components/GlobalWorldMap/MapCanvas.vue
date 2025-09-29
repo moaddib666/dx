@@ -207,37 +207,18 @@ const getStableCoordinateSystem = () => {
 const calculateMapBounds = () => {
   if (!backgroundImage.value) return null
 
-  const {stableWidth, stableHeight} = getStableCoordinateSystem()
-  const img = backgroundImage.value
-  const stableAspect = stableWidth / stableHeight
-  const imageAspect = img.width / img.height
+  // Calculate scaled image dimensions for full canvas approach
+  const scaledImageWidth = canvasWidth.value * props.zoom
+  const scaledImageHeight = canvasHeight.value * props.zoom
 
-  let drawWidth = stableWidth
-  let drawHeight = stableHeight
-  let drawX = 0
-  let drawY = 0
+  // Calculate bounds to prevent panning outside the map image
+  // When zoomed out (zoom < 1), prevent showing areas beyond the map
+  // When zoomed in (zoom > 1), allow panning within the larger image
 
-  // Calculate image dimensions and position (same logic as renderBackgroundImage)
-  if (imageAspect > stableAspect) {
-    // Image is wider than stable area - fit by height
-    drawHeight = stableHeight
-    drawWidth = drawHeight * imageAspect
-    drawX = (stableWidth - drawWidth) / 2
-  } else {
-    // Image is taller than stable area - fit by width
-    drawWidth = stableWidth
-    drawHeight = drawWidth / imageAspect
-    drawY = (stableHeight - drawHeight) / 2
-  }
-
-  // Calculate bounds to keep image always visible
-  // Allow some padding but ensure image edges are never fully out of view
-  const padding = Math.min(stableWidth, stableHeight) * 0.1 // 10% padding
-
-  const minPanX = -(drawWidth * props.zoom - stableWidth + padding)
-  const maxPanX = drawX * props.zoom + padding
-  const minPanY = -(drawHeight * props.zoom - stableHeight + padding)
-  const maxPanY = drawY * props.zoom + padding
+  const minPanX = Math.min(0, canvasWidth.value - scaledImageWidth)
+  const maxPanX = 0
+  const minPanY = Math.min(0, canvasHeight.value - scaledImageHeight)
+  const maxPanY = 0
 
   return {
     minX: minPanX,
@@ -258,40 +239,31 @@ const constrainPan = (pan: MapPoint): MapPoint => {
   }
 }
 
-// Local coordinate transformation methods (using stable coordinate system)
+// Local coordinate transformation methods (using full viewport)
 const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
-  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
-
-  // Adjust for viewport offset
-  const adjustedX = screenPoint.x - offsetX
-  const adjustedY = screenPoint.y - offsetY
-
   // Convert screen coordinates to world coordinates using component's pan/zoom
-  const worldX = (adjustedX - props.pan.x) / props.zoom
-  const worldY = (adjustedY - props.pan.y) / props.zoom
+  const worldX = (screenPoint.x - props.pan.x) / props.zoom
+  const worldY = (screenPoint.y - props.pan.y) / props.zoom
 
-  // Convert world coordinates to percentage using stable dimensions
+  // Convert world coordinates to percentage using full canvas dimensions
   return {
-    x: (worldX / stableWidth) * 100,
-    y: (worldY / stableHeight) * 100
+    x: (worldX / canvasWidth.value) * 100,
+    y: (worldY / canvasHeight.value) * 100
   }
 }
 
 const percentToScreenLocal = (percentPoint: MapPoint): MapPoint => {
-  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
-
-  // Convert percentage to world coordinates using stable dimensions
-  const worldX = (percentPoint.x / 100) * stableWidth
-  const worldY = (percentPoint.y / 100) * stableHeight
+  // Convert percentage to world coordinates using full canvas dimensions
+  const worldX = (percentPoint.x / 100) * canvasWidth.value
+  const worldY = (percentPoint.y / 100) * canvasHeight.value
 
   // Convert world coordinates to screen coordinates using component's pan/zoom
   const screenX = worldX * props.zoom + props.pan.x
   const screenY = worldY * props.zoom + props.pan.y
 
-  // Adjust for viewport offset
   return {
-    x: screenX + offsetX,
-    y: screenY + offsetY
+    x: screenX,
+    y: screenY
   }
 }
 
@@ -471,33 +443,23 @@ const createEdgeMaskCanvas = (cursorX?: number, cursorY?: number) => {
 const render = () => {
   if (!ctx || !canvasRef.value) return
 
-  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
-
   // Clear highlighted markers from previous render
   highlightedMarkers.value = []
 
   // Clear entire canvas
   ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
 
-  // Fill entire canvas with fog of war texture (including letterbox areas)
+  // Fill entire canvas with fog of war texture
   renderBackgroundFog()
 
   // Save context state
   ctx.save()
 
-  // Clip to stable viewport area
-  ctx.beginPath()
-  ctx.rect(offsetX, offsetY, stableWidth, stableHeight)
-  ctx.clip()
-
-  // Translate to stable viewport
-  ctx.translate(offsetX, offsetY)
-
-  // Apply zoom and pan transformations within stable coordinate system
+  // Apply zoom and pan transformations to fill entire viewport
   ctx.scale(props.zoom, props.zoom)
   ctx.translate(props.pan.x / props.zoom, props.pan.y / props.zoom)
 
-  // Render layers in order using stable coordinate system
+  // Render layers in order to fill entire viewport
   renderBackgroundImage()
   renderContinents()
   renderRoutes()
@@ -569,31 +531,11 @@ const renderBackgroundFog = () => {
 const renderBackgroundImage = () => {
   if (!ctx || !backgroundImage.value) return
 
-  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const img = backgroundImage.value
-  const stableAspect = stableWidth / stableHeight
-  const imageAspect = img.width / img.height
 
-  let drawWidth = stableWidth
-  let drawHeight = stableHeight
-  let drawX = 0
-  let drawY = 0
-
-  // Scale image to fit stable coordinate system while maintaining aspect ratio
-  if (imageAspect > stableAspect) {
-    // Image is wider than stable area - fit by height
-    drawHeight = stableHeight
-    drawWidth = drawHeight * imageAspect
-    drawX = (stableWidth - drawWidth) / 2
-  } else {
-    // Image is taller than stable area - fit by width
-    drawWidth = stableWidth
-    drawHeight = drawWidth / imageAspect
-    drawY = (stableHeight - drawHeight) / 2
-  }
-
-  // Draw image within stable coordinate system
-  ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
+  // Fill entire canvas with the map image, stretching to cover full viewport
+  // This ensures no background is visible and the map takes all available space
+  ctx.drawImage(img, 0, 0, canvasWidth.value, canvasHeight.value)
 }
 
 const renderFogOfWar = () => {
@@ -674,7 +616,7 @@ const renderFogOfWar = () => {
   // Clear fog around highlighted markers
   if (highlightedMarkers.value.length > 0) {
     highlightedMarkers.value.forEach(marker => {
-      // Convert marker position to stable coordinate system
+      // Convert marker position to stable coordinate system for fog canvas
       const centerX = (marker.position.x / 100) * stableWidth
       const centerY = (marker.position.y / 100) * stableHeight
 
@@ -973,9 +915,9 @@ const renderMarker = (position: MapPoint, options: {
 }) => {
   if (!ctx) return
 
-  const {stableWidth, stableHeight} = getStableCoordinateSystem()
-  const x = (position.x / 100) * stableWidth
-  const y = (position.y / 100) * stableHeight
+  // Use full canvas coordinates to match background image scaling
+  const x = (position.x / 100) * canvasWidth.value
+  const y = (position.y / 100) * canvasHeight.value
   const radius = options.size
 
   // RPG-style marker with enhanced visual effects for different states
@@ -1049,9 +991,9 @@ const renderLabel = (position: MapPoint, text: string, options: {
 }) => {
   if (!ctx) return
 
-  const {stableWidth, stableHeight} = getStableCoordinateSystem()
-  const x = (position.x / 100) * stableWidth
-  const y = (position.y / 100) * stableHeight
+  // Use full canvas coordinates to match background image scaling
+  const x = (position.x / 100) * canvasWidth.value
+  const y = (position.y / 100) * canvasHeight.value
 
   // Scale font size inversely with zoom to prevent labels from becoming too large
   const scaledFontSize = Math.max(8, Math.min(24, options.fontSize / Math.sqrt(props.zoom))) * 0.75

@@ -69,16 +69,33 @@ export function useMapInteraction() {
     pan.value = { x: 0, y: 0 }
   }
 
-  // Pan methods
-  const setPan = (newPan: MapPoint) => {
-    pan.value = { ...newPan }
+  // Pan methods with bounds checking
+  const setPan = (newPan: MapPoint, canvasWidth?: number, canvasHeight?: number, imageWidth?: number, imageHeight?: number) => {
+    if (canvasWidth && canvasHeight && imageWidth && imageHeight) {
+      // Calculate bounds to prevent panning outside the map image
+      const scaledImageWidth = imageWidth * zoom.value
+      const scaledImageHeight = imageHeight * zoom.value
+
+      // Calculate maximum pan values to keep image within viewport
+      const maxPanX = Math.max(0, scaledImageWidth - canvasWidth)
+      const maxPanY = Math.max(0, scaledImageHeight - canvasHeight)
+
+      // Constrain pan values to keep map image within bounds
+      pan.value = {
+        x: Math.max(-maxPanX, Math.min(0, newPan.x)),
+        y: Math.max(-maxPanY, Math.min(0, newPan.y))
+      }
+    } else {
+      pan.value = { ...newPan }
+    }
   }
 
-  const panBy = (deltaX: number, deltaY: number) => {
-    pan.value = {
+  const panBy = (deltaX: number, deltaY: number, canvasWidth?: number, canvasHeight?: number, imageWidth?: number, imageHeight?: number) => {
+    const newPan = {
       x: pan.value.x + deltaX,
       y: pan.value.y + deltaY
     }
+    setPan(newPan, canvasWidth, canvasHeight, imageWidth, imageHeight)
   }
 
   // For infinite wrapping, we'll handle this in the canvas rendering

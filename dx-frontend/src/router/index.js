@@ -76,6 +76,7 @@ const routes = [
 
     // Test routes
     {path: '/test', name: "TestScreen", component: () => import('@/views/TestScreen.vue'), meta: {requiresAuth: false}},
+    {path: '/test/user', name: "TestScreenUser", component: () => import('@/views/TestScreenUser.vue'), meta: {requiresAuth: false}},
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},
 ];
