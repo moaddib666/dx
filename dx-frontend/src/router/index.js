@@ -64,8 +64,7 @@ const routes = [
     {path: '/dice', name: 'Dice', component: DiceTest, meta: {requiresAuth: false}},
     {path: '/dice/roller', name: 'DiceRoller', component: DiceRollerView, meta: {requiresAuth: false}},
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
-    // {path: '/game/fight', name: 'GameFight', component: FightView, meta: {requiresAuth: true}},
-
+    {path: '/world-map/preview', name: "WorldMapPreview", component: () => import('@/views/WorldMapPreview.vue'), meta: {requiresAuth: false}},
     // Game Master routes
     {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
@@ -73,10 +72,7 @@ const routes = [
     {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/character-template-editor', name: 'CharacterTemplateEditor', component: CharacterTemplateEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/story-builder', name: 'StoryBuilder', component: () => import('@/views/GmJournalScreen.vue'), meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
-
-    // Test routes
-    {path: '/test', name: "TestScreen", component: () => import('@/views/TestScreen.vue'), meta: {requiresAuth: false}},
-    {path: '/test/user', name: "TestScreenUser", component: () => import('@/views/TestScreenUser.vue'), meta: {requiresAuth: false}},
+    {path: '/game-master/world-map', name: "WorldMapGameMaster", component: () => import('@/views/WorldMapGameMaster.vue'), meta: {requiresAuth: false}},
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},
 ];
