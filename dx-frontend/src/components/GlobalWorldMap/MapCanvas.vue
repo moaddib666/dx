@@ -105,9 +105,14 @@ const needsRedraw = ref(true)
 const isDragging = ref(false)
 const dragStart = ref<{ x: number, y: number } | null>(null)
 
+// Object movement state
+const isMovingObject = ref(false)
+const movingItem = ref<any>(null)
+const moveStartPosition = ref<MapPoint | null>(null)
+
 // Computed
 const showCrosshair = computed(() => {
-  return ['draw-polygon', 'draw-route', 'add-marker', 'add-label'].includes(props.activeTool)
+  return ['draw-polygon', 'draw-route', 'add-marker', 'add-label', 'move'].includes(props.activeTool)
 })
 
 const drawingPointsString = computed(() => {
@@ -678,8 +683,21 @@ const handleMouseMove = (event: MouseEvent) => {
   }
   cursorPosition.value = currentPoint
 
+  // Handle object movement
+  if (isMovingObject.value && movingItem.value && moveStartPosition.value) {
+    const currentPercentPoint = screenToPercentLocal(currentPoint)
+    const deltaX = currentPercentPoint.x - moveStartPosition.value.x
+    const deltaY = currentPercentPoint.y - moveStartPosition.value.y
+
+    // Update object position based on type
+    updateObjectPosition(movingItem.value, deltaX, deltaY)
+
+    // Update start position for next move
+    moveStartPosition.value = currentPercentPoint
+    needsRedraw.value = true
+  }
   // Handle panning
-  if (isDragging.value && dragStart.value) {
+  else if (isDragging.value && dragStart.value) {
     const deltaX = currentPoint.x - dragStart.value.x
     const deltaY = currentPoint.y - dragStart.value.y
 
@@ -695,6 +713,18 @@ const handleMouseMove = (event: MouseEvent) => {
 }
 
 const handleMouseUp = () => {
+  // Finish object movement
+  if (isMovingObject.value && movingItem.value) {
+    // Emit the updated item
+    emit('item-update', movingItem.value)
+
+    // Reset movement state
+    isMovingObject.value = false
+    movingItem.value = null
+    moveStartPosition.value = null
+  }
+
+  // Finish panning
   isDragging.value = false
   dragStart.value = null
 }
@@ -762,6 +792,9 @@ const handleClick = (event: MouseEvent) => {
   switch (props.activeTool) {
     case 'select':
       handleSelectTool(event)
+      break
+    case 'move':
+      handleMoveTool(event)
       break
     case 'draw-polygon':
       handleDrawPolygonTool(event)
@@ -875,6 +908,73 @@ const handleAddLabelTool = (event: MouseEvent) => {
   }
 
   emit('item-create', label)
+}
+
+const handleMoveTool = (event: MouseEvent) => {
+  if (!canvasRef.value) return
+
+  const rect = canvasRef.value.getBoundingClientRect()
+  const screenPoint = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  }
+
+  const percentPoint = screenToPercentLocal(screenPoint)
+  const hitItem = findItemAtPoint(percentPoint)
+
+  if (hitItem) {
+    // Start moving the object
+    isMovingObject.value = true
+    movingItem.value = hitItem
+    moveStartPosition.value = { ...percentPoint }
+
+    // Select the item being moved
+    emit('item-select', hitItem)
+  }
+}
+
+const updateObjectPosition = (item: any, deltaX: number, deltaY: number) => {
+  if (!item) return
+
+  // Update position based on object type
+  if (item.position) {
+    // Markers and labels have a position property
+    item.position.x += deltaX
+    item.position.y += deltaY
+  } else if (item.points) {
+    // Continents, countries, and routes have points arrays
+    item.points.forEach((point: MapPoint) => {
+      point.x += deltaX
+      point.y += deltaY
+    })
+
+    // Also update nested countries and cities for continents
+    if (item.countries) {
+      item.countries.forEach((country: any) => {
+        if (country.points) {
+          country.points.forEach((point: MapPoint) => {
+            point.x += deltaX
+            point.y += deltaY
+          })
+        }
+
+        // Update cities within countries
+        if (country.cities) {
+          country.cities.forEach((city: any) => {
+            if (city.position) {
+              city.position.x += deltaX
+              city.position.y += deltaY
+            } else if (city.points) {
+              city.points.forEach((point: MapPoint) => {
+                point.x += deltaX
+                point.y += deltaY
+              })
+            }
+          })
+        }
+      })
+    }
+  }
 }
 
 const finishDrawing = () => {

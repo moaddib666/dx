@@ -149,6 +149,7 @@ const statusMessage = ref<string>('Ready')
 // Tools configuration
 const tools = [
   { id: 'select', name: 'Select', icon: 'fas fa-mouse-pointer' },
+  { id: 'move', name: 'Move', icon: 'fas fa-arrows-alt' },
   { id: 'draw-polygon', name: 'Draw Polygon', icon: 'fas fa-draw-polygon' },
   { id: 'draw-route', name: 'Draw Route', icon: 'fas fa-route' },
   { id: 'add-marker', name: 'Add Marker', icon: 'fas fa-map-pin' },
