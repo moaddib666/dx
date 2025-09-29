@@ -1150,8 +1150,15 @@ const openLabelMetaCard = async (label: MapLabel, screenPosition: { x: number, y
   labelMetaCard.value.visible = true
   labelMetaCard.value.loading = true
 
+  console.log(`🎯 openLabelMetaCard called for:`, {
+    id: label.id,
+    text: label.text,
+    type: label.type
+  })
+
   try {
     // Try to load existing metadata
+    console.log(`🔍 Calling metadataResolver.loadMetadata with ID: "${label.id}"`)
     let metadata = await metadataResolver.loadMetadata(label.id)
 
     // If no metadata exists, create default metadata
@@ -1227,6 +1234,12 @@ const handleMouseMove = (event: MouseEvent) => {
     // Handle place card display for hovered markers
     if (newHoveredMarker) {
       // Open place card for the hovered marker
+      console.log(`🎯 Hovered marker data:`, {
+        id: newHoveredMarker.id,
+        name: newHoveredMarker.name,
+        type: newHoveredMarker.type,
+        fullMarker: newHoveredMarker
+      })
       const markerAsLabel = {
         id: newHoveredMarker.id,
         text: newHoveredMarker.name,
