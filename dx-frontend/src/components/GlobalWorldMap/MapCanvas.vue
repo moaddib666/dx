@@ -397,6 +397,48 @@ const createEdgeMaskCanvas = (cursorX?: number, cursorY?: number) => {
   maskCtx.fillStyle = gradient
   maskCtx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
 
+  // Create transparent areas around highlighted items for shiny effect
+  if (highlightedMarkers.value.length > 0) {
+    const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
+
+    // Use destination-out to create transparent holes in the overlay
+    maskCtx.globalCompositeOperation = 'destination-out'
+
+    highlightedMarkers.value.forEach(marker => {
+      // Convert marker position from percentage to screen coordinates with zoom and pan transformations
+      // First convert to stable coordinate system
+      const stableX = (marker.position.x / 100) * stableWidth
+      const stableY = (marker.position.y / 100) * stableHeight
+
+      // Apply zoom and pan transformations (matching the render transformations)
+      const transformedX = (stableX + props.pan.x / props.zoom) * props.zoom
+      const transformedY = (stableY + props.pan.y / props.zoom) * props.zoom
+
+      // Convert to final screen coordinates
+      const markerScreenX = offsetX + transformedX
+      const markerScreenY = offsetY + transformedY
+
+      // Create highlight radius that scales with marker size
+      const highlightRadius = Math.max(marker.size * 12, 80) // Slightly larger than fog clearing for better effect
+
+      // Create radial gradient for smooth transparent area around highlighted item
+      const markerGradient = maskCtx.createRadialGradient(
+        markerScreenX, markerScreenY, 0,           // Inner circle (marker center)
+        markerScreenX, markerScreenY, highlightRadius // Outer circle
+      )
+
+      // Gradient creates transparent area with smooth edges
+      markerGradient.addColorStop(0, 'rgba(255, 255, 255, 1)')     // Fully transparent at center
+      markerGradient.addColorStop(0.7, 'rgba(255, 255, 255, 0.8)') // Gradual transition
+      markerGradient.addColorStop(1, 'rgba(255, 255, 255, 0)')     // Preserve overlay at edge
+
+      maskCtx.fillStyle = markerGradient
+      maskCtx.beginPath()
+      maskCtx.arc(markerScreenX, markerScreenY, highlightRadius, 0, Math.PI * 2)
+      maskCtx.fill()
+    })
+  }
+
   edgeMaskCanvas.value = maskCanvas
 }
 
@@ -684,8 +726,8 @@ const renderContinents = () => {
       country.cities.forEach(city => {
         if (!city.visible) return
 
-        // Render highlight effect if city is selected
-        if (props.selectedItem?.id === city.id && city.position) {
+        // Render highlight effect if city has highlight property enabled
+        if (city.highlight && city.position) {
           renderMarkerHighlight(city.position, city.size || 6)
         }
 
@@ -740,8 +782,8 @@ const renderMarkers = () => {
   props.mapData.markers.forEach(marker => {
     if (!marker.visible) return
 
-    // Render highlight effect if marker is selected
-    if (props.selectedItem?.id === marker.id) {
+    // Render highlight effect if marker has highlight property enabled
+    if (marker.highlight) {
       renderMarkerHighlight(marker.position, marker.size)
     }
 
