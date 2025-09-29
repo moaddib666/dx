@@ -78,6 +78,7 @@ const backgroundImage = ref<HTMLImageElement | null>(null)
 // Composables
 const {
   drawingPoints,
+  isDrawing,
   handleMouseDown: interactionMouseDown,
   handleMouseMove: interactionMouseMove,
   handleMouseUp: interactionMouseUp,

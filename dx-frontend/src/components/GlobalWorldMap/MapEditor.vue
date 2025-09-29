@@ -37,6 +37,10 @@
           style="display: none"
         />
 
+        <button @click="handleNewMap" class="btn btn-warning">
+          <i class="fas fa-plus"></i>
+          New Map
+        </button>
         <button @click="$refs.imageInput.click()" class="btn btn-secondary">
           <i class="fas fa-image"></i>
           Upload Background
@@ -64,6 +68,7 @@
           :map-data="mapData"
           @toggle-layer="handleLayerToggle"
           @select-item="handleSelectItem"
+          @delete-item="handleItemDelete"
         />
       </div>
 
@@ -130,7 +135,7 @@ const emit = defineEmits<{
 }>()
 
 // Composables
-const { mapData, loadMapData, exportMapData, importMapData } = useMapData(props.initialData)
+const { mapData, loadMapData, exportMapData, importMapData, removeItem, resetMapData } = useMapData(props.initialData)
 const { zoom, pan, selectedItem, handleZoomChange, handlePanChange } = useMapInteraction()
 
 // Refs
@@ -234,7 +239,7 @@ const handleItemUpdate = async (itemData: any) => {
 const handleItemDelete = async (item: any) => {
   try {
     // Remove from local map data
-    removeItemFromMapData(item)
+    removeItem(item.id)
 
     // If it's a position, sync with backend
     if (item.id && (item.type === 'position' || item.type === 'marker')) {
@@ -316,6 +321,27 @@ const exportPNG = () => {
   } catch (error) {
     console.error('Failed to export PNG:', error)
     statusMessage.value = 'Failed to export PNG'
+  }
+}
+
+const handleNewMap = () => {
+  const hasContent = mapData.value.continents.length > 0 ||
+                    mapData.value.routes.length > 0 ||
+                    mapData.value.markers.length > 0 ||
+                    mapData.value.labels.length > 0
+
+  if (hasContent) {
+    if (confirm('Are you sure you want to create a new map? This will clear all current map data and cannot be undone.')) {
+      resetMapData()
+      selectedItem.value = null
+      statusMessage.value = 'New map created'
+      emit('data-change', mapData.value)
+    }
+  } else {
+    resetMapData()
+    selectedItem.value = null
+    statusMessage.value = 'New map created'
+    emit('data-change', mapData.value)
   }
 }
 
