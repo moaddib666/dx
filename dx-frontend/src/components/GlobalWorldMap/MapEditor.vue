@@ -117,7 +117,6 @@ import LayerControls from './LayerControls.vue'
 import PropertiesPanel from './PropertiesPanel.vue'
 import { useMapData } from '@/composables/GlobalWorldMap/useMapData'
 import { useMapInteraction } from '@/composables/GlobalWorldMap/useMapInteraction'
-import { worldMapEditorService } from '@/services/WorldMapEditorService'
 
 // Props
 interface Props {
@@ -188,74 +187,32 @@ const handleSelectItem = (item: any) => {
   statusMessage.value = item ? `Selected: ${item.name || item.type}` : 'Selection cleared'
 }
 
-const handleItemCreate = async (itemData: any) => {
-  try {
-    // Add to local map data
-    addItemToMapData(itemData)
+const handleItemCreate = (itemData: any) => {
+  // Add to local map data directly without API calls
+  addItemToMapData(itemData)
 
-    // If it's a position, sync with backend
-    if (itemData.type === 'position' || itemData.type === 'marker') {
-      await worldMapEditorService.createWorldPosition({
-        name: itemData.name,
-        x: itemData.position?.x || itemData.x,
-        y: itemData.position?.y || itemData.y,
-        description: itemData.description,
-        is_dangerous: itemData.type === 'hazard'
-      })
-    }
-
-    statusMessage.value = `Created: ${itemData.name || itemData.type}`
-    emit('data-change', mapData.value)
-  } catch (error) {
-    console.error('Failed to create item:', error)
-    statusMessage.value = 'Failed to create item'
-  }
+  statusMessage.value = `Created: ${itemData.name || itemData.type}`
+  emit('data-change', mapData.value)
 }
 
-const handleItemUpdate = async (itemData: any) => {
-  try {
-    // Update local map data
-    updateItemInMapData(itemData)
+const handleItemUpdate = (itemData: any) => {
+  // Update local map data directly without API calls
+  updateItemInMapData(itemData)
 
-    // If it's a position, sync with backend
-    if (itemData.id && (itemData.type === 'position' || itemData.type === 'marker')) {
-      await worldMapEditorService.updateWorldPosition(itemData.id, {
-        name: itemData.name,
-        x: itemData.position?.x || itemData.x,
-        y: itemData.position?.y || itemData.y,
-        description: itemData.description,
-        is_dangerous: itemData.type === 'hazard'
-      })
-    }
-
-    statusMessage.value = `Updated: ${itemData.name || itemData.type}`
-    emit('data-change', mapData.value)
-  } catch (error) {
-    console.error('Failed to update item:', error)
-    statusMessage.value = 'Failed to update item'
-  }
+  statusMessage.value = `Updated: ${itemData.name || itemData.type}`
+  emit('data-change', mapData.value)
 }
 
-const handleItemDelete = async (item: any) => {
-  try {
-    // Remove from local map data
-    removeItem(item.id)
+const handleItemDelete = (item: any) => {
+  // Remove from local map data directly without API calls
+  removeItem(item.id)
 
-    // If it's a position, sync with backend
-    if (item.id && (item.type === 'position' || item.type === 'marker')) {
-      await worldMapEditorService.deleteWorldPosition(item.id)
-    }
-
-    if (selectedItem.value === item) {
-      selectedItem.value = null
-    }
-
-    statusMessage.value = `Deleted: ${item.name || item.type}`
-    emit('data-change', mapData.value)
-  } catch (error) {
-    console.error('Failed to delete item:', error)
-    statusMessage.value = 'Failed to delete item'
+  if (selectedItem.value === item) {
+    selectedItem.value = null
   }
+
+  statusMessage.value = `Deleted: ${item.name || item.type}`
+  emit('data-change', mapData.value)
 }
 
 const handleImageUpload = (event: Event) => {

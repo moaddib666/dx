@@ -337,7 +337,8 @@ const renderMarkers = () => {
 
     // Render marker label
     if (marker.labelVisible) {
-      const labelY = marker.position.y - (marker.size + 5) / 100 * canvasHeight.value
+      const labelOffsetPercent = (marker.size + 5) / canvasHeight.value * 100
+      const labelY = marker.position.y - labelOffsetPercent
       renderLabel({ x: marker.position.x, y: labelY }, marker.name, {
         fontSize: 11,
         color: '#ffffff',
