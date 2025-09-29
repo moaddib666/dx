@@ -105,6 +105,11 @@ const needsRedraw = ref(true)
 const isDragging = ref(false)
 const dragStart = ref<{ x: number, y: number } | null>(null)
 
+// Stable coordinate system state
+const baseAspectRatio = ref(16 / 9) // Default aspect ratio for coordinate system
+const coordinateScale = ref(1) // Scale factor for coordinate system
+const viewportOffset = ref({ x: 0, y: 0 }) // Offset for letterboxing/pillarboxing
+
 // Object movement state
 const isMovingObject = ref(false)
 const movingItem = ref<any>(null)
@@ -122,28 +127,66 @@ const drawingPointsString = computed(() => {
 // Canvas context
 let ctx: CanvasRenderingContext2D | null = null
 
-// Local coordinate transformation methods (using component props)
-const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
-  // Convert screen coordinates to world coordinates using component's pan/zoom
-  const worldX = (screenPoint.x - props.pan.x) / props.zoom
-  const worldY = (screenPoint.y - props.pan.y) / props.zoom
+// Stable coordinate system calculations
+const getStableCoordinateSystem = () => {
+  const containerAspect = canvasWidth.value / canvasHeight.value
+  const baseAspect = baseAspectRatio.value
 
-  // Convert world coordinates to percentage
+  let stableWidth, stableHeight, offsetX, offsetY, scale
+
+  if (containerAspect > baseAspect) {
+    // Container is wider than base aspect - fit by height
+    stableHeight = canvasHeight.value
+    stableWidth = stableHeight * baseAspect
+    offsetX = (canvasWidth.value - stableWidth) / 2
+    offsetY = 0
+    scale = stableHeight / 600 // Base height reference
+  } else {
+    // Container is taller than base aspect - fit by width
+    stableWidth = canvasWidth.value
+    stableHeight = stableWidth / baseAspect
+    offsetX = 0
+    offsetY = (canvasHeight.value - stableHeight) / 2
+    scale = stableWidth / (600 * baseAspect) // Base width reference
+  }
+
+  return { stableWidth, stableHeight, offsetX, offsetY, scale }
+}
+
+// Local coordinate transformation methods (using stable coordinate system)
+const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
+  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+
+  // Adjust for viewport offset
+  const adjustedX = screenPoint.x - offsetX
+  const adjustedY = screenPoint.y - offsetY
+
+  // Convert screen coordinates to world coordinates using component's pan/zoom
+  const worldX = (adjustedX - props.pan.x) / props.zoom
+  const worldY = (adjustedY - props.pan.y) / props.zoom
+
+  // Convert world coordinates to percentage using stable dimensions
   return {
-    x: (worldX / canvasWidth.value) * 100,
-    y: (worldY / canvasHeight.value) * 100
+    x: (worldX / stableWidth) * 100,
+    y: (worldY / stableHeight) * 100
   }
 }
 
 const percentToScreenLocal = (percentPoint: MapPoint): MapPoint => {
-  // Convert percentage to world coordinates
-  const worldX = (percentPoint.x / 100) * canvasWidth.value
-  const worldY = (percentPoint.y / 100) * canvasHeight.value
+  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+
+  // Convert percentage to world coordinates using stable dimensions
+  const worldX = (percentPoint.x / 100) * stableWidth
+  const worldY = (percentPoint.y / 100) * stableHeight
 
   // Convert world coordinates to screen coordinates using component's pan/zoom
+  const screenX = worldX * props.zoom + props.pan.x
+  const screenY = worldY * props.zoom + props.pan.y
+
+  // Adjust for viewport offset
   return {
-    x: worldX * props.zoom + props.pan.x,
-    y: worldY * props.zoom + props.pan.y
+    x: screenX + offsetX,
+    y: screenY + offsetY
   }
 }
 
@@ -201,17 +244,31 @@ const loadBackgroundImage = (imageSrc: string) => {
 const render = () => {
   if (!ctx || !canvasRef.value) return
 
-  // Clear canvas
+  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+
+  // Clear entire canvas
   ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
+
+  // Fill letterbox/pillarbox areas with background color
+  ctx.fillStyle = '#0f0f0f'
+  ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
 
   // Save context state
   ctx.save()
 
-  // Apply zoom and pan transformations
+  // Clip to stable viewport area
+  ctx.beginPath()
+  ctx.rect(offsetX, offsetY, stableWidth, stableHeight)
+  ctx.clip()
+
+  // Translate to stable viewport
+  ctx.translate(offsetX, offsetY)
+
+  // Apply zoom and pan transformations within stable coordinate system
   ctx.scale(props.zoom, props.zoom)
   ctx.translate(props.pan.x / props.zoom, props.pan.y / props.zoom)
 
-  // Render layers in order
+  // Render layers in order using stable coordinate system
   renderBackgroundImage()
   renderContinents()
   renderRoutes()
@@ -228,28 +285,30 @@ const render = () => {
 const renderBackgroundImage = () => {
   if (!ctx || !backgroundImage.value) return
 
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
   const img = backgroundImage.value
-  const canvasAspect = canvasWidth.value / canvasHeight.value
+  const stableAspect = stableWidth / stableHeight
   const imageAspect = img.width / img.height
 
-  let drawWidth = canvasWidth.value
-  let drawHeight = canvasHeight.value
+  let drawWidth = stableWidth
+  let drawHeight = stableHeight
   let drawX = 0
   let drawY = 0
 
-  // Scale image to fill canvas completely (cover behavior)
-  if (imageAspect > canvasAspect) {
-    // Image is wider than canvas - scale by height and crop sides
-    drawHeight = canvasHeight.value
+  // Scale image to fit stable coordinate system while maintaining aspect ratio
+  if (imageAspect > stableAspect) {
+    // Image is wider than stable area - fit by height
+    drawHeight = stableHeight
     drawWidth = drawHeight * imageAspect
-    drawX = (canvasWidth.value - drawWidth) / 2
+    drawX = (stableWidth - drawWidth) / 2
   } else {
-    // Image is taller than canvas - scale by width and crop top/bottom
-    drawWidth = canvasWidth.value
+    // Image is taller than stable area - fit by width
+    drawWidth = stableWidth
     drawHeight = drawWidth / imageAspect
-    drawY = (canvasHeight.value - drawHeight) / 2
+    drawY = (stableHeight - drawHeight) / 2
   }
 
+  // Draw image within stable coordinate system
   ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
 }
 
@@ -396,17 +455,19 @@ const renderPolygon = (points: MapPoint[], options: {
 }) => {
   if (!ctx || points.length < 3) return
 
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
   ctx.beginPath()
 
-  // Convert percentage points to canvas coordinates
-  const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value,
-    y: (p.y / 100) * canvasHeight.value
+  // Convert percentage points to stable coordinate system
+  const stablePoints = points.map(p => ({
+    x: (p.x / 100) * stableWidth,
+    y: (p.y / 100) * stableHeight
   }))
 
-  ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
-  for (let i = 1; i < canvasPoints.length; i++) {
-    ctx.lineTo(canvasPoints[i].x, canvasPoints[i].y)
+  ctx.moveTo(stablePoints[0].x, stablePoints[0].y)
+  for (let i = 1; i < stablePoints.length; i++) {
+    ctx.lineTo(stablePoints[i].x, stablePoints[i].y)
   }
   ctx.closePath()
 
@@ -432,17 +493,19 @@ const renderPath = (points: MapPoint[], options: {
 }) => {
   if (!ctx || points.length < 2) return
 
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
   ctx.beginPath()
 
-  // Convert percentage points to canvas coordinates
-  const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value,
-    y: (p.y / 100) * canvasHeight.value
+  // Convert percentage points to stable coordinate system
+  const stablePoints = points.map(p => ({
+    x: (p.x / 100) * stableWidth,
+    y: (p.y / 100) * stableHeight
   }))
 
-  ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
-  for (let i = 1; i < canvasPoints.length; i++) {
-    ctx.lineTo(canvasPoints[i].x, canvasPoints[i].y)
+  ctx.moveTo(stablePoints[0].x, stablePoints[0].y)
+  for (let i = 1; i < stablePoints.length; i++) {
+    ctx.lineTo(stablePoints[i].x, stablePoints[i].y)
   }
 
   // Set line style
@@ -474,8 +537,9 @@ const renderMarker = (position: MapPoint, options: {
 }) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value
-  const y = (position.y / 100) * canvasHeight.value
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const x = (position.x / 100) * stableWidth
+  const y = (position.y / 100) * stableHeight
   const radius = options.size
 
   // RPG-style marker with golden border and enhanced visual effects
@@ -537,8 +601,9 @@ const renderLabel = (position: MapPoint, text: string, options: {
 }) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value
-  const y = (position.y / 100) * canvasHeight.value
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const x = (position.x / 100) * stableWidth
+  const y = (position.y / 100) * stableHeight
 
   // Scale font size inversely with zoom to prevent labels from becoming too large
   const scaledFontSize = Math.max(8, Math.min(24, options.fontSize / Math.sqrt(props.zoom))) * 0.75
@@ -599,6 +664,8 @@ const renderLabel = (position: MapPoint, text: string, options: {
 const renderPolygonOutline = (points: MapPoint[], color: string, width: number) => {
   if (!ctx || points.length < 3) return
 
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
   // Add RPG-style glow effect
   ctx.shadowColor = 'rgba(127, 255, 22, 0.4)'
   ctx.shadowBlur = 6
@@ -607,14 +674,14 @@ const renderPolygonOutline = (points: MapPoint[], color: string, width: number) 
 
   ctx.beginPath()
 
-  const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value,
-    y: (p.y / 100) * canvasHeight.value
+  const stablePoints = points.map(p => ({
+    x: (p.x / 100) * stableWidth,
+    y: (p.y / 100) * stableHeight
   }))
 
-  ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
-  for (let i = 1; i < canvasPoints.length; i++) {
-    ctx.lineTo(canvasPoints[i].x, canvasPoints[i].y)
+  ctx.moveTo(stablePoints[0].x, stablePoints[0].y)
+  for (let i = 1; i < stablePoints.length; i++) {
+    ctx.lineTo(stablePoints[i].x, stablePoints[i].y)
   }
   ctx.closePath()
 
@@ -630,8 +697,9 @@ const renderPolygonOutline = (points: MapPoint[], color: string, width: number) 
 const renderCircleOutline = (position: MapPoint, radius: number, color: string, width: number) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value
-  const y = (position.y / 100) * canvasHeight.value
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const x = (position.x / 100) * stableWidth
+  const y = (position.y / 100) * stableHeight
 
   // Add RPG-style glow effect
   ctx.shadowColor = 'rgba(127, 255, 22, 0.4)'
@@ -653,9 +721,11 @@ const renderCircleOutline = (position: MapPoint, radius: number, color: string, 
 const renderVertexHandles = (points: MapPoint[]) => {
   if (!ctx) return
 
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
   points.forEach(point => {
-    const x = (point.x / 100) * canvasWidth.value
-    const y = (point.y / 100) * canvasHeight.value
+    const x = (point.x / 100) * stableWidth
+    const y = (point.y / 100) * stableHeight
 
     // Add RPG-style glow effect
     ctx.shadowColor = 'rgba(250, 218, 149, 0.4)'
