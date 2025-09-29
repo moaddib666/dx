@@ -136,39 +136,14 @@ html, body {
 }
 
 .layer-characters {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-chars.webp');
-  opacity: 0.2;
+  background-image: url('@/assets/images/landing/SiteBackgroud.png');
   z-index: -1;
-  background-blend-mode: soft-light;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center top;
+  mask: radial-gradient(circle at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.1) 100%);
 }
 
-.layer-glow {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-chars.webp');
-  opacity: 0.3;
-  z-index: 0;
-  background-blend-mode: multiply;
-  filter: saturate(400%) brightness(1.1);
-}
-
-.layer1 {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-1.webp');
-  z-index: -2;
-}
-
-.layer2 {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-2.webp');
-  z-index: -3;
-}
-
-.layer3 {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-3.webp');
-  z-index: -4;
-}
-
-.layer4 {
-  background-image: url('@/assets/images/dx-chars.webp'), url('@/assets/images/dx-4.webp');
-  z-index: -5;
-}
 
 .alpha-tag {
   font-size: 0.2em;

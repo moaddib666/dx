@@ -60,7 +60,7 @@ export default {
       },
       {
         name: 'Instagram',
-        url: 'https://www.instagram.com/',
+        url: 'https://www.instagram.com/dimensionxlive/',
         icon: 'fab fa-instagram'
       },
       {
@@ -82,6 +82,16 @@ export default {
         name: 'GitHub',
         url: 'https://github.com/moaddib666/dx',
         icon: 'fab fa-github'
+      },
+      {
+        name: 'TikTok',
+        url: 'https://www.tiktok.com/@dimensionxlive',
+        icon: 'fab fa-tiktok'
+      },
+      {
+        name: 'YouTube',
+        url: 'https://www.youtube.com/@moaddib666',
+        icon: 'fab fa-youtube'
       }
     ];
 
