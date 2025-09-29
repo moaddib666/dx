@@ -453,7 +453,10 @@ onUnmounted(() => {
 
 .map-editor__title h2 {
   margin: 0;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
 }
 
 .map-editor__tools {
@@ -466,21 +469,28 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: #3a3a3a;
-  border: 1px solid #4a4a4a;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(250, 218, 149, 0.3);
   border-radius: 4px;
-  color: #ffffff;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .tool-btn:hover {
-  background: #4a4a4a;
+  background: rgba(250, 218, 149, 0.1);
+  border-color: #fada95;
+  box-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
+  transform: scale(1.05);
 }
 
 .tool-btn.active {
-  background: #60a5fa;
-  border-color: #60a5fa;
+  background: rgba(127, 255, 22, 0.1);
+  border-color: #7fff16;
+  color: #7fff16;
+  box-shadow: 0 0 12px rgba(127, 255, 22, 0.4);
 }
 
 .map-editor__actions {
@@ -493,37 +503,49 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border: none;
+  border: 2px solid rgba(250, 218, 149, 0.3);
   border-radius: 4px;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background: #3b82f6;
-  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: rgba(250, 218, 149, 0.1);
+  border-color: #fada95;
+  box-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
+  transform: scale(1.05);
 }
 
 .btn-secondary {
-  background: #6b7280;
-  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fada95;
+  border-color: rgba(250, 218, 149, 0.2);
 }
 
 .btn-secondary:hover {
-  background: #4b5563;
+  background: rgba(250, 218, 149, 0.05);
+  border-color: rgba(250, 218, 149, 0.4);
+  box-shadow: 0 0 6px rgba(250, 218, 149, 0.2);
 }
 
 .btn-success {
-  background: #10b981;
-  color: white;
+  background: rgba(127, 255, 22, 0.1);
+  color: #7fff16;
+  border-color: rgba(127, 255, 22, 0.3);
 }
 
 .btn-success:hover {
-  background: #059669;
+  background: rgba(127, 255, 22, 0.2);
+  border-color: #7fff16;
+  box-shadow: 0 0 10px rgba(127, 255, 22, 0.4);
+  transform: scale(1.05);
 }
 
 .map-editor__content {

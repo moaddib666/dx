@@ -473,12 +473,23 @@ const renderMarker = (position: MapPoint, options: {
   const y = (position.y / 100) * canvasHeight.value
   const radius = options.size
 
-  ctx.fillStyle = options.color
-  ctx.strokeStyle = '#ffffff'
-  ctx.lineWidth = 2
+  // RPG-style marker with golden border and enhanced visual effects
+  const markerColor = options.color || '#8b5cf6'
+  const borderColor = options.isSelected ? '#7fff16' : '#fada95'
+  const glowColor = options.isSelected ? 'rgba(127, 255, 22, 0.3)' : 'rgba(250, 218, 149, 0.3)'
+
+  // Add glow effect
+  ctx.shadowColor = glowColor
+  ctx.shadowBlur = 8
+  ctx.shadowOffsetX = 0
+  ctx.shadowOffsetY = 0
+
+  ctx.fillStyle = markerColor
+  ctx.strokeStyle = borderColor
+  ctx.lineWidth = 0.7
 
   if (options.type === 'hazard') {
-    // Triangle for hazards
+    // Triangle for hazards with RPG styling
     ctx.beginPath()
     ctx.moveTo(x, y - radius)
     ctx.lineTo(x - radius * 0.866, y + radius * 0.5)
@@ -487,19 +498,26 @@ const renderMarker = (position: MapPoint, options: {
     ctx.fill()
     ctx.stroke()
   } else {
-    // Circle for other markers
+    // Circle for other markers with RPG styling
     ctx.beginPath()
     ctx.arc(x, y, radius, 0, Math.PI * 2)
     ctx.fill()
     ctx.stroke()
   }
 
-  // Render icon if provided
+  // Reset shadow for icon rendering
+  ctx.shadowColor = 'transparent'
+  ctx.shadowBlur = 0
+
+  // Render icon if provided with RPG font styling
   if (options.icon) {
-    ctx.font = `${radius * 1.2}px Arial`
+    ctx.font = `${radius * 1.2}px 'Cinzel', 'Times New Roman', 'Georgia', serif`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillStyle = '#ffffff'
+    ctx.fillStyle = '#fada95'
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'
+    ctx.lineWidth = 0.1
+    ctx.strokeText(options.icon, x, y)
     ctx.fillText(options.icon, x, y)
   }
 }
@@ -518,8 +536,8 @@ const renderLabel = (position: MapPoint, text: string, options: {
   const y = (position.y / 100) * canvasHeight.value
 
   // Scale font size inversely with zoom to prevent labels from becoming too large
-  const scaledFontSize = Math.max(8, Math.min(24, options.fontSize / Math.sqrt(props.zoom)))
-  ctx.font = `${options.fontWeight || 'normal'} ${scaledFontSize}px Arial`
+  const scaledFontSize = Math.max(8, Math.min(24, options.fontSize / Math.sqrt(props.zoom))) * 0.75
+  ctx.font = `${options.fontWeight || 'normal'} ${scaledFontSize}px 'Cinzel', 'Times New Roman', 'Georgia', serif`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
@@ -528,19 +546,48 @@ const renderLabel = (position: MapPoint, text: string, options: {
   const textWidth = metrics.width
   const textHeight = scaledFontSize
 
-  // Draw background if enabled
-  if (options.background && options.backgroundColor) {
-    ctx.fillStyle = options.backgroundColor
+  // RPG-style background with golden border
+  if (options.background) {
+    const bgColor = options.backgroundColor || 'rgba(0, 0, 0, 0.7)'
+    const borderColor = options.isSelected ? '#7fff16' : '#fada95'
+    const padding = 6
+
+    // Add glow effect for background
+    ctx.shadowColor = options.isSelected ? 'rgba(127, 255, 22, 0.3)' : 'rgba(250, 218, 149, 0.3)'
+    ctx.shadowBlur = 4
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+
+    // Draw background with rounded corners effect
+    ctx.fillStyle = bgColor
     ctx.fillRect(
-      x - textWidth / 2 - 4,
-      y - textHeight / 2 - 2,
-      textWidth + 8,
-      textHeight + 4
+      x - textWidth / 2 - padding,
+      y - textHeight / 2 - 3,
+      textWidth + padding * 2,
+      textHeight + 6
     )
+
+    // Draw border
+    ctx.strokeStyle = borderColor
+    ctx.lineWidth = 0.3
+    ctx.strokeRect(
+      x - textWidth / 2 - padding,
+      y - textHeight / 2 - 3,
+      textWidth + padding * 2,
+      textHeight + 6
+    )
+
+    // Reset shadow
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
   }
 
-  // Draw text
-  ctx.fillStyle = options.color
+  // Draw text with RPG styling
+  const textColor = options.color === '#ffffff' ? '#fada95' : options.color
+  ctx.fillStyle = textColor
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'
+  ctx.lineWidth = 1
+  ctx.strokeText(text, x, y)
   ctx.fillText(text, x, y)
 }
 
@@ -1051,7 +1098,8 @@ defineExpose({
 .crosshair::after {
   content: '';
   position: absolute;
-  background: #60a5fa;
+  background: #fada95;
+  box-shadow: 0 0 4px rgba(250, 218, 149, 0.5);
 }
 
 .crosshair::before {
