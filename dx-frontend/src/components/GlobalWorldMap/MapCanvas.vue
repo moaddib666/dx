@@ -198,22 +198,22 @@ const renderBackgroundImage = () => {
   const canvasAspect = canvasWidth.value / canvasHeight.value
   const imageAspect = img.width / img.height
 
-  let drawWidth = canvasWidth.value / props.zoom
-  let drawHeight = canvasHeight.value / props.zoom
+  let drawWidth = canvasWidth.value
+  let drawHeight = canvasHeight.value
   let drawX = 0
   let drawY = 0
 
   // Scale image to fill canvas completely (cover behavior)
   if (imageAspect > canvasAspect) {
     // Image is wider than canvas - scale by height and crop sides
-    drawHeight = canvasHeight.value / props.zoom
+    drawHeight = canvasHeight.value
     drawWidth = drawHeight * imageAspect
-    drawX = (canvasWidth.value / props.zoom - drawWidth) / 2
+    drawX = (canvasWidth.value - drawWidth) / 2
   } else {
     // Image is taller than canvas - scale by width and crop top/bottom
-    drawWidth = canvasWidth.value / props.zoom
+    drawWidth = canvasWidth.value
     drawHeight = drawWidth / imageAspect
-    drawY = (canvasHeight.value / props.zoom - drawHeight) / 2
+    drawY = (canvasHeight.value - drawHeight) / 2
   }
 
   ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
@@ -365,8 +365,8 @@ const renderPolygon = (points: MapPoint[], options: {
 
   // Convert percentage points to canvas coordinates
   const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value / props.zoom,
-    y: (p.y / 100) * canvasHeight.value / props.zoom
+    x: (p.x / 100) * canvasWidth.value,
+    y: (p.y / 100) * canvasHeight.value
   }))
 
   ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
@@ -401,8 +401,8 @@ const renderPath = (points: MapPoint[], options: {
 
   // Convert percentage points to canvas coordinates
   const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value / props.zoom,
-    y: (p.y / 100) * canvasHeight.value / props.zoom
+    x: (p.x / 100) * canvasWidth.value,
+    y: (p.y / 100) * canvasHeight.value
   }))
 
   ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
@@ -439,8 +439,8 @@ const renderMarker = (position: MapPoint, options: {
 }) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value / props.zoom
-  const y = (position.y / 100) * canvasHeight.value / props.zoom
+  const x = (position.x / 100) * canvasWidth.value
+  const y = (position.y / 100) * canvasHeight.value
   const radius = options.size
 
   ctx.fillStyle = options.color
@@ -484,17 +484,19 @@ const renderLabel = (position: MapPoint, text: string, options: {
 }) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value / props.zoom
-  const y = (position.y / 100) * canvasHeight.value / props.zoom
+  const x = (position.x / 100) * canvasWidth.value
+  const y = (position.y / 100) * canvasHeight.value
 
-  ctx.font = `${options.fontWeight || 'normal'} ${options.fontSize}px Arial`
+  // Scale font size inversely with zoom to prevent labels from becoming too large
+  const scaledFontSize = Math.max(8, Math.min(24, options.fontSize / Math.sqrt(props.zoom)))
+  ctx.font = `${options.fontWeight || 'normal'} ${scaledFontSize}px Arial`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
   // Measure text
   const metrics = ctx.measureText(text)
   const textWidth = metrics.width
-  const textHeight = options.fontSize
+  const textHeight = scaledFontSize
 
   // Draw background if enabled
   if (options.background && options.backgroundColor) {

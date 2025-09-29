@@ -227,18 +227,16 @@ export function useMapInteraction() {
     const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom.value * zoomFactor))
 
     if (newZoom !== zoom.value) {
-      // Zoom towards mouse cursor
-      const worldPointBefore = screenToWorld({ x: mouseX, y: mouseY }, canvas.width, canvas.height)
+      // Calculate zoom ratio for pan adjustment
+      const zoomRatio = newZoom / zoom.value
 
+      // Calculate pan adjustment to keep mouse cursor position stable
+      const offsetX = mouseX * (1 - zoomRatio)
+      const offsetY = mouseY * (1 - zoomRatio)
+
+      // Apply zoom and pan adjustment
       zoom.value = newZoom
-
-      const worldPointAfter = screenToWorld({ x: mouseX, y: mouseY }, canvas.width, canvas.height)
-
-      // Adjust pan to keep the point under the mouse cursor in the same place
-      panBy(
-        (worldPointAfter.x - worldPointBefore.x) * zoom.value,
-        (worldPointAfter.y - worldPointBefore.y) * zoom.value
-      )
+      panBy(offsetX, offsetY)
     }
   }
 
