@@ -46,6 +46,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useMapInteraction } from '@/composables/GlobalWorldMap/useMapInteraction'
 import type { MapData, MapPoint, MapContinent, MapRoute, MapMarker, MapLabel } from '@/composables/GlobalWorldMap/useMapData'
+import { createFogMask } from '@/utils/perlinNoise'
 
 // Props
 interface Props {
@@ -74,6 +75,8 @@ const emit = defineEmits<{
 const containerRef = ref<HTMLDivElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const backgroundImage = ref<HTMLImageElement | null>(null)
+const fogTexture = ref<HTMLImageElement | null>(null)
+const fogMaskCanvas = ref<HTMLCanvasElement | null>(null)
 
 // Composables
 const {
@@ -205,6 +208,9 @@ const initCanvas = () => {
     loadBackgroundImage(props.mapData.metadata.backgroundImage)
   }
 
+  // Load fog of war texture
+  loadFogTexture()
+
   // Initial render
   render()
 }
@@ -241,6 +247,43 @@ const loadBackgroundImage = (imageSrc: string) => {
   img.src = imageSrc
 }
 
+const loadFogTexture = () => {
+  const img = new Image()
+  img.onload = () => {
+    fogTexture.value = img
+    createFogMaskCanvas()
+    needsRedraw.value = true
+  }
+  img.onerror = () => {
+    console.error('Failed to load fog of war texture')
+    fogTexture.value = null
+  }
+  img.src = '/src/assets/world-map/fog-of-war.png'
+}
+
+const createFogMaskCanvas = () => {
+  if (!fogTexture.value) return
+
+  const maskCanvas = document.createElement('canvas')
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
+  // Create mask at a reasonable resolution for performance
+  const maskWidth = Math.min(512, stableWidth)
+  const maskHeight = Math.min(512, stableHeight)
+
+  maskCanvas.width = maskWidth
+  maskCanvas.height = maskHeight
+
+  const maskCtx = maskCanvas.getContext('2d')
+  if (!maskCtx) return
+
+  // Generate Perlin noise mask
+  const fogMask = createFogMask(maskWidth, maskHeight, 0.02, 4, 0.5, 42)
+  maskCtx.putImageData(fogMask, 0, 0)
+
+  fogMaskCanvas.value = maskCanvas
+}
+
 const render = () => {
   if (!ctx || !canvasRef.value) return
 
@@ -270,6 +313,7 @@ const render = () => {
 
   // Render layers in order using stable coordinate system
   renderBackgroundImage()
+  renderFogOfWar()
   renderContinents()
   renderRoutes()
   renderMarkers()
@@ -310,6 +354,55 @@ const renderBackgroundImage = () => {
 
   // Draw image within stable coordinate system
   ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight)
+}
+
+const renderFogOfWar = () => {
+  if (!ctx || !fogTexture.value || !fogMaskCanvas.value) return
+
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+
+  // Calculate tile size that doesn't scale with zoom
+  // Use a fixed world-space size for consistent fog appearance
+  const baseTileSize = 256 // Base tile size in world coordinates
+  const tileSize = baseTileSize / props.zoom // Adjust for current zoom to maintain world size
+
+  // Calculate how many tiles we need to cover the visible area
+  const tilesX = Math.ceil(stableWidth / tileSize) + 2 // Extra tiles for seamless coverage
+  const tilesY = Math.ceil(stableHeight / tileSize) + 2
+
+  // Calculate starting offset to center the tiling
+  const startX = -((props.pan.x / props.zoom) % tileSize)
+  const startY = -((props.pan.y / props.zoom) % tileSize)
+
+  // Save context state
+  ctx.save()
+
+  // Create a temporary canvas for compositing
+  const tempCanvas = document.createElement('canvas')
+  tempCanvas.width = stableWidth
+  tempCanvas.height = stableHeight
+  const tempCtx = tempCanvas.getContext('2d')
+  if (!tempCtx) return
+
+  // Draw repeating fog texture
+  for (let x = 0; x < tilesX; x++) {
+    for (let y = 0; y < tilesY; y++) {
+      const drawX = startX + x * tileSize
+      const drawY = startY + y * tileSize
+      tempCtx.drawImage(fogTexture.value, drawX, drawY, tileSize, tileSize)
+    }
+  }
+
+  // Apply Perlin noise mask using composite operation
+  tempCtx.globalCompositeOperation = 'destination-in'
+  tempCtx.drawImage(fogMaskCanvas.value, 0, 0, stableWidth, stableHeight)
+
+  // Draw the final fog layer with reduced opacity
+  ctx.globalAlpha = 0.4
+  ctx.drawImage(tempCanvas, 0, 0)
+
+  // Restore context state
+  ctx.restore()
 }
 
 const renderContinents = () => {
