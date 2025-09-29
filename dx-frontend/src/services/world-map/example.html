@@ -1,0 +1,414 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { Download, Upload, ZoomIn, ZoomOut, Home, MapPin, Route, Tag } from 'lucide-react';
+
+const MapOverlayTool = () => {
+const [baseImage, setBaseImage] = useState(null);
+const [zoom, setZoom] = useState(1);
+const [pan, setPan] = useState({ x: 0, y: 0 });
+const [isDragging, setIsDragging] = useState(false);
+const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+const [showCities, setShowCities] = useState(true);
+const [showLabels, setShowLabels] = useState(true);
+const [showRoutes, setShowRoutes] = useState(true);
+const [showHazards, setShowHazards] = useState(true);
+const canvasRef = useRef(null);
+const fileInputRef = useRef(null);
+
+// Map data from YAML - you can modify positions to match your base image
+const mapData = {
+continents: [
+{
+name: 'Mainland Primus',
+label: { x: 50, y: 50 }, // % positions
+cities: [
+{ name: 'City of Memories', x: 70, y: 75, type: 'major', description: 'Starting point, mixed civilization' },
+{ name: 'Crossroads Bastion', x: 50, y: 50, type: 'major', description: 'Central trading hub' },
+{ name: 'Meteor\'s End', x: 60, y: 40, type: 'major', description: 'Crystal city' },
+{ name: 'Shadowveil', x: 45, y: 60, type: 'medium', description: 'Dimensional overlap city' },
+{ name: 'Forge Haven', x: 35, y: 40, type: 'medium', description: 'Industrial hub' },
+{ name: 'Starfall Sanctum', x: 55, y: 45, type: 'medium', description: 'Magical crystal city' }
+],
+hazards: [
+{ name: 'Death Valley', x: 72, y: 80, type: 'extreme' },
+{ name: 'Black Deserts', x: 45, y: 65, type: 'corrupted' },
+{ name: 'Corrupted Wastelands', x: 40, y: 55, type: 'corrupted' }
+]
+},
+{
+name: 'TechnoEdge',
+label: { x: 20, y: 25 },
+cities: [
+{ name: 'Techno-City Prime', x: 20, y: 25, type: 'major', description: 'Industrial capital' }
+],
+hazards: []
+},
+{
+name: 'Mystory Heaven',
+label: { x: 80, y: 30 },
+cities: [
+{ name: 'JSon\'s Sanctuary', x: 80, y: 30, type: 'major', description: 'Sacred magical city' },
+{ name: 'Temple City', x: 82, y: 40, type: 'medium', description: 'Religious center' }
+],
+hazards: []
+}
+],
+oceans: [
+{
+name: 'Dark Ocean',
+label: { x: 65, y: 85 },
+islands: [
+{ name: 'Black Rock Island', x: 68, y: 82 }
+]
+}
+],
+routes: [
+{ from: { x: 70, y: 75 }, to: { x: 50, y: 50 }, type: 'maritime' },
+{ from: { x: 50, y: 50 }, to: { x: 20, y: 25 }, type: 'aerial' },
+{ from: { x: 50, y: 50 }, to: { x: 80, y: 30 }, type: 'dimensional' }
+]
+};
+
+const handleImageUpload = (e) => {
+const file = e.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = (event) => {
+const img = new Image();
+img.onload = () => {
+setBaseImage(img);
+};
+img.src = event.target.result;
+};
+reader.readAsDataURL(file);
+}
+};
+
+useEffect(() => {
+if (baseImage && canvasRef.current) {
+drawMap();
+}
+}, [baseImage, zoom, pan, showCities, showLabels, showRoutes, showHazards]);
+
+const drawMap = () => {
+const canvas = canvasRef.current;
+const ctx = canvas.getContext('2d');
+
+// Set canvas size
+canvas.width = baseImage.width;
+canvas.height = baseImage.height;
+
+// Clear and draw base image
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.drawImage(baseImage, 0, 0);
+
+const w = canvas.width;
+const h = canvas.height;
+
+// Draw routes first (under everything)
+if (showRoutes) {
+mapData.routes.forEach(route => {
+const fromX = (route.from.x / 100) * w;
+const fromY = (route.from.y / 100) * h;
+const toX = (route.to.x / 100) * w;
+const toY = (route.to.y / 100) * h;
+
+ctx.strokeStyle = route.type === 'dimensional' ? 'rgba(147, 51, 234, 0.6)' :
+route.type === 'aerial' ? 'rgba(96, 165, 250, 0.6)' :
+'rgba(59, 130, 246, 0.6)';
+ctx.lineWidth = 3;
+ctx.setLineDash([10, 5]);
+ctx.beginPath();
+ctx.moveTo(fromX, fromY);
+ctx.lineTo(toX, toY);
+ctx.stroke();
+ctx.setLineDash([]);
+});
+}
+
+// Draw continents and their features
+mapData.continents.forEach(continent => {
+// Draw continent label
+if (showLabels) {
+const labelX = (continent.label.x / 100) * w;
+const labelY = (continent.label.y / 100) * h;
+
+ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+ctx.fillRect(labelX - 80, labelY - 20, 160, 30);
+ctx.fillStyle = '#ffffff';
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText(continent.name, labelX, labelY);
+}
+
+// Draw cities
+if (showCities) {
+continent.cities.forEach(city => {
+const x = (city.x / 100) * w;
+const y = (city.y / 100) * h;
+
+// City marker
+const radius = city.type === 'major' ? 8 : 5;
+ctx.fillStyle = city.type === 'major' ? '#fbbf24' : '#60a5fa';
+ctx.strokeStyle = '#ffffff';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.arc(x, y, radius, 0, Math.PI * 2);
+ctx.fill();
+ctx.stroke();
+
+// City name
+if (showLabels) {
+ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+const textWidth = ctx.measureText(city.name).width;
+ctx.fillRect(x - textWidth / 2 - 5, y - 30, textWidth + 10, 20);
+ctx.fillStyle = '#ffffff';
+ctx.font = 'bold 12px Arial';
+ctx.textAlign = 'center';
+ctx.fillText(city.name, x, y - 15);
+}
+});
+}
+
+// Draw hazards
+if (showHazards) {
+continent.hazards.forEach(hazard => {
+const x = (hazard.x / 100) * w;
+const y = (hazard.y / 100) * h;
+
+// Hazard marker
+ctx.fillStyle = hazard.type === 'extreme' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(147, 51, 234, 0.8)';
+ctx.strokeStyle = '#ffffff';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(x, y - 8);
+ctx.lineTo(x - 7, y + 5);
+ctx.lineTo(x + 7, y + 5);
+ctx.closePath();
+ctx.fill();
+ctx.stroke();
+
+// Hazard name
+if (showLabels) {
+ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+const textWidth = ctx.measureText(hazard.name).width;
+ctx.fillRect(x - textWidth / 2 - 5, y + 10, textWidth + 10, 20);
+ctx.fillStyle = '#ff6b6b';
+ctx.font = 'italic 11px Arial';
+ctx.textAlign = 'center';
+ctx.fillText(hazard.name, x, y + 23);
+}
+});
+}
+});
+
+// Draw oceans
+if (showLabels) {
+mapData.oceans.forEach(ocean => {
+const labelX = (ocean.label.x / 100) * w;
+const labelY = (ocean.label.y / 100) * h;
+
+ctx.fillStyle = 'rgba(0, 20, 40, 0.5)';
+ctx.fillRect(labelX - 70, labelY - 15, 140, 25);
+ctx.fillStyle = '#4a9eff';
+ctx.font = 'italic 14px Arial';
+ctx.textAlign = 'center';
+ctx.fillText(ocean.name, labelX, labelY);
+
+// Islands
+ocean.islands.forEach(island => {
+const x = (island.x / 100) * w;
+const y = (island.y / 100) * h;
+
+ctx.fillStyle = '#666666';
+ctx.strokeStyle = '#ffffff';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.arc(x, y, 4, 0, Math.PI * 2);
+ctx.fill();
+ctx.stroke();
+
+ctx.fillStyle = '#aaaaaa';
+ctx.font = '10px Arial';
+ctx.fillText(island.name, x, y - 8);
+});
+});
+}
+};
+
+const handleDownload = () => {
+const canvas = canvasRef.current;
+const link = document.createElement('a');
+link.download = 'zerra-planet-annotated-map.png';
+link.href = canvas.toDataURL();
+link.click();
+};
+
+const handleMouseDown = (e) => {
+setIsDragging(true);
+const rect = canvasRef.current.getBoundingClientRect();
+setDragStart({
+x: e.clientX - rect.left - pan.x,
+y: e.clientY - rect.top - pan.y
+});
+};
+
+const handleMouseMove = (e) => {
+if (isDragging && canvasRef.current) {
+const rect = canvasRef.current.getBoundingClientRect();
+setPan({
+x: e.clientX - rect.left - dragStart.x,
+y: e.clientY - rect.top - dragStart.y
+});
+}
+};
+
+const handleMouseUp = () => {
+setIsDragging(false);
+};
+
+return (
+<div className="w-full h-screen bg-gray-900 flex flex-col">
+    {/* Header */}
+    <div className="bg-gray-800 p-4 flex items-center justify-between border-b border-gray-700">
+        <h1 className="text-2xl font-bold text-blue-400">Zerra Planet Map Overlay Tool</h1>
+        <div className="flex gap-2">
+            <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    className="hidden"
+            />
+            <button
+                    onClick={() => fileInputRef.current.click()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 flex items-center gap-2"
+            >
+            <Upload size={20} />
+            Upload Base Map
+            </button>
+            {baseImage && (
+            <button
+                    onClick={handleDownload}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500 flex items-center gap-2"
+            >
+                <Download size={20} />
+                Download
+            </button>
+            )}
+        </div>
+    </div>
+
+    {/* Controls */}
+    <div className="bg-gray-800 p-3 border-b border-gray-700 flex items-center justify-between">
+        <div className="flex gap-4">
+            <label className="flex items-center gap-2 text-white cursor-pointer">
+                <input
+                        type="checkbox"
+                        checked={showCities}
+                        onChange={(e) => setShowCities(e.target.checked)}
+                className="w-4 h-4"
+                />
+                <MapPin size={16} />
+                Cities
+            </label>
+            <label className="flex items-center gap-2 text-white cursor-pointer">
+                <input
+                        type="checkbox"
+                        checked={showRoutes}
+                        onChange={(e) => setShowRoutes(e.target.checked)}
+                className="w-4 h-4"
+                />
+                <Route size={16} />
+                Routes
+            </label>
+            <label className="flex items-center gap-2 text-white cursor-pointer">
+                <input
+                        type="checkbox"
+                        checked={showLabels}
+                        onChange={(e) => setShowLabels(e.target.checked)}
+                className="w-4 h-4"
+                />
+                <Tag size={16} />
+                Labels
+            </label>
+            <label className="flex items-center gap-2 text-white cursor-pointer">
+                <input
+                        type="checkbox"
+                        checked={showHazards}
+                        onChange={(e) => setShowHazards(e.target.checked)}
+                className="w-4 h-4"
+                />
+                ⚠️ Hazards
+            </label>
+        </div>
+    </div>
+
+    {/* Legend */}
+    <div className="bg-gray-800 p-3 border-b border-gray-700">
+        <div className="flex gap-6 text-sm flex-wrap">
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-yellow-400"></div>
+                <span className="text-gray-300">Major City</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded-full bg-blue-400"></div>
+                <span className="text-gray-300">Medium City</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-red-500" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}></div>
+            <span className="text-gray-300">Extreme Danger</span>
+        </div>
+        <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-purple-600" style={{clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'}}></div>
+        <span className="text-gray-300">Corrupted Zone</span>
+    </div>
+    <div className="flex items-center gap-2">
+        <div className="w-8 h-0.5 bg-blue-400"></div>
+        <span className="text-gray-300">Trade Route</span>
+    </div>
+</div>
+</div>
+
+{/* Canvas Area */}
+<div className="flex-1 overflow-auto bg-gray-950 flex items-center justify-center">
+    {!baseImage ? (
+    <div className="text-center text-gray-400 p-8">
+        <Upload size={64} className="mx-auto mb-4 opacity-50" />
+        <p className="text-xl mb-2">Upload your AI-generated base map</p>
+        <p className="text-sm">Generate a map using Midjourney, Leonardo.ai, or any AI art tool,</p>
+        <p className="text-sm">then upload it here to add your locations from the YAML data.</p>
+        <button
+                onClick={() => fileInputRef.current.click()}
+        className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500"
+        >
+        Choose File
+        </button>
+    </div>
+    ) : (
+    <div
+            className="relative"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+    >
+        <canvas
+                ref={canvasRef}
+                className="max-w-full max-h-full cursor-move"
+                style={{
+                boxShadow: '0 0 50px rgba(0,0,0,0.5)'
+        }}
+        />
+    </div>
+    )}
+</div>
+
+{/* Instructions */}
+<div className="bg-gray-800 p-2 text-center text-gray-400 text-sm border-t border-gray-700">
+    Step 1: Generate base map with AI • Step 2: Upload it here • Step 3: Toggle layers • Step 4: Download final map
+</div>
+</div>
+);
+};
+
+export default MapOverlayTool;
