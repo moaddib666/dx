@@ -1,26 +1,28 @@
 <template>
   <header class="header">
-    <nav class="navbar container">
-      <!-- Mobile hamburger menu button -->
-      <button
-        class="mobile-menu-toggle"
-        @click="toggleMobileMenu"
-        :class="{ active: isMobileMenuOpen }"
-        aria-label="Toggle navigation menu"
-      >
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
+    <nav class="navbar">
+      <div class="nav-container">
+        <!-- Mobile hamburger menu button -->
+        <button
+          class="mobile-menu-toggle"
+          @click="toggleMobileMenu"
+          :class="{ active: isMobileMenuOpen }"
+          aria-label="Toggle navigation menu"
+        >
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
 
-      <!-- Desktop navigation -->
-      <ul class="desktop-nav">
-        <li v-for="link in links" :key="link.id">
-          <a :href="link.url">{{ t(`navigation.${link.id}`) }}</a>
-        </li>
-      </ul>
+        <!-- Desktop navigation -->
+        <ul class="nav-menu desktop-nav">
+          <li v-for="link in links" :key="link.id" class="nav-item" :class="{ active: isActiveLink(link.url) }">
+            <a :href="link.url" class="nav-link">{{ t(`navigation.${link.id}`) }}</a>
+          </li>
+        </ul>
 
-      <LanguageSwitcher class="language-switcher desktop-only" />
+        <LanguageSwitcher class="language-switcher desktop-only" />
+      </div>
     </nav>
 
     <!-- Mobile menu modal -->
@@ -35,8 +37,8 @@
           <button class="close-btn" @click="closeMobileMenu" aria-label="Close menu">×</button>
         </div>
         <ul class="mobile-nav-list">
-          <li v-for="link in links" :key="link.id">
-            <a :href="link.url" @click="closeMobileMenu">{{ t(`navigation.${link.id}`) }}</a>
+          <li v-for="link in links" :key="link.id" class="nav-item" :class="{ active: isActiveLink(link.url) }">
+            <a :href="link.url" class="nav-link" @click="closeMobileMenu">{{ t(`navigation.${link.id}`) }}</a>
           </li>
         </ul>
         <div class="mobile-menu-footer">
@@ -50,6 +52,7 @@
 <script>
 import LanguageSwitcher from './LanguageSwitcher.vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 export default {
   components: {
@@ -57,7 +60,8 @@ export default {
   },
   setup() {
     const { t } = useI18n();
-    return { t };
+    const route = useRoute();
+    return { t, route };
   },
   data() {
     return {
@@ -92,6 +96,9 @@ export default {
     closeMobileMenu() {
       this.isMobileMenuOpen = false;
       document.body.style.overflow = '';
+    },
+    isActiveLink(url) {
+      return this.route.path === url;
     }
   },
   beforeUnmount() {
@@ -103,20 +110,25 @@ export default {
 
 <style scoped>
 .header {
-  background: #1e1e1e;
-  border-bottom: 1px solid #fada95;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  padding: 12px 0;
-  z-index: 50;
+  background: rgba(15, 20, 28, 0.6);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 50;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .navbar {
+  position: relative;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
 }
 
 /* Mobile hamburger menu button */
@@ -152,47 +164,67 @@ export default {
 }
 
 /* Desktop navigation */
-.desktop-nav {
+.nav-menu {
   display: flex;
-  justify-content: flex-start;
   list-style: none;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
   margin: 0;
   padding: 0;
   flex-grow: 1;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.desktop-nav::-webkit-scrollbar {
-  display: none;
+.nav-item {
+  position: relative;
 }
 
-.desktop-nav a {
-  color: #ffffff;
+.nav-link {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  font-size: clamp(13px, 1.2vw, 16px);
-  font-weight: 500;
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  min-width: 0;
-  flex-shrink: 1;
+  padding: 1.5rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  position: relative;
 }
 
-.desktop-nav a:hover {
-  color: #fada95;
-  background: rgba(250, 218, 149, 0.1);
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 255, 200, 0.6),
+    transparent
+  );
+  transform: translateX(-50%);
+  transition: width 0.4s ease;
 }
 
-.desktop-nav li {
-  margin-right: 6px;
-  flex-shrink: 1;
-  min-width: 0;
+.nav-item:hover .nav-link {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.nav-item:hover .nav-link::after {
+  width: 100%;
+}
+
+.nav-item.active .nav-link {
+  color: rgba(0, 255, 200, 0.9);
+}
+
+.nav-item.active .nav-link::after {
+  width: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 255, 200, 0.8),
+    transparent
+  );
 }
 
 .language-switcher {
@@ -223,7 +255,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #1e1e1e;
+  background: rgba(15, 20, 28, 0.95);
+  backdrop-filter: blur(12px);
   border-radius: 8px;
   padding: 0;
   width: 85%;
@@ -231,7 +264,7 @@ export default {
   max-height: 60vh;
   overflow-y: auto;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  border: 1px solid #fada95;
+  border: 1px solid rgba(0, 255, 200, 0.3);
 }
 
 .mobile-menu-header {
@@ -239,12 +272,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(250, 218, 149, 0.3);
+  border-bottom: 1px solid rgba(0, 255, 200, 0.2);
   background: rgba(0, 0, 0, 0.2);
 }
 
 .mobile-menu-header h3 {
-  color: #fada95;
+  color: rgba(0, 255, 200, 0.9);
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
@@ -252,8 +285,8 @@ export default {
 
 .close-btn {
   background: none;
-  border: 1px solid rgba(250, 218, 149, 0.3);
-  color: #fada95;
+  border: 1px solid rgba(0, 255, 200, 0.3);
+  color: rgba(0, 255, 200, 0.9);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
@@ -267,8 +300,8 @@ export default {
 }
 
 .close-btn:hover {
-  background: rgba(250, 218, 149, 0.1);
-  border-color: #fada95;
+  background: rgba(0, 255, 200, 0.1);
+  border-color: rgba(0, 255, 200, 0.8);
 }
 
 .mobile-nav-list {
@@ -281,33 +314,80 @@ export default {
   margin: 0;
 }
 
-.mobile-nav-list a {
+.mobile-nav-list .nav-link {
   display: block;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   padding: 0.875rem 1.25rem;
   font-size: clamp(0.85rem, 2vw, 0.95rem);
   font-weight: 500;
   transition: all 0.2s ease;
-  border-bottom: 1px solid rgba(250, 218, 149, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 1.2;
+  position: relative;
 }
 
-.mobile-nav-list a:hover {
-  background: rgba(250, 218, 149, 0.1);
-  color: #fada95;
+.mobile-nav-list .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(0, 255, 200, 0.6),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-nav-list .nav-item:hover .nav-link {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.mobile-nav-list .nav-item:hover .nav-link::after {
+  opacity: 1;
+}
+
+.mobile-nav-list .nav-item.active .nav-link {
+  color: rgba(0, 255, 200, 0.9);
+}
+
+.mobile-nav-list .nav-item.active .nav-link::after {
+  opacity: 1;
+  background: linear-gradient(180deg,
+    transparent,
+    rgba(0, 255, 200, 0.8),
+    transparent
+  );
 }
 
 .mobile-menu-footer {
   padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(250, 218, 149, 0.3);
+  border-top: 1px solid rgba(0, 255, 200, 0.2);
   background: rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive breakpoints */
+@media (max-width: 1200px) {
+  .nav-link {
+    padding: 1.5rem 1.3rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-link {
+    padding: 1.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
 @media (max-width: 768px) {
   .mobile-menu-toggle {
     display: flex;
@@ -320,6 +400,41 @@ export default {
   .desktop-only {
     display: none;
   }
+
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  /* Mobile navigation styling when displayed inline */
+  .nav-menu {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-link {
+    padding: 1.2rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .nav-link::after {
+    left: 0;
+    transform: none;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(180deg,
+      transparent,
+      rgba(0, 255, 200, 0.6),
+      transparent
+    );
+  }
+
+  .nav-item:hover .nav-link::after {
+    width: 2px;
+  }
+
+  .nav-item.active .nav-link::after {
+    width: 2px;
+  }
 }
 
 @media (min-width: 769px) {
@@ -329,19 +444,6 @@ export default {
 
   .mobile-menu-overlay {
     display: none;
-  }
-}
-
-/* Container class for responsive layout */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 0 0.5rem;
   }
 }
 </style>
