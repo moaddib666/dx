@@ -58,6 +58,7 @@ export interface MapCity {
   fillVisible: boolean
   labelVisible: boolean
   size?: number // For point type
+  highlight?: boolean
 }
 
 export interface MapRoute {
@@ -81,6 +82,7 @@ export interface MapMarker {
   size: number
   visible: boolean
   labelVisible: boolean
+  highlight?: boolean
   description?: string
 }
 
@@ -373,6 +375,7 @@ export function useMapData(initialData?: MapData | null) {
       size: markerData.size || 6,
       visible: markerData.visible !== false,
       labelVisible: markerData.labelVisible !== false,
+      highlight: markerData.highlight || false,
       description: markerData.description || ''
     }
 

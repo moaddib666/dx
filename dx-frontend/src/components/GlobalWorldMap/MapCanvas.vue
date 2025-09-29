@@ -1,42 +1,42 @@
 <template>
   <div class="map-canvas-container" ref="containerRef">
     <canvas
-      ref="canvasRef"
-      class="map-canvas"
-      :width="canvasWidth"
-      :height="canvasHeight"
-      @mousedown="handleMouseDown"
-      @mousemove="handleMouseMove"
-      @mouseup="handleMouseUp"
-      @mouseleave="handleMouseUp"
-      @wheel="handleWheel"
-      @touchstart="handleTouchStart"
-      @touchmove="handleTouchMove"
-      @touchend="handleTouchEnd"
-      @click="handleClick"
-      @dblclick="handleDoubleClick"
+        ref="canvasRef"
+        class="map-canvas"
+        :width="canvasWidth"
+        :height="canvasHeight"
+        @mousedown="handleMouseDown"
+        @mousemove="handleMouseMove"
+        @mouseup="handleMouseUp"
+        @mouseleave="handleMouseUp"
+        @wheel="handleWheel"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
+        @click="handleClick"
+        @dblclick="handleDoubleClick"
     />
 
     <!-- Crosshair cursor for drawing tools -->
     <div
-      v-if="showCrosshair"
-      class="crosshair"
-      :style="{ left: cursorPosition.x + 'px', top: cursorPosition.y + 'px' }"
+        v-if="showCrosshair"
+        class="crosshair"
+        :style="{ left: cursorPosition.x + 'px', top: cursorPosition.y + 'px' }"
     />
 
     <!-- Drawing preview -->
     <svg
-      v-if="isDrawing && drawingPoints.length > 0"
-      class="drawing-preview"
-      :width="canvasWidth"
-      :height="canvasHeight"
+        v-if="isDrawing && drawingPoints.length > 0"
+        class="drawing-preview"
+        :width="canvasWidth"
+        :height="canvasHeight"
     >
       <polyline
-        :points="drawingPointsString"
-        fill="none"
-        stroke="#60a5fa"
-        stroke-width="2"
-        stroke-dasharray="5,5"
+          :points="drawingPointsString"
+          fill="none"
+          stroke="#60a5fa"
+          stroke-width="2"
+          stroke-dasharray="5,5"
       />
     </svg>
 
@@ -45,17 +45,25 @@
       <div class="scale-label">Scale</div>
       <div class="scale-value">{{ Math.round(zoom * 100) }}%</div>
       <div class="scale-range">
-        {{ Math.round((mapData.metadata.minZoom ?? 0.1) * 100) }}% - {{ Math.round((mapData.metadata.maxZoom ?? 5.0) * 100) }}%
+        {{ Math.round((mapData.metadata.minZoom ?? 0.1) * 100) }}% -
+        {{ Math.round((mapData.metadata.maxZoom ?? 5.0) * 100) }}%
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
-import { useMapInteraction } from '@/composables/GlobalWorldMap/useMapInteraction'
-import type { MapData, MapPoint, MapContinent, MapRoute, MapMarker, MapLabel } from '@/composables/GlobalWorldMap/useMapData'
-import { createFogMask, createEdgePerlinMask } from '@/utils/perlinNoise'
+import {ref, computed, onMounted, onUnmounted, watch, nextTick} from 'vue'
+import {useMapInteraction} from '@/composables/GlobalWorldMap/useMapInteraction'
+import type {
+  MapData,
+  MapPoint,
+  MapContinent,
+  MapRoute,
+  MapMarker,
+  MapLabel
+} from '@/composables/GlobalWorldMap/useMapData'
+import {createFogMask, createEdgePerlinMask} from '@/utils/perlinNoise'
 
 // Props
 interface Props {
@@ -88,6 +96,9 @@ const fogTexture = ref<HTMLImageElement | null>(null)
 const fogMaskCanvas = ref<HTMLCanvasElement | null>(null)
 const edgeMaskCanvas = ref<HTMLCanvasElement | null>(null)
 
+// Track highlighted markers for fog clearing
+const highlightedMarkers = ref<Array<{position: MapPoint, size: number}>>([])
+
 // Composables
 const {
   drawingPoints,
@@ -113,7 +124,7 @@ const {
 // State
 const canvasWidth = ref(800)
 const canvasHeight = ref(600)
-const cursorPosition = ref({ x: 0, y: 0 })
+const cursorPosition = ref({x: 0, y: 0})
 const needsRedraw = ref(true)
 const isDragging = ref(false)
 const dragStart = ref<{ x: number, y: number } | null>(null)
@@ -121,7 +132,7 @@ const dragStart = ref<{ x: number, y: number } | null>(null)
 // Stable coordinate system state
 const baseAspectRatio = ref(16 / 9) // Default aspect ratio for coordinate system
 const coordinateScale = ref(1) // Scale factor for coordinate system
-const viewportOffset = ref({ x: 0, y: 0 }) // Offset for letterboxing/pillarboxing
+const viewportOffset = ref({x: 0, y: 0}) // Offset for letterboxing/pillarboxing
 
 // Object movement state
 const isMovingObject = ref(false)
@@ -163,14 +174,14 @@ const getStableCoordinateSystem = () => {
     scale = stableWidth / (600 * baseAspect) // Base width reference
   }
 
-  return { stableWidth, stableHeight, offsetX, offsetY, scale }
+  return {stableWidth, stableHeight, offsetX, offsetY, scale}
 }
 
 // Map bounds calculation for preventing out-of-bounds movement
 const calculateMapBounds = () => {
   if (!backgroundImage.value) return null
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const img = backgroundImage.value
   const stableAspect = stableWidth / stableHeight
   const imageAspect = img.width / img.height
@@ -223,7 +234,7 @@ const constrainPan = (pan: MapPoint): MapPoint => {
 
 // Local coordinate transformation methods (using stable coordinate system)
 const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
-  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
 
   // Adjust for viewport offset
   const adjustedX = screenPoint.x - offsetX
@@ -241,7 +252,7 @@ const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
 }
 
 const percentToScreenLocal = (percentPoint: MapPoint): MapPoint => {
-  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
 
   // Convert percentage to world coordinates using stable dimensions
   const worldX = (percentPoint.x / 100) * stableWidth
@@ -336,7 +347,7 @@ const createFogMaskCanvas = () => {
   if (!fogTexture.value) return
 
   const maskCanvas = document.createElement('canvas')
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   // Create mask at a reasonable resolution for performance
   const maskWidth = Math.min(512, stableWidth)
@@ -355,7 +366,7 @@ const createFogMaskCanvas = () => {
   fogMaskCanvas.value = maskCanvas
 }
 
-const createEdgeMaskCanvas = (centerX?: number, centerY?: number) => {
+const createEdgeMaskCanvas = (cursorX?: number, cursorY?: number) => {
   const maskCanvas = document.createElement('canvas')
 
   // Create edge mask at full canvas resolution for proper viewport edge effects
@@ -365,20 +376,26 @@ const createEdgeMaskCanvas = (centerX?: number, centerY?: number) => {
   const maskCtx = maskCanvas.getContext('2d')
   if (!maskCtx) return
 
-  // Generate Perlin noise edge mask with organic transparency
-  const edgeSize = Math.min(canvasWidth.value, canvasHeight.value) * 0.3 // 30% of canvas size for better gradient
-  const edgeMask = createEdgePerlinMask(
-    canvasWidth.value,
-    canvasHeight.value,
-    edgeSize,
-    0.015,
-    2,
-    0.9,
-    123,
-    centerX, // Pass cursor X position
-    centerY  // Pass cursor Y position
+  // Use cursor position or default to center for dynamic dark overlay
+  const centerX = cursorX !== undefined ? cursorX : canvasWidth.value / 2
+  const centerY = cursorY !== undefined ? cursorY : canvasHeight.value / 2
+  const maxRadius = Math.max(canvasWidth.value, canvasHeight.value) * 0.6 // 60% of canvas for more prominent effect
+
+  // Create radial gradient for dark overlay effect
+  const gradient = maskCtx.createRadialGradient(
+    centerX, centerY, 0,           // Inner circle (cursor/center)
+    centerX, centerY, maxRadius    // Outer circle (edges)
   )
-  maskCtx.putImageData(edgeMask, 0, 0)
+
+  // Gradient creates dark overlay with light area around cursor
+  gradient.addColorStop(0, 'rgba(255, 255, 255, 0)')     // Fully transparent at cursor
+  gradient.addColorStop(0.3, 'rgba(255, 255, 255, 0.2)') // Light overlay starts
+  gradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.6)') // Medium dark overlay
+  gradient.addColorStop(1, 'rgba(255, 255, 255, 0.8)')   // Strong dark overlay at edges
+
+  // Fill the canvas with the gradient
+  maskCtx.fillStyle = gradient
+  maskCtx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
 
   edgeMaskCanvas.value = maskCanvas
 }
@@ -386,7 +403,10 @@ const createEdgeMaskCanvas = (centerX?: number, centerY?: number) => {
 const render = () => {
   if (!ctx || !canvasRef.value) return
 
-  const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
+
+  // Clear highlighted markers from previous render
+  highlightedMarkers.value = []
 
   // Clear entire canvas
   ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
@@ -481,7 +501,7 @@ const renderBackgroundFog = () => {
 const renderBackgroundImage = () => {
   if (!ctx || !backgroundImage.value) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const img = backgroundImage.value
   const stableAspect = stableWidth / stableHeight
   const imageAspect = img.width / img.height
@@ -511,7 +531,7 @@ const renderBackgroundImage = () => {
 const renderFogOfWar = () => {
   if (!ctx || !fogTexture.value || !fogMaskCanvas.value) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   // Calculate tile size that doesn't scale with zoom
   // Use a fixed world-space size for consistent fog appearance
@@ -548,6 +568,68 @@ const renderFogOfWar = () => {
   // Apply Perlin noise mask using composite operation for organic transparency
   tempCtx.globalCompositeOperation = 'destination-in'
   tempCtx.drawImage(fogMaskCanvas.value, 0, 0, stableWidth, stableHeight)
+
+  // Apply fog clearing for mouse cursor and highlighted markers
+  tempCtx.globalCompositeOperation = 'destination-out'
+
+  // Clear fog around mouse cursor
+  if (cursorPosition.value) {
+    // Convert cursor screen position to stable coordinate system
+    const {offsetX, offsetY} = getStableCoordinateSystem()
+
+    // Adjust cursor position relative to stable coordinate system
+    const cursorX = cursorPosition.value.x - offsetX
+    const cursorY = cursorPosition.value.y - offsetY
+
+    // Only clear fog if cursor is within the stable area
+    if (cursorX >= 0 && cursorX <= stableWidth && cursorY >= 0 && cursorY <= stableHeight) {
+      const cursorRadius = 80 // Fixed radius for mouse cursor fog clearing
+
+      // Create radial gradient for smooth fog clearing around cursor
+      const cursorGradient = tempCtx.createRadialGradient(
+        cursorX, cursorY, 0,           // Inner circle (cursor center)
+        cursorX, cursorY, cursorRadius // Outer circle
+      )
+
+      // Gradient goes from fully opaque (clear fog) to fully transparent (preserve fog)
+      cursorGradient.addColorStop(0, 'rgba(0, 0, 0, 1)')     // Fully opaque at center (clear fog)
+      cursorGradient.addColorStop(0.6, 'rgba(0, 0, 0, 0.8)') // Gradual transition
+      cursorGradient.addColorStop(1, 'rgba(0, 0, 0, 0)')     // Fully transparent at edge (preserve fog)
+
+      tempCtx.fillStyle = cursorGradient
+      tempCtx.beginPath()
+      tempCtx.arc(cursorX, cursorY, cursorRadius, 0, Math.PI * 2)
+      tempCtx.fill()
+    }
+  }
+
+  // Clear fog around highlighted markers
+  if (highlightedMarkers.value.length > 0) {
+    highlightedMarkers.value.forEach(marker => {
+      // Convert marker position to stable coordinate system
+      const centerX = (marker.position.x / 100) * stableWidth
+      const centerY = (marker.position.y / 100) * stableHeight
+
+      // Create highlight radius that scales with marker size
+      const highlightRadius = Math.max(marker.size * 8, 60) // Minimum 60px radius
+
+      // Create radial gradient for smooth fog clearing
+      const gradient = tempCtx.createRadialGradient(
+        centerX, centerY, 0,           // Inner circle (center point)
+        centerX, centerY, highlightRadius // Outer circle
+      )
+
+      // Gradient goes from fully transparent (clear fog) to fully opaque (preserve fog)
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 1)')     // Fully opaque at center (clear fog)
+      gradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.7)') // Gradual transition
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')     // Fully transparent at edge (preserve fog)
+
+      tempCtx.fillStyle = gradient
+      tempCtx.beginPath()
+      tempCtx.arc(centerX, centerY, highlightRadius, 0, Math.PI * 2)
+      tempCtx.fill()
+    })
+  }
 
   // Draw the final fog layer with reduced opacity to allow map to show through
   ctx.globalAlpha = 0.6
@@ -602,6 +684,11 @@ const renderContinents = () => {
       country.cities.forEach(city => {
         if (!city.visible) return
 
+        // Render highlight effect if city is selected
+        if (props.selectedItem?.id === city.id && city.position) {
+          renderMarkerHighlight(city.position, city.size || 6)
+        }
+
         if (city.cityType === 'area' && city.points) {
           renderPolygon(city.points, {
             fillColor: city.fillVisible ? city.color : 'transparent',
@@ -653,6 +740,11 @@ const renderMarkers = () => {
   props.mapData.markers.forEach(marker => {
     if (!marker.visible) return
 
+    // Render highlight effect if marker is selected
+    if (props.selectedItem?.id === marker.id) {
+      renderMarkerHighlight(marker.position, marker.size)
+    }
+
     renderMarker(marker.position, {
       color: marker.color,
       size: marker.size,
@@ -665,7 +757,7 @@ const renderMarkers = () => {
     if (marker.labelVisible) {
       const labelOffsetPercent = (marker.size + 5) / canvasHeight.value * 100
       const labelY = marker.position.y - labelOffsetPercent
-      renderLabel({ x: marker.position.x, y: labelY }, marker.name, {
+      renderLabel({x: marker.position.x, y: labelY}, marker.name, {
         fontSize: 11,
         color: '#ffffff',
         background: true,
@@ -717,7 +809,7 @@ const renderPolygon = (points: MapPoint[], options: {
 }) => {
   if (!ctx || points.length < 3) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   ctx.beginPath()
 
@@ -755,7 +847,7 @@ const renderPath = (points: MapPoint[], options: {
 }) => {
   if (!ctx || points.length < 2) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   ctx.beginPath()
 
@@ -799,7 +891,7 @@ const renderMarker = (position: MapPoint, options: {
 }) => {
   if (!ctx) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const x = (position.x / 100) * stableWidth
   const y = (position.y / 100) * stableHeight
   const radius = options.size
@@ -863,7 +955,7 @@ const renderLabel = (position: MapPoint, text: string, options: {
 }) => {
   if (!ctx) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const x = (position.x / 100) * stableWidth
   const y = (position.y / 100) * stableHeight
 
@@ -893,20 +985,20 @@ const renderLabel = (position: MapPoint, text: string, options: {
     // Draw background with rounded corners effect
     ctx.fillStyle = bgColor
     ctx.fillRect(
-      x - textWidth / 2 - padding,
-      y - textHeight / 2 - 3,
-      textWidth + padding * 2,
-      textHeight + 6
+        x - textWidth / 2 - padding,
+        y - textHeight / 2 - 3,
+        textWidth + padding * 2,
+        textHeight + 6
     )
 
     // Draw border
     ctx.strokeStyle = borderColor
     ctx.lineWidth = 0.3
     ctx.strokeRect(
-      x - textWidth / 2 - padding,
-      y - textHeight / 2 - 3,
-      textWidth + padding * 2,
-      textHeight + 6
+        x - textWidth / 2 - padding,
+        y - textHeight / 2 - 3,
+        textWidth + padding * 2,
+        textHeight + 6
     )
 
     // Reset shadow
@@ -926,7 +1018,7 @@ const renderLabel = (position: MapPoint, text: string, options: {
 const renderPolygonOutline = (points: MapPoint[], color: string, width: number) => {
   if (!ctx || points.length < 3) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   // Add RPG-style glow effect
   ctx.shadowColor = 'rgba(127, 255, 22, 0.4)'
@@ -959,7 +1051,7 @@ const renderPolygonOutline = (points: MapPoint[], color: string, width: number) 
 const renderCircleOutline = (position: MapPoint, radius: number, color: string, width: number) => {
   if (!ctx) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
   const x = (position.x / 100) * stableWidth
   const y = (position.y / 100) * stableHeight
 
@@ -983,7 +1075,7 @@ const renderCircleOutline = (position: MapPoint, radius: number, color: string, 
 const renderVertexHandles = (points: MapPoint[]) => {
   if (!ctx) return
 
-  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const {stableWidth, stableHeight} = getStableCoordinateSystem()
 
   points.forEach(point => {
     const x = (point.x / 100) * stableWidth
@@ -1006,6 +1098,14 @@ const renderVertexHandles = (points: MapPoint[]) => {
     // Reset shadow
     ctx.shadowColor = 'transparent'
     ctx.shadowBlur = 0
+  })
+}
+
+const renderMarkerHighlight = (position: MapPoint, markerSize: number) => {
+  // Add this highlighted marker to the collection for fog rendering
+  highlightedMarkers.value.push({
+    position: position,
+    size: markerSize
   })
 }
 
@@ -1045,7 +1145,7 @@ const handleMouseMove = (event: MouseEvent) => {
   }
   cursorPosition.value = currentPoint
 
-  // Regenerate edge mask to follow cursor position for dynamic circular gradient
+  // Regenerate edge mask to follow cursor for dynamic dark overlay
   createEdgeMaskCanvas(currentPoint.x, currentPoint.y)
   needsRedraw.value = true
 
@@ -1304,7 +1404,7 @@ const handleMoveTool = (event: MouseEvent) => {
     // Start moving the object
     isMovingObject.value = true
     movingItem.value = hitItem
-    moveStartPosition.value = { ...percentPoint }
+    moveStartPosition.value = {...percentPoint}
 
     // Select the item being moved
     emit('item-select', hitItem)
@@ -1408,8 +1508,8 @@ const findItemAtPoint = (point: MapPoint): any => {
     if (!marker.visible) continue
 
     const distance = Math.sqrt(
-      Math.pow(point.x - marker.position.x, 2) +
-      Math.pow(point.y - marker.position.y, 2)
+        Math.pow(point.x - marker.position.x, 2) +
+        Math.pow(point.y - marker.position.y, 2)
     )
 
     if (distance <= (marker.size / canvasWidth.value) * 100) {
@@ -1463,8 +1563,8 @@ const findItemAtPoint = (point: MapPoint): any => {
               return city
             } else if (city.cityType === 'point' && city.position) {
               const distance = Math.sqrt(
-                Math.pow(point.x - city.position.x, 2) +
-                Math.pow(point.y - city.position.y, 2)
+                  Math.pow(point.x - city.position.x, 2) +
+                  Math.pow(point.y - city.position.y, 2)
               )
 
               if (distance <= ((city.size || 6) / canvasWidth.value) * 100) {
@@ -1497,7 +1597,7 @@ const exportToPNG = () => {
 // Watchers
 watch(() => props.mapData, () => {
   needsRedraw.value = true
-}, { deep: true })
+}, {deep: true})
 
 watch(() => props.mapData.metadata.backgroundImage, (newImage) => {
   if (newImage) {
@@ -1510,7 +1610,7 @@ watch(() => props.mapData.metadata.backgroundImage, (newImage) => {
 
 watch([() => props.zoom, () => props.pan], () => {
   needsRedraw.value = true
-}, { deep: true })
+}, {deep: true})
 
 watch(needsRedraw, (shouldRedraw) => {
   if (shouldRedraw) {

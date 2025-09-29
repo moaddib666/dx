@@ -423,6 +423,14 @@
               />
               Show Label
             </label>
+            <label class="checkbox-label">
+              <input
+                v-model="localItem.highlight"
+                type="checkbox"
+                @change="updateItem"
+              />
+              Highlight
+            </label>
             <label v-if="localItem.cityType === 'area'" class="checkbox-label">
               <input
                 v-model="localItem.fillVisible"
@@ -634,6 +642,14 @@
                 @change="updateItem"
               />
               Show Label
+            </label>
+            <label class="checkbox-label">
+              <input
+                v-model="localItem.highlight"
+                type="checkbox"
+                @change="updateItem"
+              />
+              Highlight
             </label>
           </div>
         </div>
