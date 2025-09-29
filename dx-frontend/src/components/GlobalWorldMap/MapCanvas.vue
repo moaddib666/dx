@@ -49,6 +49,15 @@
         {{ Math.round((mapData.metadata.maxZoom ?? 5.0) * 100) }}%
       </div>
     </div>
+
+    <!-- Label Meta Card -->
+    <LabelMetaCard
+      :visible="labelMetaCard.visible"
+      :metadata="labelMetaCard.metadata"
+      :position="labelMetaCard.position"
+      :loading="labelMetaCard.loading"
+      @close="closeLabelMetaCard"
+    />
   </div>
 </template>
 
@@ -64,6 +73,9 @@ import type {
   MapLabel
 } from '@/composables/GlobalWorldMap/useMapData'
 import {createFogMask, createEdgePerlinMask} from '@/utils/perlinNoise'
+import LabelMetaCard from './LabelMetaCard.vue'
+import { FileMetadataResolver } from '@/services/metadata/FileMetadataResolver'
+import type { PlaceMetadata } from '@/services/metadata/MetadataResolver'
 
 // Props
 interface Props {
@@ -98,6 +110,20 @@ const edgeMaskCanvas = ref<HTMLCanvasElement | null>(null)
 
 // Track highlighted markers for fog clearing
 const highlightedMarkers = ref<Array<{position: MapPoint, size: number}>>([])
+
+// Track hovered marker for hover visibility
+const hoveredMarker = ref<any>(null)
+
+// Label Meta Card state
+const labelMetaCard = ref({
+  visible: false,
+  metadata: null as PlaceMetadata | null,
+  position: { x: 0, y: 0 },
+  loading: false
+})
+
+// Metadata resolver instance
+const metadataResolver = new FileMetadataResolver()
 
 // Composables
 const {
@@ -780,11 +806,20 @@ const renderMarkers = () => {
   if (!ctx) return
 
   props.mapData.markers.forEach(marker => {
-    if (!marker.visible) return
+    const isHovered = hoveredMarker.value?.id === marker.id
+    const shouldRender = marker.visible || isHovered
+
+    if (!shouldRender) return
 
     // Render highlight effect if marker has highlight property enabled
     if (marker.highlight) {
       renderMarkerHighlight(marker.position, marker.size)
+    }
+
+    // Set transparency for hovered but normally hidden markers
+    const originalAlpha = ctx.globalAlpha
+    if (isHovered && !marker.visible) {
+      ctx.globalAlpha = 0.7 // Semi-transparent for hovered hidden markers
     }
 
     renderMarker(marker.position, {
@@ -792,18 +827,22 @@ const renderMarkers = () => {
       size: marker.size,
       type: marker.type,
       icon: marker.icon,
-      isSelected: props.selectedItem?.id === marker.id
+      isSelected: props.selectedItem?.id === marker.id,
+      isHovered: isHovered
     })
 
-    // Render marker label
-    if (marker.labelVisible) {
+    // Restore original alpha
+    ctx.globalAlpha = originalAlpha
+
+    // Render marker label (show for hovered markers even if normally hidden)
+    if (marker.labelVisible || isHovered) {
       const labelOffsetPercent = (marker.size + 5) / canvasHeight.value * 100
       const labelY = marker.position.y - labelOffsetPercent
       renderLabel({x: marker.position.x, y: labelY}, marker.name, {
         fontSize: 11,
         color: '#ffffff',
         background: true,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)'
+        backgroundColor: isHovered && !marker.visible ? 'rgba(255, 255, 0, 0.8)' : 'rgba(0, 0, 0, 0.7)'
       })
     }
   })
@@ -930,6 +969,7 @@ const renderMarker = (position: MapPoint, options: {
   type: string
   icon?: string
   isSelected?: boolean
+  isHovered?: boolean
 }) => {
   if (!ctx) return
 
@@ -938,14 +978,26 @@ const renderMarker = (position: MapPoint, options: {
   const y = (position.y / 100) * stableHeight
   const radius = options.size
 
-  // RPG-style marker with golden border and enhanced visual effects
+  // RPG-style marker with enhanced visual effects for different states
   const markerColor = options.color || '#8b5cf6'
-  const borderColor = options.isSelected ? '#7fff16' : '#fada95'
-  const glowColor = options.isSelected ? 'rgba(127, 255, 22, 0.3)' : 'rgba(250, 218, 149, 0.3)'
+  let borderColor = '#fada95'
+  let glowColor = 'rgba(250, 218, 149, 0.3)'
+  let shadowBlur = 8
+
+  // Priority: Selected > Hovered > Default
+  if (options.isSelected) {
+    borderColor = '#7fff16'
+    glowColor = 'rgba(127, 255, 22, 0.3)'
+    shadowBlur = 10
+  } else if (options.isHovered) {
+    borderColor = '#00ffff'  // Cyan for hover
+    glowColor = 'rgba(0, 255, 255, 0.4)'  // Cyan glow
+    shadowBlur = 12  // Enhanced glow for hover
+  }
 
   // Add glow effect
   ctx.shadowColor = glowColor
-  ctx.shadowBlur = 8
+  ctx.shadowBlur = shadowBlur
   ctx.shadowOffsetX = 0
   ctx.shadowOffsetY = 0
 
@@ -1151,6 +1203,45 @@ const renderMarkerHighlight = (position: MapPoint, markerSize: number) => {
   })
 }
 
+// Label Meta Card functions
+const openLabelMetaCard = async (label: MapLabel, screenPosition: { x: number, y: number }) => {
+  // Close any existing card first
+  closeLabelMetaCard()
+
+  // Set position and show loading
+  labelMetaCard.value.position = screenPosition
+  labelMetaCard.value.visible = true
+  labelMetaCard.value.loading = true
+
+  try {
+    // Try to load existing metadata
+    let metadata = await metadataResolver.loadMetadata(label.id)
+
+    // If no metadata exists, create default metadata
+    if (!metadata) {
+      const { createDefaultMetadata } = await import('@/services/metadata/MetadataResolver')
+      metadata = createDefaultMetadata(label.id, label.text)
+      // Save the default metadata
+      await metadataResolver.saveMetadata(metadata)
+    }
+
+    labelMetaCard.value.metadata = metadata
+  } catch (error) {
+    console.error('Failed to load label metadata:', error)
+    // Create fallback metadata
+    const { createDefaultMetadata } = await import('@/services/metadata/MetadataResolver')
+    labelMetaCard.value.metadata = createDefaultMetadata(label.id, label.text)
+  } finally {
+    labelMetaCard.value.loading = false
+  }
+}
+
+const closeLabelMetaCard = () => {
+  labelMetaCard.value.visible = false
+  labelMetaCard.value.metadata = null
+  labelMetaCard.value.loading = false
+}
+
 // Event handlers
 const handleMouseDown = (event: MouseEvent) => {
   if (!canvasRef.value) return
@@ -1186,6 +1277,30 @@ const handleMouseMove = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
   cursorPosition.value = currentPoint
+
+  // Check for hovered markers (including hidden ones)
+  const percentPoint = screenToPercentLocal(currentPoint)
+  const newHoveredMarker = findMarkerAtPoint(percentPoint)
+
+  // Update hovered marker state if changed
+  if (newHoveredMarker !== hoveredMarker.value) {
+    hoveredMarker.value = newHoveredMarker
+    needsRedraw.value = true
+
+    // Handle place card display for hovered markers
+    if (newHoveredMarker) {
+      // Open place card for the hovered marker
+      const markerAsLabel = {
+        id: newHoveredMarker.id,
+        text: newHoveredMarker.name,
+        type: 'marker'
+      }
+      openLabelMetaCard(markerAsLabel as MapLabel, currentPoint)
+    } else {
+      // Close place card when no marker is hovered
+      closeLabelMetaCard()
+    }
+  }
 
   // Regenerate edge mask to follow cursor for dynamic dark overlay
   createEdgeMaskCanvas(currentPoint.x, currentPoint.y)
@@ -1336,6 +1451,18 @@ const handleSelectTool = (event: MouseEvent) => {
 
   const percentPoint = screenToPercentLocal(screenPoint)
   const hitItem = findItemAtPoint(percentPoint)
+
+  // Check if the clicked item is a label and trigger LabelMeta card
+  if (hitItem && (hitItem.type === 'label' || hitItem.text !== undefined)) {
+    // Close any existing card first
+    closeLabelMetaCard()
+
+    // Open the LabelMeta card for this label
+    openLabelMetaCard(hitItem as MapLabel, screenPoint)
+  } else {
+    // Close the card if clicking elsewhere
+    closeLabelMetaCard()
+  }
 
   emit('item-select', hitItem)
 }
@@ -1541,6 +1668,22 @@ const finishDrawing = () => {
 
     emit('item-create', route)
   }
+}
+
+// Hit testing for hover (includes hidden markers)
+const findMarkerAtPoint = (point: MapPoint): any => {
+  // Check all markers (including hidden ones) for hover detection
+  for (const marker of props.mapData.markers) {
+    const distance = Math.sqrt(
+        Math.pow(point.x - marker.position.x, 2) +
+        Math.pow(point.y - marker.position.y, 2)
+    )
+
+    if (distance <= (marker.size / canvasWidth.value) * 100) {
+      return marker
+    }
+  }
+  return null
 }
 
 // Hit testing
