@@ -355,7 +355,7 @@ const createFogMaskCanvas = () => {
   fogMaskCanvas.value = maskCanvas
 }
 
-const createEdgeMaskCanvas = () => {
+const createEdgeMaskCanvas = (centerX?: number, centerY?: number) => {
   const maskCanvas = document.createElement('canvas')
 
   // Create edge mask at full canvas resolution for proper viewport edge effects
@@ -366,8 +366,18 @@ const createEdgeMaskCanvas = () => {
   if (!maskCtx) return
 
   // Generate Perlin noise edge mask with organic transparency
-  const edgeSize = Math.min(canvasWidth.value, canvasHeight.value) * 0.2 // 20% of canvas size for better gradient
-  const edgeMask = createEdgePerlinMask(canvasWidth.value, canvasHeight.value, edgeSize, 0.015, 3, 0.5, 123)
+  const edgeSize = Math.min(canvasWidth.value, canvasHeight.value) * 0.3 // 30% of canvas size for better gradient
+  const edgeMask = createEdgePerlinMask(
+    canvasWidth.value,
+    canvasHeight.value,
+    edgeSize,
+    0.015,
+    2,
+    0.9,
+    123,
+    centerX, // Pass cursor X position
+    centerY  // Pass cursor Y position
+  )
   maskCtx.putImageData(edgeMask, 0, 0)
 
   edgeMaskCanvas.value = maskCanvas
@@ -1034,6 +1044,10 @@ const handleMouseMove = (event: MouseEvent) => {
     y: event.clientY - rect.top
   }
   cursorPosition.value = currentPoint
+
+  // Regenerate edge mask to follow cursor position for dynamic circular gradient
+  createEdgeMaskCanvas(currentPoint.x, currentPoint.y)
+  needsRedraw.value = true
 
   // Handle object movement
   if (isMovingObject.value && movingItem.value && moveStartPosition.value) {
