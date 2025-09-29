@@ -190,10 +190,13 @@ const handleSelectItem = (item: any) => {
 }
 
 const handleItemCreate = (itemData: any) => {
-  // Add to local map data directly without API calls
-  addItemToMapData(itemData)
+  // Add to local map data directly without API calls and get the created item
+  const newItem = addItemToMapData(itemData)
 
-  statusMessage.value = `Created: ${itemData.name || itemData.type}`
+  // Automatically select the newly created item
+  selectedItem.value = newItem
+  statusMessage.value = `Created and selected: ${itemData.name || itemData.text || itemData.type}`
+
   emit('data-change', mapData.value)
 }
 
@@ -368,6 +371,8 @@ const addItemToMapData = (itemData: any) => {
       mapData.value.labels.push(item)
       break
   }
+
+  return item
 }
 
 const updateItemInMapData = (itemData: any) => {
@@ -419,7 +424,16 @@ const handleKeyDown = (event: KeyboardEvent) => {
     switch (event.key) {
       case 'Delete':
       case 'Backspace':
-        if (selectedItem.value) {
+        // Check if an input field is currently focused
+        const activeElement = document.activeElement
+        const isInputFocused = activeElement && (
+          activeElement.tagName === 'INPUT' ||
+          activeElement.tagName === 'TEXTAREA' ||
+          activeElement.contentEditable === 'true'
+        )
+
+        // Only delete the selected item if no input field is focused
+        if (selectedItem.value && !isInputFocused) {
           handleItemDelete(selectedItem.value)
         }
         break
