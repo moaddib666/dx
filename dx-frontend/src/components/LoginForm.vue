@@ -49,6 +49,12 @@ const handleGoogleSignIn = () => {
   transform: scale(1.05);
 }
 
+.google-login:hover .neon-border {
+  border-color: rgba(0, 255, 200, 0.6);
+  box-shadow: 0 0 16px rgba(0, 255, 200, 0.3);
+  background: rgba(15, 20, 28, 0.9);
+}
+
 .google-login:active {
   transform: scale(0.95);
 }
@@ -57,13 +63,15 @@ const handleGoogleSignIn = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, #00ffcc, #ff00ff);
+  background: rgba(15, 20, 28, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 200, 0.3);
   border-radius: 12px;
   padding: 10px;
   width: 100%;
   height: 100%;
-  box-shadow: 0 0 10px #00ffcc;
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 200, 0.2);
+  transition: all 0.3s ease;
 }
 
 .google-icon {
@@ -73,9 +81,10 @@ const handleGoogleSignIn = () => {
 }
 
 span {
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 16px;
-  font-family: 'Arial', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
   text-transform: uppercase;
 }
 </style>

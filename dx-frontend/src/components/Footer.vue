@@ -106,12 +106,14 @@ export default {
 
 <style scoped>
 .footer {
-  background: linear-gradient(135deg, #1c1c1c, #2c2c2c);
-  color: #e0e0e0;
+  background: rgba(15, 20, 28, 0.6);
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.7);
   padding: 2rem 1rem 1rem;
-  border-top: 2px solid #444;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 50;
   margin-top: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .footer-content {
@@ -128,11 +130,11 @@ export default {
 }
 
 .section-title {
-  color: #FFFFFF;
+  color: rgba(255, 255, 255, 0.95);
   font-size: 1.125rem;
   margin: 0 0 0.75rem 0;
   font-weight: 600;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+  text-shadow: 0 0 5px rgba(0, 255, 200, 0.3);
 }
 
 .social-icons {
@@ -149,7 +151,7 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  color: #e0e0e0;
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   padding: 0.563rem;
   border-radius: 6px;
@@ -163,8 +165,8 @@ export default {
 .social-link:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(0, 255, 255, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+  border-color: rgba(0, 255, 200, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 255, 200, 0.2);
 }
 
 .social-icon {
@@ -181,7 +183,7 @@ export default {
 
 /* Social platform specific colors on hover */
 .social-link:hover .social-icon {
-  color: #00ffff;
+  color: rgba(0, 255, 200, 0.9);
 }
 
 .social-link[title="Facebook"]:hover .social-icon {
@@ -232,14 +234,14 @@ export default {
 }
 
 .creator-link {
-  color: #00ffff;
+  color: rgba(0, 255, 200, 0.9);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .creator-link:hover {
-  color: #ffffff;
-  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 5px rgba(0, 255, 200, 0.5);
 }
 
 /* Responsive Design */

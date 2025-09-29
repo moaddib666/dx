@@ -51,15 +51,30 @@ export default {
 select {
   width: 100%;
   padding: 8px;
-  border: 1px solid #444;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  background-color: #333;
-  color: #fff;
+  background: rgba(15, 20, 28, 0.8);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.3s ease;
 }
 
 select:focus {
   outline: none;
-  border-color: #777;
+  border-color: rgba(0, 255, 200, 0.6);
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.2);
+}
+
+select:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 20, 28, 0.9);
+}
+
+select option {
+  background: rgba(15, 20, 28, 0.95);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 8px;
 }
 </style>
