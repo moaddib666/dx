@@ -75,6 +75,7 @@
   },
   "navigation": {
     "home": "Home",
+    "worldMap": "World Map",
     "dashboard": "Dashboard",
     "profile": "Profile",
     "settings": "Settings",

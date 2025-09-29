@@ -75,6 +75,7 @@
   },
   "navigation": {
     "home": "Головна",
+    "worldMap": "Карта світу",
     "dashboard": "Панель керування",
     "profile": "Профіль",
     "settings": "Налаштування",

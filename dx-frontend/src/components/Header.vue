@@ -64,6 +64,7 @@ export default {
       isMobileMenuOpen: false,
       links: [
         { id: 'home', url: '/' },
+        { id: 'worldMap', url: '/world-map/preview' },
         // { id: 'story', url: '/story' },
         // { id: 'characters', url: '/characters' },
         // { id: 'gameplay', url: '/gameplay' },
@@ -102,10 +103,13 @@ export default {
 
 <style scoped>
 .header {
-  background-color: var(--dark-slate-gray);
-  padding: 10px 0;
+  background: #1e1e1e;
+  border-bottom: 1px solid #fada95;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  padding: 12px 0;
   z-index: 50;
   position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .navbar {
@@ -155,21 +159,40 @@ export default {
   margin: 0;
   padding: 0;
   flex-grow: 1;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.desktop-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .desktop-nav a {
-  color: #FFFFFF;
+  color: #ffffff;
   text-decoration: none;
-  font-size: 16px;
-  transition: color 0.3s ease;
+  font-size: clamp(13px, 1.2vw, 16px);
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-width: 0;
+  flex-shrink: 1;
 }
 
 .desktop-nav a:hover {
-  color: var(--cyber-yellow);
+  color: #fada95;
+  background: rgba(250, 218, 149, 0.1);
 }
 
 .desktop-nav li {
-  margin-right: 20px;
+  margin-right: 6px;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .language-switcher {
@@ -200,50 +223,52 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--dark-slate-gray, #2c3e50);
+  background: #1e1e1e;
   border-radius: 8px;
   padding: 0;
   width: 85%;
   max-width: 320px;
   max-height: 60vh;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border: 2px solid #444;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border: 1px solid #fada95;
 }
 
 .mobile-menu-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #444;
-  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(250, 218, 149, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .mobile-menu-header h3 {
-  color: #FFFFFF;
+  color: #fada95;
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .close-btn {
   background: none;
-  border: none;
-  color: #FFFFFF;
+  border: 1px solid rgba(250, 218, 149, 0.3);
+  color: #fada95;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(250, 218, 149, 0.1);
+  border-color: #fada95;
 }
 
 .mobile-nav-list {
@@ -258,23 +283,28 @@ export default {
 
 .mobile-nav-list a {
   display: block;
-  color: #FFFFFF;
+  color: #ffffff;
   text-decoration: none;
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.875rem 1.25rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(250, 218, 149, 0.1);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 1.2;
 }
 
 .mobile-nav-list a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--cyber-yellow, #ffd700);
+  background: rgba(250, 218, 149, 0.1);
+  color: #fada95;
 }
 
 .mobile-menu-footer {
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #444;
-  background-color: rgba(0, 0, 0, 0.2);
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(250, 218, 149, 0.3);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive breakpoints */
