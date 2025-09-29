@@ -39,6 +39,15 @@
         stroke-dasharray="5,5"
       />
     </svg>
+
+    <!-- Scale counter -->
+    <div class="scale-counter">
+      <div class="scale-label">Scale</div>
+      <div class="scale-value">{{ Math.round(zoom * 100) }}%</div>
+      <div class="scale-range">
+        {{ Math.round((mapData.metadata.minZoom ?? 0.1) * 100) }}% - {{ Math.round((mapData.metadata.maxZoom ?? 5.0) * 100) }}%
+      </div>
+    </div>
   </div>
 </template>
 
@@ -46,7 +55,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useMapInteraction } from '@/composables/GlobalWorldMap/useMapInteraction'
 import type { MapData, MapPoint, MapContinent, MapRoute, MapMarker, MapLabel } from '@/composables/GlobalWorldMap/useMapData'
-import { createFogMask } from '@/utils/perlinNoise'
+import { createFogMask, createEdgePerlinMask } from '@/utils/perlinNoise'
 
 // Props
 interface Props {
@@ -77,6 +86,7 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const backgroundImage = ref<HTMLImageElement | null>(null)
 const fogTexture = ref<HTMLImageElement | null>(null)
 const fogMaskCanvas = ref<HTMLCanvasElement | null>(null)
+const edgeMaskCanvas = ref<HTMLCanvasElement | null>(null)
 
 // Composables
 const {
@@ -156,6 +166,61 @@ const getStableCoordinateSystem = () => {
   return { stableWidth, stableHeight, offsetX, offsetY, scale }
 }
 
+// Map bounds calculation for preventing out-of-bounds movement
+const calculateMapBounds = () => {
+  if (!backgroundImage.value) return null
+
+  const { stableWidth, stableHeight } = getStableCoordinateSystem()
+  const img = backgroundImage.value
+  const stableAspect = stableWidth / stableHeight
+  const imageAspect = img.width / img.height
+
+  let drawWidth = stableWidth
+  let drawHeight = stableHeight
+  let drawX = 0
+  let drawY = 0
+
+  // Calculate image dimensions and position (same logic as renderBackgroundImage)
+  if (imageAspect > stableAspect) {
+    // Image is wider than stable area - fit by height
+    drawHeight = stableHeight
+    drawWidth = drawHeight * imageAspect
+    drawX = (stableWidth - drawWidth) / 2
+  } else {
+    // Image is taller than stable area - fit by width
+    drawWidth = stableWidth
+    drawHeight = drawWidth / imageAspect
+    drawY = (stableHeight - drawHeight) / 2
+  }
+
+  // Calculate bounds to keep image always visible
+  // Allow some padding but ensure image edges are never fully out of view
+  const padding = Math.min(stableWidth, stableHeight) * 0.1 // 10% padding
+
+  const minPanX = -(drawWidth * props.zoom - stableWidth + padding)
+  const maxPanX = drawX * props.zoom + padding
+  const minPanY = -(drawHeight * props.zoom - stableHeight + padding)
+  const maxPanY = drawY * props.zoom + padding
+
+  return {
+    minX: minPanX,
+    maxX: maxPanX,
+    minY: minPanY,
+    maxY: maxPanY
+  }
+}
+
+// Apply bounds constraints to pan values
+const constrainPan = (pan: MapPoint): MapPoint => {
+  const bounds = calculateMapBounds()
+  if (!bounds) return pan
+
+  return {
+    x: Math.max(bounds.minX, Math.min(bounds.maxX, pan.x)),
+    y: Math.max(bounds.minY, Math.min(bounds.maxY, pan.y))
+  }
+}
+
 // Local coordinate transformation methods (using stable coordinate system)
 const screenToPercentLocal = (screenPoint: MapPoint): MapPoint => {
   const { stableWidth, stableHeight, offsetX, offsetY } = getStableCoordinateSystem()
@@ -211,6 +276,9 @@ const initCanvas = () => {
   // Load fog of war texture
   loadFogTexture()
 
+  // Create edge mask for map edge transparency
+  createEdgeMaskCanvas()
+
   // Initial render
   render()
 }
@@ -227,6 +295,9 @@ const updateCanvasSize = () => {
   // Set canvas size
   canvasRef.value.width = canvasWidth.value
   canvasRef.value.height = canvasHeight.value
+
+  // Recreate edge mask for new canvas size
+  createEdgeMaskCanvas()
 
   needsRedraw.value = true
 }
@@ -284,6 +355,24 @@ const createFogMaskCanvas = () => {
   fogMaskCanvas.value = maskCanvas
 }
 
+const createEdgeMaskCanvas = () => {
+  const maskCanvas = document.createElement('canvas')
+
+  // Create edge mask at full canvas resolution for proper viewport edge effects
+  maskCanvas.width = canvasWidth.value
+  maskCanvas.height = canvasHeight.value
+
+  const maskCtx = maskCanvas.getContext('2d')
+  if (!maskCtx) return
+
+  // Generate Perlin noise edge mask with organic transparency
+  const edgeSize = Math.min(canvasWidth.value, canvasHeight.value) * 0.2 // 20% of canvas size for better gradient
+  const edgeMask = createEdgePerlinMask(canvasWidth.value, canvasHeight.value, edgeSize, 0.015, 3, 0.5, 123)
+  maskCtx.putImageData(edgeMask, 0, 0)
+
+  edgeMaskCanvas.value = maskCanvas
+}
+
 const render = () => {
   if (!ctx || !canvasRef.value) return
 
@@ -292,9 +381,8 @@ const render = () => {
   // Clear entire canvas
   ctx.clearRect(0, 0, canvasWidth.value, canvasHeight.value)
 
-  // Fill letterbox/pillarbox areas with background color
-  ctx.fillStyle = '#0f0f0f'
-  ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
+  // Fill entire canvas with fog of war texture (including letterbox areas)
+  renderBackgroundFog()
 
   // Save context state
   ctx.save()
@@ -313,17 +401,71 @@ const render = () => {
 
   // Render layers in order using stable coordinate system
   renderBackgroundImage()
-  renderFogOfWar()
   renderContinents()
   renderRoutes()
   renderMarkers()
   renderLabels()
+  renderFogOfWar()
   renderSelection()
 
   // Restore context state
   ctx.restore()
 
+  // Apply edge mask to entire canvas (outside transformed coordinate system)
+  renderMapEdgeMask()
+
   needsRedraw.value = false
+}
+
+const renderBackgroundFog = () => {
+  if (!ctx) return
+
+  // Fallback to black solid color if fog texture is not available
+  if (!fogTexture.value || !fogMaskCanvas.value) {
+    ctx.fillStyle = '#000'
+    ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
+    return
+  }
+
+  // Calculate tile size that responds to zoom for natural movement
+  const baseTileSize = 256 // Base tile size in world coordinates
+  const tileSize = baseTileSize / props.zoom // Adjust for current zoom to maintain world size
+
+  // Calculate how many tiles we need to cover the entire canvas
+  const tilesX = Math.ceil(canvasWidth.value / tileSize) + 2 // Extra tiles for seamless coverage
+  const tilesY = Math.ceil(canvasHeight.value / tileSize) + 2
+
+  // Calculate starting offset based on pan to make fog move with the view
+  const startX = -((props.pan.x / props.zoom) % tileSize)
+  const startY = -((props.pan.y / props.zoom) % tileSize)
+
+  // Create a temporary canvas for compositing with Perlin noise transparency
+  const tempCanvas = document.createElement('canvas')
+  tempCanvas.width = canvasWidth.value
+  tempCanvas.height = canvasHeight.value
+  const tempCtx = tempCanvas.getContext('2d')
+  if (!tempCtx) return
+
+  // Draw repeating fog texture on temporary canvas with pan/zoom offsets
+  for (let x = 0; x < tilesX; x++) {
+    for (let y = 0; y < tilesY; y++) {
+      const drawX = startX + x * tileSize
+      const drawY = startY + y * tileSize
+      tempCtx.drawImage(fogTexture.value, drawX, drawY, tileSize, tileSize)
+    }
+  }
+
+  // Apply Perlin noise mask using composite operation for organic transparency
+  tempCtx.globalCompositeOperation = 'destination-in'
+
+  // Scale the fog mask to cover the entire canvas
+  const maskScaleX = canvasWidth.value / fogMaskCanvas.value.width
+  const maskScaleY = canvasHeight.value / fogMaskCanvas.value.height
+  tempCtx.scale(maskScaleX, maskScaleY)
+  tempCtx.drawImage(fogMaskCanvas.value, 0, 0)
+
+  // Draw the final fog background with full opacity
+  ctx.drawImage(tempCanvas, 0, 0)
 }
 
 const renderBackgroundImage = () => {
@@ -377,14 +519,14 @@ const renderFogOfWar = () => {
   // Save context state
   ctx.save()
 
-  // Create a temporary canvas for compositing
+  // Create a temporary canvas for compositing with Perlin noise transparency
   const tempCanvas = document.createElement('canvas')
   tempCanvas.width = stableWidth
   tempCanvas.height = stableHeight
   const tempCtx = tempCanvas.getContext('2d')
   if (!tempCtx) return
 
-  // Draw repeating fog texture
+  // Draw repeating fog texture on temporary canvas
   for (let x = 0; x < tilesX; x++) {
     for (let y = 0; y < tilesY; y++) {
       const drawX = startX + x * tileSize
@@ -393,13 +535,30 @@ const renderFogOfWar = () => {
     }
   }
 
-  // Apply Perlin noise mask using composite operation
+  // Apply Perlin noise mask using composite operation for organic transparency
   tempCtx.globalCompositeOperation = 'destination-in'
   tempCtx.drawImage(fogMaskCanvas.value, 0, 0, stableWidth, stableHeight)
 
-  // Draw the final fog layer with reduced opacity
-  ctx.globalAlpha = 0.4
+  // Draw the final fog layer with reduced opacity to allow map to show through
+  ctx.globalAlpha = 0.6
   ctx.drawImage(tempCanvas, 0, 0)
+
+  // Restore context state
+  ctx.restore()
+}
+
+const renderMapEdgeMask = () => {
+  if (!ctx || !edgeMaskCanvas.value) return
+
+  // Save context state
+  ctx.save()
+
+  // Apply edge mask using destination-out to create transparency at edges
+  ctx.globalCompositeOperation = 'destination-out'
+
+  // Draw the edge mask to create organic transparency at canvas edges
+  // Now using full canvas dimensions since we're outside the transformed coordinate system
+  ctx.drawImage(edgeMaskCanvas.value, 0, 0, canvasWidth.value, canvasHeight.value)
 
   // Restore context state
   ctx.restore()
@@ -899,7 +1058,10 @@ const handleMouseMove = (event: MouseEvent) => {
       y: props.pan.y + deltaY
     }
 
-    emit('pan-change', newPan)
+    // Apply bounds constraints to prevent map from moving out of view
+    const constrainedPan = constrainPan(newPan)
+
+    emit('pan-change', constrainedPan)
     dragStart.value = currentPoint
     needsRedraw.value = true
   }
@@ -925,8 +1087,8 @@ const handleWheel = (event: WheelEvent) => {
 
   // Calculate zoom factor
   const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1
-  const MIN_ZOOM = 0.1
-  const MAX_ZOOM = 5.0
+  const MIN_ZOOM = props.mapData.metadata.minZoom ?? 0.1
+  const MAX_ZOOM = props.mapData.metadata.maxZoom ?? 5.0
   const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, props.zoom * zoomFactor))
 
   if (newZoom !== props.zoom) {
@@ -948,9 +1110,12 @@ const handleWheel = (event: WheelEvent) => {
       y: props.pan.y + (worldPointAfter.y - worldPointBefore.y) * newZoom
     }
 
+    // Apply bounds constraints to prevent map from moving out of view during zoom
+    const constrainedPan = constrainPan(newPan)
+
     // Emit changes to parent
     emit('zoom-change', newZoom)
-    emit('pan-change', newPan)
+    emit('pan-change', constrainedPan)
   }
 
   needsRedraw.value = true
@@ -1423,5 +1588,47 @@ defineExpose({
   left: 0;
   pointer-events: none;
   z-index: 5;
+}
+
+.scale-counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #fada95;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
+  font-size: 12px;
+  line-height: 1.2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 15;
+  min-width: 80px;
+}
+
+.scale-label {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.scale-value {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 2px;
+}
+
+.scale-range {
+  font-size: 9px;
+  text-align: center;
+  opacity: 0.7;
+  color: #fada95;
 }
 </style>

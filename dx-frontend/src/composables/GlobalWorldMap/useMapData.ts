@@ -8,6 +8,10 @@ export interface MapMetadata {
   version: string
   created: string
   modified: string
+  name?: string
+  minZoom?: number
+  maxZoom?: number
+  defaultZoom?: number
 }
 
 export interface MapPoint {
@@ -108,7 +112,9 @@ const createDefaultMapData = (): MapData => ({
     backgroundImage: '',
     version: '1.0.0',
     created: new Date().toISOString(),
-    modified: new Date().toISOString()
+    modified: new Date().toISOString(),
+    minZoom: 0.1,
+    maxZoom: 5.0
   },
   continents: [],
   routes: [],
@@ -124,7 +130,9 @@ const createSampleMapData = (): MapData => ({
     backgroundImage: '',
     version: '1.0.0',
     created: new Date().toISOString(),
-    modified: new Date().toISOString()
+    modified: new Date().toISOString(),
+    minZoom: 0.1,
+    maxZoom: 5.0
   },
   continents: [
     {

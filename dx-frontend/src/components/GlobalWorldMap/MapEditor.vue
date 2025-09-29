@@ -104,6 +104,7 @@
           :selected-item="selectedItem"
           :map-data="mapData"
           @item-update="handleItemUpdate"
+          @map-metadata-update="handleMapMetadataUpdate"
         />
       </div>
     </div>
@@ -201,6 +202,14 @@ const handleItemUpdate = (itemData: any) => {
   updateItemInMapData(itemData)
 
   statusMessage.value = `Updated: ${itemData.name || itemData.type}`
+  emit('data-change', mapData.value)
+}
+
+const handleMapMetadataUpdate = (metadata: any) => {
+  // Update map metadata directly
+  mapData.value.metadata = { ...mapData.value.metadata, ...metadata }
+
+  statusMessage.value = 'Map settings updated'
   emit('data-change', mapData.value)
 }
 

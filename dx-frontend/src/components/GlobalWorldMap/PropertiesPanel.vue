@@ -51,6 +51,73 @@
           </div>
         </div>
 
+        <!-- Map Settings -->
+        <div class="map-settings">
+          <h4>Map Settings</h4>
+          <div class="settings-grid">
+            <div class="form-group">
+              <label>Map Name</label>
+              <input
+                v-model="localMapData.metadata.name"
+                type="text"
+                @input="updateMapMetadata"
+                placeholder="Enter map name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Minimum Zoom (%)</label>
+              <div class="number-input-group">
+                <input
+                  v-model.number="localMapData.metadata.minZoom"
+                  type="number"
+                  min="1"
+                  max="100"
+                  step="1"
+                  @input="updateMapMetadata"
+                  placeholder="10"
+                />
+                <span class="input-suffix">%</span>
+              </div>
+              <small class="help-text">Minimum zoom level (1-100%)</small>
+            </div>
+
+            <div class="form-group">
+              <label>Maximum Zoom (%)</label>
+              <div class="number-input-group">
+                <input
+                  v-model.number="localMapData.metadata.maxZoom"
+                  type="number"
+                  min="100"
+                  max="1000"
+                  step="10"
+                  @input="updateMapMetadata"
+                  placeholder="500"
+                />
+                <span class="input-suffix">%</span>
+              </div>
+              <small class="help-text">Maximum zoom level (100-1000%)</small>
+            </div>
+
+            <div class="form-group">
+              <label>Default Zoom (%)</label>
+              <div class="number-input-group">
+                <input
+                  v-model.number="localMapData.metadata.defaultZoom"
+                  type="number"
+                  :min="localMapData.metadata.minZoom || 10"
+                  :max="localMapData.metadata.maxZoom || 500"
+                  step="5"
+                  @input="updateMapMetadata"
+                  placeholder="150"
+                />
+                <span class="input-suffix">%</span>
+              </div>
+              <small class="help-text">Default zoom level when map loads</small>
+            </div>
+          </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="quick-actions">
           <h4>Quick Actions</h4>
@@ -753,10 +820,29 @@ const emit = defineEmits<{
   'item-delete': [item: any]
   'clear-selection': []
   'add-item': [type: string, parentId?: string]
+  'map-metadata-update': [metadata: any]
 }>()
 
 // Local state for editing
 const localItem = ref<any>({})
+const localMapData = ref<MapData>({
+  metadata: {
+    width: 1920,
+    height: 1080,
+    backgroundImage: '',
+    version: '1.0.0',
+    created: new Date().toISOString(),
+    modified: new Date().toISOString(),
+    name: '',
+    minZoom: 0.1,
+    maxZoom: 5.0,
+    defaultZoom: 1.5
+  },
+  continents: [],
+  routes: [],
+  markers: [],
+  labels: []
+})
 
 // Computed
 const statistics = computed(() => {
@@ -780,6 +866,24 @@ const updateItem = () => {
   if (localItem.value && props.selectedItem) {
     emit('item-update', { ...localItem.value })
   }
+}
+
+const updateMapMetadata = () => {
+  // Validate zoom values
+  const minZoom = Math.max(0.01, Math.min(1.0, (localMapData.value.metadata.minZoom || 0.1) / 100))
+  const maxZoom = Math.max(1.0, Math.min(10.0, (localMapData.value.metadata.maxZoom || 500) / 100))
+  const defaultZoom = Math.max(minZoom, Math.min(maxZoom, (localMapData.value.metadata.defaultZoom || 150) / 100))
+
+  // Update the metadata with validated values
+  const updatedMetadata = {
+    ...localMapData.value.metadata,
+    minZoom,
+    maxZoom,
+    defaultZoom,
+    modified: new Date().toISOString()
+  }
+
+  emit('map-metadata-update', updatedMetadata)
 }
 
 const deleteItem = () => {
@@ -835,6 +939,25 @@ watch(() => props.selectedItem, (newItem) => {
     localItem.value = JSON.parse(JSON.stringify(newItem))
   } else {
     localItem.value = {}
+  }
+}, { immediate: true, deep: true })
+
+// Watch for map data changes
+watch(() => props.mapData, (newMapData) => {
+  if (newMapData) {
+    // Deep clone the map data for local editing, converting decimal zoom values to percentages for UI
+    localMapData.value = JSON.parse(JSON.stringify(newMapData))
+
+    // Convert zoom values from decimal to percentage for display
+    if (localMapData.value.metadata.minZoom !== undefined) {
+      localMapData.value.metadata.minZoom = Math.round(localMapData.value.metadata.minZoom * 100)
+    }
+    if (localMapData.value.metadata.maxZoom !== undefined) {
+      localMapData.value.metadata.maxZoom = Math.round(localMapData.value.metadata.maxZoom * 100)
+    }
+    if (localMapData.value.metadata.defaultZoom !== undefined) {
+      localMapData.value.metadata.defaultZoom = Math.round(localMapData.value.metadata.defaultZoom * 100)
+    }
   }
 }, { immediate: true, deep: true })
 </script>
@@ -926,6 +1049,55 @@ watch(() => props.selectedItem, (newItem) => {
   font-weight: bold;
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+}
+
+.map-settings {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(250, 218, 149, 0.2);
+  border-radius: 4px;
+}
+
+.map-settings h4 {
+  margin: 0 0 1rem 0;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(250, 218, 149, 0.3);
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.number-input-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.number-input-group input {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.input-suffix {
+  position: absolute;
+  right: 0.5rem;
+  color: #fada95;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.help-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 11px;
+  color: rgba(250, 218, 149, 0.6);
+  font-style: italic;
 }
 
 .quick-actions {
