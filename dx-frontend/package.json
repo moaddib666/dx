@@ -10,11 +10,13 @@
     "re-generate-client": "openapi-generator-cli generate -i http://localhost:8000/api/schema/ -g typescript-axios -o src/api/dx-backend"
   },
   "dependencies": {
+    "@types/js-yaml": "^4.0.9",
     "axios": "^1.4.0",
     "cannon": "^0.6.2",
     "centrifuge": "^5.2.1",
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
+    "js-yaml": "^4.1.0",
     "jwt-decode": "^4.0.0",
     "mitt": "^3.0.1",
     "three": "^0.178.0",

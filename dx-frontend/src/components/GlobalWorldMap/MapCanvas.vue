@@ -397,24 +397,18 @@ const createEdgeMaskCanvas = (cursorX?: number, cursorY?: number) => {
 
   // Create transparent areas around highlighted items for shiny effect
   if (highlightedMarkers.value.length > 0) {
-    const {stableWidth, stableHeight, offsetX, offsetY} = getStableCoordinateSystem()
-
     // Use destination-out to create transparent holes in the overlay
     maskCtx.globalCompositeOperation = 'destination-out'
 
     highlightedMarkers.value.forEach(marker => {
-      // Convert marker position from percentage to screen coordinates with zoom and pan transformations
-      // First convert to stable coordinate system
-      const stableX = (marker.position.x / 100) * stableWidth
-      const stableY = (marker.position.y / 100) * stableHeight
+      // Convert marker position from percentage to screen coordinates using full canvas coordinates
+      // This matches how markers are positioned in renderMarker function
+      const worldX = (marker.position.x / 100) * canvasWidth.value
+      const worldY = (marker.position.y / 100) * canvasHeight.value
 
       // Apply zoom and pan transformations (matching the render transformations)
-      const transformedX = (stableX + props.pan.x / props.zoom) * props.zoom
-      const transformedY = (stableY + props.pan.y / props.zoom) * props.zoom
-
-      // Convert to final screen coordinates
-      const markerScreenX = offsetX + transformedX
-      const markerScreenY = offsetY + transformedY
+      const markerScreenX = worldX * props.zoom + props.pan.x
+      const markerScreenY = worldY * props.zoom + props.pan.y
 
       // Create highlight radius that scales with marker size
       const highlightRadius = Math.max(marker.size * 12, 80) // Slightly larger than fog clearing for better effect
@@ -617,6 +611,7 @@ const renderFogOfWar = () => {
   if (highlightedMarkers.value.length > 0) {
     highlightedMarkers.value.forEach(marker => {
       // Convert marker position to stable coordinate system for fog canvas
+      // Use stable coordinate system for fog rendering (this is correct for fog layer)
       const centerX = (marker.position.x / 100) * stableWidth
       const centerY = (marker.position.y / 100) * stableHeight
 
