@@ -644,6 +644,7 @@ const capitalizeFirst = (str: string): string => {
   height: 100%;
   background: #2a2a2a;
   color: #ffffff;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .layer-controls__header {
@@ -651,12 +652,16 @@ const capitalizeFirst = (str: string): string => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 2px solid rgba(250, 218, 149, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .layer-controls__header h3 {
   margin: 0;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
 }
 
 .layer-controls__actions {
@@ -672,8 +677,8 @@ const capitalizeFirst = (str: string): string => {
 
 .layer-controls__footer {
   padding: 1rem;
-  border-top: 1px solid #3a3a3a;
-  background: #1a1a1a;
+  border-top: 2px solid rgba(250, 218, 149, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .layer-item {
@@ -685,16 +690,20 @@ const capitalizeFirst = (str: string): string => {
   align-items: center;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   gap: 0.5rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .layer-item__header:hover {
-  background: #3a3a3a;
+  background: rgba(250, 218, 149, 0.1);
+  border-left: 3px solid rgba(250, 218, 149, 0.5);
 }
 
 .layer-item--selected .layer-item__header {
-  background: #4a5568;
+  background: rgba(127, 255, 22, 0.1);
+  border-left: 3px solid #7fff16;
+  color: #7fff16;
 }
 
 .layer-item--root {
@@ -737,7 +746,8 @@ const capitalizeFirst = (str: string): string => {
 .layer-icon {
   width: 16px;
   font-size: 0.875rem;
-  color: #60a5fa;
+  color: #fada95;
+  text-shadow: 0 0 4px rgba(250, 218, 149, 0.3);
 }
 
 .layer-name {
@@ -746,6 +756,8 @@ const capitalizeFirst = (str: string): string => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  color: #fada95;
 }
 
 .layer-visibility {
@@ -756,6 +768,7 @@ const capitalizeFirst = (str: string): string => {
 .layer-visibility input[type="checkbox"] {
   margin: 0;
   cursor: pointer;
+  accent-color: #fada95;
 }
 
 .layer-actions {
@@ -775,22 +788,27 @@ const capitalizeFirst = (str: string): string => {
   justify-content: center;
   width: 24px;
   height: 24px;
-  border: none;
+  border: 1px solid rgba(250, 218, 149, 0.3);
   border-radius: 3px;
-  background: transparent;
-  color: #9ca3af;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fada95;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .btn-icon:hover {
-  background: #4a5568;
-  color: #ffffff;
+  background: rgba(250, 218, 149, 0.1);
+  border-color: #fada95;
+  color: #fada95;
+  box-shadow: 0 0 6px rgba(250, 218, 149, 0.3);
+  transform: scale(1.1);
 }
 
 .btn-icon.active {
-  background: #60a5fa;
-  color: #ffffff;
+  background: rgba(127, 255, 22, 0.1);
+  border-color: #7fff16;
+  color: #7fff16;
+  box-shadow: 0 0 8px rgba(127, 255, 22, 0.4);
 }
 
 .btn-icon--small {
@@ -800,8 +818,10 @@ const capitalizeFirst = (str: string): string => {
 }
 
 .btn-icon--danger:hover {
-  background: #ef4444;
-  color: #ffffff;
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
 }
 
 .marker-icon {
@@ -812,21 +832,29 @@ const capitalizeFirst = (str: string): string => {
 
 .statistics {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.25rem;
+  padding: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  border: 1px solid rgba(250, 218, 149, 0.1);
 }
 
 .stat-label {
   font-weight: normal;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .stat-value {
   font-weight: bold;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  text-shadow: 0 0 4px rgba(250, 218, 149, 0.3);
 }
 </style>

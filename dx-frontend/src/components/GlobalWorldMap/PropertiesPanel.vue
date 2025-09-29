@@ -846,6 +846,7 @@ watch(() => props.selectedItem, (newItem) => {
   height: 100%;
   background: #2a2a2a;
   color: #ffffff;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .properties-panel__header {
@@ -853,12 +854,16 @@ watch(() => props.selectedItem, (newItem) => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 2px solid rgba(250, 218, 149, 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .properties-panel__header h3 {
   margin: 0;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
 }
 
 .properties-panel__content {
@@ -885,7 +890,10 @@ watch(() => props.selectedItem, (newItem) => {
 
 .map-stats h4 {
   margin-bottom: 1rem;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(250, 218, 149, 0.3);
 }
 
 .stat-grid {
@@ -898,17 +906,26 @@ watch(() => props.selectedItem, (newItem) => {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem;
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(250, 218, 149, 0.2);
   border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  border-color: rgba(250, 218, 149, 0.4);
+  box-shadow: 0 0 6px rgba(250, 218, 149, 0.2);
 }
 
 .stat-label {
   font-size: 0.875rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .stat-value {
   font-weight: bold;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .quick-actions {
@@ -918,7 +935,10 @@ watch(() => props.selectedItem, (newItem) => {
 
 .quick-actions h4 {
   margin-bottom: 1rem;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(250, 218, 149, 0.3);
 }
 
 .action-btn {
@@ -928,16 +948,21 @@ watch(() => props.selectedItem, (newItem) => {
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 0.5rem;
-  background: #3a3a3a;
-  border: 1px solid #4a4a4a;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(250, 218, 149, 0.3);
   border-radius: 4px;
-  color: #ffffff;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .action-btn:hover {
-  background: #4a4a4a;
+  background: rgba(250, 218, 149, 0.1);
+  border-color: #fada95;
+  box-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
+  transform: scale(1.02);
 }
 
 .properties-form {
@@ -950,9 +975,11 @@ watch(() => props.selectedItem, (newItem) => {
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #3a3a3a;
+  border-bottom: 2px solid rgba(250, 218, 149, 0.3);
   font-weight: bold;
-  color: #60a5fa;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  text-shadow: 0 0 6px rgba(250, 218, 149, 0.3);
 }
 
 .form-group {
@@ -964,7 +991,8 @@ watch(() => props.selectedItem, (newItem) => {
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: #fada95;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
 }
 
 .form-group input[type="text"],
@@ -973,11 +1001,13 @@ watch(() => props.selectedItem, (newItem) => {
 .form-group textarea {
   width: 100%;
   padding: 0.5rem;
-  background: #1a1a1a;
-  border: 1px solid #4a4a4a;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(250, 218, 149, 0.3);
   border-radius: 4px;
-  color: #ffffff;
+  color: #fada95;
   font-size: 0.875rem;
+  font-family: 'Cinzel', 'Times New Roman', 'Georgia', serif;
+  transition: all 0.3s ease;
 }
 
 .form-group input[type="text"]:focus,
@@ -985,7 +1015,9 @@ watch(() => props.selectedItem, (newItem) => {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #60a5fa;
+  border-color: #fada95;
+  box-shadow: 0 0 8px rgba(250, 218, 149, 0.3);
+  background: rgba(250, 218, 149, 0.05);
 }
 
 .form-group input[type="range"] {
