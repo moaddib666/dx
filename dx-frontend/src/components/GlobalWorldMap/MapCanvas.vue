@@ -379,11 +379,11 @@ const renderSelection = () => {
 
   if (item.points) {
     // Polygon selection
-    renderPolygonOutline(item.points, '#60a5fa', 3)
+    renderPolygonOutline(item.points, '#7fff16', 3)
     renderVertexHandles(item.points)
   } else if (item.position) {
     // Point selection
-    renderCircleOutline(item.position, (item.size || 6) + 4, '#60a5fa', 2)
+    renderCircleOutline(item.position, (item.size || 6) + 4, '#7fff16', 2)
   }
 }
 
@@ -599,11 +599,17 @@ const renderLabel = (position: MapPoint, text: string, options: {
 const renderPolygonOutline = (points: MapPoint[], color: string, width: number) => {
   if (!ctx || points.length < 3) return
 
+  // Add RPG-style glow effect
+  ctx.shadowColor = 'rgba(127, 255, 22, 0.4)'
+  ctx.shadowBlur = 6
+  ctx.shadowOffsetX = 0
+  ctx.shadowOffsetY = 0
+
   ctx.beginPath()
 
   const canvasPoints = points.map(p => ({
-    x: (p.x / 100) * canvasWidth.value / props.zoom,
-    y: (p.y / 100) * canvasHeight.value / props.zoom
+    x: (p.x / 100) * canvasWidth.value,
+    y: (p.y / 100) * canvasHeight.value
   }))
 
   ctx.moveTo(canvasPoints[0].x, canvasPoints[0].y)
@@ -615,35 +621,59 @@ const renderPolygonOutline = (points: MapPoint[], color: string, width: number) 
   ctx.strokeStyle = color
   ctx.lineWidth = width
   ctx.stroke()
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent'
+  ctx.shadowBlur = 0
 }
 
 const renderCircleOutline = (position: MapPoint, radius: number, color: string, width: number) => {
   if (!ctx) return
 
-  const x = (position.x / 100) * canvasWidth.value / props.zoom
-  const y = (position.y / 100) * canvasHeight.value / props.zoom
+  const x = (position.x / 100) * canvasWidth.value
+  const y = (position.y / 100) * canvasHeight.value
+
+  // Add RPG-style glow effect
+  ctx.shadowColor = 'rgba(127, 255, 22, 0.4)'
+  ctx.shadowBlur = 8
+  ctx.shadowOffsetX = 0
+  ctx.shadowOffsetY = 0
 
   ctx.beginPath()
   ctx.arc(x, y, radius, 0, Math.PI * 2)
   ctx.strokeStyle = color
   ctx.lineWidth = width
   ctx.stroke()
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent'
+  ctx.shadowBlur = 0
 }
 
 const renderVertexHandles = (points: MapPoint[]) => {
   if (!ctx) return
 
   points.forEach(point => {
-    const x = (point.x / 100) * canvasWidth.value / props.zoom
-    const y = (point.y / 100) * canvasHeight.value / props.zoom
+    const x = (point.x / 100) * canvasWidth.value
+    const y = (point.y / 100) * canvasHeight.value
+
+    // Add RPG-style glow effect
+    ctx.shadowColor = 'rgba(250, 218, 149, 0.4)'
+    ctx.shadowBlur = 6
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
 
     ctx.beginPath()
     ctx.arc(x, y, 4, 0, Math.PI * 2)
-    ctx.fillStyle = '#60a5fa'
+    ctx.fillStyle = '#fada95'
     ctx.fill()
-    ctx.strokeStyle = '#ffffff'
-    ctx.lineWidth = 1
+    ctx.strokeStyle = '#7fff16'
+    ctx.lineWidth = 2
     ctx.stroke()
+
+    // Reset shadow
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
   })
 }
 
@@ -713,16 +743,8 @@ const handleMouseMove = (event: MouseEvent) => {
 }
 
 const handleMouseUp = () => {
-  // Finish object movement
-  if (isMovingObject.value && movingItem.value) {
-    // Emit the updated item
-    emit('item-update', movingItem.value)
-
-    // Reset movement state
-    isMovingObject.value = false
-    movingItem.value = null
-    moveStartPosition.value = null
-  }
+  // Note: Object movement is now finished by clicking with move tool, not on mouse up
+  // This allows for proper click-drag-click workflow
 
   // Finish panning
   isDragging.value = false
@@ -920,6 +942,20 @@ const handleMoveTool = (event: MouseEvent) => {
   }
 
   const percentPoint = screenToPercentLocal(screenPoint)
+
+  // If already moving an object, finish the move operation
+  if (isMovingObject.value && movingItem.value) {
+    // Emit the updated item
+    emit('item-update', movingItem.value)
+
+    // Reset movement state
+    isMovingObject.value = false
+    movingItem.value = null
+    moveStartPosition.value = null
+    return
+  }
+
+  // Otherwise, start moving a new object
   const hitItem = findItemAtPoint(percentPoint)
 
   if (hitItem) {
