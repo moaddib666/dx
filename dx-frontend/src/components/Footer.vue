@@ -151,22 +151,44 @@ export default {
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #e0e0e0;
   text-decoration: none;
   padding: 0.563rem;
   border-radius: 6px;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 20, 28, 0.97);
+  box-shadow:
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 -4px 8px rgba(8, 12, 18, 0.9),
+    inset 0 1px 2px rgba(35, 45, 55, 0.6);
+  background-image: linear-gradient(145deg, rgba(25, 32, 42, 0.95), rgba(12, 16, 22, 0.98));
+  border: 2px solid rgba(35, 45, 55, 0.9);
+  border-top: 2px solid rgba(45, 55, 65, 0.7);
   width: 60px;
   height: 60px;
+  position: relative;
 }
 
 .social-link:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(0, 255, 200, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 255, 200, 0.2);
+  background-image: linear-gradient(145deg, rgba(30, 38, 48, 0.98), rgba(18, 24, 32, 0.99));
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.7),
+    inset 0 -5px 10px rgba(6, 10, 16, 0.95),
+    inset 0 2px 4px rgba(40, 50, 60, 0.7);
+  border-top: 2px solid rgba(50, 60, 70, 0.8);
+}
+
+.social-link:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 4px 12px rgba(5, 8, 12, 0.95),
+    inset 0 -2px 4px rgba(20, 28, 36, 0.5);
+  background-image: linear-gradient(145deg, rgba(12, 16, 22, 0.99), rgba(20, 26, 34, 0.97));
+  border-top: 2px solid rgba(25, 35, 45, 0.9);
 }
 
 .social-icon {
