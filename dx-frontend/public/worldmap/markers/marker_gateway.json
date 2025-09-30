@@ -1,0 +1,9 @@
+{
+  "id": "marker_gateway",
+  "name": "Dimensional Gateway Station",
+  "description": "Advanced facility for controlled dimensional travel. Departure point for 2nd, 3rd, and 4th dimensions.",
+  "tags": ["gateway", "dimensional-travel", "portal", "transportation", "multiverse", "station"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_gateway.png"
+}

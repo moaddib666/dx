@@ -1,0 +1,9 @@
+{
+  "id": "marker_harbor",
+  "name": "Ocean Harbor",
+  "description": "Massive nano-tech harbor where goods from all the world are delivered.",
+  "tags": ["harbor", "nano-tech", "shipping", "trade", "ocean", "logistics"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_harbor.png"
+}

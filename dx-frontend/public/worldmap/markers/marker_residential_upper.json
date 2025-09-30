@@ -1,0 +1,9 @@
+{
+  "id": "marker_residential_upper",
+  "name": "Residential Quarter - Upper",
+  "description": "Affluent residential zone. Birthplace of Aria Starveil. Modern apartments with tech and magical amenities.",
+  "tags": ["residential", "affluent", "upper-class", "apartments", "aria-starveil", "luxury"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_residential_upper.png"
+}

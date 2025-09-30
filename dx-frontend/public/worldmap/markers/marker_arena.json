@@ -1,0 +1,9 @@
+{
+  "id": "marker_arena",
+  "name": "Arena of Trials",
+  "description": "Combat arena for mercenaries. Features dimensional chambers for safe combat practice. Popular entertainment venue.",
+  "tags": ["arena", "combat", "trials", "mercenary-training", "entertainment", "dimensional-chambers"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_arena.png"
+}

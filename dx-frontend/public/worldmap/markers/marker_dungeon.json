@@ -1,0 +1,9 @@
+{
+  "id": "marker_dungeon",
+  "name": "Underground Dungeon Entrance",
+  "description": "Entrance to vast underground dungeon beneath Pub Misfits. Home to the legendary Ale of Eternity quest.",
+  "tags": ["dungeon", "underground", "quest-location", "dangerous", "ale-of-eternity", "adventure"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_dungeon.png"
+}

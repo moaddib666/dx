@@ -1,0 +1,9 @@
+{
+  "id": "marker_guild",
+  "name": "Mercenary Guild Hall",
+  "description": "Official headquarters for registered mercenaries. Job board, contracts, and rank advancement tests.",
+  "tags": ["guild", "mercenary", "contracts", "job-board", "headquarters", "rank-advancement"],
+  "created": "2025-09-30T19:00:00.000Z",
+  "modified": "2025-09-30T19:00:00.000Z",
+  "image": "worldmap/images/marker_guild.png"
+}
