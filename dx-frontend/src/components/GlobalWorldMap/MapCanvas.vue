@@ -759,13 +759,18 @@ const renderMarkers = () => {
       ctx.globalAlpha = 0.7 // Semi-transparent for hovered hidden markers
     }
 
+    // Check if this is an ELIT marker (case-insensitive)
+    const isEliteMarker = marker.name?.toUpperCase().includes('ELIT') ||
+                         marker.type?.toUpperCase().includes('ELIT')
+
     renderMarker(marker.position, {
       color: marker.color,
       size: marker.size,
       type: marker.type,
       icon: marker.icon,
       isSelected: props.selectedItem?.id === marker.id,
-      isHovered: isHovered
+      isHovered: isHovered,
+      isElite: isEliteMarker
     })
 
     // Restore original alpha
@@ -907,13 +912,14 @@ const renderMarker = (position: MapPoint, options: {
   icon?: string
   isSelected?: boolean
   isHovered?: boolean
+  isElite?: boolean
 }) => {
   if (!ctx) return
 
   // Use full canvas coordinates to match background image scaling
   const x = (position.x / 100) * canvasWidth.value
   const y = (position.y / 100) * canvasHeight.value
-  const radius = options.size
+  const radius = options.size / 3
 
   // RPG-style marker with enhanced visual effects for different states
   const markerColor = options.color || '#8b5cf6'
@@ -952,10 +958,51 @@ const renderMarker = (position: MapPoint, options: {
     ctx.fill()
     ctx.stroke()
   } else {
-    // Circle for other markers with RPG styling
+    // Professional gold dot with 3D effects and shadows (inspired by RPGCharactersTemplatesModal)
     ctx.beginPath()
+
+    // Enhanced shadow for 3D depth effect
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)'
+    ctx.shadowBlur = radius * 0.8
+    ctx.shadowOffsetX = radius * 0.2
+    ctx.shadowOffsetY = radius * 0.3
+
+    // Create professional gold gradient matching RPG modal styling
+    const goldGradient = ctx.createRadialGradient(x - radius * 0.3, y - radius * 0.3, 0, x, y, radius * 1.2)
+    goldGradient.addColorStop(0, '#fada95')    // Professional gold from RPG modal
+    goldGradient.addColorStop(0.3, '#e6c77a')  // Slightly darker gold
+    goldGradient.addColorStop(0.7, '#d4b55f')  // Medium gold
+    goldGradient.addColorStop(1, '#b8860b')    // Dark gold border
+
+    ctx.fillStyle = goldGradient
+
+    // Draw the main professional gold dot
     ctx.arc(x, y, radius, 0, Math.PI * 2)
     ctx.fill()
+    ctx.stroke()
+
+    // Reset shadow for inner elements
+    ctx.shadowColor = 'transparent'
+    ctx.shadowBlur = 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+
+    // Add inner highlight for 3D effect
+    ctx.beginPath()
+    const innerGradient = ctx.createRadialGradient(x - radius * 0.4, y - radius * 0.4, 0, x - radius * 0.2, y - radius * 0.2, radius * 0.6)
+    innerGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)')  // Bright white highlight
+    innerGradient.addColorStop(0.5, 'rgba(250, 218, 149, 0.6)')  // Gold highlight
+    innerGradient.addColorStop(1, 'rgba(250, 218, 149, 0.1)')   // Fade to transparent
+
+    ctx.fillStyle = innerGradient
+    ctx.arc(x - radius * 0.2, y - radius * 0.2, radius * 0.4, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Add subtle inner border for definition
+    ctx.beginPath()
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)'
+    ctx.lineWidth = 0.5
+    ctx.arc(x, y, radius * 0.8, 0, Math.PI * 2)
     ctx.stroke()
   }
 
@@ -963,17 +1010,8 @@ const renderMarker = (position: MapPoint, options: {
   ctx.shadowColor = 'transparent'
   ctx.shadowBlur = 0
 
-  // Render icon if provided with RPG font styling
-  if (options.icon) {
-    ctx.font = `${radius * 1.2}px 'Cinzel', 'Times New Roman', 'Georgia', serif`
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = '#fada95'
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'
-    ctx.lineWidth = 0.1
-    ctx.strokeText(options.icon, x, y)
-    ctx.fillText(options.icon, x, y)
-  }
+  // NO ICONS - All markers are simple golden position dots
+  // Icon rendering completely disabled to show only position markers
 }
 
 const renderLabel = (position: MapPoint, text: string, options: {
