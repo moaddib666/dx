@@ -1720,23 +1720,10 @@ const findMarkerAtPoint = (point: MapPoint): any => {
   return null
 }
 
-// Hit testing for labels (for hover detection)
+// Hit testing for labels (for hover detection) - ONLY for markers and marker titles
 const findLabelAtPoint = (point: MapPoint): any => {
-  // Check all regular labels for hover detection
-  for (const label of props.mapData.labels) {
-    if (!label.visible) continue
-
-    // Simple bounding box check for labels
-    const labelWidth = (label.text.length * label.fontSize * 0.6) / canvasWidth.value * 100
-    const labelHeight = (label.fontSize * 1.2) / canvasHeight.value * 100
-
-    if (point.x >= label.position.x - labelWidth / 2 &&
-        point.x <= label.position.x + labelWidth / 2 &&
-        point.y >= label.position.y - labelHeight / 2 &&
-        point.y <= label.position.y + labelHeight / 2) {
-      return label
-    }
-  }
+  // REMOVED: Regular labels hover detection - no longer triggers metadata
+  // Only marker titles and city marker labels will trigger hover metadata
 
   // Check marker titles/labels for hover detection
   for (const marker of props.mapData.markers) {
