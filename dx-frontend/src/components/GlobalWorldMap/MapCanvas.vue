@@ -1260,9 +1260,10 @@ const handleMouseMove = (event: MouseEvent) => {
   }
   cursorPosition.value = currentPoint
 
-  // Check for hovered markers (including hidden ones)
+  // Check for hovered markers (including hidden ones) and labels
   const percentPoint = screenToPercentLocal(currentPoint)
   const newHoveredMarker = findMarkerAtPoint(percentPoint)
+  const newHoveredLabel = findLabelAtPoint(percentPoint)
 
   // Update hovered marker state if changed
   if (newHoveredMarker !== hoveredMarker.value) {
@@ -1284,10 +1285,31 @@ const handleMouseMove = (event: MouseEvent) => {
         type: 'marker'
       }
       openLabelMetaCard(markerAsLabel as MapLabel, currentPoint)
+    } else if (newHoveredLabel) {
+      // Open place card for the hovered label
+      console.log(`🎯 Hovered label data:`, {
+        id: newHoveredLabel.id,
+        text: newHoveredLabel.text,
+        type: newHoveredLabel.type || 'label',
+        fullLabel: newHoveredLabel
+      })
+      openLabelMetaCard(newHoveredLabel as MapLabel, currentPoint)
     } else {
-      // Close place card when no marker is hovered
+      // Close place card when no marker or label is hovered
       closeLabelMetaCard()
     }
+  } else if (newHoveredLabel && !labelMetaCard.value.visible) {
+    // Handle case where marker hover state didn't change but we're now hovering over a label
+    console.log(`🎯 Hovered label data:`, {
+      id: newHoveredLabel.id,
+      text: newHoveredLabel.text,
+      type: newHoveredLabel.type || 'label',
+      fullLabel: newHoveredLabel
+    })
+    openLabelMetaCard(newHoveredLabel as MapLabel, currentPoint)
+  } else if (!newHoveredMarker && !newHoveredLabel && labelMetaCard.value.visible) {
+    // Close place card when no marker or label is hovered
+    closeLabelMetaCard()
   }
 
   // Regenerate edge mask to follow cursor for dynamic dark overlay
@@ -1671,6 +1693,119 @@ const findMarkerAtPoint = (point: MapPoint): any => {
       return marker
     }
   }
+
+  // Also check city markers within continents/countries structure
+  for (const continent of props.mapData.continents) {
+    if (!continent.visible) continue
+
+    for (const country of continent.countries) {
+      if (!country.visible) continue
+
+      for (const city of country.cities) {
+        // Check city markers (point type cities)
+        if (city.cityType === 'point' && city.position) {
+          const distance = Math.sqrt(
+              Math.pow(point.x - city.position.x, 2) +
+              Math.pow(point.y - city.position.y, 2)
+          )
+
+          if (distance <= ((city.size || 6) / canvasWidth.value) * 100) {
+            return city
+          }
+        }
+      }
+    }
+  }
+
+  return null
+}
+
+// Hit testing for labels (for hover detection)
+const findLabelAtPoint = (point: MapPoint): any => {
+  // Check all regular labels for hover detection
+  for (const label of props.mapData.labels) {
+    if (!label.visible) continue
+
+    // Simple bounding box check for labels
+    const labelWidth = (label.text.length * label.fontSize * 0.6) / canvasWidth.value * 100
+    const labelHeight = (label.fontSize * 1.2) / canvasHeight.value * 100
+
+    if (point.x >= label.position.x - labelWidth / 2 &&
+        point.x <= label.position.x + labelWidth / 2 &&
+        point.y >= label.position.y - labelHeight / 2 &&
+        point.y <= label.position.y + labelHeight / 2) {
+      return label
+    }
+  }
+
+  // Check marker titles/labels for hover detection
+  for (const marker of props.mapData.markers) {
+    // Only check markers that have visible labels or are currently hovered
+    const isHovered = hoveredMarker.value?.id === marker.id
+    if (!marker.labelVisible && !isHovered) continue
+
+    // Calculate marker label position (same logic as in renderMarkers)
+    const labelOffsetPercent = (marker.size + 5) / canvasHeight.value * 100
+    const labelY = marker.position.y - labelOffsetPercent
+    const labelPosition = { x: marker.position.x, y: labelY }
+
+    // Calculate bounding box for marker label (fontSize 11 as used in renderMarkers)
+    const markerLabelFontSize = 11
+    const labelWidth = (marker.name.length * markerLabelFontSize * 0.6) / canvasWidth.value * 100
+    const labelHeight = (markerLabelFontSize * 1.2) / canvasHeight.value * 100
+
+    if (point.x >= labelPosition.x - labelWidth / 2 &&
+        point.x <= labelPosition.x + labelWidth / 2 &&
+        point.y >= labelPosition.y - labelHeight / 2 &&
+        point.y <= labelPosition.y + labelHeight / 2) {
+      // Return marker as a label-like object for metadata display
+      return {
+        id: marker.id,
+        text: marker.name,
+        type: 'marker-label',
+        position: labelPosition,
+        originalMarker: marker
+      }
+    }
+  }
+
+  // Also check city marker labels within continents/countries structure
+  for (const continent of props.mapData.continents) {
+    if (!continent.visible) continue
+
+    for (const country of continent.countries) {
+      if (!country.visible) continue
+
+      for (const city of country.cities) {
+        if (city.cityType === 'point' && city.position && city.labelVisible) {
+          // Calculate city label position
+          const labelOffsetPercent = ((city.size || 6) + 5) / canvasHeight.value * 100
+          const labelY = city.position.y - labelOffsetPercent
+          const labelPosition = { x: city.position.x, y: labelY }
+
+          // Calculate bounding box for city label (fontSize 12 as used in renderContinents)
+          const cityLabelFontSize = 12
+          const labelWidth = (city.name.length * cityLabelFontSize * 0.6) / canvasWidth.value * 100
+          const labelHeight = (cityLabelFontSize * 1.2) / canvasHeight.value * 100
+
+          if (point.x >= labelPosition.x - labelWidth / 2 &&
+              point.x <= labelPosition.x + labelWidth / 2 &&
+              point.y >= labelPosition.y - labelHeight / 2 &&
+              point.y <= labelPosition.y + labelHeight / 2) {
+            // Return city as a label-like object for metadata display
+            return {
+              id: city.id,
+              text: city.name,
+              type: 'city-label',
+              position: labelPosition,
+              originalCity: city
+            }
+          }
+        }
+      }
+    }
+  }
+
   return null
 }
 
