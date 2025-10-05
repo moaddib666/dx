@@ -1,5 +1,9 @@
 <template>
   <div class="vertical-timeline">
+    <!-- Fixed parallax background -->
+    <div class="timeline-background"></div>
+    <div class="timeline-background-overlay"></div>
+
     <!-- Header with filters -->
     <div class="timeline-header">
       <div class="header-title">
@@ -122,19 +126,14 @@
       </div>
     </div>
 
-    <!-- Selected item details panel -->
-    <div v-if="selectedItem" class="selected-item-panel">
-      <div class="panel-header">
-        <div class="panel-title">
-          <span class="panel-label">Selected Item</span>
-          <h3>{{ selectedItem.title }}</h3>
-          <p>{{ selectedItem.description || 'No description available' }}</p>
-        </div>
-        <button class="close-btn" @click="clearSelection">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    </div>
+    <!-- Timeline Detail Card - Fixed position on right -->
+    <TimelineDetailCard
+      :visible="selectedItem !== null"
+      :item="selectedItem"
+      :categories="categories"
+      :loading="loadingItems.has(selectedItemId)"
+      @close="clearSelection"
+    />
 
     <!-- Add category dialog -->
     <div v-if="showAddCategoryDialog" class="dialog-overlay" @click.self="showAddCategoryDialog = false">
@@ -158,6 +157,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import TimelineMiniCard from './TimelineMiniCard.vue'
+import TimelineDetailCard from './TimelineDetailCard.vue'
 import type { TimelineItem, TimelineCategory } from '@/models/TimelineModels'
 
 interface Props {
@@ -419,9 +419,39 @@ onUnmounted(() => {
   color: #fada95;
   font-family: 'Cinzel', 'Times New Roman', serif;
   padding: 3rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fixed parallax background */
+.timeline-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('@/assets/images/backgrounds/TimeLine.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+/* Semi-transparent overlay for content readability */
+.timeline-background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
 }
 
 .timeline-header {
+  position: relative;
+  z-index: 2;
   border-bottom: 1px solid rgba(250, 218, 149, 0.3);
   padding-bottom: 2rem;
   margin-bottom: 3rem;
@@ -579,6 +609,7 @@ onUnmounted(() => {
 
 .timeline-container {
   position: relative;
+  z-index: 2;
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -731,66 +762,6 @@ onUnmounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   margin: 0;
-}
-
-.selected-item-panel {
-  margin-top: 3rem;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.95);
-  border: 1px solid rgba(250, 218, 149, 0.5);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(250, 218, 149, 0.1);
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.panel-label {
-  display: block;
-  font-size: 0.625rem;
-  color: rgba(250, 218, 149, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.panel-title h3 {
-  font-size: 1.5rem;
-  color: #fada95;
-  margin: 0 0 0.5rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.panel-title p {
-  color: rgba(250, 218, 149, 0.8);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.close-btn {
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba(250, 218, 149, 0.2), rgba(250, 218, 149, 0.1));
-  border: 1px solid #fada95;
-  border-radius: 0.5rem;
-  color: #fada95;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-weight: bold;
-}
-
-.close-btn:hover {
-  background: linear-gradient(135deg, rgba(250, 218, 149, 0.3), rgba(250, 218, 149, 0.2));
-  transform: scale(1.05);
 }
 
 .dialog-overlay {
