@@ -30,6 +30,7 @@ import CharacterTemplateEditor from "@/views/GameMaster/CharacterTemplateEditor.
 import PlayerHomeDashboard from "@/views/PlyerHomeDashboard/PlayerHomeDashboard.vue";
 import DiceRollerView from "@/views/DiceRoller/DiceRoller.vue";
 import StoryBuilder from "@/views/StoryBuilder/StoryBuilder.vue";
+import TimelineView from "@/components/Timeline/TimelineView.vue";
 
 const routes = [
     // Public pages
@@ -65,6 +66,8 @@ const routes = [
     {path: '/dice/roller', name: 'DiceRoller', component: DiceRollerView, meta: {requiresAuth: false}},
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
     {path: '/world-map/preview', name: "WorldMapPreview", component: () => import('@/views/WorldMapPreview.vue'), meta: {requiresAuth: false}},
+    {path: '/timeline', name: 'Timeline', component: TimelineView, meta: {requiresAuth: false}},
+
     // Game Master routes
     {path: '/game-master', name: 'GameMaster', component: GameMasterMain, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/impersonate', name: 'GameMasterImpersonate', component: GameMasterLogin, meta: {requiresAuth: false}},
