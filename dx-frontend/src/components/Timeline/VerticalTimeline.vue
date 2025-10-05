@@ -187,7 +187,7 @@ const loadingItems = ref(new Set<string | number>())
 const showAddCategoryDialog = ref(false)
 const newCategoryLabel = ref('')
 
-const LANE_START_OFFSET = 180
+const LANE_START_OFFSET = 350
 const LANE_SPACING = 25
 const TIME_START_OFFSET = 80
 const TIME_SLOT_HEIGHT = 120
@@ -291,7 +291,7 @@ const getItemPosition = (item: TimelineItem) => {
   const timePos = getTimePosition(timeValue)
 
   const isLeftSide = laneIndex % 2 === 0
-  const cardOffset = isLeftSide ? -(CARD_WIDTH + 100) : CONNECTION_LENGTH
+  const cardOffset = isLeftSide ? -(CARD_WIDTH + CONNECTION_LENGTH) : CONNECTION_LENGTH
 
   return {
     left: `${lanePos + cardOffset}px`,
