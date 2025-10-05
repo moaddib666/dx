@@ -9,6 +9,7 @@
       @category-add="handleCategoryAdd"
       @item-click="handleItemClick"
       @filter-change="handleFilterChange"
+      @load-more="handleLoadMore"
     />
   </div>
 </template>
@@ -27,9 +28,17 @@ const currentFilter = ref<TimelineFilter>({
   tags: [],
   searchQuery: ''
 })
+const offset = ref(0)
+const limit = 10
+const hasMore = ref(true)
 
 const timeSlots = computed(() => {
-  return Array.from({ length: 12 }, (_, i) => 9 + i)
+  // Generate year-based time slots for timeline spanning years
+  // Starting from year 10000 AG, with 20-year intervals, for 200 years
+  const startYear = 10000
+  const interval = 20
+  const count = 11
+  return Array.from({ length: count }, (_, i) => startYear + (i * interval))
 })
 
 onMounted(async () => {
@@ -41,13 +50,13 @@ const loadInitialData = async () => {
   try {
     // Load categories first
     categories.value = await TimelineService.fetchCategories()
-    
+
     // Load items for all visible categories
     const visibleCategories = categories.value.filter(c => c.visible)
-    const itemPromises = visibleCategories.map(cat => 
+    const itemPromises = visibleCategories.map(cat =>
       TimelineService.fetchItemsByCategory(cat.id)
     )
-    
+
     const itemsArrays = await Promise.all(itemPromises)
     timelineItems.value = itemsArrays.flat()
   } catch (error) {
@@ -60,9 +69,9 @@ const loadInitialData = async () => {
 const handleCategoryToggle = async (categoryId: string) => {
   const category = categories.value.find(c => c.id === categoryId)
   if (!category) return
-  
+
   category.visible = !category.visible
-  
+
   if (category.visible) {
     // Load items for this category if not already loaded
     loading.value = true
@@ -99,7 +108,7 @@ const handleItemClick = (item: TimelineItem) => {
 const handleFilterChange = async (filter: { search: string; categories: string[] }) => {
   currentFilter.value.searchQuery = filter.search
   currentFilter.value.categories = filter.categories
-  
+
   // If search query is provided, fetch filtered results from server
   if (filter.search.trim()) {
     loading.value = true
@@ -111,6 +120,39 @@ const handleFilterChange = async (filter: { search: string; categories: string[]
     } finally {
       loading.value = false
     }
+  }
+}
+
+const handleLoadMore = async () => {
+  if (loading.value || !hasMore.value) return
+
+  loading.value = true
+  try {
+    // Increment offset for next batch
+    offset.value += limit
+
+    // Fetch more items for all visible categories
+    const visibleCategories = categories.value.filter(c => c.visible)
+    const itemPromises = visibleCategories.map(cat =>
+      TimelineService.fetchItemsByCategory(cat.id, offset.value, limit)
+    )
+
+    const itemsArrays = await Promise.all(itemPromises)
+    const newItems = itemsArrays.flat()
+
+    // If no new items returned, we've reached the end
+    if (newItems.length === 0) {
+      hasMore.value = false
+    } else {
+      // Add new items that don't already exist
+      const existingIds = new Set(timelineItems.value.map(item => item.id))
+      const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id))
+      timelineItems.value.push(...uniqueNewItems)
+    }
+  } catch (error) {
+    console.error('Error loading more items:', error)
+  } finally {
+    loading.value = false
   }
 }
 </script>

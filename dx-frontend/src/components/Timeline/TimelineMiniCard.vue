@@ -122,9 +122,9 @@ const handleClick = () => {
 
 .card-container {
   position: relative;
-  width: 16rem;
-  height: 10rem;
-  border-radius: 0.75rem;
+  width: 14rem;
+  height: 6rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   border: 1px solid rgba(250, 218, 149, 0.4);
   transition: all 0.3s ease;
@@ -184,28 +184,28 @@ const handleClick = () => {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 6rem;
+  height: 3.5rem;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
 }
 
 .time-badge {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0.25rem 0.5rem;
+  top: 0.4rem;
+  right: 0.4rem;
+  padding: 0.15rem 0.35rem;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
-  border-radius: 0.25rem;
+  border-radius: 0.2rem;
   border: 1px solid rgba(250, 218, 149, 0.5);
   z-index: 2;
 }
 
 .time-badge span {
   color: #fada95;
-  font-size: 0.625rem;
+  font-size: 0.5rem;
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .card-content {
@@ -213,77 +213,77 @@ const handleClick = () => {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem;
+  padding: 0.6rem;
   z-index: 2;
 }
 
 .card-title {
   color: #fada95;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   font-weight: bold;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.2;
+  margin: 0 0 0.3rem 0;
+  line-height: 1.1;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .card-info {
   display: flex;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   color: rgba(250, 218, 149, 0.8);
-  font-size: 0.625rem;
+  font-size: 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .info-item i {
-  font-size: 0.625rem;
+  font-size: 0.5rem;
 }
 
 .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: 0.25rem;
 }
 
 .tag {
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.2rem;
   border: 1px solid rgba(250, 218, 149, 0.6);
   background: rgba(0, 0, 0, 0.4);
   color: #fada95;
-  font-size: 0.5rem;
+  font-size: 0.45rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   font-weight: bold;
   backdrop-filter: blur(4px);
 }
 
 .selection-indicator {
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  width: 1.25rem;
-  height: 1.25rem;
+  top: 0.4rem;
+  left: 0.4rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
   background: #fada95;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(250, 218, 149, 0.6);
+  box-shadow: 0 2px 8px rgba(250, 218, 149, 0.6);
   border: 2px solid rgba(250, 218, 149, 0.3);
   z-index: 3;
 }
 
 .indicator-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.4rem;
+  height: 0.4rem;
   border-radius: 50%;
   background: #000;
 }

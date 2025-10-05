@@ -15,21 +15,18 @@ class TimelineService {
     }
   }
 
-  async fetchItemsByCategory(categoryId: string): Promise<TimelineItem[]> {
-    const cacheKey = `category_${categoryId}`
-    if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey)!
-    }
+  async fetchItemsByCategory(categoryId: string, offset: number = 0, limit: number = 10): Promise<TimelineItem[]> {
+    // Don't use cache for paginated requests
+    const cacheKey = `category_${categoryId}_${offset}_${limit}`
 
     try {
-      const response = await fetch(`${this.baseUrl}/items?category=${categoryId}`)
+      const response = await fetch(`${this.baseUrl}/items?category=${categoryId}&offset=${offset}&limit=${limit}`)
       if (!response.ok) throw new Error(`Failed to fetch items for category ${categoryId}`)
       const items = await response.json()
-      this.cache.set(cacheKey, items)
       return items
     } catch (error) {
       console.error(`Error fetching items for category ${categoryId}:`, error)
-      return this.getMockItemsByCategory(categoryId)
+      return this.getMockItemsByCategory(categoryId, offset, limit)
     }
   }
 
@@ -72,29 +69,29 @@ class TimelineService {
     ]
   }
 
-  private getMockItemsByCategory(categoryId: string): TimelineItem[] {
+  private getMockItemsByCategory(categoryId: string, offset: number = 0, limit: number = 10): TimelineItem[] {
     const mockData: Record<string, TimelineItem[]> = {
       events: [
         {
           id: 1,
           category: 'events',
-          time: '09:00',
-          title: 'The Great Battle',
-          description: 'A legendary battle that changed the course of history',
-          location: 'Ancient Battlefield',
-          participants: 1000,
+          time: '10050',
+          title: 'Battle of Arrakeen',
+          description: 'The decisive battle for control of Arrakis',
+          location: 'Arrakeen',
+          participants: 10000,
           tags: [{ label: 'War', color: 'red' }, { label: 'Historic', color: 'amber' }],
           gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
         },
         {
           id: 2,
           category: 'events',
-          time: '14:00',
-          title: 'Royal Coronation',
-          description: 'The crowning of the new monarch',
-          location: 'Royal Palace',
+          time: '10140',
+          title: 'Spice Monopoly Established',
+          description: 'House Atreides gains control of spice production',
+          location: 'Arrakis',
           participants: 500,
-          tags: [{ label: 'Ceremony', color: 'gold' }, { label: 'Royal', color: 'purple' }],
+          tags: [{ label: 'Economic', color: 'gold' }, { label: 'Political', color: 'purple' }],
           gradient: 'linear-gradient(135deg, #2a1a4e 0%, #3e1646 100%)'
         }
       ],
@@ -102,23 +99,23 @@ class TimelineService {
         {
           id: 3,
           category: 'characters',
-          time: '10:30',
-          title: 'Sir Aldric the Brave',
-          description: 'A legendary knight known for his valor',
-          location: 'Kingdom of Valor',
+          time: '10025',
+          title: 'Paul Atreides Born',
+          description: 'Birth of the future Muad\'Dib',
+          location: 'Caladan',
           participants: 1,
-          tags: [{ label: 'Knight', color: 'blue' }, { label: 'Hero', color: 'gold' }],
+          tags: [{ label: 'Kwisatz Haderach', color: 'blue' }, { label: 'Atreides', color: 'gold' }],
           gradient: 'linear-gradient(135deg, #1a2e4e 0%, #16463e 100%)'
         },
         {
           id: 4,
           category: 'characters',
-          time: '15:30',
-          title: 'Elara the Wise',
-          description: 'A powerful mage and advisor to the crown',
-          location: 'Arcane Tower',
+          time: '10175',
+          title: 'Leto II Ascends',
+          description: 'The God Emperor begins his reign',
+          location: 'Arrakis',
           participants: 1,
-          tags: [{ label: 'Mage', color: 'purple' }, { label: 'Advisor', color: 'cyan' }],
+          tags: [{ label: 'Emperor', color: 'purple' }, { label: 'Transformation', color: 'cyan' }],
           gradient: 'linear-gradient(135deg, #2e1a4e 0%, #46163e 100%)'
         }
       ],
@@ -126,23 +123,23 @@ class TimelineService {
         {
           id: 5,
           category: 'locations',
-          time: '12:00',
-          title: 'The Forgotten Temple',
-          description: 'An ancient temple lost to time',
-          location: 'Deep Forest',
+          time: '10080',
+          title: 'Sietch Tabr Discovered',
+          description: 'Hidden Fremen stronghold revealed',
+          location: 'Deep Desert',
           participants: 0,
-          tags: [{ label: 'Ancient', color: 'brown' }, { label: 'Mystery', color: 'purple' }],
+          tags: [{ label: 'Fremen', color: 'brown' }, { label: 'Secret', color: 'purple' }],
           gradient: 'linear-gradient(135deg, #1a4e2e 0%, #163e46 100%)'
         },
         {
           id: 6,
           category: 'locations',
-          time: '17:00',
-          title: 'Crystal Caverns',
-          description: 'Magnificent caves filled with glowing crystals',
-          location: 'Northern Mountains',
+          time: '10190',
+          title: 'Water of Life Source',
+          description: 'Sacred pool of the Water of Life found',
+          location: 'Southern Pole',
           participants: 0,
-          tags: [{ label: 'Natural', color: 'green' }, { label: 'Beautiful', color: 'cyan' }],
+          tags: [{ label: 'Sacred', color: 'green' }, { label: 'Mystical', color: 'cyan' }],
           gradient: 'linear-gradient(135deg, #1a2e4e 0%, #16463e 100%)'
         }
       ],
@@ -150,29 +147,31 @@ class TimelineService {
         {
           id: 7,
           category: 'quests',
-          time: '16:00',
-          title: 'The Dragon\'s Hoard',
-          description: 'Retrieve the legendary treasure from the dragon\'s lair',
-          location: 'Dragon Peak',
+          time: '10100',
+          title: 'Retrieve the Crysknife',
+          description: 'Obtain the sacred blade of the Fremen',
+          location: 'Sietch Tabr',
           participants: 5,
-          tags: [{ label: 'Epic', color: 'red' }, { label: 'Treasure', color: 'gold' }],
+          tags: [{ label: 'Sacred', color: 'red' }, { label: 'Weapon', color: 'gold' }],
           gradient: 'linear-gradient(135deg, #4e1a1a 0%, #3e1616 100%)'
         },
         {
           id: 8,
           category: 'quests',
-          time: '18:00',
-          title: 'The Lost Artifact',
-          description: 'Find the ancient artifact before it falls into the wrong hands',
-          location: 'Ruins of Eldoria',
-          participants: 3,
-          tags: [{ label: 'Adventure', color: 'orange' }, { label: 'Artifact', color: 'purple' }],
+          time: '10160',
+          title: 'Spice Harvesting Mission',
+          description: 'Secure spice from the deep desert',
+          location: 'Coriolis Storm Region',
+          participants: 50,
+          tags: [{ label: 'Dangerous', color: 'orange' }, { label: 'Spice', color: 'purple' }],
           gradient: 'linear-gradient(135deg, #4e2e1a 0%, #3e2616 100%)'
         }
       ]
     }
 
-    return mockData[categoryId] || []
+    const items = mockData[categoryId] || []
+    // Apply pagination: slice array based on offset and limit
+    return items.slice(offset, offset + limit)
   }
 }
 

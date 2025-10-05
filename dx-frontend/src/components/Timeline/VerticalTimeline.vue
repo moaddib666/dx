@@ -6,7 +6,7 @@
         <h1>Timeline View</h1>
         <p>{{ formattedDate }}</p>
       </div>
-      
+
       <div class="header-controls">
         <!-- Search -->
         <div class="search-box">
@@ -42,19 +42,7 @@
     </div>
 
     <!-- Timeline container -->
-    <div class="timeline-container" ref="timelineContainer">
-      <!-- Category lane labels -->
-      <div class="lane-labels">
-        <div
-          v-for="category in visibleCategories"
-          :key="category.id"
-          class="lane-label"
-          :style="{ left: `${getLanePosition(category.id)}px` }"
-        >
-          <span>{{ category.label }}</span>
-        </div>
-      </div>
-
+    <div class="timeline-container" ref="timelineContainer" :style="{ height: `${timelineHeight}px`, paddingLeft: '350px' }">
       <!-- Time labels -->
       <div class="time-labels">
         <div
@@ -121,8 +109,14 @@
         </div>
       </div>
 
-      <!-- Loading overlay -->
-      <div v-if="loading" class="timeline-loading">
+      <!-- Infinite scroll loading indicator at bottom -->
+      <div v-if="loading && filteredItems.length > 0" class="infinite-scroll-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading more items...</p>
+      </div>
+
+      <!-- Loading overlay (initial load) -->
+      <div v-if="loading && filteredItems.length === 0" class="timeline-loading">
         <i class="fas fa-spinner fa-spin"></i>
         <p>Loading timeline...</p>
       </div>
@@ -162,7 +156,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import TimelineMiniCard from './TimelineMiniCard.vue'
 import type { TimelineItem, TimelineCategory } from '@/models/TimelineModels'
 
@@ -183,6 +177,7 @@ const emit = defineEmits<{
   categoryAdd: [label: string]
   itemClick: [item: TimelineItem]
   filterChange: [filter: { search: string; categories: string[] }]
+  loadMore: []
 }>()
 
 const timelineContainer = ref<HTMLElement | null>(null)
@@ -193,11 +188,11 @@ const showAddCategoryDialog = ref(false)
 const newCategoryLabel = ref('')
 
 const LANE_START_OFFSET = 180
-const LANE_SPACING = 280
+const LANE_SPACING = 25
 const TIME_START_OFFSET = 80
 const TIME_SLOT_HEIGHT = 120
-const CARD_WIDTH = 256
-const CONNECTION_LENGTH = 100
+const CARD_WIDTH = 224
+const CONNECTION_LENGTH = 80
 
 const formattedDate = computed(() => {
   const date = new Date()
@@ -233,6 +228,30 @@ const selectedItem = computed(() => {
   return props.items.find(item => item.id === selectedItemId.value) || null
 })
 
+const timelineHeight = computed(() => {
+  if (filteredItems.value.length === 0) {
+    return 1200 // Default minimum height
+  }
+
+  // Find the maximum time position among all items
+  let maxTimePos = 0
+  filteredItems.value.forEach(item => {
+    let timeValue: number
+    if (item.time.includes(':')) {
+      timeValue = parseFloat(item.time.replace(':', '.'))
+    } else {
+      timeValue = parseInt(item.time)
+    }
+    const timePos = getTimePosition(timeValue)
+    if (timePos > maxTimePos) {
+      maxTimePos = timePos
+    }
+  })
+
+  // Add buffer for card height (96px) and extra space (300px) for infinite scroll
+  return Math.max(1200, maxTimePos + 96 + 300)
+})
+
 const getLanePosition = (categoryId: string): number => {
   const index = visibleCategories.value.findIndex(c => c.id === categoryId)
   return LANE_START_OFFSET + (index * LANE_SPACING)
@@ -240,15 +259,37 @@ const getLanePosition = (categoryId: string): number => {
 
 const getTimePosition = (timeSlot: number): number => {
   const minTime = Math.min(...props.timeSlots)
-  return TIME_START_OFFSET + ((timeSlot - minTime) * TIME_SLOT_HEIGHT)
+  const maxTime = Math.max(...props.timeSlots)
+  const timeRange = maxTime - minTime
+
+  // Use exponential scale for large time ranges (years)
+  // INVERTED: newest (maxTime) at top, oldest (minTime) at bottom
+  if (timeRange > 100) {
+    const normalizedTime = (maxTime - timeSlot) / timeRange // Inverted: maxTime - timeSlot
+    const exponentialPosition = Math.pow(normalizedTime, 0.7) // 0.7 exponent for better distribution
+    return TIME_START_OFFSET + (exponentialPosition * timeRange * TIME_SLOT_HEIGHT / 10)
+  }
+
+  // Linear scale for small ranges - also inverted
+  return TIME_START_OFFSET + ((maxTime - timeSlot) * TIME_SLOT_HEIGHT)
 }
 
 const getItemPosition = (item: TimelineItem) => {
   const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
   const lanePos = getLanePosition(item.category)
-  const timeValue = parseFloat(item.time.replace(':', '.'))
+
+  // Parse time value - handle both year format (e.g., "10191") and time format (e.g., "09:00")
+  let timeValue: number
+  if (item.time.includes(':')) {
+    // Time format: convert "09:00" to 9.0
+    timeValue = parseFloat(item.time.replace(':', '.'))
+  } else {
+    // Year format: parse as integer
+    timeValue = parseInt(item.time)
+  }
+
   const timePos = getTimePosition(timeValue)
-  
+
   const isLeftSide = laneIndex % 2 === 0
   const cardOffset = isLeftSide ? -(CARD_WIDTH + 100) : CONNECTION_LENGTH
 
@@ -261,10 +302,12 @@ const getItemPosition = (item: TimelineItem) => {
 const getConnectionStyle = (item: TimelineItem) => {
   const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
   const isLeftSide = laneIndex % 2 === 0
-  
+  const CARD_HEIGHT = 96 // 6rem = 96px
+  const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
+
   return {
     left: isLeftSide ? `${CARD_WIDTH}px` : `-${CONNECTION_LENGTH}px`,
-    top: '80px',
+    top: `${cardCenter}px`,
     width: `${CONNECTION_LENGTH}px`
   }
 }
@@ -272,10 +315,12 @@ const getConnectionStyle = (item: TimelineItem) => {
 const getConnectionDotStyle = (item: TimelineItem) => {
   const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
   const isLeftSide = laneIndex % 2 === 0
-  
+  const CARD_HEIGHT = 96 // 6rem = 96px
+  const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
+
   return {
     left: isLeftSide ? `${CARD_WIDTH + CONNECTION_LENGTH}px` : `-${CONNECTION_LENGTH}px`,
-    top: '80px'
+    top: `${cardCenter}px`
   }
 }
 
@@ -285,6 +330,16 @@ const getCategoryColor = (categoryId: string): string => {
 }
 
 const formatTime = (timeSlot: number): string => {
+  const minTime = Math.min(...props.timeSlots)
+  const maxTime = Math.max(...props.timeSlots)
+  const timeRange = maxTime - minTime
+
+  // For large ranges (years), display as year
+  if (timeRange > 100) {
+    return `${Math.floor(timeSlot)} AG`
+  }
+
+  // For small ranges (hours), display as time
   const hour = Math.floor(timeSlot)
   const isPM = hour >= 12
   const displayHour = hour > 12 ? hour - 12 : hour
@@ -327,6 +382,34 @@ watch(() => props.categories, () => {
     categories: visibleCategoryIds
   })
 }, { deep: true })
+
+// Infinite scroll implementation
+const handleScroll = () => {
+  if (!timelineContainer.value || props.loading) return
+
+  const container = timelineContainer.value
+  const scrollTop = container.scrollTop
+  const scrollHeight = container.scrollHeight
+  const clientHeight = container.clientHeight
+
+  // Trigger loadMore when within 200px of bottom
+  const threshold = 200
+  if (scrollTop + clientHeight >= scrollHeight - threshold) {
+    emit('loadMore')
+  }
+}
+
+onMounted(() => {
+  if (timelineContainer.value) {
+    timelineContainer.value.addEventListener('scroll', handleScroll)
+  }
+})
+
+onUnmounted(() => {
+  if (timelineContainer.value) {
+    timelineContainer.value.removeEventListener('scroll', handleScroll)
+  }
+})
 </script>
 
 <style scoped>
@@ -411,9 +494,8 @@ watch(() => props.categories, () => {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: rgba(0, 0, 0, 0.9);
-  border: 1px solid rgba(250, 218, 149, 0.3);
+  border: 2px solid rgba(250, 218, 149, 0.3);
   border-radius: 0.5rem;
-  color: rgba(250, 218, 149, 0.6);
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.75rem;
@@ -423,9 +505,12 @@ watch(() => props.categories, () => {
 }
 
 .category-toggle.active {
-  border-color: rgba(250, 218, 149, 0.8);
-  color: #fada95;
   background: rgba(250, 218, 149, 0.1);
+  box-shadow: 0 0 12px rgba(250, 218, 149, 0.4);
+}
+
+.category-toggle:hover {
+  transform: scale(1.05);
 }
 
 .toggle-indicator {
@@ -433,10 +518,41 @@ watch(() => props.categories, () => {
   height: 0.75rem;
   border-radius: 50%;
   transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.toggle-label {
+  color: rgba(250, 218, 149, 0.6);
+  transition: all 0.3s ease;
+}
+
+.category-toggle.active .toggle-label {
+  color: #fada95;
 }
 
 .category-toggle:not(.active) .toggle-indicator {
-  opacity: 0.3;
+  opacity: 0.4;
+}
+
+/* Dynamic colored borders for active state */
+.category-toggle.active:has(.bg-blue-500) {
+  border-color: rgb(59, 130, 246);
+}
+
+.category-toggle.active:has(.bg-cyan-500) {
+  border-color: rgb(6, 182, 212);
+}
+
+.category-toggle.active:has(.bg-amber-500) {
+  border-color: rgb(245, 158, 11);
+}
+
+.category-toggle.active:has(.bg-emerald-500) {
+  border-color: rgb(16, 185, 129);
+}
+
+.category-toggle.active:has(.bg-gray-500) {
+  border-color: rgb(107, 114, 128);
 }
 
 .add-category-btn {
@@ -463,37 +579,8 @@ watch(() => props.categories, () => {
 
 .timeline-container {
   position: relative;
-  min-height: 1200px;
   overflow-x: auto;
-}
-
-.lane-labels {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-}
-
-.lane-label {
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.9);
-  border: 1px solid rgba(250, 218, 149, 0.5);
-  border-radius: 0.5rem;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.lane-label span {
-  color: #fada95;
-  font-size: 0.75rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  white-space: nowrap;
+  overflow-y: auto;
 }
 
 .time-labels {
@@ -613,6 +700,37 @@ watch(() => props.categories, () => {
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
+}
+
+.infinite-scroll-loading {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(250, 218, 149, 0.3);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(10px);
+  z-index: 50;
+}
+
+.infinite-scroll-loading i {
+  font-size: 1.5rem;
+  color: #fada95;
+}
+
+.infinite-scroll-loading p {
+  color: rgba(250, 218, 149, 0.8);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
 }
 
 .selected-item-panel {
