@@ -63,15 +63,18 @@ class KnowledgeBaseItemTagInline(admin.TabularInline):
 
 @admin.register(KnowledgeBaseItem)
 class KnowledgeBaseItemAdmin(admin.ModelAdmin):
-    list_display = ('description_preview', 'category', 'dxCycle', 'tag_count', 'breadcrumb_count', 'created_at', 'updated_at')
+    list_display = ('description_preview', 'category', 'dxCycle', 'tag_count', 'breadcrumb_count', 'image_preview', 'created_at', 'updated_at')
     list_filter = ('category', 'created_at', 'updated_at')
     search_fields = ('description', 'metadata')
-    readonly_fields = ('created_at', 'updated_at', 'id')
+    readonly_fields = ('created_at', 'updated_at', 'id', 'image_preview')
     filter_horizontal = ('tags', 'breadcrumbs')
     
     fieldsets = (
         ('Basic Information', {
             'fields': ('id', 'category', 'dxCycle', 'description')
+        }),
+        ('Media', {
+            'fields': ('image', 'image_preview')
         }),
         ('Relationships', {
             'fields': ('breadcrumbs', 'tags')
@@ -100,3 +103,10 @@ class KnowledgeBaseItemAdmin(admin.ModelAdmin):
         return obj.breadcrumbs.count()
     
     breadcrumb_count.short_description = 'Breadcrumbs'
+    
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 100px; max-width: 100px;" />', obj.image.url)
+        return "No image"
+    
+    image_preview.short_description = 'Image Preview'

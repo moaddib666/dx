@@ -68,6 +68,7 @@ class KnowledgeBaseItem(BaseModel):
         blank=True,
         help_text="Additional metadata as JSON (e.g., {'customField': 'value'})"
     )
+    image = models.ImageField(upload_to='knowlagebase/images/', null=True, blank=True)
     
     def __str__(self):
         return f"{self.get_category_display()}: {self.description[:50]}..."
