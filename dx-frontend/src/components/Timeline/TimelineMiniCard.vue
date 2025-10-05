@@ -55,11 +55,6 @@
         </div>
       </div>
 
-      <!-- Selection indicator -->
-      <div v-if="isSelected" class="selection-indicator">
-        <div class="indicator-dot"></div>
-      </div>
-
       <!-- Loading overlay -->
       <div v-if="loading" class="loading-overlay">
         <i class="fas fa-spinner fa-spin"></i>
@@ -263,29 +258,6 @@ const handleClick = () => {
   letter-spacing: 0.08em;
   font-weight: bold;
   backdrop-filter: blur(4px);
-}
-
-.selection-indicator {
-  position: absolute;
-  top: 0.4rem;
-  left: 0.4rem;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background: #fada95;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(250, 218, 149, 0.6);
-  border: 2px solid rgba(250, 218, 149, 0.3);
-  z-index: 3;
-}
-
-.indicator-dot {
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: #000;
 }
 
 .loading-overlay {
