@@ -1,0 +1,9 @@
+{
+  "id": "export_terminal_trade",
+  "name": "Trade Export Terminal",
+  "description": "Main export hub where Forge Haven's weapons and equipment are shipped to TechnoEdge and other trade partners across Dimension-X.",
+  "tags": ["trade-terminal", "export-hub", "shipping", "logistics", "trade-route", "commerce"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/export_terminal_trade.png"
+}

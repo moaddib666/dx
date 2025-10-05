@@ -1,0 +1,9 @@
+{
+  "id": "salvage_recycling_center",
+  "name": "Salvage & Recycling Center",
+  "description": "Facility for collecting destroyed equipment and reclaiming titanium and other materials. Keeps Forge Haven's production sustainable.",
+  "tags": ["salvage", "recycling", "material-reclamation", "titanium-recovery", "sustainability", "waste-processing"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/salvage_recycling_center.png"
+}

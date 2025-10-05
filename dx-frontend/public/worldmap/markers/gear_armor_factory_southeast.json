@@ -1,0 +1,9 @@
+{
+  "id": "gear_armor_factory_southeast",
+  "name": "Gear & Armor Production Facility",
+  "description": "Advanced manufacturing facility producing cybernetic gear, armor, and Flow accumulators. Home to the most sophisticated implant production lines.",
+  "tags": ["gear-production", "armor-manufacturing", "cybernetic-implants", "flow-accumulators", "high-tech"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/gear_armor_factory_southeast.png"
+}

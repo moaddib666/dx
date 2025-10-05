@@ -1,0 +1,9 @@
+{
+  "id": "lava_control_system",
+  "name": "Lava Channel Control Station",
+  "description": "Control facility managing the flow of molten lava through Forge Haven's industrial channels, providing heat and power to the forges.",
+  "tags": ["lava-control", "volcanic-power", "industrial-heat", "channel-management", "geothermal"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/lava_control_system.png"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "eternal_forges_central",
+  "name": "The Eternal Forges",
+  "description": "Ancient furnaces that burn with both Flow energy and conventional heat. The legendary heart of Forge Haven where the most powerful weapons are forged.",
+  "tags": ["eternal-forges", "central-landmark", "dual-energy", "ancient-furnaces", "weapon-crafting", "flow-energy"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/eternal_forges_central.png"
+}

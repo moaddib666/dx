@@ -1,0 +1,9 @@
+{
+  "id": "defense_systems_northwest",
+  "name": "Defensive Systems Factory",
+  "description": "Production facility for tech barriers, energy shields, and Flow-dampening field generators that protect Forge Haven from wasteland threats.",
+  "tags": ["defensive-systems", "tech-barriers", "energy-shields", "flow-dampening", "city-protection"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/defense_systems_northwest.png"
+}

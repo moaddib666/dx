@@ -1,0 +1,9 @@
+{
+  "id": "bolter_rifle_complex",
+  "name": "Bolter Manufacturing Complex",
+  "description": "Advanced assembly lines producing bolters and rifles powered by multiple Flow types - fire, water, shadow, lightning, and more.",
+  "tags": ["bolter-production", "rifle-manufacturing", "multi-flow", "weapons-assembly", "energy-weapons"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/bolter_rifle_complex.png"
+}

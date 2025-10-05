@@ -1,0 +1,9 @@
+{
+  "id": "blade_forge_northeast",
+  "name": "Blade & Melee Weapons Forge",
+  "description": "Traditional weapon forges where master smiths craft swords, katanas, and hammers infused with Flow runes. Where ancient craftsmanship meets modern technology.",
+  "tags": ["blade-forge", "melee-weapons", "runic-inscription", "traditional-crafting", "swordsmith"],
+  "created": "2025-10-04T20:30:00.000Z",
+  "modified": "2025-10-04T20:30:00.000Z",
+  "image": "worldmap/images/blade_forge_northeast.png"
+}
