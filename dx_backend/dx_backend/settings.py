@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'apps.adapters.centrifugo',
     'apps.gamemaster',
     'apps.story',
+    'apps.knowledge_base',
     'apps.spawner',
 ]
 
