@@ -136,6 +136,9 @@ const {
   handleTouchStart: interactionTouchStart,
   handleTouchMove: interactionTouchMove,
   handleTouchEnd: interactionTouchEnd,
+  getAndClearLastTap,
+  zoom: internalZoom,
+  pan: internalPan,
   screenToPercent,
   percentToScreen,
   pointInPolygon,
@@ -1404,16 +1407,60 @@ const handleWheel = (event: WheelEvent) => {
 
 const handleTouchStart = (event: TouchEvent) => {
   if (!canvasRef.value) return
+  // Sync internal interaction state with parent-controlled props at the start of a gesture
+  if (internalZoom && typeof internalZoom.value === 'number') {
+    internalZoom.value = props.zoom
+  }
+  if (internalPan && internalPan.value) {
+    internalPan.value = { x: props.pan.x, y: props.pan.y }
+  }
   interactionTouchStart(event, canvasRef.value)
+  // Do not emit here to avoid resetting parent zoom/pan on tap
 }
 
 const handleTouchMove = (event: TouchEvent) => {
   if (!canvasRef.value) return
   interactionTouchMove(event, canvasRef.value)
+
+  // Sync parent state with internal interaction state
+  if (internalZoom && typeof internalZoom.value === 'number') {
+    emit('zoom-change', internalZoom.value)
+  }
+  if (internalPan && internalPan.value) {
+    const constrained = constrainPan({ x: internalPan.value.x, y: internalPan.value.y })
+    emit('pan-change', constrained)
+  }
 }
 
 const handleTouchEnd = (event: TouchEvent) => {
   interactionTouchEnd(event)
+
+  // Sync parent state with internal interaction state
+  if (internalZoom && typeof internalZoom.value === 'number') {
+    emit('zoom-change', internalZoom.value)
+  }
+  if (internalPan && internalPan.value) {
+    const constrained = constrainPan({ x: internalPan.value.x, y: internalPan.value.y })
+    emit('pan-change', constrained)
+  }
+
+  const tapPoint = getAndClearLastTap ? getAndClearLastTap() : null
+  if (tapPoint && props.activeTool === 'select') {
+    // Mirror the behavior of handleSelectTool for taps
+    const percentPoint = screenToPercentLocal(tapPoint)
+    const hitItem = findItemAtPoint(percentPoint)
+
+    // If the tapped item is a label, open the label meta card
+    if (hitItem && (hitItem.type === 'label' || hitItem.text !== undefined)) {
+      closeLabelMetaCard()
+      openLabelMetaCard(hitItem as MapLabel, tapPoint)
+    } else {
+      // Close any open card if tapping elsewhere
+      closeLabelMetaCard()
+    }
+
+    emit('item-select', hitItem)
+  }
 }
 
 const handleClick = (event: MouseEvent) => {
@@ -1907,6 +1954,19 @@ watch([() => props.zoom, () => props.pan], () => {
   needsRedraw.value = true
 }, {deep: true})
 
+// Keep internal interaction state in sync with parent-controlled view state
+watch(() => props.zoom, (z) => {
+  if (internalZoom && typeof internalZoom.value === 'number' && internalZoom.value !== z) {
+    internalZoom.value = z
+  }
+})
+
+watch(() => props.pan, (p) => {
+  if (internalPan && internalPan.value && (internalPan.value.x !== p.x || internalPan.value.y !== p.y)) {
+    internalPan.value = { x: p.x, y: p.y }
+  }
+}, { deep: true })
+
 watch(needsRedraw, (shouldRedraw) => {
   if (shouldRedraw) {
     nextTick(() => {
@@ -1918,6 +1978,14 @@ watch(needsRedraw, (shouldRedraw) => {
 // Lifecycle
 onMounted(() => {
   initCanvas()
+
+  // Initialize internal interaction state from props so first touch uses current view
+  if (internalZoom && typeof internalZoom.value === 'number') {
+    internalZoom.value = props.zoom
+  }
+  if (internalPan && internalPan.value) {
+    internalPan.value = { x: props.pan.x, y: props.pan.y }
+  }
 
   // Handle window resize
   const handleResize = () => {
@@ -1953,6 +2021,8 @@ defineExpose({
   display: block;
   cursor: grab;
   user-select: none;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 
 .map-canvas:active {

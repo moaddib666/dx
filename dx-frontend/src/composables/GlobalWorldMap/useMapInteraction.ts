@@ -257,9 +257,52 @@ export function useMapInteraction() {
     }
   }
 
-  // Touch event handlers for mobile support
+  // Touch gesture state and handlers for mobile support
+  const isPinching = ref(false)
+  const pinchStartDistance = ref(0)
+  const pinchStartMidpoint = ref<MapPoint>({ x: 0, y: 0 })
+  const pinchStartZoom = ref(1)
+  const pinchStartPan = ref<MapPoint>({ x: 0, y: 0 })
+
+  const touchStartTime = ref(0)
+  const touchStartPos = ref<MapPoint | null>(null)
+  const maxTouchMoveDistance = ref(0)
+  const lastTapScreenPoint = ref<MapPoint | null>(null)
+  const getAndClearLastTap = () => {
+    const p = lastTapScreenPoint.value
+    lastTapScreenPoint.value = null
+    return p
+  }
+
+  const distanceBetweenTouches = (t1: Touch, t2: Touch) => {
+    const dx = t2.clientX - t1.clientX
+    const dy = t2.clientY - t1.clientY
+    return Math.hypot(dx, dy)
+  }
+
+  const midpointBetweenTouches = (t1: Touch, t2: Touch, canvas: HTMLCanvasElement): MapPoint => {
+    const rect = canvas.getBoundingClientRect()
+    return {
+      x: ((t1.clientX + t2.clientX) / 2) - rect.left,
+      y: ((t1.clientY + t2.clientY) / 2) - rect.top
+    }
+  }
+
   const handleTouchStart = (event: TouchEvent, canvas: HTMLCanvasElement) => {
     event.preventDefault()
+
+    if (event.touches.length === 2) {
+      // Begin pinch gesture
+      isPinching.value = true
+      const [t1, t2] = [event.touches[0], event.touches[1]]
+      pinchStartDistance.value = distanceBetweenTouches(t1, t2)
+      pinchStartMidpoint.value = midpointBetweenTouches(t1, t2, canvas)
+      pinchStartZoom.value = zoom.value
+      pinchStartPan.value = { ...pan.value }
+      // cancel any drag
+      if (isDragging.value) endDrag()
+      return
+    }
 
     if (event.touches.length === 1) {
       const touch = event.touches[0]
@@ -269,6 +312,9 @@ export function useMapInteraction() {
         y: touch.clientY - rect.top
       }
 
+      touchStartTime.value = Date.now()
+      touchStartPos.value = { ...screenPoint }
+      maxTouchMoveDistance.value = 0
       startDrag(screenPoint)
     }
   }
@@ -276,7 +322,27 @@ export function useMapInteraction() {
   const handleTouchMove = (event: TouchEvent, canvas: HTMLCanvasElement) => {
     event.preventDefault()
 
-    if (event.touches.length === 1 && isDragging.value) {
+    if (isPinching.value && event.touches.length === 2) {
+      const [t1, t2] = [event.touches[0], event.touches[1]]
+      const newDistance = distanceBetweenTouches(t1, t2)
+      if (pinchStartDistance.value === 0) return
+      const scaleRatio = newDistance / pinchStartDistance.value
+      const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, pinchStartZoom.value * scaleRatio))
+      const ratio = newZoom / pinchStartZoom.value
+
+      // Keep the pinch midpoint anchored while zooming
+      const anchor = pinchStartMidpoint.value
+      const newPan = {
+        x: anchor.x + (pinchStartPan.value.x - anchor.x) * ratio,
+        y: anchor.y + (pinchStartPan.value.y - anchor.y) * ratio
+      }
+
+      zoom.value = newZoom
+      setPan(newPan)
+      return
+    }
+
+    if (event.touches.length === 1) {
       const touch = event.touches[0]
       const rect = canvas.getBoundingClientRect()
       const screenPoint = {
@@ -284,13 +350,35 @@ export function useMapInteraction() {
         y: touch.clientY - rect.top
       }
 
-      updateDrag(screenPoint)
+      if (touchStartPos.value) {
+        const dx = screenPoint.x - touchStartPos.value.x
+        const dy = screenPoint.y - touchStartPos.value.y
+        const dist = Math.hypot(dx, dy)
+        if (dist > maxTouchMoveDistance.value) maxTouchMoveDistance.value = dist
+      }
+
+      if (isDragging.value) {
+        updateDrag(screenPoint)
+      }
     }
   }
 
   const handleTouchEnd = (event: TouchEvent) => {
     event.preventDefault()
+
+    if (isPinching.value && event.touches.length < 2) {
+      // End pinch gesture
+      isPinching.value = false
+    }
+
+    const now = Date.now()
+    if (touchStartPos.value && (now - touchStartTime.value) < 250 && maxTouchMoveDistance.value < 10) {
+      // Considered a tap
+      lastTapScreenPoint.value = { ...touchStartPos.value }
+    }
+
     endDrag()
+    touchStartPos.value = null
   }
 
   // Keyboard event handlers
@@ -471,6 +559,7 @@ export function useMapInteraction() {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    getAndClearLastTap,
     handleKeyDown,
     handleZoomChange,
     handlePanChange,
