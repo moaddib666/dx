@@ -33,12 +33,31 @@ const limit = 10
 const hasMore = ref(true)
 
 const timeSlots = computed(() => {
-  // Generate year-based time slots for timeline spanning years
-  // Starting from year 10000 AG, with 20-year intervals, for 200 years
-  const startYear = 10000
-  const interval = 20
-  const count = 11
-  return Array.from({ length: count }, (_, i) => startYear + (i * interval))
+  // Generate time slots ONLY from actual item times (skip empty timeframes)
+  if (timelineItems.value.length === 0) {
+    // Default fallback if no items loaded yet
+    return [0]
+  }
+
+  // Extract all unique time values from items
+  const uniqueTimes = new Set<number>()
+
+  timelineItems.value.forEach(item => {
+    let timeValue: number
+    if (typeof item.time === 'number') {
+      timeValue = item.time
+    } else if (typeof item.time === 'string' && item.time.includes(':')) {
+      timeValue = parseFloat(item.time.replace(':', '.'))
+    } else {
+      timeValue = parseInt(item.time as string)
+    }
+    uniqueTimes.add(timeValue)
+  })
+
+  // Convert to sorted array (oldest to newest for proper ordering)
+  const slots = Array.from(uniqueTimes).sort((a, b) => a - b)
+
+  return slots
 })
 
 onMounted(async () => {
@@ -51,10 +70,10 @@ const loadInitialData = async () => {
     // Load categories first
     categories.value = await TimelineService.fetchCategories()
 
-    // Load items for all visible categories
+    // Load items for all visible categories with initial offset and limit
     const visibleCategories = categories.value.filter(c => c.visible)
     const itemPromises = visibleCategories.map(cat =>
-      TimelineService.fetchItemsByCategory(cat.id)
+      TimelineService.fetchItemsByCategory(cat.id, offset.value, limit)
     )
 
     const itemsArrays = await Promise.all(itemPromises)
@@ -73,10 +92,10 @@ const handleCategoryToggle = async (categoryId: string) => {
   category.visible = !category.visible
 
   if (category.visible) {
-    // Load items for this category if not already loaded
+    // Load items for this category if not already loaded (start from offset 0)
     loading.value = true
     try {
-      const items = await TimelineService.fetchItemsByCategory(categoryId)
+      const items = await TimelineService.fetchItemsByCategory(categoryId, 0, limit)
       // Add items that don't already exist
       const existingIds = new Set(timelineItems.value.map(item => item.id))
       const newItems = items.filter(item => !existingIds.has(item.id))

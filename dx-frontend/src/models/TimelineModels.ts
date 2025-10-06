@@ -1,7 +1,8 @@
 export interface TimelineItem {
   id: string | number
   category: string
-  time: string
+  time: number | string
+  beforeAnomalyGlow?: boolean
   title: string
   description?: string
   location?: string

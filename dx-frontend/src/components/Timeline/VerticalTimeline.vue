@@ -223,6 +223,91 @@ const filteredItems = computed(() => {
   return items
 })
 
+// Comprehensive collision detection: ensure proper padding between ALL cards
+const itemPositionOffsets = computed(() => {
+  const offsets = new Map<string | number, number>()
+  const CARD_HEIGHT = 96 // 6rem = 96px
+  const CARD_SPACING = 40 // Minimum spacing between cards (increased from 20px)
+  const MIN_VERTICAL_SPACING = CARD_HEIGHT + CARD_SPACING // 136px total
+
+  if (filteredItems.value.length === 0) {
+    return offsets
+  }
+
+  // Helper function to parse time value
+  const parseTimeValue = (time: number | string): number => {
+    if (typeof time === 'number') {
+      return time
+    } else if (typeof time === 'string' && time.includes(':')) {
+      return parseFloat(time.replace(':', '.'))
+    } else {
+      return parseInt(time as string)
+    }
+  }
+
+  // Group items by SIDE (left/right) instead of by lane
+  // Cards on the same side can overlap regardless of lane
+  const itemsBySide = new Map<string, Array<{ item: TimelineItem; timeValue: number; basePosition: number }>>()
+  itemsBySide.set('left', [])
+  itemsBySide.set('right', [])
+
+  filteredItems.value.forEach(item => {
+    const timeValue = parseTimeValue(item.time)
+    const basePosition = getTimePosition(timeValue)
+
+    // Determine which side this card is on based on lane index
+    const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
+    const side = laneIndex % 2 === 0 ? 'left' : 'right'
+
+    itemsBySide.get(side)!.push({ item, timeValue, basePosition })
+  })
+
+  // Process each side independently to detect collisions
+  itemsBySide.forEach((sideItems, side) => {
+    // Sort items by base position (top to bottom)
+    sideItems.sort((a, b) => a.basePosition - b.basePosition)
+
+    // Track occupied vertical space
+    const occupiedRanges: Array<{ start: number; end: number }> = []
+
+    sideItems.forEach(({ item, basePosition }) => {
+      let finalPosition = basePosition
+      let offset = 0
+
+      // Check for collisions with already placed cards
+      let hasCollision = true
+      while (hasCollision) {
+        hasCollision = false
+        const cardStart = finalPosition
+        const cardEnd = finalPosition + CARD_HEIGHT
+
+        // Check if this position overlaps with any occupied range
+        for (const range of occupiedRanges) {
+          // Check for overlap: card overlaps if it starts before range ends AND ends after range starts
+          if (cardStart < range.end + CARD_SPACING && cardEnd + CARD_SPACING > range.start) {
+            // Collision detected - move card down
+            hasCollision = true
+            offset += MIN_VERTICAL_SPACING
+            finalPosition = basePosition + offset
+            break
+          }
+        }
+      }
+
+      // Store the offset for this item
+      offsets.set(item.id, offset)
+
+      // Mark this vertical space as occupied
+      occupiedRanges.push({
+        start: finalPosition,
+        end: finalPosition + CARD_HEIGHT
+      })
+    })
+  })
+
+  return offsets
+})
+
 const selectedItem = computed(() => {
   if (!selectedItemId.value) return null
   return props.items.find(item => item.id === selectedItemId.value) || null
@@ -233,23 +318,38 @@ const timelineHeight = computed(() => {
     return 1200 // Default minimum height
   }
 
-  // Find the maximum time position among all items
-  let maxTimePos = 0
+  // Find the maximum position among all items (including collision offsets)
+  let maxPosition = 0
   filteredItems.value.forEach(item => {
     let timeValue: number
-    if (item.time.includes(':')) {
+    if (typeof item.time === 'number') {
+      timeValue = item.time
+    } else if (typeof item.time === 'string' && item.time.includes(':')) {
       timeValue = parseFloat(item.time.replace(':', '.'))
     } else {
-      timeValue = parseInt(item.time)
+      timeValue = parseInt(item.time as string)
     }
-    const timePos = getTimePosition(timeValue)
-    if (timePos > maxTimePos) {
-      maxTimePos = timePos
+
+    const baseTimePos = getTimePosition(timeValue)
+    const verticalOffset = itemPositionOffsets.value.get(item.id) || 0
+    const totalPos = baseTimePos + verticalOffset
+
+    if (totalPos > maxPosition) {
+      maxPosition = totalPos
     }
   })
 
+  // Calculate minimum height based on exponential scale
+  // BASE_HEIGHT_PER_SLOT = 60px per time slot (matches getTimePosition)
+  const BASE_HEIGHT_PER_SLOT = 60
+  const minHeightFromSlots = TIME_START_OFFSET + (props.timeSlots.length * BASE_HEIGHT_PER_SLOT)
+
+  // Use the larger of: calculated max position or minimum from slots
   // Add buffer for card height (96px) and extra space (300px) for infinite scroll
-  return Math.max(1200, maxTimePos + 96 + 300)
+  const CARD_HEIGHT = 96
+  const BUFFER_SPACE = 300
+
+  return Math.max(1200, minHeightFromSlots, maxPosition + CARD_HEIGHT + BUFFER_SPACE)
 })
 
 const getLanePosition = (categoryId: string): number => {
@@ -262,40 +362,65 @@ const getTimePosition = (timeSlot: number): number => {
   const maxTime = Math.max(...props.timeSlots)
   const timeRange = maxTime - minTime
 
-  // Use exponential scale for large time ranges (years)
-  // INVERTED: newest (maxTime) at top, oldest (minTime) at bottom
-  if (timeRange > 100) {
-    const normalizedTime = (maxTime - timeSlot) / timeRange // Inverted: maxTime - timeSlot
-    const exponentialPosition = Math.pow(normalizedTime, 0.7) // 0.7 exponent for better distribution
-    return TIME_START_OFFSET + (exponentialPosition * timeRange * TIME_SLOT_HEIGHT / 10)
+  // Avoid division by zero
+  if (timeRange === 0) {
+    return TIME_START_OFFSET
   }
 
-  // Linear scale for small ranges - also inverted
-  return TIME_START_OFFSET + ((maxTime - timeSlot) * TIME_SLOT_HEIGHT)
+  // Use EXPONENTIAL (logarithmic) scale for better distribution
+  // INVERTED: newest (maxTime) at top, oldest (minTime) at bottom
+
+  // Shift values to ensure positive numbers for logarithm
+  const shiftedMin = 1 // Start from 1 to avoid log(0)
+  const shiftedMax = timeRange + 1
+  const shiftedSlot = (maxTime - timeSlot) + 1 // Inverted
+
+  // Apply logarithmic scale (base 10)
+  const logMin = Math.log10(shiftedMin)
+  const logMax = Math.log10(shiftedMax)
+  const logSlot = Math.log10(shiftedSlot)
+  const logRange = logMax - logMin
+
+  // Normalize to 0-1 range
+  const normalizedPosition = logRange > 0 ? (logSlot - logMin) / logRange : 0
+
+  // Calculate total timeline height
+  // Use spacing that gives reasonable distribution for exponential scale
+  // Reduced from 200 to 60 to create more compact timeline with less empty space
+  const BASE_HEIGHT_PER_SLOT = 60 // Base spacing between time slots
+  const totalTimelineHeight = props.timeSlots.length * BASE_HEIGHT_PER_SLOT
+
+  return TIME_START_OFFSET + (normalizedPosition * totalTimelineHeight)
 }
 
 const getItemPosition = (item: TimelineItem) => {
   const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
   const lanePos = getLanePosition(item.category)
 
-  // Parse time value - handle both year format (e.g., "10191") and time format (e.g., "09:00")
+  // Parse time value - handle both number and string formats
   let timeValue: number
-  if (item.time.includes(':')) {
-    // Time format: convert "09:00" to 9.0
+  if (typeof item.time === 'number') {
+    // Already a number (year format)
+    timeValue = item.time
+  } else if (typeof item.time === 'string' && item.time.includes(':')) {
+    // Time format string: convert "09:00" to 9.0
     timeValue = parseFloat(item.time.replace(':', '.'))
   } else {
-    // Year format: parse as integer
-    timeValue = parseInt(item.time)
+    // Year format string: parse as integer
+    timeValue = parseInt(item.time as string)
   }
 
   const timePos = getTimePosition(timeValue)
+
+  // Apply collision offset to prevent overlapping
+  const verticalOffset = itemPositionOffsets.value.get(item.id) || 0
 
   const isLeftSide = laneIndex % 2 === 0
   const cardOffset = isLeftSide ? -(CARD_WIDTH + CONNECTION_LENGTH) : CONNECTION_LENGTH
 
   return {
     left: `${lanePos + cardOffset}px`,
-    top: `${timePos}px`
+    top: `${timePos + verticalOffset}px`
   }
 }
 

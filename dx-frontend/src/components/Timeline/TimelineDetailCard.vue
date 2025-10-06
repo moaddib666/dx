@@ -8,7 +8,14 @@
     <div class="card-container">
       <!-- Background with gradient and cosmic effects -->
       <div class="card-background">
-        <div class="gradient-overlay" :style="{ background: gradientStyle }"></div>
+        <!-- Background image (if available) or gradient -->
+        <img
+          v-if="item.image"
+          :src="item.image"
+          :alt="item.title"
+          class="background-image"
+        />
+        <div v-else class="gradient-overlay" :style="{ background: gradientStyle }"></div>
 
         <!-- Circular light effects -->
         <div class="light-effect"></div>
@@ -38,7 +45,7 @@
           <h3 class="card-title">{{ item.title }}</h3>
           <div class="time-badge">
             <i class="fas fa-clock"></i>
-            <span>{{ item.time }}</span>
+            <span>{{ formattedTime }}</span>
           </div>
         </div>
 
@@ -120,6 +127,20 @@ const gradientStyle = computed(() => {
   return props.item?.gradient || 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)'
 })
 
+const formattedTime = computed(() => {
+  if (!props.item) return ''
+
+  const time = props.item.time
+
+  // If it's a number (year format), display as year
+  if (typeof time === 'number') {
+    return `${time} AG`
+  }
+
+  // If it's a string, return as-is (could be time format like "09:00")
+  return time
+})
+
 const onImageError = () => {
   imageError.value = true
 }
@@ -178,6 +199,15 @@ const handleClose = () => {
 .gradient-overlay {
   position: absolute;
   inset: 0;
+}
+
+.background-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .light-effect {
