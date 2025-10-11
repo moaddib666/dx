@@ -16,6 +16,7 @@ from rest_framework import viewsets, permissions, filters
 from apps.knowledge_base.models import Document
 from apps.knowledge_base.api.filters import DocumentFilter
 from apps.knowledge_base.api.serializers import DocumentSerializer
+from apps.knowledge_base.api.pagination import KnowledgeBasePagination
 
 
 @extend_schema_view(
@@ -74,6 +75,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     """
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    pagination_class = KnowledgeBasePagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_class = DocumentFilter
     ordering_fields = ['id', 'title', 'created_at', 'updated_at']

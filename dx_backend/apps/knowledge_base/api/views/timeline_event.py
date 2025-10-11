@@ -22,6 +22,7 @@ from apps.knowledge_base.api.serializers import (
     TimeLineEventSerializer,
     TimeLineEventImportSerializer,
 )
+from apps.knowledge_base.api.pagination import KnowledgeBasePagination
 
 
 @extend_schema_view(
@@ -83,6 +84,7 @@ class TimeLineEventViewSet(viewsets.ModelViewSet):
     """
     queryset = TimeLineEvent.objects.select_related('document', 'date_time').all()
     serializer_class = TimeLineEventSerializer
+    pagination_class = KnowledgeBasePagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_class = TimeLineEventFilter
     ordering_fields = ['id', 'created_at', 'updated_at', 'date_time__solar_year', 'date_time__sol']
