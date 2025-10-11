@@ -21,15 +21,7 @@ import TimelineService from '@/services/TimelineService'
 import type { TimelineItem, TimelineCategory, TimelineFilter } from '@/models/TimelineModels'
 
 const timelineItems = ref<TimelineItem[]>([])
-const categories = ref<TimelineCategory[]>([
-  {
-    id: 'all',
-    label: 'All Events',
-    color: 'bg-blue-500',
-    colorGradient: 'from-blue-600/50 to-blue-700/50',
-    visible: true
-  }
-])
+const categories = ref<TimelineCategory[]>([])
 const loading = ref(false)
 const currentFilter = ref<TimelineFilter>({
   categories: [],
@@ -76,6 +68,9 @@ onMounted(async () => {
 const loadInitialData = async () => {
   loading.value = true
   try {
+    // Fetch categories from CategoriesEnum
+    categories.value = TimelineService.fetchCategories()
+
     // Fetch all timeline items (page 1)
     const response = await TimelineService.fetchItemsByCategory('all', currentPage.value, pageSize)
 
@@ -83,7 +78,7 @@ const loadInitialData = async () => {
     totalCount.value = response.count
     hasMore.value = response.next !== null
 
-    console.log(`Loaded ${response.items.length} items (total: ${response.count})`)
+    console.log(`Loaded ${categories.value.length} categories and ${response.items.length} items (total: ${response.count})`)
   } catch (error) {
     console.error('Error loading timeline data:', error)
   } finally {

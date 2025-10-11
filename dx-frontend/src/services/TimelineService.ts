@@ -1,6 +1,7 @@
 import type { TimelineItem, TimelineCategory, TimelineServiceResponse, TimelineFilter } from '@/models/TimelineModels'
 import { KnowledgeBaseTimelineEventsGameApi } from '@/api/backendService'
 import type { TimeLineEvent, PaginatedTimeLineEventList } from '@/api/dx-backend/api'
+import { CategoriesEnum } from '@/api/dx-backend/api'
 
 interface CacheEntry {
   data: TimelineItem[]
@@ -220,6 +221,62 @@ class TimelineService {
     const cacheKey = this.getCacheKey(category, page, pageSize)
     this.cache.delete(cacheKey)
     console.log(`Cache entry cleared: ${cacheKey}`)
+  }
+
+  /**
+   * Fetch available categories based on CategoriesEnum
+   */
+  fetchCategories(): TimelineCategory[] {
+    // Define color mappings for each category
+    const categoryColors: Record<string, { color: string; colorGradient: string }> = {
+      events: { color: 'bg-purple-500', colorGradient: 'from-purple-600/50 to-purple-700/50' },
+      rules: { color: 'bg-red-500', colorGradient: 'from-red-600/50 to-red-700/50' },
+      lore: { color: 'bg-indigo-500', colorGradient: 'from-indigo-600/50 to-indigo-700/50' },
+      stories: { color: 'bg-pink-500', colorGradient: 'from-pink-600/50 to-pink-700/50' },
+      guides: { color: 'bg-yellow-500', colorGradient: 'from-yellow-600/50 to-yellow-700/50' },
+      items: { color: 'bg-orange-500', colorGradient: 'from-orange-600/50 to-orange-700/50' },
+      characters: { color: 'bg-green-500', colorGradient: 'from-green-600/50 to-green-700/50' },
+      locations: { color: 'bg-teal-500', colorGradient: 'from-teal-600/50 to-teal-700/50' },
+      places: { color: 'bg-cyan-500', colorGradient: 'from-cyan-600/50 to-cyan-700/50' },
+      factions: { color: 'bg-blue-500', colorGradient: 'from-blue-600/50 to-blue-700/50' },
+      creatures: { color: 'bg-lime-500', colorGradient: 'from-lime-600/50 to-lime-700/50' },
+      skills: { color: 'bg-emerald-500', colorGradient: 'from-emerald-600/50 to-emerald-700/50' },
+      spells: { color: 'bg-violet-500', colorGradient: 'from-violet-600/50 to-violet-700/50' },
+      abilities: { color: 'bg-fuchsia-500', colorGradient: 'from-fuchsia-600/50 to-fuchsia-700/50' },
+      other: { color: 'bg-gray-500', colorGradient: 'from-gray-600/50 to-gray-700/50' }
+    }
+
+    // Start with 'all' category
+    const categories: TimelineCategory[] = [
+      {
+        id: 'all',
+        label: 'All Events',
+        color: 'bg-blue-500',
+        colorGradient: 'from-blue-600/50 to-blue-700/50',
+        visible: true
+      }
+    ]
+
+    // Convert CategoriesEnum values to TimelineCategory objects
+    Object.values(CategoriesEnum).forEach(categoryValue => {
+      const colorConfig = categoryColors[categoryValue] || {
+        color: 'bg-gray-500',
+        colorGradient: 'from-gray-600/50 to-gray-700/50'
+      }
+
+      // Capitalize first letter for label
+      const label = categoryValue.charAt(0).toUpperCase() + categoryValue.slice(1)
+
+      categories.push({
+        id: categoryValue,
+        label,
+        color: colorConfig.color,
+        colorGradient: colorConfig.colorGradient,
+        visible: false // Categories are hidden by default except 'all'
+      })
+    })
+
+    return categories
   }
 }
 

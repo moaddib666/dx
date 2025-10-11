@@ -503,14 +503,6 @@ const handleSearchChange = () => {
   })
 }
 
-watch(() => props.categories, () => {
-  const visibleCategoryIds = visibleCategories.value.map(c => c.id)
-  emit('filterChange', {
-    search: searchQuery.value,
-    categories: visibleCategoryIds
-  })
-}, { deep: true })
-
 // Infinite scroll implementation
 const handleScroll = () => {
   if (!timelineContainer.value || props.loading) return
