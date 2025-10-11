@@ -21,16 +21,25 @@ import TimelineService from '@/services/TimelineService'
 import type { TimelineItem, TimelineCategory, TimelineFilter } from '@/models/TimelineModels'
 
 const timelineItems = ref<TimelineItem[]>([])
-const categories = ref<TimelineCategory[]>([])
+const categories = ref<TimelineCategory[]>([
+  {
+    id: 'all',
+    label: 'All Events',
+    color: 'bg-blue-500',
+    colorGradient: 'from-blue-600/50 to-blue-700/50',
+    visible: true
+  }
+])
 const loading = ref(false)
 const currentFilter = ref<TimelineFilter>({
   categories: [],
   tags: [],
   searchQuery: ''
 })
-const offset = ref(0)
-const limit = 10
+const currentPage = ref(1)
+const pageSize = 100
 const hasMore = ref(true)
+const totalCount = ref(0)
 
 const timeSlots = computed(() => {
   // Generate time slots ONLY from actual item times (skip empty timeframes)
@@ -67,17 +76,14 @@ onMounted(async () => {
 const loadInitialData = async () => {
   loading.value = true
   try {
-    // Load categories first
-    categories.value = await TimelineService.fetchCategories()
+    // Fetch all timeline items (page 1)
+    const response = await TimelineService.fetchItemsByCategory('all', currentPage.value, pageSize)
 
-    // Load items for all visible categories with initial offset and limit
-    const visibleCategories = categories.value.filter(c => c.visible)
-    const itemPromises = visibleCategories.map(cat =>
-      TimelineService.fetchItemsByCategory(cat.id, offset.value, limit)
-    )
+    timelineItems.value = response.items
+    totalCount.value = response.count
+    hasMore.value = response.next !== null
 
-    const itemsArrays = await Promise.all(itemPromises)
-    timelineItems.value = itemsArrays.flat()
+    console.log(`Loaded ${response.items.length} items (total: ${response.count})`)
   } catch (error) {
     console.error('Error loading timeline data:', error)
   } finally {
@@ -92,13 +98,13 @@ const handleCategoryToggle = async (categoryId: string) => {
   category.visible = !category.visible
 
   if (category.visible) {
-    // Load items for this category if not already loaded (start from offset 0)
+    // Reload all data when toggling category visibility
     loading.value = true
     try {
-      const items = await TimelineService.fetchItemsByCategory(categoryId, 0, limit)
+      const response = await TimelineService.fetchItemsByCategory(categoryId, 1, pageSize)
       // Add items that don't already exist
       const existingIds = new Set(timelineItems.value.map(item => item.id))
-      const newItems = items.filter(item => !existingIds.has(item.id))
+      const newItems = response.items.filter(item => !existingIds.has(item.id))
       timelineItems.value.push(...newItems)
     } catch (error) {
       console.error(`Error loading items for category ${categoryId}:`, error)
@@ -134,11 +140,17 @@ const handleFilterChange = async (filter: { search: string; categories: string[]
     try {
       const filteredItems = await TimelineService.fetchFilteredItems(currentFilter.value)
       timelineItems.value = filteredItems
+      // Reset pagination when filtering
+      hasMore.value = false
     } catch (error) {
       console.error('Error fetching filtered items:', error)
     } finally {
       loading.value = false
     }
+  } else {
+    // If search is cleared, reload initial data
+    currentPage.value = 1
+    await loadInitialData()
   }
 }
 
@@ -147,26 +159,23 @@ const handleLoadMore = async () => {
 
   loading.value = true
   try {
-    // Increment offset for next batch
-    offset.value += limit
+    // Increment page for next batch
+    currentPage.value += 1
 
-    // Fetch more items for all visible categories
-    const visibleCategories = categories.value.filter(c => c.visible)
-    const itemPromises = visibleCategories.map(cat =>
-      TimelineService.fetchItemsByCategory(cat.id, offset.value, limit)
-    )
-
-    const itemsArrays = await Promise.all(itemPromises)
-    const newItems = itemsArrays.flat()
+    // Fetch more items
+    const response = await TimelineService.fetchItemsByCategory('all', currentPage.value, pageSize)
 
     // If no new items returned, we've reached the end
-    if (newItems.length === 0) {
+    if (response.items.length === 0) {
       hasMore.value = false
     } else {
       // Add new items that don't already exist
       const existingIds = new Set(timelineItems.value.map(item => item.id))
-      const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id))
+      const uniqueNewItems = response.items.filter(item => !existingIds.has(item.id))
       timelineItems.value.push(...uniqueNewItems)
+
+      // Update hasMore based on next field
+      hasMore.value = response.next !== null
     }
   } catch (error) {
     console.error('Error loading more items:', error)

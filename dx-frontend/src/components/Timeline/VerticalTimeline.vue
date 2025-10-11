@@ -208,7 +208,10 @@ const filteredItems = computed(() => {
 
   // Filter by visible categories
   const visibleCategoryIds = visibleCategories.value.map(c => c.id)
-  items = items.filter(item => visibleCategoryIds.includes(item.category))
+  // Special case: 'all' category shows all items
+  if (!visibleCategoryIds.includes('all')) {
+    items = items.filter(item => visibleCategoryIds.includes(item.category))
+  }
 
   // Filter by search query
   if (searchQuery.value.trim()) {
