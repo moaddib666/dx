@@ -62,13 +62,13 @@
       <!-- Vertical lane lines -->
       <div class="lane-lines">
         <div
-          v-for="category in visibleCategories"
+          v-for="category in categoriesWithItems"
           :key="category.id"
           class="lane-line"
           :style="{ left: `${getLanePosition(category.id)}px` }"
         >
-          <div class="line-gradient" :class="category.colorGradient"></div>
-          <div class="line-glow" :class="category.colorGradient"></div>
+          <div class="line-gradient" :style="{ background: category.colorGradient }"></div>
+          <div class="line-glow" :style="{ background: category.colorGradient }"></div>
         </div>
       </div>
 
@@ -201,6 +201,13 @@ const formattedDate = computed(() => {
 
 const visibleCategories = computed(() => {
   return props.categories.filter(cat => cat.visible)
+})
+
+// Categories that have items in the current filtered list
+// These need vertical lines even if not explicitly toggled visible
+const categoriesWithItems = computed(() => {
+  const itemCategories = new Set(filteredItems.value.map(item => item.category))
+  return props.categories.filter(cat => itemCategories.has(cat.id))
 })
 
 const filteredItems = computed(() => {
@@ -356,7 +363,7 @@ const timelineHeight = computed(() => {
 })
 
 const getLanePosition = (categoryId: string): number => {
-  const index = visibleCategories.value.findIndex(c => c.id === categoryId)
+  const index = categoriesWithItems.value.findIndex(c => c.id === categoryId)
   return LANE_START_OFFSET + (index * LANE_SPACING)
 }
 
@@ -397,7 +404,7 @@ const getTimePosition = (timeSlot: number): number => {
 }
 
 const getItemPosition = (item: TimelineItem) => {
-  const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
+  const laneIndex = categoriesWithItems.value.findIndex(c => c.id === item.category)
   const lanePos = getLanePosition(item.category)
 
   // Parse time value - handle both number and string formats
@@ -428,7 +435,7 @@ const getItemPosition = (item: TimelineItem) => {
 }
 
 const getConnectionStyle = (item: TimelineItem) => {
-  const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
+  const laneIndex = categoriesWithItems.value.findIndex(c => c.id === item.category)
   const isLeftSide = laneIndex % 2 === 0
   const CARD_HEIGHT = 96 // 6rem = 96px
   const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
@@ -441,7 +448,7 @@ const getConnectionStyle = (item: TimelineItem) => {
 }
 
 const getConnectionDotStyle = (item: TimelineItem) => {
-  const laneIndex = visibleCategories.value.findIndex(c => c.id === item.category)
+  const laneIndex = categoriesWithItems.value.findIndex(c => c.id === item.category)
   const isLeftSide = laneIndex % 2 === 0
   const CARD_HEIGHT = 96 // 6rem = 96px
   const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
@@ -770,7 +777,6 @@ onUnmounted(() => {
 .line-gradient {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, var(--tw-gradient-stops));
   opacity: 0.5;
 }
 
@@ -780,7 +786,6 @@ onUnmounted(() => {
   top: 0;
   width: 2px;
   height: 100%;
-  background: linear-gradient(to bottom, var(--tw-gradient-stops));
   filter: blur(4px);
   opacity: 0.3;
 }

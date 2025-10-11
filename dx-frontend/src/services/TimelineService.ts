@@ -227,23 +227,23 @@ class TimelineService {
    * Fetch available categories based on CategoriesEnum
    */
   fetchCategories(): TimelineCategory[] {
-    // Define color mappings for each category
+    // Define color mappings for each category with actual CSS gradient values
     const categoryColors: Record<string, { color: string; colorGradient: string }> = {
-      events: { color: 'bg-purple-500', colorGradient: 'from-purple-600/50 to-purple-700/50' },
-      rules: { color: 'bg-red-500', colorGradient: 'from-red-600/50 to-red-700/50' },
-      lore: { color: 'bg-indigo-500', colorGradient: 'from-indigo-600/50 to-indigo-700/50' },
-      stories: { color: 'bg-pink-500', colorGradient: 'from-pink-600/50 to-pink-700/50' },
-      guides: { color: 'bg-yellow-500', colorGradient: 'from-yellow-600/50 to-yellow-700/50' },
-      items: { color: 'bg-orange-500', colorGradient: 'from-orange-600/50 to-orange-700/50' },
-      characters: { color: 'bg-green-500', colorGradient: 'from-green-600/50 to-green-700/50' },
-      locations: { color: 'bg-teal-500', colorGradient: 'from-teal-600/50 to-teal-700/50' },
-      places: { color: 'bg-cyan-500', colorGradient: 'from-cyan-600/50 to-cyan-700/50' },
-      factions: { color: 'bg-blue-500', colorGradient: 'from-blue-600/50 to-blue-700/50' },
-      creatures: { color: 'bg-lime-500', colorGradient: 'from-lime-600/50 to-lime-700/50' },
-      skills: { color: 'bg-emerald-500', colorGradient: 'from-emerald-600/50 to-emerald-700/50' },
-      spells: { color: 'bg-violet-500', colorGradient: 'from-violet-600/50 to-violet-700/50' },
-      abilities: { color: 'bg-fuchsia-500', colorGradient: 'from-fuchsia-600/50 to-fuchsia-700/50' },
-      other: { color: 'bg-gray-500', colorGradient: 'from-gray-600/50 to-gray-700/50' }
+      events: { color: 'bg-purple-500', colorGradient: 'linear-gradient(to bottom, rgba(147, 51, 234, 0.5), rgba(126, 34, 206, 0.5))' },
+      rules: { color: 'bg-red-500', colorGradient: 'linear-gradient(to bottom, rgba(220, 38, 38, 0.5), rgba(185, 28, 28, 0.5))' },
+      lore: { color: 'bg-indigo-500', colorGradient: 'linear-gradient(to bottom, rgba(99, 102, 241, 0.5), rgba(79, 70, 229, 0.5))' },
+      stories: { color: 'bg-pink-500', colorGradient: 'linear-gradient(to bottom, rgba(236, 72, 153, 0.5), rgba(219, 39, 119, 0.5))' },
+      guides: { color: 'bg-yellow-500', colorGradient: 'linear-gradient(to bottom, rgba(234, 179, 8, 0.5), rgba(202, 138, 4, 0.5))' },
+      items: { color: 'bg-orange-500', colorGradient: 'linear-gradient(to bottom, rgba(249, 115, 22, 0.5), rgba(234, 88, 12, 0.5))' },
+      characters: { color: 'bg-green-500', colorGradient: 'linear-gradient(to bottom, rgba(34, 197, 94, 0.5), rgba(22, 163, 74, 0.5))' },
+      locations: { color: 'bg-teal-500', colorGradient: 'linear-gradient(to bottom, rgba(20, 184, 166, 0.5), rgba(13, 148, 136, 0.5))' },
+      places: { color: 'bg-cyan-500', colorGradient: 'linear-gradient(to bottom, rgba(6, 182, 212, 0.5), rgba(8, 145, 178, 0.5))' },
+      factions: { color: 'bg-blue-500', colorGradient: 'linear-gradient(to bottom, rgba(59, 130, 246, 0.5), rgba(37, 99, 235, 0.5))' },
+      creatures: { color: 'bg-lime-500', colorGradient: 'linear-gradient(to bottom, rgba(132, 204, 22, 0.5), rgba(101, 163, 13, 0.5))' },
+      skills: { color: 'bg-emerald-500', colorGradient: 'linear-gradient(to bottom, rgba(16, 185, 129, 0.5), rgba(5, 150, 105, 0.5))' },
+      spells: { color: 'bg-violet-500', colorGradient: 'linear-gradient(to bottom, rgba(139, 92, 246, 0.5), rgba(124, 58, 237, 0.5))' },
+      abilities: { color: 'bg-fuchsia-500', colorGradient: 'linear-gradient(to bottom, rgba(217, 70, 239, 0.5), rgba(192, 38, 211, 0.5))' },
+      other: { color: 'bg-gray-500', colorGradient: 'linear-gradient(to bottom, rgba(107, 114, 128, 0.5), rgba(75, 85, 99, 0.5))' }
     }
 
     // Start with 'all' category
@@ -252,7 +252,7 @@ class TimelineService {
         id: 'all',
         label: 'All Events',
         color: 'bg-blue-500',
-        colorGradient: 'from-blue-600/50 to-blue-700/50',
+        colorGradient: 'linear-gradient(to bottom, rgba(59, 130, 246, 0.5), rgba(37, 99, 235, 0.5))',
         visible: true
       }
     ]
@@ -261,7 +261,7 @@ class TimelineService {
     Object.values(CategoriesEnum).forEach(categoryValue => {
       const colorConfig = categoryColors[categoryValue] || {
         color: 'bg-gray-500',
-        colorGradient: 'from-gray-600/50 to-gray-700/50'
+        colorGradient: 'linear-gradient(to bottom, rgba(107, 114, 128, 0.5), rgba(75, 85, 99, 0.5))'
       }
 
       // Capitalize first letter for label
