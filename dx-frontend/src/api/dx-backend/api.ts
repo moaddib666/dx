@@ -754,6 +754,33 @@ export interface CampaignRequest {
     'name': string;
 }
 /**
+ * * `events` - Events * `rules` - Rules * `lore` - Lore * `stories` - Stories * `guides` - Guides * `items` - Items * `characters` - Characters * `locations` - Locations * `places` - Places * `factions` - Factions * `creatures` - Creatures * `skills` - Skills * `spells` - Spells * `abilities` - Abilities * `other` - Other
+ * @export
+ * @enum {string}
+ */
+
+export const CategoriesEnum = {
+    Events: 'events',
+    Rules: 'rules',
+    Lore: 'lore',
+    Stories: 'stories',
+    Guides: 'guides',
+    Items: 'items',
+    Characters: 'characters',
+    Locations: 'locations',
+    Places: 'places',
+    Factions: 'factions',
+    Creatures: 'creatures',
+    Skills: 'skills',
+    Spells: 'spells',
+    Abilities: 'abilities',
+    Other: 'other'
+} as const;
+
+export type CategoriesEnum = typeof CategoriesEnum[keyof typeof CategoriesEnum];
+
+
+/**
  * Event fired when a new challenge is created for a character.
  * @export
  * @interface ChallengeCreatedEvent
@@ -2625,13 +2652,69 @@ export interface Data {
      * @type {string}
      * @memberof Data
      */
-    'field1': string;
+    'field2': string;
     /**
      * 
      * @type {string}
      * @memberof Data
      */
-    'field2': string;
+    'field1': string;
+}
+/**
+ * Serializer for DateTimeInfo objects
+ * @export
+ * @interface DateTimeInfo
+ */
+export interface DateTimeInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof DateTimeInfo
+     */
+    'id': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateTimeInfo
+     */
+    'active_glow'?: boolean;
+    /**
+     * Number of sol\'s since the start of the calendar
+     * @type {number}
+     * @memberof DateTimeInfo
+     */
+    'sol'?: number;
+    /**
+     * Number of solar years since the start of the calendar
+     * @type {number}
+     * @memberof DateTimeInfo
+     */
+    'solar_year'?: number;
+}
+/**
+ * Serializer for DateTimeInfo objects
+ * @export
+ * @interface DateTimeInfoRequest
+ */
+export interface DateTimeInfoRequest {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DateTimeInfoRequest
+     */
+    'active_glow'?: boolean;
+    /**
+     * Number of sol\'s since the start of the calendar
+     * @type {number}
+     * @memberof DateTimeInfoRequest
+     */
+    'sol'?: number;
+    /**
+     * Number of solar years since the start of the calendar
+     * @type {number}
+     * @memberof DateTimeInfoRequest
+     */
+    'solar_year'?: number;
 }
 /**
  * 
@@ -2888,6 +2971,74 @@ export interface Dimension {
      * @memberof Dimension
      */
     'is_active'?: boolean;
+}
+/**
+ * Serializer for Document objects
+ * @export
+ * @interface Document
+ */
+export interface Document {
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
+    'content': string;
+    /**
+     * 
+     * @type {Array<CategoriesEnum>}
+     * @memberof Document
+     */
+    'categories'?: Array<CategoriesEnum>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
+    'image'?: string | null;
+}
+/**
+ * Serializer for Document objects
+ * @export
+ * @interface DocumentRequest
+ */
+export interface DocumentRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentRequest
+     */
+    'title': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentRequest
+     */
+    'content': string;
+    /**
+     * 
+     * @type {Array<CategoriesEnum>}
+     * @memberof DocumentRequest
+     */
+    'categories'?: Array<CategoriesEnum>;
+    /**
+     * 
+     * @type {File}
+     * @memberof DocumentRequest
+     */
+    'image'?: File | null;
 }
 /**
  * 
@@ -7329,6 +7480,37 @@ export interface PaginatedCharacterTemplateGameMasterList {
 /**
  * 
  * @export
+ * @interface PaginatedDocumentList
+ */
+export interface PaginatedDocumentList {
+    /**
+     * 
+     * @type {number}
+     * @memberof PaginatedDocumentList
+     */
+    'count': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PaginatedDocumentList
+     */
+    'next'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PaginatedDocumentList
+     */
+    'previous'?: string | null;
+    /**
+     * 
+     * @type {Array<Document>}
+     * @memberof PaginatedDocumentList
+     */
+    'results': Array<Document>;
+}
+/**
+ * 
+ * @export
  * @interface PaginatedGameMasterCharacterActionLogList
  */
 export interface PaginatedGameMasterCharacterActionLogList {
@@ -7387,6 +7569,37 @@ export interface PaginatedLearnedSkillList {
      * @memberof PaginatedLearnedSkillList
      */
     'results': Array<LearnedSkill>;
+}
+/**
+ * 
+ * @export
+ * @interface PaginatedTimeLineEventList
+ */
+export interface PaginatedTimeLineEventList {
+    /**
+     * 
+     * @type {number}
+     * @memberof PaginatedTimeLineEventList
+     */
+    'count': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PaginatedTimeLineEventList
+     */
+    'next'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof PaginatedTimeLineEventList
+     */
+    'previous'?: string | null;
+    /**
+     * 
+     * @type {Array<TimeLineEvent>}
+     * @memberof PaginatedTimeLineEventList
+     */
+    'results': Array<TimeLineEvent>;
 }
 /**
  * Serializer for Chapter model.
@@ -7470,6 +7683,37 @@ export interface PatchedCurrencyTokenRequest {
      * @memberof PatchedCurrencyTokenRequest
      */
     'icon'?: File | null;
+}
+/**
+ * Serializer for Document objects
+ * @export
+ * @interface PatchedDocumentRequest
+ */
+export interface PatchedDocumentRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedDocumentRequest
+     */
+    'title'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PatchedDocumentRequest
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {Array<CategoriesEnum>}
+     * @memberof PatchedDocumentRequest
+     */
+    'categories'?: Array<CategoriesEnum>;
+    /**
+     * 
+     * @type {File}
+     * @memberof PatchedDocumentRequest
+     */
+    'image'?: File | null;
 }
 /**
  * Serializer for EffectReward model.
@@ -9960,6 +10204,50 @@ export interface ThePathRequest {
 }
 
 
+/**
+ * Serializer for TimeLineEvent objects with nested representations
+ * @export
+ * @interface TimeLineEvent
+ */
+export interface TimeLineEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof TimeLineEvent
+     */
+    'id': string;
+    /**
+     * 
+     * @type {Document}
+     * @memberof TimeLineEvent
+     */
+    'document': Document;
+    /**
+     * 
+     * @type {DateTimeInfo}
+     * @memberof TimeLineEvent
+     */
+    'date_time': DateTimeInfo;
+}
+/**
+ * Serializer for importing TimeLineEvent with nested Document and DateTimeInfo. This serializer handles get_or_create logic for Document and DateTimeInfo.
+ * @export
+ * @interface TimeLineEventImportRequest
+ */
+export interface TimeLineEventImportRequest {
+    /**
+     * 
+     * @type {DocumentRequest}
+     * @memberof TimeLineEventImportRequest
+     */
+    'document': DocumentRequest;
+    /**
+     * 
+     * @type {DateTimeInfoRequest}
+     * @memberof TimeLineEventImportRequest
+     */
+    'date_time': DateTimeInfoRequest;
+}
 /**
  * 
  * @export
@@ -25245,6 +25533,1270 @@ export class ItemsApi extends BaseAPI {
      */
     public spawnItem(id: string, spawnItemRequest?: SpawnItemRequest, options?: RawAxiosRequestConfig) {
         return ItemsApiFp(this.configuration).spawnItem(id, spawnItemRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * KnowledgeBaseDocumentsApi - axios parameter creator
+ * @export
+ */
+export const KnowledgeBaseDocumentsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Create a new knowledge base document. Requires admin privileges. You can optionally assign categories to the document.
+         * @summary Create a new document
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsCreate: async (documentRequest: DocumentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'documentRequest' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsCreate', 'documentRequest', documentRequest)
+            const localVarPath = `/api/knowledge-base/documents/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(documentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete a knowledge base document. Requires admin privileges. This will also delete all associated timeline events.
+         * @summary Delete a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsDestroy', 'id', id)
+            const localVarPath = `/api/knowledge-base/documents/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retrieve a paginated list of all knowledge base documents. Supports filtering by title, content, and categories. Supports searching across title and content fields. Supports ordering by id, title, created_at, and updated_at.
+         * @summary List all documents
+         * @param {string} [categories] Filter by category name (exact match)
+         * @param {string} [content] Filter by content (case-insensitive partial match)
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across title and content fields
+         * @param {string} [title] Filter by title (case-insensitive partial match)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsList: async (categories?: string, content?: string, ordering?: string, page?: number, pageSize?: number, search?: string, title?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/knowledge-base/documents/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (categories !== undefined) {
+                localVarQueryParameter['categories'] = categories;
+            }
+
+            if (content !== undefined) {
+                localVarQueryParameter['content'] = content;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (title !== undefined) {
+                localVarQueryParameter['title'] = title;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update specific fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Partially update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {PatchedDocumentRequest} [patchedDocumentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsPartialUpdate: async (id: string, patchedDocumentRequest?: PatchedDocumentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsPartialUpdate', 'id', id)
+            const localVarPath = `/api/knowledge-base/documents/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchedDocumentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retrieve detailed information about a specific knowledge base document by its ID.
+         * @summary Retrieve a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsRetrieve', 'id', id)
+            const localVarPath = `/api/knowledge-base/documents/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update all fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsUpdate: async (id: string, documentRequest: DocumentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsUpdate', 'id', id)
+            // verify required parameter 'documentRequest' is not null or undefined
+            assertParamExists('knowledgeBaseDocumentsUpdate', 'documentRequest', documentRequest)
+            const localVarPath = `/api/knowledge-base/documents/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(documentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * KnowledgeBaseDocumentsApi - functional programming interface
+ * @export
+ */
+export const KnowledgeBaseDocumentsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = KnowledgeBaseDocumentsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Create a new knowledge base document. Requires admin privileges. You can optionally assign categories to the document.
+         * @summary Create a new document
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsCreate(documentRequest: DocumentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Document>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsCreate(documentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Delete a knowledge base document. Requires admin privileges. This will also delete all associated timeline events.
+         * @summary Delete a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retrieve a paginated list of all knowledge base documents. Supports filtering by title, content, and categories. Supports searching across title and content fields. Supports ordering by id, title, created_at, and updated_at.
+         * @summary List all documents
+         * @param {string} [categories] Filter by category name (exact match)
+         * @param {string} [content] Filter by content (case-insensitive partial match)
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across title and content fields
+         * @param {string} [title] Filter by title (case-insensitive partial match)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsList(categories?: string, content?: string, ordering?: string, page?: number, pageSize?: number, search?: string, title?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedDocumentList>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsList(categories, content, ordering, page, pageSize, search, title, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update specific fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Partially update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {PatchedDocumentRequest} [patchedDocumentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsPartialUpdate(id: string, patchedDocumentRequest?: PatchedDocumentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Document>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsPartialUpdate(id, patchedDocumentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retrieve detailed information about a specific knowledge base document by its ID.
+         * @summary Retrieve a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Document>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update all fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseDocumentsUpdate(id: string, documentRequest: DocumentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Document>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseDocumentsUpdate(id, documentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseDocumentsApi.knowledgeBaseDocumentsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * KnowledgeBaseDocumentsApi - factory interface
+ * @export
+ */
+export const KnowledgeBaseDocumentsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = KnowledgeBaseDocumentsApiFp(configuration)
+    return {
+        /**
+         * Create a new knowledge base document. Requires admin privileges. You can optionally assign categories to the document.
+         * @summary Create a new document
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsCreate(documentRequest: DocumentRequest, options?: any): AxiosPromise<Document> {
+            return localVarFp.knowledgeBaseDocumentsCreate(documentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete a knowledge base document. Requires admin privileges. This will also delete all associated timeline events.
+         * @summary Delete a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.knowledgeBaseDocumentsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retrieve a paginated list of all knowledge base documents. Supports filtering by title, content, and categories. Supports searching across title and content fields. Supports ordering by id, title, created_at, and updated_at.
+         * @summary List all documents
+         * @param {string} [categories] Filter by category name (exact match)
+         * @param {string} [content] Filter by content (case-insensitive partial match)
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across title and content fields
+         * @param {string} [title] Filter by title (case-insensitive partial match)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsList(categories?: string, content?: string, ordering?: string, page?: number, pageSize?: number, search?: string, title?: string, options?: any): AxiosPromise<PaginatedDocumentList> {
+            return localVarFp.knowledgeBaseDocumentsList(categories, content, ordering, page, pageSize, search, title, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update specific fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Partially update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {PatchedDocumentRequest} [patchedDocumentRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsPartialUpdate(id: string, patchedDocumentRequest?: PatchedDocumentRequest, options?: any): AxiosPromise<Document> {
+            return localVarFp.knowledgeBaseDocumentsPartialUpdate(id, patchedDocumentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retrieve detailed information about a specific knowledge base document by its ID.
+         * @summary Retrieve a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsRetrieve(id: string, options?: any): AxiosPromise<Document> {
+            return localVarFp.knowledgeBaseDocumentsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update all fields of an existing knowledge base document. Requires admin privileges.
+         * @summary Update a document
+         * @param {string} id A UUID string identifying this document.
+         * @param {DocumentRequest} documentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseDocumentsUpdate(id: string, documentRequest: DocumentRequest, options?: any): AxiosPromise<Document> {
+            return localVarFp.knowledgeBaseDocumentsUpdate(id, documentRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * KnowledgeBaseDocumentsApi - object-oriented interface
+ * @export
+ * @class KnowledgeBaseDocumentsApi
+ * @extends {BaseAPI}
+ */
+export class KnowledgeBaseDocumentsApi extends BaseAPI {
+    /**
+     * Create a new knowledge base document. Requires admin privileges. You can optionally assign categories to the document.
+     * @summary Create a new document
+     * @param {DocumentRequest} documentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsCreate(documentRequest: DocumentRequest, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsCreate(documentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete a knowledge base document. Requires admin privileges. This will also delete all associated timeline events.
+     * @summary Delete a document
+     * @param {string} id A UUID string identifying this document.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retrieve a paginated list of all knowledge base documents. Supports filtering by title, content, and categories. Supports searching across title and content fields. Supports ordering by id, title, created_at, and updated_at.
+     * @summary List all documents
+     * @param {string} [categories] Filter by category name (exact match)
+     * @param {string} [content] Filter by content (case-insensitive partial match)
+     * @param {string} [ordering] Order results by field (prefix with - for descending)
+     * @param {number} [page] A page number within the paginated result set.
+     * @param {number} [pageSize] Number of results to return per page.
+     * @param {string} [search] Search across title and content fields
+     * @param {string} [title] Filter by title (case-insensitive partial match)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsList(categories?: string, content?: string, ordering?: string, page?: number, pageSize?: number, search?: string, title?: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsList(categories, content, ordering, page, pageSize, search, title, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update specific fields of an existing knowledge base document. Requires admin privileges.
+     * @summary Partially update a document
+     * @param {string} id A UUID string identifying this document.
+     * @param {PatchedDocumentRequest} [patchedDocumentRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsPartialUpdate(id: string, patchedDocumentRequest?: PatchedDocumentRequest, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsPartialUpdate(id, patchedDocumentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retrieve detailed information about a specific knowledge base document by its ID.
+     * @summary Retrieve a document
+     * @param {string} id A UUID string identifying this document.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update all fields of an existing knowledge base document. Requires admin privileges.
+     * @summary Update a document
+     * @param {string} id A UUID string identifying this document.
+     * @param {DocumentRequest} documentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseDocumentsApi
+     */
+    public knowledgeBaseDocumentsUpdate(id: string, documentRequest: DocumentRequest, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseDocumentsApiFp(this.configuration).knowledgeBaseDocumentsUpdate(id, documentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * KnowledgeBaseTimelineEventsApi - axios parameter creator
+ * @export
+ */
+export const KnowledgeBaseTimelineEventsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Create a new timeline event. Requires admin privileges. You must provide existing document_id and date_time_id.
+         * @summary Create a new timeline event
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsCreate: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/knowledge-base/timeline-events/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Delete a timeline event. Requires admin privileges. Note: This does not delete the associated document or date_time records.
+         * @summary Delete a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsDestroy: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseTimelineEventsDestroy', 'id', id)
+            const localVarPath = `/api/knowledge-base/timeline-events/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Import a timeline event with nested Document and DateTimeInfo data. This action will get_or_create Document and DateTimeInfo based on the provided data, then create the TimeLineEvent linking them together. This is useful for bulk imports or migrations. Note: Image loading is not supported in this action.
+         * @summary Import timeline event with nested data
+         * @param {TimeLineEventImportRequest} timeLineEventImportRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsImportEventCreate: async (timeLineEventImportRequest: TimeLineEventImportRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'timeLineEventImportRequest' is not null or undefined
+            assertParamExists('knowledgeBaseTimelineEventsImportEventCreate', 'timeLineEventImportRequest', timeLineEventImportRequest)
+            const localVarPath = `/api/knowledge-base/timeline-events/import_event/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(timeLineEventImportRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retrieve a paginated list of all timeline events. Supports filtering by document, active_glow, solar_year, and sol. Supports searching across document title and content. Default ordering is by timeline (solar_year, sol).
+         * @summary List all timeline events
+         * @param {boolean} [activeGlow] Filter by active_glow (true/false)
+         * @param {string} [dateTime] Filter by date_time ID
+         * @param {string} [document] Filter by document ID
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across document title and content
+         * @param {number} [sol] 
+         * @param {number} [solGte] Filter by sol greater than or equal to value
+         * @param {number} [solLte] 
+         * @param {number} [solarYear] Filter by exact solar year
+         * @param {number} [solarYearGte] 
+         * @param {number} [solarYearLte] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsList: async (activeGlow?: boolean, dateTime?: string, document?: string, ordering?: string, page?: number, pageSize?: number, search?: string, sol?: number, solGte?: number, solLte?: number, solarYear?: number, solarYearGte?: number, solarYearLte?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/knowledge-base/timeline-events/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (activeGlow !== undefined) {
+                localVarQueryParameter['active_glow'] = activeGlow;
+            }
+
+            if (dateTime !== undefined) {
+                localVarQueryParameter['date_time'] = dateTime;
+            }
+
+            if (document !== undefined) {
+                localVarQueryParameter['document'] = document;
+            }
+
+            if (ordering !== undefined) {
+                localVarQueryParameter['ordering'] = ordering;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (search !== undefined) {
+                localVarQueryParameter['search'] = search;
+            }
+
+            if (sol !== undefined) {
+                localVarQueryParameter['sol'] = sol;
+            }
+
+            if (solGte !== undefined) {
+                localVarQueryParameter['sol_gte'] = solGte;
+            }
+
+            if (solLte !== undefined) {
+                localVarQueryParameter['sol_lte'] = solLte;
+            }
+
+            if (solarYear !== undefined) {
+                localVarQueryParameter['solar_year'] = solarYear;
+            }
+
+            if (solarYearGte !== undefined) {
+                localVarQueryParameter['solar_year_gte'] = solarYearGte;
+            }
+
+            if (solarYearLte !== undefined) {
+                localVarQueryParameter['solar_year_lte'] = solarYearLte;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update specific fields of an existing timeline event. Requires admin privileges.
+         * @summary Partially update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsPartialUpdate: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseTimelineEventsPartialUpdate', 'id', id)
+            const localVarPath = `/api/knowledge-base/timeline-events/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retrieve detailed information about a specific timeline event by its ID. Includes related document and date_time information.
+         * @summary Retrieve a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseTimelineEventsRetrieve', 'id', id)
+            const localVarPath = `/api/knowledge-base/timeline-events/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Update all fields of an existing timeline event. Requires admin privileges.
+         * @summary Update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsUpdate: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('knowledgeBaseTimelineEventsUpdate', 'id', id)
+            const localVarPath = `/api/knowledge-base/timeline-events/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * KnowledgeBaseTimelineEventsApi - functional programming interface
+ * @export
+ */
+export const KnowledgeBaseTimelineEventsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = KnowledgeBaseTimelineEventsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Create a new timeline event. Requires admin privileges. You must provide existing document_id and date_time_id.
+         * @summary Create a new timeline event
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsCreate(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TimeLineEvent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsCreate(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Delete a timeline event. Requires admin privileges. Note: This does not delete the associated document or date_time records.
+         * @summary Delete a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsDestroy(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsDestroy(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsDestroy']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Import a timeline event with nested Document and DateTimeInfo data. This action will get_or_create Document and DateTimeInfo based on the provided data, then create the TimeLineEvent linking them together. This is useful for bulk imports or migrations. Note: Image loading is not supported in this action.
+         * @summary Import timeline event with nested data
+         * @param {TimeLineEventImportRequest} timeLineEventImportRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest: TimeLineEventImportRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TimeLineEvent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsImportEventCreate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retrieve a paginated list of all timeline events. Supports filtering by document, active_glow, solar_year, and sol. Supports searching across document title and content. Default ordering is by timeline (solar_year, sol).
+         * @summary List all timeline events
+         * @param {boolean} [activeGlow] Filter by active_glow (true/false)
+         * @param {string} [dateTime] Filter by date_time ID
+         * @param {string} [document] Filter by document ID
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across document title and content
+         * @param {number} [sol] 
+         * @param {number} [solGte] Filter by sol greater than or equal to value
+         * @param {number} [solLte] 
+         * @param {number} [solarYear] Filter by exact solar year
+         * @param {number} [solarYearGte] 
+         * @param {number} [solarYearLte] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsList(activeGlow?: boolean, dateTime?: string, document?: string, ordering?: string, page?: number, pageSize?: number, search?: string, sol?: number, solGte?: number, solLte?: number, solarYear?: number, solarYearGte?: number, solarYearLte?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedTimeLineEventList>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsList(activeGlow, dateTime, document, ordering, page, pageSize, search, sol, solGte, solLte, solarYear, solarYearGte, solarYearLte, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update specific fields of an existing timeline event. Requires admin privileges.
+         * @summary Partially update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsPartialUpdate(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TimeLineEvent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsPartialUpdate(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsPartialUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retrieve detailed information about a specific timeline event by its ID. Includes related document and date_time information.
+         * @summary Retrieve a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TimeLineEvent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Update all fields of an existing timeline event. Requires admin privileges.
+         * @summary Update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async knowledgeBaseTimelineEventsUpdate(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TimeLineEvent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.knowledgeBaseTimelineEventsUpdate(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['KnowledgeBaseTimelineEventsApi.knowledgeBaseTimelineEventsUpdate']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * KnowledgeBaseTimelineEventsApi - factory interface
+ * @export
+ */
+export const KnowledgeBaseTimelineEventsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = KnowledgeBaseTimelineEventsApiFp(configuration)
+    return {
+        /**
+         * Create a new timeline event. Requires admin privileges. You must provide existing document_id and date_time_id.
+         * @summary Create a new timeline event
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsCreate(options?: any): AxiosPromise<TimeLineEvent> {
+            return localVarFp.knowledgeBaseTimelineEventsCreate(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Delete a timeline event. Requires admin privileges. Note: This does not delete the associated document or date_time records.
+         * @summary Delete a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsDestroy(id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.knowledgeBaseTimelineEventsDestroy(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Import a timeline event with nested Document and DateTimeInfo data. This action will get_or_create Document and DateTimeInfo based on the provided data, then create the TimeLineEvent linking them together. This is useful for bulk imports or migrations. Note: Image loading is not supported in this action.
+         * @summary Import timeline event with nested data
+         * @param {TimeLineEventImportRequest} timeLineEventImportRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest: TimeLineEventImportRequest, options?: any): AxiosPromise<TimeLineEvent> {
+            return localVarFp.knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retrieve a paginated list of all timeline events. Supports filtering by document, active_glow, solar_year, and sol. Supports searching across document title and content. Default ordering is by timeline (solar_year, sol).
+         * @summary List all timeline events
+         * @param {boolean} [activeGlow] Filter by active_glow (true/false)
+         * @param {string} [dateTime] Filter by date_time ID
+         * @param {string} [document] Filter by document ID
+         * @param {string} [ordering] Order results by field (prefix with - for descending)
+         * @param {number} [page] A page number within the paginated result set.
+         * @param {number} [pageSize] Number of results to return per page.
+         * @param {string} [search] Search across document title and content
+         * @param {number} [sol] 
+         * @param {number} [solGte] Filter by sol greater than or equal to value
+         * @param {number} [solLte] 
+         * @param {number} [solarYear] Filter by exact solar year
+         * @param {number} [solarYearGte] 
+         * @param {number} [solarYearLte] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsList(activeGlow?: boolean, dateTime?: string, document?: string, ordering?: string, page?: number, pageSize?: number, search?: string, sol?: number, solGte?: number, solLte?: number, solarYear?: number, solarYearGte?: number, solarYearLte?: number, options?: any): AxiosPromise<PaginatedTimeLineEventList> {
+            return localVarFp.knowledgeBaseTimelineEventsList(activeGlow, dateTime, document, ordering, page, pageSize, search, sol, solGte, solLte, solarYear, solarYearGte, solarYearLte, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update specific fields of an existing timeline event. Requires admin privileges.
+         * @summary Partially update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsPartialUpdate(id: string, options?: any): AxiosPromise<TimeLineEvent> {
+            return localVarFp.knowledgeBaseTimelineEventsPartialUpdate(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retrieve detailed information about a specific timeline event by its ID. Includes related document and date_time information.
+         * @summary Retrieve a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsRetrieve(id: string, options?: any): AxiosPromise<TimeLineEvent> {
+            return localVarFp.knowledgeBaseTimelineEventsRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Update all fields of an existing timeline event. Requires admin privileges.
+         * @summary Update a timeline event
+         * @param {string} id A UUID string identifying this Timeline Event.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        knowledgeBaseTimelineEventsUpdate(id: string, options?: any): AxiosPromise<TimeLineEvent> {
+            return localVarFp.knowledgeBaseTimelineEventsUpdate(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * KnowledgeBaseTimelineEventsApi - object-oriented interface
+ * @export
+ * @class KnowledgeBaseTimelineEventsApi
+ * @extends {BaseAPI}
+ */
+export class KnowledgeBaseTimelineEventsApi extends BaseAPI {
+    /**
+     * Create a new timeline event. Requires admin privileges. You must provide existing document_id and date_time_id.
+     * @summary Create a new timeline event
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsCreate(options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsCreate(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Delete a timeline event. Requires admin privileges. Note: This does not delete the associated document or date_time records.
+     * @summary Delete a timeline event
+     * @param {string} id A UUID string identifying this Timeline Event.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsDestroy(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsDestroy(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Import a timeline event with nested Document and DateTimeInfo data. This action will get_or_create Document and DateTimeInfo based on the provided data, then create the TimeLineEvent linking them together. This is useful for bulk imports or migrations. Note: Image loading is not supported in this action.
+     * @summary Import timeline event with nested data
+     * @param {TimeLineEventImportRequest} timeLineEventImportRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest: TimeLineEventImportRequest, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsImportEventCreate(timeLineEventImportRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retrieve a paginated list of all timeline events. Supports filtering by document, active_glow, solar_year, and sol. Supports searching across document title and content. Default ordering is by timeline (solar_year, sol).
+     * @summary List all timeline events
+     * @param {boolean} [activeGlow] Filter by active_glow (true/false)
+     * @param {string} [dateTime] Filter by date_time ID
+     * @param {string} [document] Filter by document ID
+     * @param {string} [ordering] Order results by field (prefix with - for descending)
+     * @param {number} [page] A page number within the paginated result set.
+     * @param {number} [pageSize] Number of results to return per page.
+     * @param {string} [search] Search across document title and content
+     * @param {number} [sol] 
+     * @param {number} [solGte] Filter by sol greater than or equal to value
+     * @param {number} [solLte] 
+     * @param {number} [solarYear] Filter by exact solar year
+     * @param {number} [solarYearGte] 
+     * @param {number} [solarYearLte] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsList(activeGlow?: boolean, dateTime?: string, document?: string, ordering?: string, page?: number, pageSize?: number, search?: string, sol?: number, solGte?: number, solLte?: number, solarYear?: number, solarYearGte?: number, solarYearLte?: number, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsList(activeGlow, dateTime, document, ordering, page, pageSize, search, sol, solGte, solLte, solarYear, solarYearGte, solarYearLte, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update specific fields of an existing timeline event. Requires admin privileges.
+     * @summary Partially update a timeline event
+     * @param {string} id A UUID string identifying this Timeline Event.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsPartialUpdate(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsPartialUpdate(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retrieve detailed information about a specific timeline event by its ID. Includes related document and date_time information.
+     * @summary Retrieve a timeline event
+     * @param {string} id A UUID string identifying this Timeline Event.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Update all fields of an existing timeline event. Requires admin privileges.
+     * @summary Update a timeline event
+     * @param {string} id A UUID string identifying this Timeline Event.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof KnowledgeBaseTimelineEventsApi
+     */
+    public knowledgeBaseTimelineEventsUpdate(id: string, options?: RawAxiosRequestConfig) {
+        return KnowledgeBaseTimelineEventsApiFp(this.configuration).knowledgeBaseTimelineEventsUpdate(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

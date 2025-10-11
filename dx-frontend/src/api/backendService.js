@@ -21,7 +21,10 @@ import {
     SkillsApi,
     StoryApi,
     WorldApi,
-    FightApi, DiceApi,
+    FightApi,
+    DiceApi,
+    KnowledgeBaseDocumentsApi,
+    KnowledgeBaseTimelineEventsApi,
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
@@ -50,3 +53,5 @@ export const GMWorldNPCSpawnersApi = new GMWorldEditorNPCSpawnersApi(GameApiConf
 export const StoryGameApi = new StoryApi(GameApiConfig);
 export const FightGameApi = new FightApi(GameApiConfig);
 export const DiceGameApi = new DiceApi(GameApiConfig);
+export const KnowledgeBaseDocumentsGameApi = new KnowledgeBaseDocumentsApi(GameApiConfig);
+export const KnowledgeBaseTimelineEventsGameApi = new KnowledgeBaseTimelineEventsApi(GameApiConfig);
