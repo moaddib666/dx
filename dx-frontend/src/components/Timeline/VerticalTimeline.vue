@@ -30,6 +30,7 @@
             :key="category.id"
             class="category-toggle"
             :class="{ active: category.visible }"
+            :style="getCategoryToggleStyle(category)"
             @click="toggleCategory(category.id)"
           >
             <span class="toggle-indicator" :class="category.color"></span>
@@ -99,7 +100,6 @@
           <!-- Connection dot -->
           <div
             class="connection-dot"
-            :class="getCategoryColor(item.category)"
             :style="getConnectionDotStyle(item)"
           ></div>
 
@@ -434,16 +434,41 @@ const getItemPosition = (item: TimelineItem) => {
   }
 }
 
+const getCategoryGradient = (categoryId: string): string => {
+  const category = props.categories.find(c => c.id === categoryId)
+  return category?.colorGradient || 'linear-gradient(to bottom, rgba(107, 114, 128, 0.5), rgba(75, 85, 99, 0.5))'
+}
+
+const getCategorySolidColor = (categoryId: string): string => {
+  const category = props.categories.find(c => c.id === categoryId)
+  // Extract a solid color from the gradient or use a default
+  // Parse the gradient to get the first color
+  const gradient = category?.colorGradient || ''
+  const rgbaMatch = gradient.match(/rgba?\([\d,\s.]+\)/)
+  if (rgbaMatch) {
+    // Convert rgba with 0.5 opacity to full opacity
+    return rgbaMatch[0].replace(/,\s*0\.\d+\)/, ', 1)')
+  }
+  return 'rgba(107, 114, 128, 1)' // Default gray
+}
+
 const getConnectionStyle = (item: TimelineItem) => {
   const laneIndex = categoriesWithItems.value.findIndex(c => c.id === item.category)
   const isLeftSide = laneIndex % 2 === 0
   const CARD_HEIGHT = 96 // 6rem = 96px
   const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
+  const gradient = getCategoryGradient(item.category)
+
+  // Extract color values from the gradient
+  // gradient format: "linear-gradient(to bottom, rgba(...), rgba(...))"
+  const colorMatches = gradient.match(/rgba?\([^)]+\)/g)
+  const colors = colorMatches ? colorMatches.join(', ') : 'rgba(107, 114, 128, 0.5), rgba(75, 85, 99, 0.5)'
 
   return {
     left: isLeftSide ? `${CARD_WIDTH}px` : `-${CONNECTION_LENGTH}px`,
     top: `${cardCenter}px`,
-    width: `${CONNECTION_LENGTH}px`
+    width: `${CONNECTION_LENGTH}px`,
+    background: `linear-gradient(to ${isLeftSide ? 'right' : 'left'}, ${colors})`
   }
 }
 
@@ -452,16 +477,29 @@ const getConnectionDotStyle = (item: TimelineItem) => {
   const isLeftSide = laneIndex % 2 === 0
   const CARD_HEIGHT = 96 // 6rem = 96px
   const cardCenter = CARD_HEIGHT / 2 // 48px - center of the card
+  const solidColor = getCategorySolidColor(item.category)
 
   return {
     left: isLeftSide ? `${CARD_WIDTH + CONNECTION_LENGTH}px` : `-${CONNECTION_LENGTH}px`,
-    top: `${cardCenter}px`
+    top: `${cardCenter}px`,
+    background: solidColor
   }
 }
 
 const getCategoryColor = (categoryId: string): string => {
   const category = props.categories.find(c => c.id === categoryId)
   return category?.color || 'bg-gray-500'
+}
+
+const getCategoryToggleStyle = (category: TimelineCategory) => {
+  if (!category.visible) {
+    return {}
+  }
+
+  const solidColor = getCategorySolidColor(category.id)
+  return {
+    borderColor: solidColor
+  }
 }
 
 const formatTime = (timeSlot: number): string => {
@@ -691,27 +729,6 @@ onUnmounted(() => {
   opacity: 0.4;
 }
 
-/* Dynamic colored borders for active state */
-.category-toggle.active:has(.bg-blue-500) {
-  border-color: rgb(59, 130, 246);
-}
-
-.category-toggle.active:has(.bg-cyan-500) {
-  border-color: rgb(6, 182, 212);
-}
-
-.category-toggle.active:has(.bg-amber-500) {
-  border-color: rgb(245, 158, 11);
-}
-
-.category-toggle.active:has(.bg-emerald-500) {
-  border-color: rgb(16, 185, 129);
-}
-
-.category-toggle.active:has(.bg-gray-500) {
-  border-color: rgb(107, 114, 128);
-}
-
 .add-category-btn {
   display: flex;
   align-items: center;
@@ -819,7 +836,6 @@ onUnmounted(() => {
 .connection-line {
   position: absolute;
   height: 1px;
-  background: linear-gradient(to right, rgba(250, 218, 149, 0.2), rgba(250, 218, 149, 0.4), rgba(250, 218, 149, 0.2));
   transform: translateY(-50%);
 }
 
