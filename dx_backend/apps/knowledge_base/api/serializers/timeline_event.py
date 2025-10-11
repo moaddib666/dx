@@ -7,8 +7,8 @@ class DateTimeInfoSerializer(serializers.ModelSerializer):
     """Serializer for DateTimeInfo objects"""
     class Meta:
         model = DateTimeInfo
-        fields = ['id', 'active_glow', 'sol', 'solar_year', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at']
+        fields = ['id', 'active_glow', 'sol', 'solar_year']
+        read_only_fields = ['id']
 
 
 class TimeLineEventSerializer(serializers.ModelSerializer):
@@ -22,8 +22,8 @@ class TimeLineEventSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TimeLineEvent
-        fields = ['id', 'document', 'date_time', 'document_detail', 'date_time_detail', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'document_detail', 'date_time_detail']
+        fields = ['id', 'document', 'date_time', 'document_detail', 'date_time_detail']
+        read_only_fields = ['id', 'document_detail', 'date_time_detail']
     
     def get_document_detail(self, obj):
         """Return nested document details"""
