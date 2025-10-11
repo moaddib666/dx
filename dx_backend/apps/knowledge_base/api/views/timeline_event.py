@@ -11,7 +11,7 @@ This ViewSet implements:
 """
 
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -24,6 +24,53 @@ from apps.knowledge_base.api.serializers import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all timeline events",
+        description="Retrieve a paginated list of all timeline events. "
+                    "Supports filtering by document, active_glow, solar_year, and sol. "
+                    "Supports searching across document title and content. "
+                    "Default ordering is by timeline (solar_year, sol).",
+        tags=["Knowledge Base - Timeline Events"],
+        parameters=[
+            OpenApiParameter(name='document', description='Filter by document ID', required=False, type=str),
+            OpenApiParameter(name='date_time', description='Filter by date_time ID', required=False, type=str),
+            OpenApiParameter(name='active_glow', description='Filter by active_glow (true/false)', required=False, type=bool),
+            OpenApiParameter(name='solar_year', description='Filter by exact solar year', required=False, type=int),
+            OpenApiParameter(name='sol_gte', description='Filter by sol greater than or equal to value', required=False, type=int),
+            OpenApiParameter(name='search', description='Search across document title and content', required=False, type=str),
+            OpenApiParameter(name='ordering', description='Order results by field (prefix with - for descending)', required=False, type=str),
+        ]
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a timeline event",
+        description="Retrieve detailed information about a specific timeline event by its ID. "
+                    "Includes related document and date_time information.",
+        tags=["Knowledge Base - Timeline Events"],
+    ),
+    create=extend_schema(
+        summary="Create a new timeline event",
+        description="Create a new timeline event. Requires admin privileges. "
+                    "You must provide existing document_id and date_time_id.",
+        tags=["Knowledge Base - Timeline Events"],
+    ),
+    update=extend_schema(
+        summary="Update a timeline event",
+        description="Update all fields of an existing timeline event. Requires admin privileges.",
+        tags=["Knowledge Base - Timeline Events"],
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a timeline event",
+        description="Update specific fields of an existing timeline event. Requires admin privileges.",
+        tags=["Knowledge Base - Timeline Events"],
+    ),
+    destroy=extend_schema(
+        summary="Delete a timeline event",
+        description="Delete a timeline event. Requires admin privileges. "
+                    "Note: This does not delete the associated document or date_time records.",
+        tags=["Knowledge Base - Timeline Events"],
+    ),
+)
 class TimeLineEventViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing timeline events.
@@ -56,11 +103,15 @@ class TimeLineEventViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
     
     @extend_schema(
+        summary="Import timeline event with nested data",
         request=TimeLineEventImportSerializer,
         responses={201: TimeLineEventSerializer},
-        description="Import a timeline event with nested Document and DateTimeInfo. "
-                    "This action will get_or_create Document and DateTimeInfo, then create the TimeLineEvent. "
-                    "Image loading is not supported in this action."
+        description="Import a timeline event with nested Document and DateTimeInfo data. "
+                    "This action will get_or_create Document and DateTimeInfo based on the provided data, "
+                    "then create the TimeLineEvent linking them together. "
+                    "This is useful for bulk imports or migrations. "
+                    "Note: Image loading is not supported in this action.",
+        tags=["Knowledge Base - Timeline Events"],
     )
     @action(detail=False, methods=['post'])
     def import_event(self, request):

@@ -10,6 +10,7 @@ This ViewSet implements:
 """
 
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from rest_framework import viewsets, permissions, filters
 
 from apps.knowledge_base.models import Document
@@ -17,6 +18,50 @@ from apps.knowledge_base.api.filters import DocumentFilter
 from apps.knowledge_base.api.serializers import DocumentSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all documents",
+        description="Retrieve a paginated list of all knowledge base documents. "
+                    "Supports filtering by title, content, and categories. "
+                    "Supports searching across title and content fields. "
+                    "Supports ordering by id, title, created_at, and updated_at.",
+        tags=["Knowledge Base - Documents"],
+        parameters=[
+            OpenApiParameter(name='title', description='Filter by title (case-insensitive partial match)', required=False, type=str),
+            OpenApiParameter(name='content', description='Filter by content (case-insensitive partial match)', required=False, type=str),
+            OpenApiParameter(name='categories', description='Filter by category name (exact match)', required=False, type=str),
+            OpenApiParameter(name='search', description='Search across title and content fields', required=False, type=str),
+            OpenApiParameter(name='ordering', description='Order results by field (prefix with - for descending)', required=False, type=str),
+        ]
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a document",
+        description="Retrieve detailed information about a specific knowledge base document by its ID.",
+        tags=["Knowledge Base - Documents"],
+    ),
+    create=extend_schema(
+        summary="Create a new document",
+        description="Create a new knowledge base document. Requires admin privileges. "
+                    "You can optionally assign categories to the document.",
+        tags=["Knowledge Base - Documents"],
+    ),
+    update=extend_schema(
+        summary="Update a document",
+        description="Update all fields of an existing knowledge base document. Requires admin privileges.",
+        tags=["Knowledge Base - Documents"],
+    ),
+    partial_update=extend_schema(
+        summary="Partially update a document",
+        description="Update specific fields of an existing knowledge base document. Requires admin privileges.",
+        tags=["Knowledge Base - Documents"],
+    ),
+    destroy=extend_schema(
+        summary="Delete a document",
+        description="Delete a knowledge base document. Requires admin privileges. "
+                    "This will also delete all associated timeline events.",
+        tags=["Knowledge Base - Documents"],
+    ),
+)
 class DocumentViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing knowledge base documents.
