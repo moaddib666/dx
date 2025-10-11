@@ -1,0 +1,10 @@
+{
+  "title": "The Active Glow Phenomenon",
+  "content": "The Active Glow is a mysterious phenomenon that began in solar year 1, sol 1. It manifests as a luminous energy that permeates the dimension, affecting all living beings and magical constructs. The phenomenon is characterized by increased magical potency and dimensional instability.\n\nScholars believe the Active Glow represents a fundamental shift in the fabric of reality itself. Those who have studied it report that magic flows more freely during this epoch, but at the cost of increased unpredictability in dimensional travel and spell casting.\n\nThe Active Glow has become the defining characteristic of the current age, with most civilizations now measuring time in relation to its onset.",
+  "categories": ["events", "lore"],
+  "timeline_event": {
+    "active_glow": true,
+    "sol": 1,
+    "solar_year": 1
+  }
+}

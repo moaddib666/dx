@@ -1,0 +1,5 @@
+{
+  "title": "Combat Basics",
+  "content": "Combat in DX follows a turn-based system where strategy and positioning are key to victory.\n\n## Turn Structure\n\nEach character can perform one action per turn, including:\n- Attacking with weapons or spells\n- Defending to reduce incoming damage\n- Using special abilities\n- Moving to a different position\n- Using items from inventory\n\n## Attack Resolution\n\nWhen a character attacks, the system calculates:\n1. Base damage from the weapon or spell\n2. Character's relevant stat modifiers\n3. Target's defense and resistances\n4. Random variance for unpredictability\n\n## Critical Hits\n\nCritical hits occur based on character stats and can deal significantly increased damage. Some abilities and items can increase critical hit chance.\n\n## Status Effects\n\nCombat can inflict various status effects such as:\n- Stunned: Cannot act for one turn\n- Poisoned: Takes damage over time\n- Weakened: Reduced attack power\n- Strengthened: Increased attack power\n\n## Victory Conditions\n\nCombat ends when all enemies are defeated or all party members are incapacitated.",
+  "categories": ["rules", "guides"]
+}
