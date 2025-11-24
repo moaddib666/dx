@@ -8859,6 +8859,24 @@ export interface PublishedCharacter {
      * @type {string}
      * @memberof PublishedCharacter
      */
+    'tiktalk_link'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'youtube_link'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'instagram_link'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
     'created_at': string;
     /**
      * 
