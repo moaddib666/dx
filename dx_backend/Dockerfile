@@ -2,6 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /application
 
+# Install system dependencies including curl for health checks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY ./apps apps
 COPY ./dx_backend dx_backend
 COPY ./templates templates

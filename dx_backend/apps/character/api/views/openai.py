@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -11,8 +11,8 @@ from apps.character.api.filters.character import CharacterFilter, NPCFilter
 from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, CharacterInfoSerializer, \
     CharacterPathSerializer, \
     CharacterTemplateFullSerializer, CharacterGenericDataSerializer, CharacterStatsSerializer, \
-    DetailStatSerializer, SwipeBaseStatSerializer
-from apps.character.models import Character, Stat
+    DetailStatSerializer, SwipeBaseStatSerializer, PublishedCharacterSerializer
+from apps.character.models import Character, Stat, PublishedCharacter
 from apps.core.models import CharacterGenericData
 from apps.game.services.character import CharacterFactory
 from apps.game.services.character.character_base_stats import CharacterBaseStatsService
@@ -110,11 +110,14 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
 
-        # Check the limit
-        current_character_count = Character.objects.filter(owner=user).count()
+        # Check the limit per campaign
+        current_character_count = Character.objects.filter(
+            owner=user,
+            campaign=user.current_campaign
+        ).count()
         if current_character_count >= self.PLAYER_CREATION_LIMIT:
             return Response(
-                {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} reached.'},
+                {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -184,6 +187,18 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
 
         """
         user = request.user
+        
+        # Check the limit per campaign
+        current_character_count = Character.objects.filter(
+            owner=user,
+            campaign=user.current_campaign
+        ).count()
+        if current_character_count >= self.PLAYER_CREATION_LIMIT:
+            return Response(
+                {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         svc = CharacterFactory(user)
@@ -293,3 +308,28 @@ class OpenAICharacterManageBaseStats(viewsets.ReadOnlyModelViewSet):
         )
         response_serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(data=response_serializer.data)
+
+
+@extend_schema_view(
+    list=extend_schema(
+        summary="List all published characters",
+        description="Retrieve a paginated list of all published characters. "
+                    "No authentication required. Public endpoint.",
+        tags=["Characters - Published"],
+    ),
+    retrieve=extend_schema(
+        summary="Retrieve a published character",
+        description="Retrieve detailed information about a specific published character by its ID. "
+                    "No authentication required. Public endpoint.",
+        tags=["Characters - Published"],
+    ),
+)
+class PublishedCharacterViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Public readonly ViewSet for published characters.
+    Provides paginated read-only access to published character data.
+    No authentication required.
+    """
+    queryset = PublishedCharacter.objects.all()
+    serializer_class = PublishedCharacterSerializer
+    permission_classes = [permissions.AllowAny]

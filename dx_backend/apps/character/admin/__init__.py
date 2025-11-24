@@ -17,6 +17,7 @@ from .npc import (
     CharacterModifierTemplateInline, CharacterEquipmentTemplateInline, CharacterNameTemplateInline
 )
 from .organization import OrganizationAdmin
+from .published_character import PublishedCharacterAdmin
 from .rank import RankAdmin
 from .relation import OrganizationRelationAdmin, CharacterRelationAdmin
 from .stat import StatAdmin

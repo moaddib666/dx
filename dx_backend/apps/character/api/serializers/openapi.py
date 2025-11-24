@@ -3,7 +3,7 @@ import uuid
 from rest_framework import serializers
 
 from apps.action.models import DiceRollResult
-from apps.character.models import Character, CharacterBiography, Stat, Rank
+from apps.character.models import Character, CharacterBiography, Stat, Rank, PublishedCharacter
 from apps.core.models import AttributeType, GenderEnum
 from apps.game.models import Campaign
 from apps.school.models import ThePath
@@ -25,6 +25,32 @@ class OpenaiCharacterBioSerializer(serializers.ModelSerializer):
         if representation.get('avatar') and self.context.get('request'):
             representation['avatar'] = self.context.get('request').build_absolute_uri(representation['avatar'])
 
+        return representation
+
+
+class PublishedCharacterSerializer(serializers.ModelSerializer):
+    biography = OpenaiCharacterBioSerializer(read_only=True)
+    
+    class Meta:
+        model = PublishedCharacter
+        fields = ['id', 'biography', 'big_avatar', 'small_avatar', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def to_representation(self, instance):
+        """
+        Custom representation to handle avatar URLs.
+        Uses request from context to build absolute URLs for avatars.
+        """
+        representation = super().to_representation(instance)
+        
+        # Handle big_avatar URL to make it absolute if request is available
+        if representation.get('big_avatar') and self.context.get('request'):
+            representation['big_avatar'] = self.context.get('request').build_absolute_uri(representation['big_avatar'])
+        
+        # Handle small_avatar URL to make it absolute if request is available
+        if representation.get('small_avatar') and self.context.get('request'):
+            representation['small_avatar'] = self.context.get('request').build_absolute_uri(representation['small_avatar'])
+        
         return representation
 
 
@@ -152,8 +178,8 @@ class CharacterPathSerializer(serializers.ModelSerializer):
 class BioSerializer(serializers.Serializer):
     age = serializers.IntegerField()
     gender = serializers.ChoiceField(choices=["Male", "Female", "Other"])
-    appearance = serializers.CharField()
-    background = serializers.CharField()
+    appearance = serializers.CharField(max_length=5000)
+    background = serializers.CharField(max_length=5000)
     avatar = serializers.ImageField(allow_null=True, required=False)
 
 
@@ -212,8 +238,8 @@ class CharacterTemplateFullSerializer(serializers.Serializer):
 class CharacterBioDraftSerializer(serializers.Serializer):
     age = serializers.IntegerField(min_value=18, max_value=900)
     gender = serializers.ChoiceField(choices=GenderEnum.choices())
-    appearance = serializers.CharField(allow_blank=True)
-    background = serializers.CharField(allow_blank=True)
+    appearance = serializers.CharField(max_length=5000, allow_blank=True)
+    background = serializers.CharField(max_length=5000, allow_blank=True)
 
 
 class CharacterStatSerializer(serializers.Serializer):
