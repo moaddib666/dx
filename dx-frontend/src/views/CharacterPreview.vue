@@ -43,6 +43,9 @@ interface CharacterDto {
   name: string
   avatar?: string
   description?: string
+  tiktok_link?: string
+  youtube_link?: string
+  instagram_link?: string
 }
 
 // Published characters (public)
@@ -61,10 +64,12 @@ const selectedCharacter = ref<CharacterDto|null>(null)
 
 // Map published items -> right grid as Legendary NPCs
 function asPublishedItem(x:any): CharGridItem {
+  // Use small_avatar for grid display (x is already normalized PublishedCardItem)
+  const gridAvatar = x.small_avatar || x.big_avatar || x.avatar
   return {
     id: x.id,
     name: x.name || 'Unknown',
-    avatar: x.avatar,
+    avatar: gridAvatar,
     description: x.description || '',
     subtitle: x.subtitle || '',
     tone: 'purple',
@@ -74,7 +79,8 @@ function asPublishedItem(x:any): CharGridItem {
 }
 
 const npcs = computed<CharGridItem[]>(() => (publishedItems.value || []).map(asPublishedItem))
-const gridItems = computed(() => [ ...players.value, ...npcs.value ])
+// Show only published characters (npcs), not players
+const gridItems = computed(() => npcs.value)
 
 function asItem(x:any, kind:'players'|'npcs'): CharGridItem {
   return {
@@ -94,11 +100,35 @@ function toDto(x:any): CharacterDto { return { id: x.id, name: x.name || 'Unknow
 function selectFirst() {
   if (selectedCharacter.value) return
   const first = gridItems.value[0]
-  if (first) selectedCharacter.value = { id:first.id, name:first.name, avatar:first.avatar, description:first.description || '' }
+  if (first) {
+    // Find the normalized data to get social media links and big_avatar for preview
+    const data = publishedItems.value?.find((x: any) => x.id === first.id)
+    const previewAvatar = data?.big_avatar || data?.small_avatar || data?.avatar
+    selectedCharacter.value = {
+      id: first.id,
+      name: first.name,
+      avatar: previewAvatar,
+      description: first.description || '',
+      tiktok_link: data?.tiktok_link,
+      youtube_link: data?.youtube_link,
+      instagram_link: data?.instagram_link
+    }
+  }
 }
 
 function onSelect(item: CharGridItem) {
-  selectedCharacter.value = { id:item.id, name:item.name, avatar:item.avatar, description:item.description || '' }
+  // Find the normalized data to get social media links and big_avatar for preview
+  const data = publishedItems.value?.find((x: any) => x.id === item.id)
+  const previewAvatar = data?.big_avatar || data?.small_avatar || data?.avatar
+  selectedCharacter.value = {
+    id: item.id,
+    name: item.name,
+    avatar: previewAvatar,
+    description: item.description || '',
+    tiktok_link: data?.tiktok_link,
+    youtube_link: data?.youtube_link,
+    instagram_link: data?.instagram_link
+  }
 }
 
 async function loadData() {

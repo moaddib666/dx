@@ -294,7 +294,7 @@ onMounted(() => {
 .cp-tile__art img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   opacity: 0.9
 }
