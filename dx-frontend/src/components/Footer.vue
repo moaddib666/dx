@@ -22,10 +22,10 @@
       <!-- Copyright Section -->
       <div class="copyright-section">
         <p class="copyright-text">
-          © {{ currentYear }} Dimension-X. All rights reserved.
+          © {{ currentYear }} Dimension-X. {{ t('footer.allRightsReserved') }}
         </p>
         <p class="creator-text">
-          Created by <a href="mailto:moaddib666@gmail.com" class="creator-link">{{ t('footer.creator') }}</a>
+          {{ t('footer.createdBy') }} <a href="mailto:moaddib666@gmail.com" class="creator-link">{{ t('footer.creator') }}</a>
         </p>
       </div>
     </div>

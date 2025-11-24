@@ -76,6 +76,7 @@
   "navigation": {
     "home": "Головна",
     "worldMap": "Карта світу",
+    "characterPreview": "Персонажі",
     "dashboard": "Панель керування",
     "profile": "Профіль",
     "settings": "Налаштування",
@@ -87,7 +88,8 @@
     "newcomersGuide": "Посібник для новачків",
     "playerCheatSheet": "Шпаргалка гравця",
     "chatWithAI": "Чат з ШІ",
-    "artGallery": "Галерея мистецтва"
+    "artGallery": "Галерея",
+    "mobileMenuTitle": "Навігація"
   },
   "auth": {
     "login": "Увійти",
@@ -177,6 +179,8 @@
   },
   "footer": {
     "copyright": "&copy; 2024 Dimension-X. Всі права захищені. Творець",
+    "allRightsReserved": "Всі права захищені.",
+    "createdBy": "Створено",
     "creator": "moaddib"
   },
   "newcomersGuide": {

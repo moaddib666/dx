@@ -33,7 +33,7 @@
     >
       <div class="mobile-menu" @click.stop>
         <div class="mobile-menu-header">
-          <h3>Navigation</h3>
+          <h3>{{ t('navigation.mobileMenuTitle') }}</h3>
           <button class="close-btn" @click="closeMobileMenu" aria-label="Close menu">×</button>
         </div>
         <ul class="mobile-nav-list">
@@ -69,7 +69,7 @@ export default {
       links: [
         { id: 'home', url: '/' },
         { id: 'worldMap', url: '/world-map/preview' },
-        { id: 'characterPreview', url: '/characters/preview', label: 'Character Preview' },
+        { id: 'characterPreview', url: '/characters/preview' },
         // { id: 'story', url: '/story' },
         // { id: 'characters', url: '/characters' },
         // { id: 'gameplay', url: '/gameplay' },

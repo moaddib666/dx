@@ -76,6 +76,7 @@
   "navigation": {
     "home": "Home",
     "worldMap": "World Map",
+    "characterPreview": "Character Preview",
     "dashboard": "Dashboard",
     "profile": "Profile",
     "settings": "Settings",
@@ -87,7 +88,8 @@
     "newcomersGuide": "Newcomer's Guide",
     "playerCheatSheet": "Player Cheat Sheet",
     "chatWithAI": "Chat with AI",
-    "artGallery": "Art Gallery"
+    "artGallery": "Art Gallery",
+    "mobileMenuTitle": "Navigation"
   },
   "auth": {
     "login": "Login",
@@ -177,6 +179,8 @@
   },
   "footer": {
     "copyright": "&copy; 2024 Dimension-X. All rights reserved. The creator",
+    "allRightsReserved": "All rights reserved.",
+    "createdBy": "Created by",
     "creator": "moaddib"
   },
   "newcomersGuide": {
