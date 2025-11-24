@@ -34,7 +34,7 @@ function onImgError(ev: Event) {
 
 <style scoped>
 .cp-center { display:flex; align-items:center; justify-content:center; }
-.cp-center__frame { position:relative; width:min(520px, 70vw, calc(78vh * 0.75)); max-height:78vh; aspect-ratio:3/4; border:1px solid rgba(99,247,255,0.45); background:radial-gradient(ellipse at center, rgba(20,40,60,0.7), rgba(6,12,20,0.7)); box-shadow:0 0 18px rgba(34,211,238,0.25); overflow:hidden; }
+.cp-center__frame { position:relative; width:min(380px, 60vw, calc(78vh * 0.75)); max-height:78vh; aspect-ratio:6/16; border:1px solid rgba(99,247,255,0.45); background:radial-gradient(ellipse at center, rgba(20,40,60,0.7), rgba(6,12,20,0.7)); box-shadow:0 0 18px rgba(34,211,238,0.25); overflow:hidden; }
 .cp-center__img { width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.1) contrast(1.02); }
 .cp-center__placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg, rgba(4,12,20,0.7), rgba(10,26,36,0.7)); }
 .cp-center__sigil { font-size:56px; letter-spacing:.2em; color:#9df6ff; text-shadow:0 0 16px rgba(34,211,238,0.35); }
