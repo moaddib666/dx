@@ -158,7 +158,7 @@ onMounted(() => {
 .cp-title-sm {
   color: #baf6ff;
   letter-spacing: .3em;
-  font-size: 0.33rem;
+  font-size: 0.66rem;
   font-weight: 600;
 }
 
@@ -173,7 +173,7 @@ onMounted(() => {
   border: 1px solid rgba(99, 247, 255, 0.25);
   color: #e8fdff;
   padding: 0.17rem 0.28rem;
-  font-size: 0.33rem;
+  font-size: 0.66rem;
 }
 
 .cp-toggle {
@@ -186,7 +186,7 @@ onMounted(() => {
   border: 1px solid rgba(99, 247, 255, 0.35);
   background: rgba(3, 12, 22, 0.5);
   color: #b9faff;
-  font-size: 0.28rem;
+  font-size: 0.56rem;
   letter-spacing: .15em;
 }
 
