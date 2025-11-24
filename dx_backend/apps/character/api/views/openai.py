@@ -110,16 +110,17 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
     def perform_create(self, serializer):
         user = self.request.user
 
-        # Check the limit per campaign
-        current_character_count = Character.objects.filter(
-            owner=user,
-            campaign=user.current_campaign
-        ).count()
-        if current_character_count >= self.PLAYER_CREATION_LIMIT:
-            return Response(
-                {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Check the limit per campaign (not applicable to admins)
+        if not (user.is_staff or user.is_superuser):
+            current_character_count = Character.objects.filter(
+                owner=user,
+                campaign=user.current_campaign
+            ).count()
+            if current_character_count >= self.PLAYER_CREATION_LIMIT:
+                return Response(
+                    {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
         factory = CharacterFactory(user)
         character = factory.create_character(
@@ -188,16 +189,17 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
         """
         user = request.user
         
-        # Check the limit per campaign
-        current_character_count = Character.objects.filter(
-            owner=user,
-            campaign=user.current_campaign
-        ).count()
-        if current_character_count >= self.PLAYER_CREATION_LIMIT:
-            return Response(
-                {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Check the limit per campaign (not applicable to admins)
+        if not (user.is_staff or user.is_superuser):
+            current_character_count = Character.objects.filter(
+                owner=user,
+                campaign=user.current_campaign
+            ).count()
+            if current_character_count >= self.PLAYER_CREATION_LIMIT:
+                return Response(
+                    {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
