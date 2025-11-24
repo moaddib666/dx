@@ -8,9 +8,11 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from apps.character.api.filters.character import CharacterFilter, NPCFilter
-from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, CharacterInfoSerializer, \
+from apps.character.api.serializers.openapi import OpenaiCharacterSerializer, \
+    CharacterInfoSerializer, \
     CharacterPathSerializer, \
-    CharacterTemplateFullSerializer, CharacterGenericDataSerializer, CharacterStatsSerializer, \
+    CharacterTemplateFullSerializer, CharacterGenericDataSerializer, \
+    CharacterStatsSerializer, \
     DetailStatSerializer, SwipeBaseStatSerializer, PublishedCharacterSerializer
 from apps.character.models import Character, Stat, PublishedCharacter
 from apps.core.models import CharacterGenericData
@@ -45,12 +47,14 @@ class ClientCharacterManagementViewSet(viewsets.ReadOnlyModelViewSet):
         qs = qs.filter(
             owner=user,
             npc=False,  # Exclude NPC characters
-            campaign=user.current_campaign,  # Ensure characters are in the user's current campaign
+            campaign=user.current_campaign,
+            # Ensure characters are in the user's current campaign
         )
 
         return qs
 
-    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated])
     @transaction.atomic
     def select_character(self, request, pk=None):
         """
@@ -70,16 +74,19 @@ class ClientCharacterManagementViewSet(viewsets.ReadOnlyModelViewSet):
         user.main_character = character
         user.save(update_fields=['main_character'])
 
-        return Response({"detail": "Character selected successfully."}, status=status.HTTP_200_OK)
+        return Response({"detail": "Character selected successfully."},
+                        status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated])
     def current_character(self, request):
         """
         Get the user's current main character.
         """
         user = request.user
         if not hasattr(user, 'main_character') or not user.main_character:
-            return Response({"detail": "No main character selected."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No main character selected."},
+                            status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.get_serializer(user.main_character)
         return Response(data=serializer.data)
@@ -118,7 +125,8 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
             ).count()
             if current_character_count >= self.PLAYER_CREATION_LIMIT:
                 return Response(
-                    {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
+                    {
+                        'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -132,16 +140,19 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
         response_serializer = self.get_serializer(character)
         return Response(data=response_serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated])
     def character_details(self, request):
         user = request.user
         character = user.main_character
         if not character:
-            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Character not found."},
+                            status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(character)
         return Response(data=serializer.data)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated],
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated],
             serializer_class=CharacterInfoSerializer)
     def character_info(self, request):
         user = request.user
@@ -156,9 +167,11 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
             character_info = service.get_character_info()
             return Response(data=character_info.model_dump())
         except Character.DoesNotExist:
-            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Character not found."},
+                            status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated],
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated],
             serializer_class=CharacterPathSerializer)
     def chose_path(self, request, pk=None):
         user = request.user
@@ -170,16 +183,19 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
             service.chose_path(serializer.validated_data['path'])
             return Response({"detail": "Path chosen."})
         except Character.DoesNotExist:
-            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Character not found."},
+                            status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[],
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny],
+            authentication_classes=[],
             serializer_class=CharacterTemplateFullSerializer, )
     def character_template(self, request):
         svc = CharacterTemplateService(9)
         template = svc.create_template()
         return Response(data=template.model_dump())
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated],
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated],
             serializer_class=CharacterGenericDataSerializer)
     @transaction.atomic
     def import_character(self, request):
@@ -188,7 +204,7 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
 
         """
         user = request.user
-        
+
         # Check the limit per campaign (not applicable to admins)
         if not (user.is_staff or user.is_superuser):
             current_character_count = Character.objects.filter(
@@ -197,20 +213,23 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
             ).count()
             if current_character_count >= self.PLAYER_CREATION_LIMIT:
                 return Response(
-                    {'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
+                    {
+                        'detail': f'Character creation limit of {self.PLAYER_CREATION_LIMIT} per campaign reached.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         svc = CharacterFactory(user)
-        char_svc = svc.import_character(CharacterGenericData(**serializer.validated_data))
+        char_svc = svc.import_character(
+            CharacterGenericData(**serializer.validated_data))
         character_info = char_svc.get_character_info()
         user.main_character = char_svc.character
         user.save(update_fields=['main_character'])
         return Response(data=character_info.model_dump())
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated],
+    @action(detail=False, methods=['get'],
+            permission_classes=[permissions.IsAuthenticated],
             serializer_class=CharacterStatsSerializer)
     def character_stats(self, request):
         user = request.user
@@ -218,7 +237,8 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(character)
         return Response(data=serializer.data)
 
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated])
     def end_turn(self, request):
         """
         End the character's turn by spending all action points.
@@ -227,14 +247,16 @@ class OpenAICharacterBaseManagementViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             character = user.main_character
             if not character:
-                return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"detail": "Character not found."},
+                                status=status.HTTP_404_NOT_FOUND)
 
             service = CharacterService(character)
             service.spend_all_ap()
 
             return Response({"detail": "Turn ended. All action points spent."})
         except Character.DoesNotExist:
-            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Character not found."},
+                            status=status.HTTP_404_NOT_FOUND)
 
 
 class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
@@ -248,6 +270,7 @@ class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
         return super().get_queryset().filter(
             campaign=self.request.user.current_campaign,
         )
+
     @action(detail=True, methods=['get'],
             serializer_class=CharacterInfoSerializer)
     def character_info(self, request, pk=None):
@@ -258,7 +281,8 @@ class OpenAICharacterGameMasterManagementViewSet(viewsets.ReadOnlyModelViewSet):
             character_info = service.get_character_info()
             return Response(data=character_info.model_dump())
         except Character.DoesNotExist:
-            return Response({"detail": "Character not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Character not found."},
+                            status=status.HTTP_404_NOT_FOUND)
 
 
 class OpenAICharacterManageBaseStats(viewsets.ReadOnlyModelViewSet):
@@ -277,13 +301,15 @@ class OpenAICharacterManageBaseStats(viewsets.ReadOnlyModelViewSet):
         request=None,  # No request body expected
         responses=DetailStatSerializer(many=True),
     )
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated])
     @transaction.atomic
     def reset_base_stats(self, request):
         user = request.user
         character = user.main_character
         if not character.resetting_base_stats:
-            return Response({"detail": "Character is not resetting base stats."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Character is not resetting base stats."},
+                            status=status.HTTP_400_BAD_REQUEST)
         service = CharacterBaseStatsService(character, DiceService)
         instance = service.reset_base_stats()
         serializer = self.get_serializer(instance, many=True)
@@ -292,13 +318,15 @@ class OpenAICharacterManageBaseStats(viewsets.ReadOnlyModelViewSet):
     @extend_schema(
         request=SwipeBaseStatSerializer,
     )
-    @action(detail=False, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['post'],
+            permission_classes=[permissions.IsAuthenticated])
     @transaction.atomic
     def swipe_base_stat(self, request, pk=None):
         user = request.user
         character = user.main_character
         if not character.resetting_base_stats:
-            return Response({"detail": "Character is not resetting base stats."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Character is not resetting base stats."},
+                            status=status.HTTP_400_BAD_REQUEST)
         serializer = SwipeBaseStatSerializer(data=request.data, context={})
         serializer.is_valid(raise_exception=True)
         service = CharacterBaseStatsService(character, DiceService)
@@ -332,6 +360,10 @@ class PublishedCharacterViewSet(viewsets.ReadOnlyModelViewSet):
     Provides paginated read-only access to published character data.
     No authentication required.
     """
-    queryset = PublishedCharacter.objects.all()
+    queryset = PublishedCharacter.objects.select_related(
+        'biography',
+        'biography__character'
+    ).all()
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = PublishedCharacterSerializer
     permission_classes = [permissions.AllowAny]
