@@ -66,6 +66,7 @@ const routes = [
     {path: '/dice/roller', name: 'DiceRoller', component: DiceRollerView, meta: {requiresAuth: false}},
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
     {path: '/world-map/preview', name: "WorldMapPreview", component: () => import('@/views/WorldMapPreview.vue'), meta: {requiresAuth: false}},
+    {path: '/characters/preview', name: 'CharacterPreview', component: () => import('@/views/CharacterPreview.vue'), meta: {requiresAuth: false}},
     {path: '/timeline', name: 'Timeline', component: TimelineView, meta: {requiresAuth: false}},
 
     // Game Master routes

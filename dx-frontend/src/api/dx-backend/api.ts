@@ -8825,6 +8825,49 @@ export type ProviderEnum = typeof ProviderEnum[keyof typeof ProviderEnum];
 
 
 /**
+ * 
+ * @export
+ * @interface PublishedCharacter
+ */
+export interface PublishedCharacter {
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'id': string;
+    /**
+     * 
+     * @type {OpenaiCharacterBio}
+     * @memberof PublishedCharacter
+     */
+    'biography': OpenaiCharacterBio;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'big_avatar'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'small_avatar'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'created_at': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PublishedCharacter
+     */
+    'updated_at': string;
+}
+/**
  * Serializer for Quest model.
  * @export
  * @interface Quest
@@ -14835,6 +14878,196 @@ export class CharacterApi extends BaseAPI {
 
 
 /**
+ * CharactersPublishedApi - axios parameter creator
+ * @export
+ */
+export const CharactersPublishedApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Retrieve a paginated list of all published characters. No authentication required. Public endpoint.
+         * @summary List all published characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPublishedList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/character/published/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Retrieve detailed information about a specific published character by its ID. No authentication required. Public endpoint.
+         * @summary Retrieve a published character
+         * @param {string} id A UUID string identifying this published character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPublishedRetrieve: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('characterPublishedRetrieve', 'id', id)
+            const localVarPath = `/api/character/published/{id}/`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CharactersPublishedApi - functional programming interface
+ * @export
+ */
+export const CharactersPublishedApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CharactersPublishedApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Retrieve a paginated list of all published characters. No authentication required. Public endpoint.
+         * @summary List all published characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPublishedList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PublishedCharacter>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPublishedList(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharactersPublishedApi.characterPublishedList']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Retrieve detailed information about a specific published character by its ID. No authentication required. Public endpoint.
+         * @summary Retrieve a published character
+         * @param {string} id A UUID string identifying this published character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async characterPublishedRetrieve(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublishedCharacter>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.characterPublishedRetrieve(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CharactersPublishedApi.characterPublishedRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CharactersPublishedApi - factory interface
+ * @export
+ */
+export const CharactersPublishedApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CharactersPublishedApiFp(configuration)
+    return {
+        /**
+         * Retrieve a paginated list of all published characters. No authentication required. Public endpoint.
+         * @summary List all published characters
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPublishedList(options?: any): AxiosPromise<Array<PublishedCharacter>> {
+            return localVarFp.characterPublishedList(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Retrieve detailed information about a specific published character by its ID. No authentication required. Public endpoint.
+         * @summary Retrieve a published character
+         * @param {string} id A UUID string identifying this published character.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        characterPublishedRetrieve(id: string, options?: any): AxiosPromise<PublishedCharacter> {
+            return localVarFp.characterPublishedRetrieve(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CharactersPublishedApi - object-oriented interface
+ * @export
+ * @class CharactersPublishedApi
+ * @extends {BaseAPI}
+ */
+export class CharactersPublishedApi extends BaseAPI {
+    /**
+     * Retrieve a paginated list of all published characters. No authentication required. Public endpoint.
+     * @summary List all published characters
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharactersPublishedApi
+     */
+    public characterPublishedList(options?: RawAxiosRequestConfig) {
+        return CharactersPublishedApiFp(this.configuration).characterPublishedList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Retrieve detailed information about a specific published character by its ID. No authentication required. Public endpoint.
+     * @summary Retrieve a published character
+     * @param {string} id A UUID string identifying this published character.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CharactersPublishedApi
+     */
+    public characterPublishedRetrieve(id: string, options?: RawAxiosRequestConfig) {
+        return CharactersPublishedApiFp(this.configuration).characterPublishedRetrieve(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * ClientApi - axios parameter creator
  * @export
  */
@@ -15852,6 +16085,45 @@ export const CoreApiAxiosParamCreator = function (configuration?: Configuration)
             };
         },
         /**
+         * Health check endpoint for Docker container monitoring. Checks database connectivity and returns service status.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreHealthRetrieve: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/core/health/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication basicAuth required
+            // http basic authentication required
+            setBasicAuthToObject(localVarRequestOptions, configuration)
+
+            // authentication cookieAuth required
+
+            // authentication jwtAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -15997,6 +16269,17 @@ export const CoreApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Health check endpoint for Docker container monitoring. Checks database connectivity and returns service status.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async coreHealthRetrieve(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.coreHealthRetrieve(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CoreApi.coreHealthRetrieve']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -16061,6 +16344,14 @@ export const CoreApiFactory = function (configuration?: Configuration, basePath?
             return localVarFp.coreCharacterStatsList(options).then((request) => request(axios, basePath));
         },
         /**
+         * Health check endpoint for Docker container monitoring. Checks database connectivity and returns service status.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        coreHealthRetrieve(options?: any): AxiosPromise<void> {
+            return localVarFp.coreHealthRetrieve(options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -16112,6 +16403,16 @@ export class CoreApi extends BaseAPI {
      */
     public coreCharacterStatsList(options?: RawAxiosRequestConfig) {
         return CoreApiFp(this.configuration).coreCharacterStatsList(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Health check endpoint for Docker container monitoring. Checks database connectivity and returns service status.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CoreApi
+     */
+    public coreHealthRetrieve(options?: RawAxiosRequestConfig) {
+        return CoreApiFp(this.configuration).coreHealthRetrieve(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

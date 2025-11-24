@@ -17,7 +17,7 @@
         <!-- Desktop navigation -->
         <ul class="nav-menu desktop-nav">
           <li v-for="link in links" :key="link.id" class="nav-item" :class="{ active: isActiveLink(link.url) }">
-            <a :href="link.url" class="nav-link">{{ t(`navigation.${link.id}`) }}</a>
+            <a :href="link.url" class="nav-link">{{ link.label || t(`navigation.${link.id}`) }}</a>
           </li>
         </ul>
 
@@ -38,7 +38,7 @@
         </div>
         <ul class="mobile-nav-list">
           <li v-for="link in links" :key="link.id" class="nav-item" :class="{ active: isActiveLink(link.url) }">
-            <a :href="link.url" class="nav-link" @click="closeMobileMenu">{{ t(`navigation.${link.id}`) }}</a>
+            <a :href="link.url" class="nav-link" @click="closeMobileMenu">{{ link.label || t(`navigation.${link.id}`) }}</a>
           </li>
         </ul>
         <div class="mobile-menu-footer">
@@ -69,6 +69,7 @@ export default {
       links: [
         { id: 'home', url: '/' },
         { id: 'worldMap', url: '/world-map/preview' },
+        { id: 'characterPreview', url: '/characters/preview', label: 'Character Preview' },
         // { id: 'story', url: '/story' },
         // { id: 'characters', url: '/characters' },
         // { id: 'gameplay', url: '/gameplay' },

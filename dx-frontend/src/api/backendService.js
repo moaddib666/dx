@@ -25,11 +25,15 @@ import {
     DiceApi,
     KnowledgeBaseDocumentsApi,
     KnowledgeBaseTimelineEventsApi,
+    CharactersPublishedApi
 } from '@/api/dx-backend';
 
 export const GameApiConfig = new Configuration({
     basePath: import.meta.env.VITE_API_BASE_URL,
     accessToken: () => store.getters.getAuthToken,
+})
+export const PublicApiConfig = new Configuration({
+    basePath: import.meta.env.VITE_API_BASE_URL,
 })
 export const BargainGameApi = new BargainApi(GameApiConfig);
 export const ActionGameApi = new ActionApi(GameApiConfig);
@@ -55,3 +59,4 @@ export const FightGameApi = new FightApi(GameApiConfig);
 export const DiceGameApi = new DiceApi(GameApiConfig);
 export const KnowledgeBaseDocumentsGameApi = new KnowledgeBaseDocumentsApi(GameApiConfig);
 export const KnowledgeBaseTimelineEventsGameApi = new KnowledgeBaseTimelineEventsApi(GameApiConfig);
+export const PublishedCharactersPublicApi = new CharactersPublishedApi(PublicApiConfig);
