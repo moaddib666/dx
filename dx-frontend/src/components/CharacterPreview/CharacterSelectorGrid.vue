@@ -7,6 +7,7 @@
           <input v-model="q" class="cp-input" placeholder="Search characters..."/>
         </div>
         <div class="cp-toggle">
+          <button class="cp-tab" :class="{active: filter==='all'}" @click="setFilter('all')">All</button>
           <button class="cp-tab" :class="{active: filter==='players'}" @click="setFilter('players')">Players</button>
           <button class="cp-tab" :class="{active: filter==='npcs'}" @click="setFilter('npcs')">Legendary NPCs</button>
         </div>
@@ -74,15 +75,15 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'select', item: CharGridItem): void, (e: 'load-more'): void }>()
 
 const q = ref('')
-const filter = ref<'players' | 'npcs'>('players')
+const filter = ref<'all' | 'players' | 'npcs'>('all')
 const isLoading = computed(() => !!props.loading)
 const hasMore = computed(() => !!props.hasMore)
 const loadingMore = computed(() => !!props.loadingMore)
 const gridEl = ref<HTMLElement | null>(null)
-const showLoadMore = computed(() => hasMore.value && !isLoading.value && filter.value === 'npcs')
+const showLoadMore = computed(() => hasMore.value && !isLoading.value && (filter.value === 'npcs' || filter.value === 'all'))
 
 const filteredItems = computed(() => {
-  const list = props.items?.filter(i => i.kind === filter.value) ?? []
+  const list = filter.value === 'all' ? (props.items ?? []) : (props.items?.filter(i => i.kind === filter.value) ?? [])
   if (!q.value.trim()) return list
   const s = q.value.toLowerCase()
   return list.filter(i => i.name.toLowerCase().includes(s))
@@ -99,7 +100,7 @@ const displayItems = computed(() => {
   return [...items, ...placeholders]
 })
 
-function setFilter(v: 'players' | 'npcs') {
+function setFilter(v: 'all' | 'players' | 'npcs') {
   filter.value = v
 }
 
