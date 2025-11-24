@@ -8859,7 +8859,7 @@ export interface PublishedCharacter {
      * @type {string}
      * @memberof PublishedCharacter
      */
-    'tiktalk_link'?: string;
+    'tiktok_link'?: string;
     /**
      * 
      * @type {string}
