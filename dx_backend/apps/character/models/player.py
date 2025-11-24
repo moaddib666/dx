@@ -31,7 +31,7 @@ class PublishedCharacter(BaseModel):
                                    default='avatars/placeholder/other.png')
     small_avatar = models.ImageField(upload_to='avatarsPublic/', blank=True,
                                      default='avatars/placeholder/other.png')
-    tiktalk_link = models.URLField(blank=True)
+    tiktok_link = models.URLField(blank=True)
     youtube_link = models.URLField(blank=True)
     instagram_link = models.URLField(blank=True)
 

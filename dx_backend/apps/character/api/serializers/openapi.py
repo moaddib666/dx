@@ -33,7 +33,7 @@ class PublishedCharacterSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PublishedCharacter
-        fields = ['id', 'biography', 'big_avatar', 'small_avatar', 'tiktalk_link', 'youtube_link', 'instagram_link', 'created_at', 'updated_at']
+        fields = ['id', 'biography', 'big_avatar', 'small_avatar', 'tiktok_link', 'youtube_link', 'instagram_link', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
     
     def to_representation(self, instance):

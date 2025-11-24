@@ -24,7 +24,7 @@ class PublishedCharacterAdmin(CampaignModelAdmin):
             'fields': ('big_avatar', 'big_avatar_preview', 'small_avatar', 'small_avatar_preview')
         }),
         ('Social Media Links', {
-            'fields': ('tiktalk_link', 'youtube_link', 'instagram_link')
+            'fields': ('tiktok_link', 'youtube_link', 'instagram_link')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
