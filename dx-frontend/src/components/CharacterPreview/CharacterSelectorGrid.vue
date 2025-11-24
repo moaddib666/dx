@@ -198,7 +198,7 @@ onMounted(() => {
 .cp-grid {
   position: relative;
   display: grid;
-  grid-template-columns:repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 9rem));
   gap: 0.22rem 0.33rem;
   padding: 0.05rem;
   flex: 1 1 auto;
@@ -217,10 +217,10 @@ onMounted(() => {
   border: 1px solid rgba(99, 247, 255, 0.35);
   background: rgba(6, 14, 24, 0.55);
   color: #ccfcff;
-  padding: 0.15rem;
+  padding: 0.10rem;
   display: flex;
   flex-direction: column;
-  gap: 0.12rem;
+  gap: 0.08rem;
   cursor: pointer;
   box-shadow: 0 0 0.22rem rgba(34, 211, 238, 0.18);
   aspect-ratio: 2/3;
@@ -246,7 +246,7 @@ onMounted(() => {
 }
 
 .cp-tile__name {
-  font-size: 0.30rem;
+  font-size: 0.20rem;
   letter-spacing: .18em;
   color: #bdf9ff;
   white-space: nowrap;
@@ -257,7 +257,7 @@ onMounted(() => {
 
 .cp-badge {
   border: 1px solid currentColor;
-  font-size: 0.26rem;
+  font-size: 0.17rem;
   padding: 0.03rem 0.11rem;
   letter-spacing: .15em;
 }
@@ -302,11 +302,11 @@ onMounted(() => {
   color: #87eeff;
   letter-spacing: .2em;
   font-weight: 600;
-  font-size: 0.39rem;
+  font-size: 0.26rem;
 }
 
 .cp-tile__sub {
-  font-size: 0.28rem;
+  font-size: 0.19rem;
   color: #9feaff;
   opacity: .75;
   white-space: nowrap;
