@@ -283,7 +283,7 @@ onMounted(() => {
   position: relative;
   border: 1px solid rgba(99, 247, 255, 0.2);
   background: rgba(2, 8, 18, 0.5);
-  flex: 1 1 auto;
+  flex: 1 1 0;
   display: flex;
   align-items: center;
   justify-content: center;
