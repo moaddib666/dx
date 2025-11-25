@@ -105,7 +105,7 @@ onUnmounted(() => {
     <div class="campfire-container">
       <!-- Replace this src with your actual campfire image -->
       <img
-        src="@/assets/images/loader/campfire_mini.png"
+        src="/images/loader/campfire_mini.png"
         alt="Campfire"
         class="campfire-image"
       >
