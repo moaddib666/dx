@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="hero-background"></div>
+    <HeroBackground id="background"></HeroBackground>
     <div class="gallery">
       <PhotoGallery />
     </div>
@@ -11,12 +11,14 @@
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import PhotoGallery from "@/components/PhotoGallery.vue";
+import HeroBackground from '@/components/WhatIsIt/HeroBackground.vue';
 
 export default {
   components: {
     PhotoGallery,
     Header,
-    Footer
+    Footer,
+    HeroBackground
   }
 };
 </script>
@@ -31,27 +33,12 @@ export default {
   justify-content: center;
 }
 
-.hero-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('@/assets/images/backgrounds/dx-art-background.png');
+/* Ensure the background component uses a custom image from common directory */
+#background {
+  background-image: url('@/assets/images/backgrounds/common/moaddib_Cinematic_wide_shot_of_a_futuristic_cyberpunk-fantasy_23d0abcd-0f8e-4edc-84ab-63db431446f6_1.png');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
-  z-index: -1;
-}
-
-.hero-background::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+  background-repeat: no-repeat;
 }
 
 .gallery {

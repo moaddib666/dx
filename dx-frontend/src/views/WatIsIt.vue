@@ -5,7 +5,7 @@
         :image-url="currentZoomedImage"
         @close="closeZoom"
     />
-    <HeroBackground @toggle-zoom="toggleZoom" />
+    <HeroBackground @toggle-zoom="toggleZoom" id="background"/>
 
     <main class="what-is-it">
       <TitleComponent>{{ t('whatIsIt.title') }}</TitleComponent>
@@ -398,6 +398,14 @@ function closeZoom() {
   overflow-x: hidden;
   display: flex;
   justify-content: center;
+}
+
+/* Ensure the background component uses a custom image from common directory */
+#background {
+  background-image: url('@/assets/images/backgrounds/common/moaddib_Desolate_corrupted_wasteland_with_twisted_terrain_jag_072aff1a-d29b-4f13-a8a6-57bab975d17b_3.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .what-is-it {
