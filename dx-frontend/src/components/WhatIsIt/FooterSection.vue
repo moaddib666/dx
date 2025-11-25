@@ -17,35 +17,20 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'FooterSection',
-  props: {
-    readyText: {
-      type: String,
-      required: true
-    },
-    discordText: {
-      type: String,
-      required: true
-    },
-    discordLink: {
-      type: String,
-      required: true,
-      default: 'https://discord.gg/vC3TvVzK'
-    },
-    additionalLinks: {
-      type: Array,
-      required: true,
-      validator: (value) => {
-        return value.every(link =>
-          typeof link.to === 'string' &&
-          typeof link.text === 'string'
-        );
-      }
-    }
-  }
+<script setup lang="ts">
+interface FooterLink {
+  to: string
+  text: string
 }
+
+withDefaults(defineProps<{
+  readyText: string
+  discordText: string
+  discordLink: string
+  additionalLinks: FooterLink[]
+}>(), {
+  discordLink: 'https://discord.gg/vC3TvVzK'
+})
 </script>
 
 <style scoped>

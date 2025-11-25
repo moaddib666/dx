@@ -35,58 +35,28 @@
   </section>
 </template>
 
-<script>
-import ImageGallery from './ImageGallery.vue';
+<script setup lang="ts">
+import ImageGallery from './ImageGallery.vue'
 
-export default {
-  name: 'IntroductionSection',
-  components: {
-    ImageGallery
-  },
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    subtitle: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    targetAudience: {
-      type: String,
-      required: true
-    },
-    benefits: {
-      type: String,
-      required: true
-    },
-    mainImage: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.src === 'string' &&
-               typeof value.alt === 'string' &&
-               typeof value.caption === 'string';
-      }
-    },
-    galleryItems: {
-      type: Array,
-      required: true,
-      validator: (value) => {
-        return value.every(item =>
-          typeof item.src === 'string' &&
-          typeof item.alt === 'string' &&
-          typeof item.caption === 'string'
-        );
-      }
-    }
-  },
-  emits: ['toggle-zoom']
+interface ImageData {
+  src: string
+  alt: string
+  caption: string
 }
+
+defineProps<{
+  title: string
+  subtitle: string
+  description: string
+  targetAudience: string
+  benefits: string
+  mainImage: ImageData
+  galleryItems: ImageData[]
+}>()
+
+defineEmits<{
+  (e: 'toggle-zoom', event: Event): void
+}>()
 </script>
 
 <style scoped>

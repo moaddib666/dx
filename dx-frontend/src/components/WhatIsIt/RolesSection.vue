@@ -94,69 +94,63 @@
   </section>
 </template>
 
-<script>
-import ImageGallery from './ImageGallery.vue';
+<script setup lang="ts">
+import ImageGallery from './ImageGallery.vue'
 
-export default {
-  name: 'RolesSection',
-  components: {
-    ImageGallery
-  },
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    player: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               typeof value.description === 'string' &&
-               typeof value.responsibilities === 'string' &&
-               typeof value.timeCommitment === 'string' &&
-               typeof value.gameplay === 'string' &&
-               typeof value.progression === 'string' &&
-               typeof value.characterCreation === 'object' &&
-               typeof value.characterCreation.title === 'string' &&
-               Array.isArray(value.characterCreation.paths) &&
-               typeof value.image === 'object' &&
-               typeof value.image.src === 'string' &&
-               typeof value.image.alt === 'string';
-      }
-    },
-    gameMaster: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               typeof value.description === 'string' &&
-               typeof value.responsibilities === 'string' &&
-               typeof value.skillsDeveloped === 'string' &&
-               typeof value.timeCommitment === 'string' &&
-               typeof value.uniqueAspects === 'string' &&
-               typeof value.digitalTools === 'object' &&
-               typeof value.digitalTools.title === 'string' &&
-               Array.isArray(value.digitalTools.tools) &&
-               typeof value.image === 'object' &&
-               typeof value.image.src === 'string' &&
-               typeof value.image.alt === 'string';
-      }
-    },
-    toolsGalleryItems: {
-      type: Array,
-      required: true,
-      validator: (value) => {
-        return value.every(item =>
-          typeof item.src === 'string' &&
-          typeof item.alt === 'string' &&
-          typeof item.caption === 'string'
-        );
-      }
-    }
-  },
-  emits: ['toggle-zoom']
+interface ImageData {
+  src: string
+  alt: string
+  caption: string
 }
+
+interface CharacterCreation {
+  title: string
+  paths: string[]
+}
+
+interface DigitalTools {
+  title: string
+  tools: string[]
+}
+
+interface PlayerData {
+  title: string
+  description: string
+  responsibilities: string
+  timeCommitment: string
+  gameplay: string
+  progression: string
+  characterCreation: CharacterCreation
+  image: {
+    src: string
+    alt: string
+  }
+}
+
+interface GameMasterData {
+  title: string
+  description: string
+  responsibilities: string
+  skillsDeveloped: string
+  timeCommitment: string
+  uniqueAspects: string
+  digitalTools: DigitalTools
+  image: {
+    src: string
+    alt: string
+  }
+}
+
+defineProps<{
+  title: string
+  player: PlayerData
+  gameMaster: GameMasterData
+  toolsGalleryItems: ImageData[]
+}>()
+
+defineEmits<{
+  (e: 'toggle-zoom', event: Event): void
+}>()
 </script>
 
 <style scoped>

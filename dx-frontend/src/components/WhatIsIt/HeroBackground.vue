@@ -2,11 +2,10 @@
   <div class="hero-background" @click="$emit('toggle-zoom', $event)"></div>
 </template>
 
-<script>
-export default {
-  name: 'HeroBackground',
-  emits: ['toggle-zoom']
-}
+<script setup lang="ts">
+defineEmits<{
+  (e: 'toggle-zoom', event: Event): void
+}>()
 </script>
 
 <style scoped>

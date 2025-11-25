@@ -12,24 +12,20 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ImageGallery',
-  props: {
-    items: {
-      type: Array,
-      required: true,
-      validator: (value) => {
-        return value.every(item =>
-          typeof item.src === 'string' &&
-          typeof item.alt === 'string' &&
-          typeof item.caption === 'string'
-        );
-      }
-    }
-  },
-  emits: ['toggle-zoom']
+<script setup lang="ts">
+interface ImageData {
+  src: string
+  alt: string
+  caption: string
 }
+
+defineProps<{
+  items: ImageData[]
+}>()
+
+defineEmits<{
+  (e: 'toggle-zoom', event: Event): void
+}>()
 </script>
 
 <style scoped>

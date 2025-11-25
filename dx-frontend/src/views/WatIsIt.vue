@@ -11,8 +11,6 @@
       <TitleComponent>{{ t('whatIsIt.title') }}</TitleComponent>
       <p class="subtitle">{{ t('whatIsIt.subtitle') }}</p>
 
-
-
       <IntroductionSection
         :title="t('whatIsIt.introduction.title')"
         :subtitle="t('whatIsIt.introduction.subtitle')"
@@ -52,300 +50,344 @@
   </div>
 </template>
 
-<script>
-import { useI18n } from 'vue-i18n';
-import TitleComponent from '@/components/TitleComponent.vue';
-import HeroBackground from '@/components/WhatIsIt/HeroBackground.vue';
-import ZoomModal from '@/components/WhatIsIt/ZoomModal.vue';
-import IntroductionSection from '@/components/WhatIsIt/IntroductionSection.vue';
-import RolesSection from '@/components/WhatIsIt/RolesSection.vue';
-import SummarySection from '@/components/WhatIsIt/SummarySection.vue';
-import FooterSection from '@/components/WhatIsIt/FooterSection.vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import TitleComponent from '@/components/TitleComponent.vue'
+import HeroBackground from '@/components/WhatIsIt/HeroBackground.vue'
+import ZoomModal from '@/components/WhatIsIt/ZoomModal.vue'
+import IntroductionSection from '@/components/WhatIsIt/IntroductionSection.vue'
+import RolesSection from '@/components/WhatIsIt/RolesSection.vue'
+import SummarySection from '@/components/WhatIsIt/SummarySection.vue'
+import FooterSection from '@/components/WhatIsIt/FooterSection.vue'
 
-// Import images
-import PlayerAreaImg from '@/assets/what-is-it/PlayerArea.png';
-import PlayerCharacterCardImg from '@/assets/what-is-it/PlayerCharacterCard.png';
-import PlayerActionsImg from '@/assets/what-is-it/PlayerActions.png';
-import DiceAreaImg from '@/assets/what-is-it/DiceArea.png';
-import GameMasterAreaImg from '@/assets/what-is-it/GameMasterArea.png';
-import GameMasterWorldEditImg from '@/assets/what-is-it/GameMasterWorldEdit.png';
-import GameMasterWorldEditCharacterInfoImg from '@/assets/what-is-it/GameMasterWorldEditCharacterInfo.png';
-import GameMasterCharacterManagemantImg from '@/assets/what-is-it/GameMasterCharacterManagemant.png';
-import InventoryItemsImg from '@/assets/what-is-it/InventoryItems.png';
+import PlayerAreaImg from '@/assets/what-is-it/PlayerArea.png'
+import PlayerCharacterCardImg from '@/assets/what-is-it/PlayerCharacterCard.png'
+import PlayerActionsImg from '@/assets/what-is-it/PlayerActions.png'
+import DiceAreaImg from '@/assets/what-is-it/DiceArea.png'
+import GameMasterAreaImg from '@/assets/what-is-it/GameMasterArea.png'
+import GameMasterWorldEditImg from '@/assets/what-is-it/GameMasterWorldEdit.png'
+import GameMasterWorldEditCharacterInfoImg from '@/assets/what-is-it/GameMasterWorldEditCharacterInfo.png'
+import GameMasterCharacterManagemantImg from '@/assets/what-is-it/GameMasterCharacterManagemant.png'
+import InventoryItemsImg from '@/assets/what-is-it/InventoryItems.png'
 
-export default {
-  name: 'WhatIsIt',
-  components: {
-    TitleComponent,
-    HeroBackground,
-    ZoomModal,
-    IntroductionSection,
-    RolesSection,
-    SummarySection,
-    FooterSection
-  },
-  setup() {
-    const { t } = useI18n();
-    return { t };
-  },
-  data() {
-    return {
-      isZoomed: false,
-      currentZoomedImage: '',
-      scrollPosition: 0,
-      worldOverviewData: null,
+interface ImageData {
+  src: string
+  alt: string
+  caption: string
+}
 
-      // Introduction section data
-      introMainImage: {
-        src: PlayerAreaImg,
-        alt: 'Player area interface',
-        caption: ''
-      },
-      introGalleryItems: [
-        {
-          src: PlayerCharacterCardImg,
-          alt: 'Player character card',
-          caption: 'Character Card'
-        },
-        {
-          src: DiceAreaImg,
-          alt: 'Dice rolling interface',
-          caption: 'Dice Rolling System'
-        }
-      ],
+interface CharacterCreation {
+  title: string
+  paths: string[]
+}
 
-      // Roles section data
-      playerData: {
-        title: '',
-        description: '',
-        responsibilities: '',
-        timeCommitment: '',
-        gameplay: '',
-        progression: '',
-        characterCreation: {
-          title: '',
-          paths: ['', '', '']
-        },
-        image: {
-          src: PlayerCharacterCardImg,
-          alt: 'Player character interface'
-        }
-      },
-      gameMasterData: {
-        title: '',
-        description: '',
-        responsibilities: '',
-        skillsDeveloped: '',
-        timeCommitment: '',
-        uniqueAspects: '',
-        digitalTools: {
-          title: '',
-          tools: ['', '', '']
-        },
-        image: {
-          src: GameMasterAreaImg,
-          alt: 'Game Master dashboard'
-        }
-      },
-      toolsGalleryItems: [
-        {
-          src: GameMasterWorldEditImg,
-          alt: 'World Editor interface',
-          caption: 'World Editor'
-        },
-        {
-          src: GameMasterWorldEditCharacterInfoImg,
-          alt: 'Character editing interface',
-          caption: 'Character Management'
-        },
-        {
-          src: GameMasterCharacterManagemantImg,
-          alt: 'Character management interface',
-          caption: 'Character Stats'
-        }
-      ],
+interface DigitalTools {
+  title: string
+  tools: string[]
+}
 
-      // Summary section data
-      keyFeaturesData: {
-        title: '',
-        features: ['', '', '', '']
-      },
-      gettingStartedData: {
-        title: '',
-        steps: ['', '', '']
-      },
-      requirementsData: {
-        title: '',
-        technical: {
-          title: '',
-          items: ['', '', '']
-        },
-        personal: {
-          title: '',
-          items: ['', '', '']
-        }
-      },
-      inventoryImageData: {
-        src: InventoryItemsImg,
-        alt: 'Inventory system',
-        caption: 'Inventory System'
-      },
+interface PlayerData {
+  title: string
+  description: string
+  responsibilities: string
+  timeCommitment: string
+  gameplay: string
+  progression: string
+  characterCreation: CharacterCreation
+  image: Omit<ImageData, 'caption'>
+}
 
-      // Footer section data
-      footerLinks: [
-        {
-          to: '/faq/newcomers-guide',
-          text: ''
-        },
-        {
-          to: '/faq/player-cheatsheet',
-          text: ''
-        }
-      ]
-    };
-  },
-  created() {
-    // Initialize data that requires translations
-    this.introMainImage.caption = this.t('whatIsIt.introduction.imageCaption');
+interface GameMasterData {
+  title: string
+  description: string
+  responsibilities: string
+  skillsDeveloped: string
+  timeCommitment: string
+  uniqueAspects: string
+  digitalTools: DigitalTools
+  image: Omit<ImageData, 'caption'>
+}
 
-    // Initialize worldOverviewData
-    this.worldOverviewData = {
-      title: this.t('whatIsIt.summary.worldOverview.title'),
-      description: this.t('whatIsIt.summary.worldOverview.description'),
-      conflict: {
-        title: this.t('whatIsIt.summary.worldOverview.conflict.title'),
-        description: this.t('whatIsIt.summary.worldOverview.conflict.description'),
-        paths: [
-          {
-            title: this.t('whatIsIt.summary.worldOverview.conflict.paths.0.title'),
-            description: this.t('whatIsIt.summary.worldOverview.conflict.paths.0.description')
-          },
-          {
-            title: this.t('whatIsIt.summary.worldOverview.conflict.paths.1.title'),
-            description: this.t('whatIsIt.summary.worldOverview.conflict.paths.1.description')
-          }
-        ]
-      },
-      keyPlayers: {
-        title: this.t('whatIsIt.summary.worldOverview.keyPlayers.title'),
-        players: [
-          {
-            name: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.0.name'),
-            description: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.0.description')
-          },
-          {
-            name: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.1.name'),
-            description: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.1.description')
-          },
-          {
-            name: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.2.name'),
-            description: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.2.description')
-          },
-          {
-            name: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.3.name'),
-            description: this.t('whatIsIt.summary.worldOverview.keyPlayers.players.3.description')
-          }
-        ]
-      },
-      worldToday: {
-        title: this.t('whatIsIt.summary.worldOverview.worldToday.title'),
-        description: this.t('whatIsIt.summary.worldOverview.worldToday.description')
-      },
-      yourChoice: {
-        title: this.t('whatIsIt.summary.worldOverview.yourChoice.title'),
-        description: this.t('whatIsIt.summary.worldOverview.yourChoice.description')
-      },
-      conclusion: this.t('whatIsIt.summary.worldOverview.conclusion')
-    };
+interface KeyFeaturesData {
+  title: string
+  features: string[]
+}
 
-    // Player data
-    this.playerData.title = this.t('whatIsIt.roles.player.title');
-    this.playerData.description = this.t('whatIsIt.roles.player.description');
-    this.playerData.responsibilities = this.t('whatIsIt.roles.player.responsibilities');
-    this.playerData.timeCommitment = this.t('whatIsIt.roles.player.timeCommitment');
-    this.playerData.gameplay = this.t('whatIsIt.roles.player.gameplay');
-    this.playerData.progression = this.t('whatIsIt.roles.player.progression');
-    this.playerData.characterCreation.title = this.t('whatIsIt.roles.player.characterCreation.title');
-    this.playerData.characterCreation.paths[0] = this.t('whatIsIt.roles.player.characterCreation.paths.json');
-    this.playerData.characterCreation.paths[1] = this.t('whatIsIt.roles.player.characterCreation.paths.john');
-    this.playerData.characterCreation.paths[2] = this.t('whatIsIt.roles.player.characterCreation.paths.human');
+interface GettingStartedData {
+  title: string
+  steps: string[]
+}
 
-    // Game Master data
-    this.gameMasterData.title = this.t('whatIsIt.roles.gameMaster.title');
-    this.gameMasterData.description = this.t('whatIsIt.roles.gameMaster.description');
-    this.gameMasterData.responsibilities = this.t('whatIsIt.roles.gameMaster.responsibilities');
-    this.gameMasterData.skillsDeveloped = this.t('whatIsIt.roles.gameMaster.skillsDeveloped');
-    this.gameMasterData.timeCommitment = this.t('whatIsIt.roles.gameMaster.timeCommitment');
-    this.gameMasterData.uniqueAspects = this.t('whatIsIt.roles.gameMaster.uniqueAspects');
-    this.gameMasterData.digitalTools.title = this.t('whatIsIt.roles.gameMaster.digitalTools.title');
-    this.gameMasterData.digitalTools.tools[0] = this.t('whatIsIt.roles.gameMaster.digitalTools.worldEditor');
-    this.gameMasterData.digitalTools.tools[1] = this.t('whatIsIt.roles.gameMaster.digitalTools.characterManagement');
-    this.gameMasterData.digitalTools.tools[2] = this.t('whatIsIt.roles.gameMaster.digitalTools.battleSystem');
-
-    // Summary data
-    this.keyFeaturesData.title = this.t('whatIsIt.summary.keyFeatures.title');
-    this.keyFeaturesData.features[0] = this.t('whatIsIt.summary.keyFeatures.digitalTools');
-    this.keyFeaturesData.features[1] = this.t('whatIsIt.summary.keyFeatures.accessibleRules');
-    this.keyFeaturesData.features[2] = this.t('whatIsIt.summary.keyFeatures.uniqueSetting');
-    this.keyFeaturesData.features[3] = this.t('whatIsIt.summary.keyFeatures.communitySupport');
-
-    this.gettingStartedData.title = this.t('whatIsIt.summary.gettingStarted.title');
-    this.gettingStartedData.steps[0] = this.t('whatIsIt.summary.gettingStarted.step1');
-    this.gettingStartedData.steps[1] = this.t('whatIsIt.summary.gettingStarted.step2');
-    this.gettingStartedData.steps[2] = this.t('whatIsIt.summary.gettingStarted.step3');
-
-    this.requirementsData.title = this.t('whatIsIt.summary.requirements.title');
-    this.requirementsData.technical.title = this.t('whatIsIt.summary.requirements.technical.title');
-    this.requirementsData.technical.items[0] = this.t('whatIsIt.summary.requirements.technical.computer');
-    this.requirementsData.technical.items[1] = this.t('whatIsIt.summary.requirements.technical.browser');
-    this.requirementsData.technical.items[2] = this.t('whatIsIt.summary.requirements.technical.discord');
-    this.requirementsData.personal.title = this.t('whatIsIt.summary.requirements.personal.title');
-    this.requirementsData.personal.items[0] = this.t('whatIsIt.summary.requirements.personal.time');
-    this.requirementsData.personal.items[1] = this.t('whatIsIt.summary.requirements.personal.friends');
-    this.requirementsData.personal.items[2] = this.t('whatIsIt.summary.requirements.personal.imagination');
-
-    // Footer links
-    this.footerLinks[0].text = this.t('whatIsIt.footer.newcomersGuide');
-    this.footerLinks[1].text = this.t('whatIsIt.footer.playerCheatSheet');
-  },
-
-  methods: {
-    toggleZoom(event) {
-      // Get the image element from the event
-      const imgElement = event.target.tagName === 'IMG' ? event.target : event.target.querySelector('img');
-
-      if (imgElement) {
-        // Use the actual resolved src from the DOM
-        this.currentZoomedImage = imgElement.src;
-        this.isZoomed = true;
-        // Store current scroll position
-        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-        // Prevent body scrolling when modal is open
-        document.body.style.overflow = 'hidden';
-      } else if (event.target.classList.contains('hero-background')) {
-        // Special case for hero background which is a fixed background
-        // Get computed style to extract the actual URL
-        const style = getComputedStyle(event.target);
-        const bgImage = style.backgroundImage;
-        // Extract URL from the "url('...')" format
-        const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
-        this.currentZoomedImage = url;
-        this.isZoomed = true;
-        // Store current scroll position
-        this.scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-        // Prevent body scrolling when modal is open
-        document.body.style.overflow = 'hidden';
-      }
-    },
-    closeZoom() {
-      this.isZoomed = false;
-      // Re-enable body scrolling
-      document.body.style.overflow = '';
-      // Restore scroll position
-      window.scrollTo(0, this.scrollPosition);
-    }
+interface RequirementsData {
+  title: string
+  technical: {
+    title: string
+    items: string[]
   }
-};
+  personal: {
+    title: string
+    items: string[]
+  }
+}
+
+interface ConflictPath {
+  title: string
+  description: string
+}
+
+interface KeyPlayer {
+  name: string
+  description: string
+}
+
+interface WorldOverviewData {
+  title: string
+  description: string
+  conflict: {
+    title: string
+    description: string
+    paths: ConflictPath[]
+  }
+  keyPlayers: {
+    title: string
+    players: KeyPlayer[]
+  }
+  worldToday: {
+    title: string
+    description: string
+  }
+  yourChoice: {
+    title: string
+    description: string
+  }
+  conclusion: string
+}
+
+interface FooterLink {
+  to: string
+  text: string
+}
+
+const { t } = useI18n()
+
+const isZoomed = ref(false)
+const currentZoomedImage = ref('')
+const scrollPosition = ref(0)
+
+// Introduction section data
+const introMainImage = computed<ImageData>(() => ({
+  src: PlayerAreaImg,
+  alt: 'Player area interface',
+  caption: t('whatIsIt.introduction.imageCaption')
+}))
+
+const introGalleryItems: ImageData[] = [
+  {
+    src: PlayerCharacterCardImg,
+    alt: 'Player character card',
+    caption: 'Character Card'
+  },
+  {
+    src: DiceAreaImg,
+    alt: 'Dice rolling interface',
+    caption: 'Dice Rolling System'
+  }
+]
+
+// Roles section data
+const playerData = computed<PlayerData>(() => ({
+  title: t('whatIsIt.roles.player.title'),
+  description: t('whatIsIt.roles.player.description'),
+  responsibilities: t('whatIsIt.roles.player.responsibilities'),
+  timeCommitment: t('whatIsIt.roles.player.timeCommitment'),
+  gameplay: t('whatIsIt.roles.player.gameplay'),
+  progression: t('whatIsIt.roles.player.progression'),
+  characterCreation: {
+    title: t('whatIsIt.roles.player.characterCreation.title'),
+    paths: [
+      t('whatIsIt.roles.player.characterCreation.paths.json'),
+      t('whatIsIt.roles.player.characterCreation.paths.john'),
+      t('whatIsIt.roles.player.characterCreation.paths.human')
+    ]
+  },
+  image: {
+    src: PlayerCharacterCardImg,
+    alt: 'Player character interface'
+  }
+}))
+
+const gameMasterData = computed<GameMasterData>(() => ({
+  title: t('whatIsIt.roles.gameMaster.title'),
+  description: t('whatIsIt.roles.gameMaster.description'),
+  responsibilities: t('whatIsIt.roles.gameMaster.responsibilities'),
+  skillsDeveloped: t('whatIsIt.roles.gameMaster.skillsDeveloped'),
+  timeCommitment: t('whatIsIt.roles.gameMaster.timeCommitment'),
+  uniqueAspects: t('whatIsIt.roles.gameMaster.uniqueAspects'),
+  digitalTools: {
+    title: t('whatIsIt.roles.gameMaster.digitalTools.title'),
+    tools: [
+      t('whatIsIt.roles.gameMaster.digitalTools.worldEditor'),
+      t('whatIsIt.roles.gameMaster.digitalTools.characterManagement'),
+      t('whatIsIt.roles.gameMaster.digitalTools.battleSystem')
+    ]
+  },
+  image: {
+    src: GameMasterAreaImg,
+    alt: 'Game Master dashboard'
+  }
+}))
+
+const toolsGalleryItems: ImageData[] = [
+  {
+    src: GameMasterWorldEditImg,
+    alt: 'World Editor interface',
+    caption: 'World Editor'
+  },
+  {
+    src: GameMasterWorldEditCharacterInfoImg,
+    alt: 'Character editing interface',
+    caption: 'Character Management'
+  },
+  {
+    src: GameMasterCharacterManagemantImg,
+    alt: 'Character management interface',
+    caption: 'Character Stats'
+  }
+]
+
+// Summary section data
+const keyFeaturesData = computed<KeyFeaturesData>(() => ({
+  title: t('whatIsIt.summary.keyFeatures.title'),
+  features: [
+    t('whatIsIt.summary.keyFeatures.digitalTools'),
+    t('whatIsIt.summary.keyFeatures.accessibleRules'),
+    t('whatIsIt.summary.keyFeatures.uniqueSetting'),
+    t('whatIsIt.summary.keyFeatures.communitySupport')
+  ]
+}))
+
+const gettingStartedData = computed<GettingStartedData>(() => ({
+  title: t('whatIsIt.summary.gettingStarted.title'),
+  steps: [
+    t('whatIsIt.summary.gettingStarted.step1'),
+    t('whatIsIt.summary.gettingStarted.step2'),
+    t('whatIsIt.summary.gettingStarted.step3')
+  ]
+}))
+
+const requirementsData = computed<RequirementsData>(() => ({
+  title: t('whatIsIt.summary.requirements.title'),
+  technical: {
+    title: t('whatIsIt.summary.requirements.technical.title'),
+    items: [
+      t('whatIsIt.summary.requirements.technical.computer'),
+      t('whatIsIt.summary.requirements.technical.browser'),
+      t('whatIsIt.summary.requirements.technical.discord')
+    ]
+  },
+  personal: {
+    title: t('whatIsIt.summary.requirements.personal.title'),
+    items: [
+      t('whatIsIt.summary.requirements.personal.time'),
+      t('whatIsIt.summary.requirements.personal.friends'),
+      t('whatIsIt.summary.requirements.personal.imagination')
+    ]
+  }
+}))
+
+const worldOverviewData = computed<WorldOverviewData>(() => ({
+  title: t('whatIsIt.summary.worldOverview.title'),
+  description: t('whatIsIt.summary.worldOverview.description'),
+  conflict: {
+    title: t('whatIsIt.summary.worldOverview.conflict.title'),
+    description: t('whatIsIt.summary.worldOverview.conflict.description'),
+    paths: [
+      {
+        title: t('whatIsIt.summary.worldOverview.conflict.paths.0.title'),
+        description: t('whatIsIt.summary.worldOverview.conflict.paths.0.description')
+      },
+      {
+        title: t('whatIsIt.summary.worldOverview.conflict.paths.1.title'),
+        description: t('whatIsIt.summary.worldOverview.conflict.paths.1.description')
+      }
+    ]
+  },
+  keyPlayers: {
+    title: t('whatIsIt.summary.worldOverview.keyPlayers.title'),
+    players: [
+      {
+        name: t('whatIsIt.summary.worldOverview.keyPlayers.players.0.name'),
+        description: t('whatIsIt.summary.worldOverview.keyPlayers.players.0.description')
+      },
+      {
+        name: t('whatIsIt.summary.worldOverview.keyPlayers.players.1.name'),
+        description: t('whatIsIt.summary.worldOverview.keyPlayers.players.1.description')
+      },
+      {
+        name: t('whatIsIt.summary.worldOverview.keyPlayers.players.2.name'),
+        description: t('whatIsIt.summary.worldOverview.keyPlayers.players.2.description')
+      },
+      {
+        name: t('whatIsIt.summary.worldOverview.keyPlayers.players.3.name'),
+        description: t('whatIsIt.summary.worldOverview.keyPlayers.players.3.description')
+      }
+    ]
+  },
+  worldToday: {
+    title: t('whatIsIt.summary.worldOverview.worldToday.title'),
+    description: t('whatIsIt.summary.worldOverview.worldToday.description')
+  },
+  yourChoice: {
+    title: t('whatIsIt.summary.worldOverview.yourChoice.title'),
+    description: t('whatIsIt.summary.worldOverview.yourChoice.description')
+  },
+  conclusion: t('whatIsIt.summary.worldOverview.conclusion')
+}))
+
+const inventoryImageData: ImageData = {
+  src: InventoryItemsImg,
+  alt: 'Inventory system',
+  caption: 'Inventory System'
+}
+
+// Footer section data
+const footerLinks = computed<FooterLink[]>(() => [
+  {
+    to: '/faq/newcomers-guide',
+    text: t('whatIsIt.footer.newcomersGuide')
+  },
+  {
+    to: '/faq/player-cheatsheet',
+    text: t('whatIsIt.footer.playerCheatSheet')
+  }
+])
+
+function toggleZoom(event: Event) {
+  const target = event.target as HTMLElement
+  const imgElement = target.tagName === 'IMG' ? target as HTMLImageElement : target.querySelector('img')
+
+  if (imgElement) {
+    currentZoomedImage.value = imgElement.src
+    isZoomed.value = true
+    scrollPosition.value = window.pageYOffset || document.documentElement.scrollTop
+    document.body.style.overflow = 'hidden'
+  } else if (target.classList.contains('hero-background')) {
+    const style = getComputedStyle(target)
+    const bgImage = style.backgroundImage
+    const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '')
+    currentZoomedImage.value = url
+    isZoomed.value = true
+    scrollPosition.value = window.pageYOffset || document.documentElement.scrollTop
+    document.body.style.overflow = 'hidden'
+  }
+}
+
+function closeZoom() {
+  isZoomed.value = false
+  document.body.style.overflow = ''
+  window.scrollTo(0, scrollPosition.value)
+}
 </script>
 
 <style scoped>

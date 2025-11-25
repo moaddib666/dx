@@ -84,77 +84,80 @@
   </section>
 </template>
 
-<script>
-export default {
-  name: 'SummarySection',
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-    keyFeatures: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               Array.isArray(value.features);
-      }
-    },
-    gettingStarted: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               Array.isArray(value.steps);
-      }
-    },
-    requirements: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               typeof value.technical === 'object' &&
-               typeof value.technical.title === 'string' &&
-               Array.isArray(value.technical.items) &&
-               typeof value.personal === 'object' &&
-               typeof value.personal.title === 'string' &&
-               Array.isArray(value.personal.items);
-      }
-    },
-    worldOverview: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.title === 'string' &&
-               typeof value.description === 'string' &&
-               typeof value.conflict === 'object' &&
-               typeof value.conflict.title === 'string' &&
-               typeof value.conflict.description === 'string' &&
-               Array.isArray(value.conflict.paths) &&
-               typeof value.keyPlayers === 'object' &&
-               typeof value.keyPlayers.title === 'string' &&
-               Array.isArray(value.keyPlayers.players) &&
-               typeof value.worldToday === 'object' &&
-               typeof value.worldToday.title === 'string' &&
-               typeof value.worldToday.description === 'string' &&
-               typeof value.yourChoice === 'object' &&
-               typeof value.yourChoice.title === 'string' &&
-               typeof value.yourChoice.description === 'string' &&
-               typeof value.conclusion === 'string';
-      }
-    },
-    inventoryImage: {
-      type: Object,
-      required: true,
-      validator: (value) => {
-        return typeof value.src === 'string' &&
-               typeof value.alt === 'string' &&
-               typeof value.caption === 'string';
-      }
-    }
-  },
-  emits: ['toggle-zoom']
+<script setup lang="ts">
+interface ImageData {
+  src: string
+  alt: string
+  caption: string
 }
+
+interface KeyFeaturesData {
+  title: string
+  features: string[]
+}
+
+interface GettingStartedData {
+  title: string
+  steps: string[]
+}
+
+interface RequirementsData {
+  title: string
+  technical: {
+    title: string
+    items: string[]
+  }
+  personal: {
+    title: string
+    items: string[]
+  }
+}
+
+interface ConflictPath {
+  title: string
+  description: string
+}
+
+interface KeyPlayer {
+  name: string
+  description: string
+}
+
+interface WorldOverviewData {
+  title: string
+  description: string
+  conflict: {
+    title: string
+    description: string
+    paths: ConflictPath[]
+  }
+  keyPlayers: {
+    title: string
+    players: KeyPlayer[]
+  }
+  worldToday: {
+    title: string
+    description: string
+  }
+  yourChoice: {
+    title: string
+    description: string
+  }
+  conclusion: string
+}
+
+defineProps<{
+  title: string
+  keyFeatures: KeyFeaturesData
+  gettingStarted: GettingStartedData
+  requirements: RequirementsData
+  worldOverview: WorldOverviewData
+  inventoryImage: ImageData
+}>()
+
+defineEmits<{
+  (e: 'toggle-zoom', event: Event): void
+}>()
 </script>
 
 <style scoped>

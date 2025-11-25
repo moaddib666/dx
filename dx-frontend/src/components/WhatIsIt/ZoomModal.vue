@@ -4,28 +4,21 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ZoomModal',
-  props: {
-    isVisible: {
-      type: Boolean,
-      required: true
-    },
-    imageUrl: {
-      type: String,
-      required: true
-    }
-  },
-  emits: ['close'],
-  computed: {
-    zoomedImageStyle() {
-      return {
-        backgroundImage: `url(${this.imageUrl})`
-      };
-    }
-  }
-}
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{
+  isVisible: boolean
+  imageUrl: string
+}>()
+
+defineEmits<{
+  (e: 'close'): void
+}>()
+
+const zoomedImageStyle = computed(() => ({
+  backgroundImage: `url(${props.imageUrl})`
+}))
 </script>
 
 <style scoped>
