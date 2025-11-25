@@ -5,7 +5,8 @@
       :image-url="currentZoomedImage"
       @close="closeZoom"
     />
-    <div class="hero-background" @click="toggleZoom($event)"></div>
+    <HeroBackground @toggle-zoom="toggleZoom" />
+
     <main class="cheatsheet">
       <TitleComponent>{{ t('playerCheatSheet.title') }}</TitleComponent>
       <p class="subtitle">{{ t('playerCheatSheet.subtitle') }}</p>
@@ -207,138 +208,104 @@
   </div>
 </template>
 
-<script>
-import TitleComponent from '@/components/TitleComponent.vue';
-import { useI18n } from 'vue-i18n';
-import ZoomModal from '@/components/WhatIsIt/ZoomModal.vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import TitleComponent from '@/components/TitleComponent.vue'
+import HeroBackground from '@/components/WhatIsIt/HeroBackground.vue'
+import ZoomModal from '@/components/WhatIsIt/ZoomModal.vue'
 
-export default {
-  name: 'PlayerCheatSheet',
-  components: {
-    TitleComponent,
-    ZoomModal
-  },
-  setup() {
-    const { t } = useI18n();
-    return { t };
-  },
-  data() {
-    return {
-      isZoomed: false,
-      currentZoomedImage: ''
-    };
-  },
-  computed: {
-    zoomedImageStyle() {
-      return {
-        backgroundImage: `url(${this.currentZoomedImage})`
-      };
-    },
-    immediateExamples() {
-      return [this.t('playerCheatSheet.actionTypes.immediate.examples.0'), this.t('playerCheatSheet.actionTypes.immediate.examples.1')];
-    },
-    scheduledExamples() {
-      return [this.t('playerCheatSheet.actionTypes.scheduled.examples.0'), this.t('playerCheatSheet.actionTypes.scheduled.examples.1'), this.t('playerCheatSheet.actionTypes.scheduled.examples.2')];
-    },
-    finiteExamples() {
-      return [this.t('playerCheatSheet.actionTypes.finite.examples.0')];
-    }
-  },
-  methods: {
-    toggleZoom(event) {
-      // Get the image element from the event
-      const imgElement = event.target.tagName === 'IMG' ? event.target : event.target.querySelector('img');
+const { t } = useI18n()
 
-      if (imgElement) {
-        // Use the actual resolved src from the DOM
-        this.currentZoomedImage = imgElement.src;
-      } else if (event.target.classList.contains('hero-background')) {
-        // Special case for hero background which is a fixed background
-        // Get computed style to extract the actual URL
-        const style = getComputedStyle(event.target);
-        const bgImage = style.backgroundImage;
-        // Extract URL from the "url('...')" format
-        const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
-        this.currentZoomedImage = url;
-      }
+const isZoomed = ref(false)
+const currentZoomedImage = ref('')
+const scrollPosition = ref(0)
 
-      this.isZoomed = !this.isZoomed;
-    },
-    closeZoom() {
-      if (this.isZoomed) {
-        this.isZoomed = false;
-      }
-    }
+const immediateExamples = computed(() => [
+  t('playerCheatSheet.actionTypes.immediate.examples.0'),
+  t('playerCheatSheet.actionTypes.immediate.examples.1')
+])
+
+const scheduledExamples = computed(() => [
+  t('playerCheatSheet.actionTypes.scheduled.examples.0'),
+  t('playerCheatSheet.actionTypes.scheduled.examples.1'),
+  t('playerCheatSheet.actionTypes.scheduled.examples.2')
+])
+
+const finiteExamples = computed(() => [
+  t('playerCheatSheet.actionTypes.finite.examples.0')
+])
+
+function toggleZoom(event: Event) {
+  const target = event.target as HTMLElement
+  const imgElement = target.tagName === 'IMG' ? target as HTMLImageElement : target.querySelector('img')
+
+  if (imgElement) {
+    currentZoomedImage.value = imgElement.src
+    isZoomed.value = true
+    scrollPosition.value = window.pageYOffset || document.documentElement.scrollTop
+    document.body.style.overflow = 'hidden'
+  } else if (target.classList.contains('hero-background')) {
+    const style = getComputedStyle(target)
+    const bgImage = style.backgroundImage
+    const url = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '')
+    currentZoomedImage.value = url
+    isZoomed.value = true
+    scrollPosition.value = window.pageYOffset || document.documentElement.scrollTop
+    document.body.style.overflow = 'hidden'
   }
-};
+}
+
+function closeZoom() {
+  isZoomed.value = false
+  document.body.style.overflow = ''
+  window.scrollTo(0, scrollPosition.value)
+}
 </script>
 
 <style scoped>
+.page-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+}
+
 .cheatsheet {
-  padding: 60px;
-  color: white;
+  max-width: 1200px;
+  width: 100%;
+  padding: 3rem 2rem;
+  color: #e0f7fa;
   position: relative;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(1px);
-  margin-top: 60px;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  margin: 0 auto;
+  border-radius: 12px;
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: var(--light-steel-blue, #b0c4de);
+  line-height: 1.7;
+  color: #b0e7f0;
   font-style: italic;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  margin-top: 1rem;
+  font-weight: 400;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .print-hint {
   display: inline-block;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: var(--cyber-yellow, #ffd700);
-}
-
-/* Hero Background */
-.page-container {
-  position: relative;
-  min-height: 100vh;
-}
-
-.hero-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('@/assets/images/faq/faq-hero-2.1-section.png');
-  background-size: cover;
-  background-position: center 10%;
-  background-attachment: fixed;
-  z-index: -1;
-}
-
-.hero-background::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
-}
-
-/* Animation Keyframes */
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  color: #9feaff;
+  opacity: 0.9;
 }
 
 /* Main Content Grid */
@@ -351,19 +318,27 @@ export default {
 
 /* Content Sections */
 .content-section {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #22d3ee;
+  transition: all 0.3s ease;
+}
+
+.content-section:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-left-color: #06b6d4;
+  transform: translateX(4px);
 }
 
 .section-title {
-  font-size: 1.3rem;
-  color: var(--cyber-yellow, #ffd700);
-  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  color: #22d3ee;
+  margin-bottom: 1rem;
   text-align: center;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 /* Turn Cycle Flow */
@@ -378,15 +353,15 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
   border-radius: 8px;
-  border-left: 4px solid var(--cyber-yellow, #ffd700);
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .step-number {
   width: 30px;
   height: 30px;
-  background: var(--cyber-yellow, #ffd700);
+  background: rgba(99, 247, 255, 0.8);
   color: #000;
   border-radius: 50%;
   display: flex;
@@ -398,13 +373,13 @@ export default {
 
 .step-content h3 {
   font-size: 1.1rem;
-  color: white;
+  color: #bdf9ff;
   margin-bottom: 0.25rem;
 }
 
 .step-content p {
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
 }
 
 /* Action Types */
@@ -416,43 +391,21 @@ export default {
 
 .action-card {
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(6, 14, 24, 0.55);
   border-radius: 8px;
   text-align: center;
-}
-
-.action-card.immediate {
-  border-left: 4px solid #4CAF50;
-}
-
-.action-card.scheduled {
-  border-left: 4px solid #FF9800;
-}
-
-.action-card.finite {
-  border-left: 4px solid #2196F3;
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .action-card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-}
-
-.action-card.immediate h3 {
-  color: #4CAF50;
-}
-
-.action-card.scheduled h3 {
-  color: #FF9800;
-}
-
-.action-card.finite h3 {
-  color: #2196F3;
+  color: #bdf9ff;
 }
 
 .action-card p {
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   margin-bottom: 1rem;
 }
 
@@ -465,10 +418,11 @@ export default {
 
 .action-pill {
   padding: 0.25rem 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 15px;
   font-size: 0.8rem;
-  color: white;
+  color: #b7f9ff;
 }
 
 /* Resource Management */
@@ -480,13 +434,14 @@ export default {
 
 .resource-item {
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
   border-radius: 8px;
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .resource-item h3 {
   font-size: 1.1rem;
-  color: white;
+  color: #bdf9ff;
   margin-bottom: 0.75rem;
   text-align: center;
 }
@@ -497,7 +452,8 @@ export default {
 
 .progress-bar {
   height: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -505,25 +461,15 @@ export default {
 .progress-fill {
   height: 100%;
   border-radius: 10px;
-}
-
-.ap-bar .progress-fill {
-  background: linear-gradient(90deg, #4CAF50, #2E7D32);
-}
-
-.energy-bar .progress-fill {
-  background: linear-gradient(90deg, #00bfff, #1e90ff);
-}
-
-.hp-bar .progress-fill {
-  background: linear-gradient(90deg, #ff4500, #8b0000);
+  background: linear-gradient(90deg, rgba(99, 247, 255, 0.6), rgba(34, 211, 238, 0.8));
 }
 
 .resource-formula {
   text-align: center;
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   font-style: italic;
+  opacity: 0.9;
 }
 
 /* Player-GM Interaction */
@@ -539,7 +485,8 @@ export default {
   flex: 1;
   min-width: 130px;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 8px;
   text-align: center;
 }
@@ -547,7 +494,7 @@ export default {
 .interaction-number {
   width: 30px;
   height: 30px;
-  background: var(--cyber-yellow, #ffd700);
+  background: rgba(99, 247, 255, 0.8);
   color: #000;
   border-radius: 50%;
   display: flex;
@@ -559,18 +506,18 @@ export default {
 
 .interaction-content h3 {
   font-size: 1rem;
-  color: white;
+  color: #bdf9ff;
   margin-bottom: 0.25rem;
 }
 
 .interaction-content p {
   font-size: 0.85rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
 }
 
 .interaction-arrow {
   font-size: 1.5rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #9feaff;
   margin: 0 0.25rem;
 }
 
@@ -583,20 +530,21 @@ export default {
 
 .dimension-card {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 8px;
   text-align: center;
 }
 
 .dimension-card h3 {
   font-size: 1.1rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #bdf9ff;
   margin-bottom: 0.5rem;
 }
 
 .dimension-card p {
   font-size: 0.9rem;
-  color: white;
+  color: #b7f9ff;
   margin-bottom: 0.75rem;
 }
 
@@ -604,16 +552,9 @@ export default {
   padding: 0.5rem;
   border-radius: 4px;
   font-size: 0.85rem;
-}
-
-.dimension-effect.positive {
-  background: rgba(76, 175, 80, 0.2);
-  color: #4CAF50;
-}
-
-.dimension-effect.negative {
-  background: rgba(244, 67, 54, 0.2);
-  color: #F44336;
+  background: rgba(10, 18, 32, 0.4);
+  color: #9feaff;
+  border: 1px solid rgba(99, 247, 255, 0.2);
 }
 
 /* Quick Actions */
@@ -625,19 +566,20 @@ export default {
 
 .quick-action {
   padding: 0.75rem 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 8px;
   text-align: center;
   font-size: 0.9rem;
-  color: white;
+  color: #b7f9ff;
   transition: all 0.3s ease;
 }
 
 .quick-action:hover {
-  background: rgba(255, 215, 0, 0.1);
+  background: rgba(34, 211, 238, 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(34, 211, 238, 0.2);
+  border-color: rgba(99, 247, 255, 0.5);
 }
 
 /* Key Rules */
@@ -652,21 +594,22 @@ export default {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 8px;
 }
 
 .rule-marker {
   width: 12px;
   height: 12px;
-  background: var(--action-green, #4CAF50);
+  background: rgba(99, 247, 255, 0.8);
   border-radius: 2px;
   flex-shrink: 0;
 }
 
 .rule-item p {
   font-size: 0.95rem;
-  color: white;
+  color: #b7f9ff;
 }
 
 /* Dice Modifiers */
@@ -678,35 +621,22 @@ export default {
 
 .modifier-card {
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 18, 32, 0.6);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   border-radius: 8px;
-}
-
-.modifier-card.positive {
-  border-left: 4px solid #4CAF50;
-}
-
-.modifier-card.negative {
-  border-left: 4px solid #F44336;
 }
 
 .modifier-card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
-}
-
-.modifier-card.positive h3 {
-  color: #4CAF50;
-}
-
-.modifier-card.negative h3 {
-  color: #F44336;
+  color: #bdf9ff;
 }
 
 .modifier-card p {
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   font-style: italic;
+  opacity: 0.9;
 }
 
 /* Footer */
@@ -721,23 +651,25 @@ export default {
 .footer-section p {
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
+  opacity: 0.95;
 }
 
 .discord-link {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: linear-gradient(45deg, var(--cyber-yellow, #ffd700), #00ffff);
+  background: linear-gradient(45deg, rgba(99, 247, 255, 0.8), rgba(34, 211, 238, 0.8));
   color: #000;
   text-decoration: none;
   border-radius: 25px;
   font-weight: bold;
   transition: transform 0.3s ease;
+  border: 1px solid rgba(99, 247, 255, 0.6);
 }
 
 .discord-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
 }
 
 /* Additional Links */
@@ -745,46 +677,75 @@ export default {
   margin-top: 1rem;
   display: flex;
   justify-content: center;
+  gap: 1rem;
 }
 
 .additional-link {
   display: inline-block;
   padding: 0.5rem 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--cyber-yellow, #ffd700);
+  background: rgba(10, 18, 32, 0.6);
+  color: #bdf9ff;
   text-decoration: none;
   border-radius: 20px;
   font-weight: bold;
   transition: all 0.3s ease;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(99, 247, 255, 0.4);
 }
 
 .additional-link:hover {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(34, 211, 238, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
-  color: white;
+  box-shadow: 0 4px 10px rgba(34, 211, 238, 0.3);
+  color: #e8fdff;
   text-decoration: none;
+  border-color: rgba(99, 247, 255, 0.6);
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .cheatsheet {
-    padding: 30px;
-    margin-top: 40px;
+    max-width: 100%;
+    padding: 2.5rem 1.5rem;
+    padding-top: 80px;
   }
 
-  .hero-background {
-    background-attachment: scroll; /* Fixed attachment can cause issues on mobile */
+  .subtitle {
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+  }
+
+  .content-section {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cheatsheet {
+    padding: 2rem 1.25rem;
+    padding-top: 70px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.75rem;
   }
 
   .content-grid {
     grid-template-columns: 1fr;
   }
 
-  .zoomed-image {
-    width: 95%;
-    height: 80%;
+  .content-section {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.35rem;
   }
 
   .dice-modifiers {
@@ -803,16 +764,23 @@ export default {
   .interaction-step {
     width: 100%;
   }
+
+  .additional-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
   .cheatsheet {
-    padding: 20px;
-    margin-top: 30px;
+    padding: 1.5rem 1rem;
+    padding-top: 60px;
   }
 
   .subtitle {
-    font-size: 1rem;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
   }
 
   .print-hint {
@@ -821,23 +789,25 @@ export default {
 
   .content-section {
     padding: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   .section-title {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
   }
 
   .step-item,
   .rule-item,
   .interaction-step {
-    padding: 0.75rem;
+    padding: 0.6rem;
   }
 
   .step-number,
   .interaction-number {
     width: 25px;
     height: 25px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .step-content h3,
@@ -846,7 +816,7 @@ export default {
   .resource-item h3,
   .action-card h3,
   .modifier-card h3 {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .step-content p,
@@ -865,21 +835,21 @@ export default {
   }
 
   .quick-action {
-    font-size: 0.9rem;
-    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.4rem;
   }
 
   .progress-bar {
     height: 15px;
   }
 
-  .zoomed-image {
-    width: 98%;
-    height: 70%;
+  .quick-actions-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   }
 
-  .quick-actions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  .discord-link {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
   }
 }
 

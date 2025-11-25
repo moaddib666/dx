@@ -43,8 +43,9 @@ const zoomedImageStyle = computed(() => ({
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 8px;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
   animation: zoomIn 0.3s ease;
+  border: 1px solid rgba(99, 247, 255, 0.4);
 }
 
 @keyframes zoomIn {

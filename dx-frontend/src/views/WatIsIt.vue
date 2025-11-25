@@ -391,53 +391,65 @@ function closeZoom() {
 </script>
 
 <style scoped>
-:root {
-  --cyber-yellow: #ffd700;
-  --cyber-cyan: #00ffff;
-  --light-steel-blue: #b0c4de;
-  --dark-overlay: rgba(0, 0, 0, 0.7);
-}
-
 .page-container {
   position: relative;
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 .what-is-it {
-  padding: 60px;
-  color: white;
+  max-width: 1400px;
+  width: 100%;
+  padding: 1rem;
+  color: #b7f9ff;
   position: relative;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(1px);
-  padding-top: 120px; /* Changed from margin-top to padding-top for better spacing */
+  margin: 0 auto;
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: var(--light-steel-blue);
+  color: #9feaff;
   font-style: italic;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+  .what-is-it {
+    max-width: 100%;
+    padding: 1rem;
+    padding-top: 70px;
+  }
 }
 
 @media (max-width: 768px) {
   .what-is-it {
-    padding: 30px;
-    padding-top: 80px; /* Adjusted from margin-top to padding-top */
+    padding: 1rem;
+    padding-top: 60px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .what-is-it {
-    padding: 20px;
-    padding-top: 60px; /* Adjusted from margin-top to padding-top */
+    padding: 1rem 0.75rem;
+    padding-top: 50px;
   }
 
   .subtitle {
     font-size: 1rem;
+    margin-bottom: 1rem;
   }
 }
 </style>

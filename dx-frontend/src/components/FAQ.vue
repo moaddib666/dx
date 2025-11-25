@@ -67,31 +67,87 @@ export default {
 
 <style scoped>
 .faq {
-  padding: 60px 0;
+  padding: 2rem 0;
 }
 
 .faq-item {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #22d3ee;
+  transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-left-color: #06b6d4;
+  transform: translateX(4px);
 }
 
 .faq-item h3 {
-  font-size: 24px;
-  color: var(--cyber-yellow);
+  font-size: 1.5rem;
+  color: #22d3ee;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .faq-item p {
-  font-size: 16px;
-  color: var(--light-steel-blue);
+  font-size: 1.1rem;
+  color: #e0f7fa;
+  line-height: 1.8;
+  font-weight: 400;
 }
 
 .guide-link {
-  color: var(--cyber-yellow);
+  color: #22d3ee;
   text-decoration: none;
   transition: color 0.3s ease;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
 }
 
 .guide-link:hover {
-  color: white;
-  text-decoration: underline;
+  color: #06b6d4;
+  border-bottom-color: #06b6d4;
+}
+
+@media (max-width: 768px) {
+  .faq {
+    padding: 1.5rem 0;
+  }
+
+  .faq-item {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.35rem;
+  }
+
+  .faq-item p {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .faq {
+    padding: 1rem 0;
+  }
+
+  .faq-item {
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.25rem;
+  }
+
+  .faq-item p {
+    font-size: 1rem;
+  }
 }
 </style>

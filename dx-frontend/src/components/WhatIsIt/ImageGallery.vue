@@ -31,18 +31,19 @@ defineEmits<{
 <style scoped>
 .image-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .gallery-item {
   text-align: center;
+  max-width: 100%;
 }
 
 .gallery-image {
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -52,50 +53,22 @@ defineEmits<{
 .zoomable-image {
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 3px solid transparent;
+  border: 1px solid rgba(99, 247, 255, 0.3);
   position: relative;
 }
 
-.zoomable-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-  z-index: 1;
-  pointer-events: none;
-  animation: borderPulse 3s infinite alternate;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .zoomable-image:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-}
-
-.zoomable-image:hover::before {
-  opacity: 1;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+  border-color: rgba(99, 247, 255, 0.5);
 }
 
 .image-caption {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   font-style: italic;
-}
-
-@keyframes borderPulse {
-  0% {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.4);
-  }
+  opacity: 0.9;
 }
 
 @media (max-width: 768px) {
@@ -106,16 +79,6 @@ defineEmits<{
 
   .gallery-image {
     max-width: 100%;
-  }
-
-  .zoomable-image::before {
-    border-width: 1px;
-  }
-}
-
-@media (max-width: 480px) {
-  .zoomable-image:hover {
-    transform: scale(1.02);
   }
 }
 </style>

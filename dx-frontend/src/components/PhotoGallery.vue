@@ -115,23 +115,26 @@ export default {
   width: 100%;
   overflow-x: hidden;
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #22d3ee;
   max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+.gallery-section:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-left-color: #06b6d4;
 }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
   margin-bottom: 1.5rem;
-  padding-right: 10px;
   width: 100%;
 }
-
-/* Scrollbar styling is now handled globally in global.css */
 
 .photo-item {
   position: relative;
@@ -144,12 +147,18 @@ export default {
 
 .photo-card {
   position: relative;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(99, 247, 255, 0.3);
+  background: rgba(10, 18, 32, 0.6);
   height: 250px;
+  transition: all 0.3s ease;
+}
+
+.photo-card:hover {
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+  border-color: rgba(99, 247, 255, 0.5);
 }
 
 .photo-card img {
@@ -175,8 +184,8 @@ export default {
 }
 
 .photo-number {
-  background: var(--cyber-yellow, #ffd700);
-  color: black;
+  background: rgba(99, 247, 255, 0.8);
+  color: #000;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -190,9 +199,9 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 3px solid #22d3ee;
   margin: 2rem auto;
   max-width: 600px;
   text-align: center;
@@ -201,61 +210,120 @@ export default {
 .warning-icon {
   font-size: 48px;
   margin-bottom: 20px;
-  color: var(--cyber-yellow, #ffd700);
+  color: #22d3ee;
 }
 
 .warning-title {
-  font-size: 24px;
-  color: var(--cyber-yellow, #ffd700);
-  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #22d3ee;
+  margin-bottom: 1rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .warning-message {
-  font-size: 16px;
-  color: var(--light-steel-blue, #b0c4de);
-  margin-bottom: 25px;
-  line-height: 1.5;
+  font-size: 1.1rem;
+  color: #e0f7fa;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  font-weight: 400;
 }
 
 .retry-button {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background: linear-gradient(45deg, var(--cyber-yellow, #ffd700), #00ffff);
+  background: linear-gradient(45deg, rgba(99, 247, 255, 0.8), rgba(34, 211, 238, 0.8));
   color: #000;
   text-decoration: none;
   border-radius: 25px;
   font-weight: bold;
   transition: all 0.3s ease;
-  border: none;
+  border: 1px solid rgba(99, 247, 255, 0.6);
   cursor: pointer;
 }
 
 .retry-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+  .gallery-section {
+    padding: 1.25rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .gallery-section {
+    padding: 1.25rem;
+  }
+
   .gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .photo-card {
+    height: 200px;
+  }
+
+  .warning-title {
+    font-size: 1.35rem;
+  }
+
+  .warning-message {
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-section {
+    padding: 1rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
   }
 
   .photo-card {
     height: 180px;
   }
+
+  .warning-title {
+    font-size: 1.25rem;
+  }
+
+  .warning-message {
+    font-size: 1rem;
+  }
+
+  .retry-button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
 }
 
 @media (min-width: 1200px) {
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
 
 @media (min-width: 1600px) {
   .gallery-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .photo-card {
+    height: 280px;
   }
 }
 </style>

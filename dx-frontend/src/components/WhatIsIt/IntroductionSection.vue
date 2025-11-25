@@ -61,65 +61,71 @@ defineEmits<{
 
 <style scoped>
 .intro-section {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 255, 255, 0.05));
-  border: 2px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(99, 247, 255, 0.1), rgba(34, 211, 238, 0.05));
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .content-section {
-  margin-bottom: 4rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(9, 16, 28, 0.55);
   border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(99, 247, 255, 0.4);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
 }
 
 .section-title {
   font-size: 2rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #c7f5ff;
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 600;
+  letter-spacing: 0.2em;
 }
 
 .subsection-title {
   font-size: 1.5rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #bdf9ff;
   margin-bottom: 1rem;
   font-weight: 600;
+  letter-spacing: 0.15em;
 }
 
 .intro-content {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .intro-text {
   font-size: 1rem;
+  line-height: 1.7;
 }
 
 .intro-details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 .intro-detail-item {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  background: rgba(10, 18, 32, 0.6);
   border-radius: 8px;
-  border-left: 3px solid var(--cyber-cyan, #00ffff);
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .intro-detail-item h4 {
-  color: var(--light-steel-blue, #b0c4de);
+  color: #b7f9ff;
   font-weight: 500;
   margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .intro-gallery {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .main-image-container {
@@ -129,7 +135,7 @@ defineEmits<{
 
 .section-image {
   width: 100%;
-  max-width: 450px;
+  max-width: 600px;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -139,63 +145,56 @@ defineEmits<{
 .zoomable-image {
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 3px solid transparent;
+  border: 1px solid rgba(99, 247, 255, 0.3);
   position: relative;
 }
 
-.zoomable-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-  z-index: 1;
-  pointer-events: none;
-  animation: borderPulse 3s infinite alternate;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .zoomable-image:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-}
-
-.zoomable-image:hover::before {
-  opacity: 1;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+  border-color: rgba(99, 247, 255, 0.5);
 }
 
 .image-caption {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   font-style: italic;
+  opacity: 0.9;
 }
 
-@keyframes borderPulse {
-  0% {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.2);
+@media (max-width: 1024px) {
+  .content-section {
+    padding: 1.5rem;
   }
-  100% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.4);
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .subsection-title {
+    font-size: 1.4rem;
   }
 }
 
 @media (max-width: 768px) {
+  .content-section {
+    padding: 1.25rem;
+  }
+
   .section-title {
     font-size: 1.5rem;
+    letter-spacing: 0.15em;
   }
 
   .subsection-title {
     font-size: 1.3rem;
+    letter-spacing: 0.1em;
   }
 
   .intro-details {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .section-image {
@@ -204,12 +203,32 @@ defineEmits<{
 }
 
 @media (max-width: 480px) {
+  .content-section {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
   .section-title {
     font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
   }
 
   .subsection-title {
     font-size: 1.1rem;
+    letter-spacing: 0.08em;
+  }
+
+  .intro-text {
+    font-size: 0.95rem;
+  }
+
+  .intro-detail-item {
+    padding: 0.75rem;
+  }
+
+  .intro-detail-item h4 {
+    font-size: 0.9rem;
   }
 
   .zoomable-image:hover {

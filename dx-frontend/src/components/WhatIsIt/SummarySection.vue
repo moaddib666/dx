@@ -162,58 +162,61 @@ defineEmits<{
 
 <style scoped>
 .summary-section {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(0, 255, 255, 0.05));
-  border: 2px solid rgba(255, 215, 0, 0.2);
+  background: linear-gradient(135deg, rgba(99, 247, 255, 0.08), rgba(34, 211, 238, 0.05));
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .content-section {
-  margin-bottom: 4rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(9, 16, 28, 0.55);
   border-radius: 12px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(99, 247, 255, 0.4);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.15);
 }
 
 .section-title {
   font-size: 2rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #c7f5ff;
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 600;
+  letter-spacing: 0.2em;
 }
 
 .subsection-title {
   font-size: 1.5rem;
-  color: var(--cyber-yellow, #ffd700);
+  color: #bdf9ff;
   margin-bottom: 1rem;
   font-weight: 600;
+  letter-spacing: 0.15em;
 }
 
 .summary-content {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .summary-block {
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  background: rgba(10, 18, 32, 0.5);
   border-radius: 10px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
 }
 
 .feature-item {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  background: rgba(6, 14, 24, 0.55);
   border-radius: 8px;
   text-align: center;
-  border-left: 3px solid var(--cyber-cyan, #00ffff);
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .getting-started-steps {
@@ -224,11 +227,11 @@ defineEmits<{
 
 .getting-started-steps li {
   counter-increment: step-counter;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(10, 18, 32, 0.6);
   border-radius: 8px;
-  border-left: 4px solid var(--cyber-yellow, #ffd700);
+  border: 1px solid rgba(99, 247, 255, 0.3);
   position: relative;
   padding-left: 2.5rem;
 }
@@ -239,7 +242,7 @@ defineEmits<{
   left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--cyber-yellow, #ffd700);
+  background: rgba(99, 247, 255, 0.8);
   color: #000;
   width: 25px;
   height: 25px;
@@ -262,8 +265,9 @@ defineEmits<{
 }
 
 .requirements-column h4 {
-  color: var(--cyber-yellow, #ffd700);
+  color: #bdf9ff;
   margin-bottom: 1rem;
+  letter-spacing: 0.1em;
 }
 
 .requirements-list {
@@ -272,11 +276,11 @@ defineEmits<{
 }
 
 .requirements-list li {
-  margin-bottom: 0.75rem;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(10, 18, 32, 0.6);
   border-radius: 6px;
-  border-left: 3px solid var(--cyber-cyan, #00ffff);
+  border: 1px solid rgba(99, 247, 255, 0.3);
 }
 
 .world-overview {
@@ -290,62 +294,65 @@ defineEmits<{
 }
 
 .world-section {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(10, 18, 32, 0.3);
   border-radius: 8px;
-  padding: 1rem;
-  border-left: 3px solid var(--cyber-yellow, #ffd700);
+  padding: 0.75rem;
+  border: none;
 }
 
 .world-subtitle {
-  color: var(--cyber-yellow, #ffd700);
-  margin-bottom: 0.75rem;
+  color: #bdf9ff;
+  margin-bottom: 0.5rem;
   font-size: 1.2rem;
+  letter-spacing: 0.1em;
 }
 
 .world-description {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-size: 1.1rem;
   line-height: 1.6;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
+  opacity: 0.95;
 }
 
 .world-paths {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 1rem;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .world-path {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(6, 14, 24, 0.3);
   border-radius: 6px;
-  padding: 0.75rem;
-  border-left: 3px solid var(--cyber-cyan, #00ffff);
+  padding: 0.5rem;
+  border: none;
 }
 
 .key-players {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
 .key-player {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(6, 14, 24, 0.3);
   border-radius: 6px;
-  padding: 0.75rem;
-  border-left: 3px solid var(--cyber-cyan, #00ffff);
+  padding: 0.5rem;
+  border: none;
 }
 
 .world-conclusion {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   font-size: 1.1rem;
   font-style: italic;
-  color: var(--cyber-yellow, #ffd700);
+  color: #bdf9ff;
   text-align: center;
-  padding: 0.75rem;
-  background: rgba(255, 215, 0, 0.05);
+  padding: 0.5rem;
+  background: rgba(10, 18, 32, 0.4);
   border-radius: 8px;
+  border: none;
 }
 
 .inventory-image-container {
@@ -361,81 +368,116 @@ defineEmits<{
 .zoomable-image {
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 3px solid transparent;
+  border: 1px solid rgba(99, 247, 255, 0.3);
   position: relative;
 }
 
-.zoomable-image::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-  z-index: 1;
-  pointer-events: none;
-  animation: borderPulse 3s infinite alternate;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .zoomable-image:hover {
-  transform: scale(1.03);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-}
-
-.zoomable-image:hover::before {
-  opacity: 1;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
+  border-color: rgba(99, 247, 255, 0.5);
 }
 
 .image-caption {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: var(--light-steel-blue, #b0c4de);
+  color: #9feaff;
   font-style: italic;
+  opacity: 0.9;
 }
 
-@keyframes borderPulse {
-  0% {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), inset 0 0 15px rgba(255, 215, 0, 0.2);
+@media (max-width: 1024px) {
+  .content-section {
+    padding: 1.5rem;
   }
-  100% {
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), inset 0 0 20px rgba(255, 215, 0, 0.4);
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .subsection-title {
+    font-size: 1.4rem;
+  }
+
+  .summary-block {
+    padding: 1.25rem;
   }
 }
 
 @media (max-width: 768px) {
+  .content-section {
+    padding: 1.25rem;
+  }
+
   .section-title {
     font-size: 1.5rem;
+    letter-spacing: 0.15em;
   }
 
   .subsection-title {
     font-size: 1.3rem;
+    letter-spacing: 0.1em;
+  }
+
+  .summary-content {
+    gap: 1.25rem;
+  }
+
+  .summary-block {
+    padding: 1rem;
   }
 
   .requirements-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
   }
+
+  .world-description {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .content-section {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
   .section-title {
     font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
   }
 
   .subsection-title {
     font-size: 1.1rem;
+    letter-spacing: 0.08em;
+  }
+
+  .summary-content {
+    gap: 1rem;
+  }
+
+  .summary-block {
+    padding: 0.75rem;
+  }
+
+  .feature-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .getting-started-steps li {
     padding-left: 2rem;
+    padding-right: 0.75rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
   }
 
   .getting-started-steps li::before {
@@ -443,6 +485,39 @@ defineEmits<{
     height: 20px;
     font-size: 0.8rem;
     left: 0.5rem;
+  }
+
+  .requirements-list li {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .requirements-column h4 {
+    font-size: 1rem;
+  }
+
+  .world-section {
+    padding: 0.75rem;
+  }
+
+  .world-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .world-description {
+    font-size: 0.95rem;
+  }
+
+  .world-path,
+  .key-player {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .world-conclusion {
+    font-size: 1rem;
+    padding: 0.6rem;
   }
 
   .zoomable-image:hover {

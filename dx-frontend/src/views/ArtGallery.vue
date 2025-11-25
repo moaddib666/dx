@@ -21,14 +21,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .page-container {
   position: relative;
-  width: 100%;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .hero-background {
@@ -55,19 +55,37 @@ export default {
 }
 
 .gallery {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
+  max-width: 1400px;
   width: 100%;
+  padding: 3rem 2rem;
+  color: #e0f7fa;
   position: relative;
   z-index: 1;
-  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+  margin: 0 auto;
+  border-radius: 12px;
 }
 
-.main-content {
-  overflow: hidden;
-  align-items: center;
-  justify-content: center;
+@media (max-width: 1024px) {
+  .gallery {
+    max-width: 100%;
+    padding: 2.5rem 1.5rem;
+    padding-top: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    padding: 2rem 1.25rem;
+    padding-top: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery {
+    padding: 1.5rem 1rem;
+    padding-top: 60px;
+  }
 }
 </style>

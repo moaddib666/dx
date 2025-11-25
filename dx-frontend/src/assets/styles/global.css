@@ -19,7 +19,7 @@
 a {
     text-decoration: none;
     font-style: italic;
-    color: var(--lime-green);
+    color: rgba(0, 255, 200, 0.9);
 }
 
 a:hover {
@@ -27,7 +27,7 @@ a:hover {
 }
 
 a:visited {
-    color: var(--lime-dark-green);
+    color: rgba(0, 255, 200, 0.9);
 }
 
 
