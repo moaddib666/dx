@@ -189,6 +189,57 @@ export default {
       this.ctx.globalAlpha = 1.0;
     },
 
+    // Apply perspective morph transformation to a point
+    // xMorph and yMorph range from -1.0 to 1.0
+    // Positive xMorph: perspective vanishing to the right
+    // Negative xMorph: perspective vanishing to the left
+    // Positive yMorph: perspective vanishing to the bottom
+    // Negative yMorph: perspective vanishing to the top
+    applyMorph(x, y, gridWidth, gridHeight, startX, startY) {
+      const { xMorph, yMorph } = this.gridConfig;
+
+      // Calculate relative position within grid (0 to 1)
+      const relX = (x - startX) / gridWidth;
+      const relY = (y - startY) / gridHeight;
+
+      // Apply perspective transformation
+      // X morph: compress/expand based on Y position
+      const xOffset = xMorph * gridWidth * 0.3 * (relY - 0.5);
+
+      // Y morph: compress/expand based on X position
+      const yOffset = yMorph * gridHeight * 0.3 * (relX - 0.5);
+
+      return {
+        x: x + xOffset,
+        y: y + yOffset
+      };
+    },
+
+    // Inverse morph transformation for mouse position to grid coordinates
+    inverseMorph(screenX, screenY, gridWidth, gridHeight, startX, startY) {
+      const { xMorph, yMorph } = this.gridConfig;
+
+      // If no morph, return as-is
+      if (Math.abs(xMorph) < 0.001 && Math.abs(yMorph) < 0.001) {
+        return { x: screenX, y: screenY };
+      }
+
+      // Iterative approximation to find the unmorphed position
+      let x = screenX;
+      let y = screenY;
+
+      // Newton's method iterations
+      for (let i = 0; i < 5; i++) {
+        const morphed = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
+        const errorX = morphed.x - screenX;
+        const errorY = morphed.y - screenY;
+        x -= errorX;
+        y -= errorY;
+      }
+
+      return { x, y };
+    },
+
     drawGrid() {
       const { cellWidth, cellHeight, columns, rows, xMorph, yMorph } = this.gridConfig;
 
@@ -201,21 +252,31 @@ export default {
       this.ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
       this.ctx.lineWidth = 1;
 
-      // Draw vertical lines
+      // Draw vertical lines with morph
       for (let col = 0; col <= columns; col++) {
         const x = startX + col * cellWidth;
+
+        // Apply morph to top and bottom points of the line
+        const topPoint = this.applyMorph(x, startY, gridWidth, gridHeight, startX, startY);
+        const bottomPoint = this.applyMorph(x, startY + gridHeight, gridWidth, gridHeight, startX, startY);
+
         this.ctx.beginPath();
-        this.ctx.moveTo(x, startY);
-        this.ctx.lineTo(x, startY + gridHeight);
+        this.ctx.moveTo(topPoint.x, topPoint.y);
+        this.ctx.lineTo(bottomPoint.x, bottomPoint.y);
         this.ctx.stroke();
       }
 
-      // Draw horizontal lines
+      // Draw horizontal lines with morph
       for (let row = 0; row <= rows; row++) {
         const y = startY + row * cellHeight;
+
+        // Apply morph to left and right points of the line
+        const leftPoint = this.applyMorph(startX, y, gridWidth, gridHeight, startX, startY);
+        const rightPoint = this.applyMorph(startX + gridWidth, y, gridWidth, gridHeight, startX, startY);
+
         this.ctx.beginPath();
-        this.ctx.moveTo(startX, y);
-        this.ctx.lineTo(startX + gridWidth, y);
+        this.ctx.moveTo(leftPoint.x, leftPoint.y);
+        this.ctx.lineTo(rightPoint.x, rightPoint.y);
         this.ctx.stroke();
       }
     },
@@ -233,57 +294,78 @@ export default {
         const x = startX + cell.x * cellWidth;
         const y = startY + cell.y * cellHeight;
 
-        // Draw unavailable cells
+        // Calculate the four corners of the cell with morph applied
+        const topLeft = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
+        const topRight = this.applyMorph(x + cellWidth, y, gridWidth, gridHeight, startX, startY);
+        const bottomLeft = this.applyMorph(x, y + cellHeight, gridWidth, gridHeight, startX, startY);
+        const bottomRight = this.applyMorph(x + cellWidth, y + cellHeight, gridWidth, gridHeight, startX, startY);
+
+        // Draw unavailable cells as a morphed quad
         if (!cell.available) {
           this.ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-          this.ctx.fillRect(x, y, cellWidth, cellHeight);
+          this.ctx.beginPath();
+          this.ctx.moveTo(topLeft.x, topLeft.y);
+          this.ctx.lineTo(topRight.x, topRight.y);
+          this.ctx.lineTo(bottomRight.x, bottomRight.y);
+          this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
+          this.ctx.closePath();
+          this.ctx.fill();
         }
 
-        // Draw walls (blocked connections)
+        // Draw walls (blocked connections) with morph
         this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
         this.ctx.lineWidth = 3;
 
         if (!cell.connections.north) {
           this.ctx.beginPath();
-          this.ctx.moveTo(x, y);
-          this.ctx.lineTo(x + cellWidth, y);
+          this.ctx.moveTo(topLeft.x, topLeft.y);
+          this.ctx.lineTo(topRight.x, topRight.y);
           this.ctx.stroke();
         }
         if (!cell.connections.south) {
           this.ctx.beginPath();
-          this.ctx.moveTo(x, y + cellHeight);
-          this.ctx.lineTo(x + cellWidth, y + cellHeight);
+          this.ctx.moveTo(bottomLeft.x, bottomLeft.y);
+          this.ctx.lineTo(bottomRight.x, bottomRight.y);
           this.ctx.stroke();
         }
         if (!cell.connections.west) {
           this.ctx.beginPath();
-          this.ctx.moveTo(x, y);
-          this.ctx.lineTo(x, y + cellHeight);
+          this.ctx.moveTo(topLeft.x, topLeft.y);
+          this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
           this.ctx.stroke();
         }
         if (!cell.connections.east) {
           this.ctx.beginPath();
-          this.ctx.moveTo(x + cellWidth, y);
-          this.ctx.lineTo(x + cellWidth, y + cellHeight);
+          this.ctx.moveTo(topRight.x, topRight.y);
+          this.ctx.lineTo(bottomRight.x, bottomRight.y);
           this.ctx.stroke();
         }
 
-        // Draw spawners
+        // Draw spawners with morph
         if (cell.spawner) {
-          this.drawSpawner(x, y, cellWidth, cellHeight, cell.spawner);
+          this.drawSpawner(x, y, cellWidth, cellHeight, cell.spawner, gridWidth, gridHeight, startX, startY);
         }
 
-        // Draw game objects
+        // Draw game objects with morph
         if (cell.gameObject) {
-          this.drawGameObject(x, y, cellWidth, cellHeight, cell.gameObject);
+          this.drawGameObject(x, y, cellWidth, cellHeight, cell.gameObject, gridWidth, gridHeight, startX, startY);
         }
       });
     },
 
-    drawSpawner(x, y, width, height, spawner) {
+    drawSpawner(x, y, width, height, spawner, gridWidth, gridHeight, startX, startY) {
       const centerX = x + width / 2;
       const centerY = y + height / 2;
-      const radius = Math.min(width, height) / 3;
+
+      // Apply morph to center point
+      const morphedCenter = this.applyMorph(centerX, centerY, gridWidth, gridHeight, startX, startY);
+
+      // Calculate morphed radius based on cell size at this position
+      const topLeft = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
+      const bottomRight = this.applyMorph(x + width, y + height, gridWidth, gridHeight, startX, startY);
+      const morphedWidth = Math.abs(bottomRight.x - topLeft.x);
+      const morphedHeight = Math.abs(bottomRight.y - topLeft.y);
+      const radius = Math.min(morphedWidth, morphedHeight) / 3;
 
       // Color based on spawner type
       const colors = {
@@ -295,7 +377,7 @@ export default {
 
       this.ctx.fillStyle = colors[spawner.type] || '#ffffff';
       this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      this.ctx.arc(morphedCenter.x, morphedCenter.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
 
       // Draw type indicator
@@ -303,13 +385,22 @@ export default {
       this.ctx.font = '12px Arial';
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      this.ctx.fillText(spawner.type[0].toUpperCase(), centerX, centerY);
+      this.ctx.fillText(spawner.type[0].toUpperCase(), morphedCenter.x, morphedCenter.y);
     },
 
-    drawGameObject(x, y, width, height, gameObject) {
+    drawGameObject(x, y, width, height, gameObject, gridWidth, gridHeight, startX, startY) {
       const centerX = x + width / 2;
       const centerY = y + height / 2;
-      const size = Math.min(width, height) / 3;
+
+      // Apply morph to center point
+      const morphedCenter = this.applyMorph(centerX, centerY, gridWidth, gridHeight, startX, startY);
+
+      // Calculate morphed size based on cell size at this position
+      const topLeft = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
+      const bottomRight = this.applyMorph(x + width, y + height, gridWidth, gridHeight, startX, startY);
+      const morphedWidth = Math.abs(bottomRight.x - topLeft.x);
+      const morphedHeight = Math.abs(bottomRight.y - topLeft.y);
+      const size = Math.min(morphedWidth, morphedHeight) / 3;
 
       // Color based on object type
       const colors = {
@@ -319,14 +410,14 @@ export default {
       };
 
       this.ctx.fillStyle = colors[gameObject.type] || '#ffffff';
-      this.ctx.fillRect(centerX - size / 2, centerY - size / 2, size, size);
+      this.ctx.fillRect(morphedCenter.x - size / 2, morphedCenter.y - size / 2, size, size);
 
       // Draw type indicator
       this.ctx.fillStyle = '#ffffff';
       this.ctx.font = '10px Arial';
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      this.ctx.fillText(gameObject.type[0].toUpperCase(), centerX, centerY);
+      this.ctx.fillText(gameObject.type[0].toUpperCase(), morphedCenter.x, morphedCenter.y);
     },
 
     drawCellHighlight(cellX, cellY, color) {
@@ -341,8 +432,21 @@ export default {
       const x = startX + cellX * cellWidth;
       const y = startY + cellY * cellHeight;
 
+      // Calculate the four corners of the cell with morph applied
+      const topLeft = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
+      const topRight = this.applyMorph(x + cellWidth, y, gridWidth, gridHeight, startX, startY);
+      const bottomLeft = this.applyMorph(x, y + cellHeight, gridWidth, gridHeight, startX, startY);
+      const bottomRight = this.applyMorph(x + cellWidth, y + cellHeight, gridWidth, gridHeight, startX, startY);
+
+      // Draw highlight as a morphed quad
       this.ctx.fillStyle = color;
-      this.ctx.fillRect(x, y, cellWidth, cellHeight);
+      this.ctx.beginPath();
+      this.ctx.moveTo(topLeft.x, topLeft.y);
+      this.ctx.lineTo(topRight.x, topRight.y);
+      this.ctx.lineTo(bottomRight.x, bottomRight.y);
+      this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
+      this.ctx.closePath();
+      this.ctx.fill();
     },
 
     getCellFromMousePosition(mouseX, mouseY) {
@@ -354,8 +458,11 @@ export default {
       const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
       const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
 
-      const cellX = Math.floor((mouseX - startX) / cellWidth);
-      const cellY = Math.floor((mouseY - startY) / cellHeight);
+      // Apply inverse morph to convert screen coordinates to grid coordinates
+      const unmorphed = this.inverseMorph(mouseX, mouseY, gridWidth, gridHeight, startX, startY);
+
+      const cellX = Math.floor((unmorphed.x - startX) / cellWidth);
+      const cellY = Math.floor((unmorphed.y - startY) / cellHeight);
 
       if (cellX >= 0 && cellX < columns && cellY >= 0 && cellY < rows) {
         return { x: cellX, y: cellY };

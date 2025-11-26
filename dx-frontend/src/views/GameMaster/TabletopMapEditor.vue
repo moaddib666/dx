@@ -296,6 +296,25 @@ export default {
           cellsCount: mapDataWithoutImage.cells?.length
         });
 
+        // Log detailed cell data to verify changes are captured
+        if (mapDataWithoutImage.cells && mapDataWithoutImage.cells.length > 0) {
+          console.log('[Export] First 5 cells data:', mapDataWithoutImage.cells.slice(0, 5).map(cell => ({
+            x: cell.x,
+            y: cell.y,
+            layer: cell.layer,
+            available: cell.available,
+            hasSpawner: !!cell.spawner,
+            spawnerType: cell.spawner?.type,
+            hasGameObject: !!cell.gameObject,
+            connections: cell.connections
+          })));
+        }
+
+        // Deep clone to ensure we're not passing references
+        console.log('[Export] Creating deep clone of mapDataWithoutImage for export...');
+        const mapDataToExport = JSON.parse(JSON.stringify(mapDataWithoutImage));
+        console.log('[Export] Deep clone created, cells count:', mapDataToExport.cells?.length);
+
         let imageSource;
 
         // Use the original background image if available
@@ -318,8 +337,8 @@ export default {
         }
 
         // Embed metadata in PNG (using original background, not rendered overlays)
-        // Use mapDataWithoutImage to exclude the backgroundImage property
-        const pngBlob = await embedMetadataInPNG(imageSource, mapDataWithoutImage);
+        // Use mapDataToExport (deep cloned) to ensure no reference issues
+        const pngBlob = await embedMetadataInPNG(imageSource, mapDataToExport);
 
         // Download the PNG file
         const url = URL.createObjectURL(pngBlob);

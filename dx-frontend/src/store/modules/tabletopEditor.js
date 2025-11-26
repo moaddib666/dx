@@ -66,13 +66,27 @@ const mutations = {
       hasBackgroundImage: !!mapData.backgroundImage
     } : 'null');
 
-    // Ensure cells array is always initialized
-    if (mapData && !mapData.cells) {
-      console.log('[Store] Initializing empty cells array');
-      mapData.cells = [];
+    // Deep clone the mapData to ensure we have a fresh copy
+    // This prevents mutations from affecting the original imported data
+    if (mapData) {
+      console.log('[Store] Deep cloning map data for reactivity');
+      state.mapData = {
+        version: mapData.version,
+        metadata: { ...mapData.metadata },
+        grid: { ...mapData.grid },
+        layers: mapData.layers.map(layer => ({ ...layer })),
+        cells: mapData.cells ? mapData.cells.map(cell => ({
+          ...cell,
+          connections: { ...cell.connections },
+          spawner: cell.spawner ? { ...cell.spawner, properties: { ...cell.spawner.properties } } : null,
+          gameObject: cell.gameObject ? { ...cell.gameObject, properties: { ...cell.gameObject.properties } } : null
+        })) : [],
+        backgroundImage: mapData.backgroundImage
+      };
+    } else {
+      state.mapData = null;
     }
 
-    state.mapData = mapData;
     state.editorState.isDirty = false;
     // Reset visibility settings to ensure grid and background are visible after import
     state.editorState.gridVisible = true;
@@ -127,14 +141,20 @@ const mutations = {
     );
 
     if (cellIndex !== -1) {
-      state.mapData.cells[cellIndex] = {
+      // Create a new cell with updates
+      const updatedCell = {
         ...state.mapData.cells[cellIndex],
         ...updates
       };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
     } else {
       // Create new cell if it doesn't exist
       const newCell = createEmptyCell(x, y, layer);
-      state.mapData.cells.push({ ...newCell, ...updates });
+      state.mapData.cells = [...state.mapData.cells, { ...newCell, ...updates }];
     }
 
     state.editorState.isDirty = true;
@@ -143,16 +163,26 @@ const mutations = {
   TOGGLE_CELL_AVAILABILITY(state, { x, y, layer }) {
     if (!state.mapData) return;
 
-    const cell = state.mapData.cells.find(
+    const cellIndex = state.mapData.cells.findIndex(
       c => c.x === x && c.y === y && c.layer === layer
     );
 
-    if (cell) {
-      cell.available = !cell.available;
+    if (cellIndex !== -1) {
+      // Create a new cells array with the updated cell
+      const updatedCell = {
+        ...state.mapData.cells[cellIndex],
+        available: !state.mapData.cells[cellIndex].available
+      };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
     } else {
+      // Create new cell with availability set to false
       const newCell = createEmptyCell(x, y, layer);
       newCell.available = false;
-      state.mapData.cells.push(newCell);
+      state.mapData.cells = [...state.mapData.cells, newCell];
     }
 
     state.editorState.isDirty = true;
@@ -161,61 +191,113 @@ const mutations = {
   TOGGLE_CELL_CONNECTION(state, { x, y, layer, direction }) {
     if (!state.mapData) return;
 
-    let cell = state.mapData.cells.find(
+    const cellIndex = state.mapData.cells.findIndex(
       c => c.x === x && c.y === y && c.layer === layer
     );
 
-    if (!cell) {
-      cell = createEmptyCell(x, y, layer);
-      state.mapData.cells.push(cell);
+    if (cellIndex !== -1) {
+      // Create a new cell with updated connections
+      const cell = state.mapData.cells[cellIndex];
+      const updatedCell = {
+        ...cell,
+        connections: {
+          ...cell.connections,
+          [direction]: !cell.connections[direction]
+        }
+      };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
+    } else {
+      // Create new cell with the specified connection toggled
+      const newCell = createEmptyCell(x, y, layer);
+      newCell.connections = {
+        ...newCell.connections,
+        [direction]: !newCell.connections[direction]
+      };
+      state.mapData.cells = [...state.mapData.cells, newCell];
     }
 
-    cell.connections[direction] = !cell.connections[direction];
     state.editorState.isDirty = true;
   },
 
   SET_CELL_SPAWNER(state, { x, y, layer, spawner }) {
     if (!state.mapData) return;
 
-    let cell = state.mapData.cells.find(
+    const cellIndex = state.mapData.cells.findIndex(
       c => c.x === x && c.y === y && c.layer === layer
     );
 
-    if (!cell) {
-      cell = createEmptyCell(x, y, layer);
-      state.mapData.cells.push(cell);
+    if (cellIndex !== -1) {
+      // Create a new cell with updated spawner
+      const updatedCell = {
+        ...state.mapData.cells[cellIndex],
+        spawner: spawner ? { ...spawner, properties: { ...spawner.properties } } : null
+      };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
+    } else {
+      // Create new cell with spawner
+      const newCell = createEmptyCell(x, y, layer);
+      newCell.spawner = spawner ? { ...spawner, properties: { ...spawner.properties } } : null;
+      state.mapData.cells = [...state.mapData.cells, newCell];
     }
 
-    cell.spawner = spawner;
     state.editorState.isDirty = true;
   },
 
   SET_CELL_GAME_OBJECT(state, { x, y, layer, gameObject }) {
     if (!state.mapData) return;
 
-    let cell = state.mapData.cells.find(
+    const cellIndex = state.mapData.cells.findIndex(
       c => c.x === x && c.y === y && c.layer === layer
     );
 
-    if (!cell) {
-      cell = createEmptyCell(x, y, layer);
-      state.mapData.cells.push(cell);
+    if (cellIndex !== -1) {
+      // Create a new cell with updated gameObject
+      const updatedCell = {
+        ...state.mapData.cells[cellIndex],
+        gameObject: gameObject ? { ...gameObject, properties: { ...gameObject.properties } } : null
+      };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
+    } else {
+      // Create new cell with gameObject
+      const newCell = createEmptyCell(x, y, layer);
+      newCell.gameObject = gameObject ? { ...gameObject, properties: { ...gameObject.properties } } : null;
+      state.mapData.cells = [...state.mapData.cells, newCell];
     }
 
-    cell.gameObject = gameObject;
     state.editorState.isDirty = true;
   },
 
   CLEAR_CELL_CONTENT(state, { x, y, layer }) {
     if (!state.mapData) return;
 
-    const cell = state.mapData.cells.find(
+    const cellIndex = state.mapData.cells.findIndex(
       c => c.x === x && c.y === y && c.layer === layer
     );
 
-    if (cell) {
-      cell.spawner = null;
-      cell.gameObject = null;
+    if (cellIndex !== -1) {
+      // Create a new cell with cleared content
+      const updatedCell = {
+        ...state.mapData.cells[cellIndex],
+        spawner: null,
+        gameObject: null
+      };
+      state.mapData.cells = [
+        ...state.mapData.cells.slice(0, cellIndex),
+        updatedCell,
+        ...state.mapData.cells.slice(cellIndex + 1)
+      ];
       state.editorState.isDirty = true;
     }
   },

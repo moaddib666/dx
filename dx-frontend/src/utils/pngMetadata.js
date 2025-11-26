@@ -160,8 +160,13 @@ function addTextChunkToPNG(pngData, keyword, text) {
   // PNG signature is 8 bytes
   const signature = pngData.slice(0, 8);
 
+  // FIRST: Remove any existing chunks with the same keyword
+  console.log('[PNG Export] Removing existing chunks with keyword:', keyword);
+  const pngWithoutOldChunks = removeTextChunks(pngData, keyword);
+  console.log('[PNG Export] Old chunks removed, new size:', pngWithoutOldChunks.length, 'bytes');
+
   // Find the IEND chunk (last chunk in PNG)
-  let iendPosition = findChunk(pngData, 'IEND');
+  let iendPosition = findChunk(pngWithoutOldChunks, 'IEND');
 
   if (iendPosition === -1) {
     throw new Error('Invalid PNG: IEND chunk not found');
@@ -174,14 +179,15 @@ function addTextChunkToPNG(pngData, keyword, text) {
   console.log('[PNG Export] Text chunk created, size:', textChunk.length, 'bytes');
 
   // Combine: signature + original chunks (before IEND) + tEXt chunk + IEND chunk
-  const beforeIEND = pngData.slice(0, iendPosition);
-  const iendChunk = pngData.slice(iendPosition);
+  const beforeIEND = pngWithoutOldChunks.slice(0, iendPosition);
+  const iendChunk = pngWithoutOldChunks.slice(iendPosition);
 
   const result = new Uint8Array(beforeIEND.length + textChunk.length + iendChunk.length);
   result.set(beforeIEND, 0);
   result.set(textChunk, beforeIEND.length);
   result.set(iendChunk, beforeIEND.length + textChunk.length);
 
+  console.log('[PNG Export] Final PNG size:', result.length, 'bytes');
   return result;
 }
 
@@ -311,6 +317,79 @@ function isPNG(data) {
          data[5] === 10 &&
          data[6] === 26 &&
          data[7] === 10;
+}
+
+/**
+ * Removes all tEXt chunks with a specific keyword from PNG data
+ * @param {Uint8Array} pngData - Original PNG data
+ * @param {string} keyword - Keyword to match for removal
+ * @returns {Uint8Array} - PNG data without matching tEXt chunks
+ */
+function removeTextChunks(pngData, keyword) {
+  if (!isPNG(pngData)) {
+    throw new Error('Invalid PNG file');
+  }
+
+  const textDecoder = new TextDecoder('utf-8');
+  const chunks = [];
+
+  // Keep the PNG signature
+  chunks.push(pngData.slice(0, 8));
+
+  let offset = 8; // Skip PNG signature
+  let removedCount = 0;
+
+  while (offset < pngData.length) {
+    // Read chunk length (4 bytes, big-endian)
+    const length = readUint32BE(pngData, offset);
+
+    // Read chunk type (4 bytes)
+    const type = String.fromCharCode(...pngData.slice(offset + 4, offset + 8));
+
+    // Calculate full chunk size: length(4) + type(4) + data(length) + crc(4)
+    const chunkSize = 4 + 4 + length + 4;
+    const chunkData = pngData.slice(offset, offset + chunkSize);
+
+    // Check if this is a tEXt chunk with our keyword
+    let shouldRemove = false;
+    if (type === 'tEXt') {
+      const data = pngData.slice(offset + 8, offset + 8 + length);
+      const nullIndex = data.indexOf(0);
+      if (nullIndex !== -1) {
+        const chunkKeyword = textDecoder.decode(data.slice(0, nullIndex));
+        if (chunkKeyword === keyword) {
+          shouldRemove = true;
+          removedCount++;
+          console.log('[PNG Export] Removing old tEXt chunk with keyword:', keyword);
+        }
+      }
+    }
+
+    // Keep the chunk if it's not a matching tEXt chunk
+    if (!shouldRemove) {
+      chunks.push(chunkData);
+    }
+
+    offset += chunkSize;
+
+    // Stop at IEND chunk
+    if (type === 'IEND') {
+      break;
+    }
+  }
+
+  console.log('[PNG Export] Removed', removedCount, 'old chunk(s) with keyword:', keyword);
+
+  // Combine all chunks
+  const totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  const result = new Uint8Array(totalLength);
+  let position = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, position);
+    position += chunk.length;
+  }
+
+  return result;
 }
 
 /**
