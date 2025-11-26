@@ -28,13 +28,13 @@ const getters = {
 
   // Get cells for current layer
   currentLayerCells: (state) => {
-    if (!state.mapData) return [];
+    if (!state.mapData || !state.mapData.cells) return [];
     return state.mapData.cells.filter(cell => cell.layer === state.editorState.currentLayer);
   },
 
   // Get specific cell
   getCell: (state) => (x, y, layer) => {
-    if (!state.mapData) return null;
+    if (!state.mapData || !state.mapData.cells) return null;
     return state.mapData.cells.find(
       cell => cell.x === x && cell.y === y && cell.layer === layer
     );
@@ -52,8 +52,39 @@ const getters = {
 
 const mutations = {
   SET_MAP_DATA(state, mapData) {
+    console.log('[Store] SET_MAP_DATA mutation called');
+    console.log('[Store] Incoming mapData:', mapData ? {
+      hasMetadata: !!mapData.metadata,
+      metadataName: mapData.metadata?.name,
+      metadataCreated: mapData.metadata?.created,
+      hasGrid: !!mapData.grid,
+      gridConfig: mapData.grid,
+      hasLayers: !!mapData.layers,
+      layersCount: mapData.layers?.length,
+      hasCells: !!mapData.cells,
+      cellsCount: mapData.cells?.length,
+      hasBackgroundImage: !!mapData.backgroundImage
+    } : 'null');
+
+    // Ensure cells array is always initialized
+    if (mapData && !mapData.cells) {
+      console.log('[Store] Initializing empty cells array');
+      mapData.cells = [];
+    }
+
     state.mapData = mapData;
     state.editorState.isDirty = false;
+    // Reset visibility settings to ensure grid and background are visible after import
+    state.editorState.gridVisible = true;
+    state.editorState.backgroundVisible = true;
+
+    console.log('[Store] ✅ Map data set in state');
+    console.log('[Store] Editor state:', {
+      currentLayer: state.editorState.currentLayer,
+      gridVisible: state.editorState.gridVisible,
+      backgroundVisible: state.editorState.backgroundVisible,
+      isDirty: state.editorState.isDirty
+    });
   },
 
   SET_CURRENT_LAYER(state, layer) {
@@ -212,7 +243,16 @@ const actions = {
   },
 
   loadMap({ commit }, mapData) {
+    console.log('[Store Action] loadMap called with mapData:', mapData ? {
+      name: mapData.metadata?.name,
+      version: mapData.version,
+      gridColumns: mapData.grid?.columns,
+      gridRows: mapData.grid?.rows,
+      layersCount: mapData.layers?.length,
+      cellsCount: mapData.cells?.length
+    } : 'null');
     commit('SET_MAP_DATA', mapData);
+    console.log('[Store Action] ✅ loadMap completed, SET_MAP_DATA mutation committed');
   },
 
   setCurrentLayer({ commit }, layer) {

@@ -3,11 +3,17 @@
     <canvas
       ref="canvas"
       class="map-canvas"
+      :class="{ 'brush-mode': isShiftPressed && isDragging }"
       @mousedown="handleMouseDown"
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseLeave"
     ></canvas>
+    <!-- Brush Mode Indicator -->
+    <div v-if="isShiftPressed" class="brush-mode-indicator">
+      <span class="indicator-icon">🖌️</span>
+      <span class="indicator-text">BRUSH MODE</span>
+    </div>
   </div>
 </template>
 
@@ -22,6 +28,7 @@ export default {
       ctx: null,
       isDragging: false,
       isPanning: false,
+      isShiftPressed: false,
       panStartX: 0,
       panStartY: 0,
       panStartOffsetX: 0,
@@ -71,9 +78,13 @@ export default {
     this.loadBackgroundImage();
     this.render();
     window.addEventListener('resize', this.handleResize);
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
   },
   methods: {
     ...mapActions('tabletopEditor', [
@@ -371,11 +382,14 @@ export default {
       }
 
       // Left mouse button - normal cell interaction
-      const cell = this.getCellFromMousePosition(mouseX, mouseY);
-      if (!cell) return;
+      if (event.button === 0) {
+        event.preventDefault(); // Prevent default drag behavior
+        const cell = this.getCellFromMousePosition(mouseX, mouseY);
+        if (!cell) return;
 
-      this.isDragging = true;
-      this.handleCellInteraction(cell.x, cell.y);
+        this.isDragging = true;
+        this.handleCellInteraction(cell.x, cell.y);
+      }
     },
 
     handleMouseMove(event) {
@@ -398,7 +412,12 @@ export default {
 
       if (cell) {
         this.hoveredCell = cell;
-        if (this.isDragging && (this.selectedTool === 'availability' || this.selectedTool === 'wall')) {
+        // Brush mode: when Shift is pressed and dragging, continuously paint cells
+        if (this.isDragging && this.isShiftPressed) {
+          this.handleCellInteraction(cell.x, cell.y);
+        }
+        // Legacy drag mode: only for availability and wall tools without Shift
+        else if (this.isDragging && !this.isShiftPressed && (this.selectedTool === 'availability' || this.selectedTool === 'wall')) {
           this.handleCellInteraction(cell.x, cell.y);
         }
       } else {
@@ -440,6 +459,13 @@ export default {
         case 'availability':
           this.toggleCellAvailability({ x, y, layer });
           break;
+        case 'wall':
+          // Toggle all connections for the cell (block/unblock all walls)
+          this.toggleCellConnection({ x, y, layer, direction: 'north' });
+          this.toggleCellConnection({ x, y, layer, direction: 'south' });
+          this.toggleCellConnection({ x, y, layer, direction: 'east' });
+          this.toggleCellConnection({ x, y, layer, direction: 'west' });
+          break;
         case 'erase':
           this.clearCellContent({ x, y, layer });
           break;
@@ -458,6 +484,24 @@ export default {
       }
 
       this.render();
+    },
+
+    handleKeyDown(event) {
+      if (event.key === 'Shift' && !this.isShiftPressed) {
+        this.isShiftPressed = true;
+        if (this.canvas) {
+          this.canvas.style.cursor = 'cell';
+        }
+      }
+    },
+
+    handleKeyUp(event) {
+      if (event.key === 'Shift' && this.isShiftPressed) {
+        this.isShiftPressed = false;
+        if (this.canvas && !this.isPanning) {
+          this.canvas.style.cursor = 'crosshair';
+        }
+      }
     }
   }
 };
@@ -469,10 +513,56 @@ export default {
   height: 100%;
   overflow: hidden;
   background: #1a1a1a;
+  position: relative;
 }
 
 .map-canvas {
   display: block;
   cursor: crosshair;
+}
+
+.map-canvas.brush-mode {
+  cursor: cell;
+}
+
+/* Brush Mode Indicator */
+.brush-mode-indicator {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 212, 255, 0.95);
+  border: 2px solid #00d4ff;
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.5);
+  z-index: 100;
+  pointer-events: none;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.indicator-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.indicator-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(0, 212, 255, 0.8);
+  }
 }
 </style>

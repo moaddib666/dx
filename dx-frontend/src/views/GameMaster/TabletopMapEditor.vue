@@ -4,7 +4,7 @@
     <div class="editor-toolbar">
       <div class="toolbar-section">
         <h1 class="editor-title">Tabletop Map Editor</h1>
-        <span v-if="currentMap" class="map-name">{{ currentMap.metadata.name }}</span>
+        <span v-if="currentMap?.metadata?.name" class="map-name">{{ currentMap.metadata.name }}</span>
       </div>
 
       <div class="toolbar-section toolbar-actions">
@@ -52,7 +52,7 @@
             Create New Map
           </button>
         </div>
-        <MapCanvas v-else ref="mapCanvas" />
+        <MapCanvas v-else :key="currentMap?.metadata?.created || 'default'" ref="mapCanvas" />
       </div>
 
       <!-- Right Panel -->
@@ -159,7 +159,6 @@ export default {
 
     handleCreateNewMap() {
       if (!this.newMapName.trim()) {
-        alert('Please enter a map name');
         return;
       }
 
@@ -181,31 +180,51 @@ export default {
       const file = event.target.files[0];
       if (!file) return;
 
+      console.log('[Import] Starting import process for file:', file.name, 'Type:', file.type);
+
       try {
         // Check if it's a PNG file
         if (file.type === 'image/png' || file.name.toLowerCase().endsWith('.png')) {
+          console.log('[Import] Detected PNG file, extracting metadata...');
+
           // Extract metadata from PNG
           const { mapData, imageDataURL, hasMetadata, imageWidth, imageHeight } = await extractMetadataFromPNG(file);
 
           if (hasMetadata && mapData) {
             // PNG has embedded map data - load it
+            console.log('[Import] ✅ PNG has metadata - loading existing map data');
+            console.log('[Import] Calling loadMap with mapData:', {
+              name: mapData.metadata?.name,
+              grid: mapData.grid,
+              layersCount: mapData.layers?.length,
+              cellsCount: mapData.cells?.length
+            });
             this.loadMap(mapData);
+
+            console.log('[Import] Setting background image...');
             this.setBackgroundImage(imageDataURL);
-            alert('Map imported from PNG successfully!');
+
+            console.log('[Import] ✅ Map import completed successfully!');
           } else {
             // PNG has no metadata - create default map based on image size
+            console.log('[Import] ⚠️ PNG has no metadata - creating default map from image');
+
             const defaultCellSize = 64; // Default cell size in pixels
             const columns = Math.max(5, Math.floor(imageWidth / defaultCellSize));
             const rows = Math.max(5, Math.floor(imageHeight / defaultCellSize));
 
+            console.log('[Import] Calculated grid:', { columns, rows, cellSize: defaultCellSize });
+
             // Create a new map with calculated dimensions
             const mapName = file.name.replace(/\.(png|PNG)$/, '') || 'Imported Map';
+            console.log('[Import] Creating new map:', mapName);
             this.createNewMap({
               name: mapName,
               author: 'Unknown'
             });
 
             // Update grid configuration to match image dimensions
+            console.log('[Import] Updating grid config...');
             this.updateGridConfig({
               columns,
               rows,
@@ -214,29 +233,31 @@ export default {
             });
 
             // Set the PNG as background
+            console.log('[Import] Setting background image...');
             this.setBackgroundImage(imageDataURL);
 
-            alert(`Map created from PNG image!\nGrid: ${columns}x${rows} cells (${defaultCellSize}px each)`);
+            console.log('[Import] ✅ Default map created successfully!');
           }
         } else if (file.type === 'application/json' || file.name.toLowerCase().endsWith('.json')) {
           // Legacy JSON import support
+          console.log('[Import] Detected JSON file, loading...');
           const reader = new FileReader();
           reader.onload = (e) => {
             try {
               const mapData = JSON.parse(e.target.result);
+              console.log('[Import] JSON parsed, loading map...');
               this.loadMap(mapData);
-              alert('Map imported from JSON successfully!');
+              console.log('[Import] ✅ JSON map imported successfully!');
             } catch (error) {
-              alert('Error importing JSON map: ' + error.message);
+              console.error('[Import] ❌ Error parsing JSON:', error);
             }
           };
           reader.readAsText(file);
         } else {
-          alert('Unsupported file format. Please use PNG or JSON files.');
+          console.warn('[Import] ❌ Unsupported file format:', file.type);
         }
       } catch (error) {
-        alert('Error importing map: ' + error.message);
-        console.error('Import error:', error);
+        console.error('[Import] ❌ Import error:', error);
       }
 
       // Reset input
@@ -247,18 +268,58 @@ export default {
       if (!this.currentMap) return;
 
       try {
-        // Get the canvas from MapCanvas component
-        const canvas = this.$refs.mapCanvas?.getCanvas();
-        if (!canvas) {
-          alert('Error: Canvas not available for export');
-          return;
+        console.log('[Export] Starting export process...');
+        console.log('[Export] Current map data:', {
+          hasMetadata: !!this.currentMap.metadata,
+          metadataName: this.currentMap.metadata?.name,
+          hasGrid: !!this.currentMap.grid,
+          gridConfig: this.currentMap.grid,
+          hasLayers: !!this.currentMap.layers,
+          layersCount: this.currentMap.layers?.length,
+          hasCells: !!this.currentMap.cells,
+          cellsCount: this.currentMap.cells?.length,
+          hasBackgroundImage: !!this.currentMap.backgroundImage
+        });
+
+        // Get the current map data from the getter (not from saveMap action which returns undefined)
+        const mapData = this.currentMap;
+        console.log('[Export] Map data retrieved:', mapData ? 'valid object' : 'null/undefined');
+
+        // Create a clean copy of mapData WITHOUT the backgroundImage property
+        // The backgroundImage should not be embedded in metadata since the image IS the PNG itself
+        const { backgroundImage, ...mapDataWithoutImage } = mapData;
+        console.log('[Export] Map data after removing backgroundImage:', {
+          hasMetadata: !!mapDataWithoutImage.metadata,
+          hasGrid: !!mapDataWithoutImage.grid,
+          hasLayers: !!mapDataWithoutImage.layers,
+          hasCells: !!mapDataWithoutImage.cells,
+          cellsCount: mapDataWithoutImage.cells?.length
+        });
+
+        let imageSource;
+
+        // Use the original background image if available
+        if (this.currentMap.backgroundImage) {
+          // Export the clean background image with metadata embedded
+          imageSource = this.currentMap.backgroundImage;
+        } else {
+          // No background image - create a blank PNG based on grid dimensions
+          const { cellWidth, cellHeight, columns, rows } = this.currentMap.grid;
+          const canvas = document.createElement('canvas');
+          canvas.width = columns * cellWidth;
+          canvas.height = rows * cellHeight;
+          const ctx = canvas.getContext('2d');
+
+          // Fill with dark background
+          ctx.fillStyle = '#1a1a1a';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          imageSource = canvas;
         }
 
-        // Get the current map data
-        const mapData = this.saveMap();
-
-        // Embed metadata in PNG
-        const pngBlob = await embedMetadataInPNG(canvas, mapData);
+        // Embed metadata in PNG (using original background, not rendered overlays)
+        // Use mapDataWithoutImage to exclude the backgroundImage property
+        const pngBlob = await embedMetadataInPNG(imageSource, mapDataWithoutImage);
 
         // Download the PNG file
         const url = URL.createObjectURL(pngBlob);
@@ -270,9 +331,11 @@ export default {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        alert('Map exported as PNG successfully!');
+        // Mark map as clean (not dirty) after successful export
+        this.saveMap();
+        console.log('[Export] ✅ Export completed successfully!');
+
       } catch (error) {
-        alert('Error exporting map: ' + error.message);
         console.error('Export error:', error);
       }
     },
@@ -288,7 +351,6 @@ export default {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.setBackgroundImage(e.target.result);
-        alert('Background image imported successfully!');
       };
       reader.readAsDataURL(file);
 
@@ -298,7 +360,6 @@ export default {
 
     handleSaveMap() {
       this.saveMap();
-      alert('Map saved!');
     }
   },
   beforeUnmount() {

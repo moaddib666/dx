@@ -6,34 +6,61 @@
 
 /**
  * Embeds map data as metadata in a PNG image
- * @param {HTMLCanvasElement} canvas - The canvas containing the map visualization
+ * @param {string|HTMLCanvasElement} imageSource - Data URL of the original PNG or canvas (for backward compatibility)
  * @param {Object} mapData - The map data to embed
  * @returns {Promise<Blob>} - PNG blob with embedded metadata
  */
-export async function embedMetadataInPNG(canvas, mapData) {
-  return new Promise((resolve, reject) => {
+export async function embedMetadataInPNG(imageSource, mapData) {
+  return new Promise(async (resolve, reject) => {
     try {
       // Convert map data to JSON string
       const metadataJSON = JSON.stringify(mapData);
+      console.log('[PNG Export] Starting PNG metadata embedding...');
+      console.log('[PNG Export] Map data object:', {
+        hasMetadata: !!mapData.metadata,
+        metadataName: mapData.metadata?.name,
+        hasGrid: !!mapData.grid,
+        gridConfig: mapData.grid,
+        hasLayers: !!mapData.layers,
+        layersCount: mapData.layers?.length,
+        hasCells: !!mapData.cells,
+        cellsCount: mapData.cells?.length
+      });
+      console.log('[PNG Export] Metadata JSON length:', metadataJSON.length, 'characters');
+      console.log('[PNG Export] First 200 chars of JSON:', metadataJSON.substring(0, 200));
 
-      // Get the PNG data from canvas
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          reject(new Error('Failed to create PNG blob'));
-          return;
-        }
+      let pngBlob;
 
-        // Read the PNG blob as ArrayBuffer
-        const arrayBuffer = await blob.arrayBuffer();
-        const uint8Array = new Uint8Array(arrayBuffer);
+      // Check if imageSource is a data URL (string) or canvas
+      if (typeof imageSource === 'string') {
+        // It's a data URL - convert to blob
+        pngBlob = await dataURLToBlob(imageSource);
+      } else if (imageSource instanceof HTMLCanvasElement) {
+        // It's a canvas - convert to blob (backward compatibility)
+        pngBlob = await new Promise((res, rej) => {
+          imageSource.toBlob((blob) => {
+            if (!blob) {
+              rej(new Error('Failed to create PNG blob from canvas'));
+              return;
+            }
+            res(blob);
+          }, 'image/png', 1.0);
+        });
+      } else {
+        reject(new Error('Invalid image source: must be a data URL string or HTMLCanvasElement'));
+        return;
+      }
 
-        // Create a new PNG with embedded metadata
-        const pngWithMetadata = addTextChunkToPNG(uint8Array, 'TabletopMapData', metadataJSON);
+      // Read the PNG blob as ArrayBuffer
+      const arrayBuffer = await pngBlob.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
 
-        // Create a new blob from the modified PNG
-        const newBlob = new Blob([pngWithMetadata], { type: 'image/png' });
-        resolve(newBlob);
-      }, 'image/png', 1.0);
+      // Create a new PNG with embedded metadata
+      const pngWithMetadata = addTextChunkToPNG(uint8Array, 'TabletopMapData', metadataJSON);
+
+      // Create a new blob from the modified PNG
+      const newBlob = new Blob([pngWithMetadata], { type: 'image/png' });
+      resolve(newBlob);
     } catch (error) {
       reject(error);
     }
@@ -46,6 +73,8 @@ export async function embedMetadataInPNG(canvas, mapData) {
  * @returns {Promise<{mapData: Object|null, imageDataURL: string, hasMetadata: boolean, imageWidth: number, imageHeight: number}>} - Extracted map data, image, and metadata status
  */
 export async function extractMetadataFromPNG(file) {
+  console.log('[PNG Import] Starting extraction from file:', file.name, 'Size:', file.size, 'bytes');
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -55,6 +84,7 @@ export async function extractMetadataFromPNG(file) {
         const uint8Array = new Uint8Array(arrayBuffer);
 
         // Extract metadata from PNG
+        console.log('[PNG Import] Searching for TabletopMapData chunk in PNG...');
         const metadata = extractTextChunkFromPNG(uint8Array, 'TabletopMapData');
 
         // Convert the PNG to data URL for display
@@ -63,9 +93,11 @@ export async function extractMetadataFromPNG(file) {
 
         // Load image to get dimensions
         const { width, height } = await getImageDimensions(imageDataURL);
+        console.log('[PNG Import] Image dimensions:', width, 'x', height, 'pixels');
 
         if (!metadata) {
           // No metadata found - return image data without map data
+          console.log('[PNG Import] ❌ No metadata found in PNG. Will create default map.');
           resolve({
             mapData: null,
             imageDataURL,
@@ -76,8 +108,15 @@ export async function extractMetadataFromPNG(file) {
           return;
         }
 
+        console.log('[PNG Import] ✅ Metadata found! Length:', metadata.length, 'characters');
+
         // Parse the JSON metadata
         const mapData = JSON.parse(metadata);
+        console.log('[PNG Import] ✅ Metadata parsed successfully!');
+        console.log('[PNG Import] Map name:', mapData.metadata?.name);
+        console.log('[PNG Import] Grid config:', mapData.grid);
+        console.log('[PNG Import] Layers:', mapData.layers?.length);
+        console.log('[PNG Import] Cells:', mapData.cells?.length);
 
         resolve({
           mapData,
@@ -87,11 +126,15 @@ export async function extractMetadataFromPNG(file) {
           imageHeight: height
         });
       } catch (error) {
+        console.error('[PNG Import] ❌ Error during extraction:', error);
         reject(new Error('Failed to extract map data: ' + error.message));
       }
     };
 
-    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.onerror = () => {
+      console.error('[PNG Import] ❌ Failed to read file');
+      reject(new Error('Failed to read file'));
+    };
     reader.readAsArrayBuffer(file);
   });
 }
@@ -104,6 +147,11 @@ export async function extractMetadataFromPNG(file) {
  * @returns {Uint8Array} - Modified PNG data
  */
 function addTextChunkToPNG(pngData, keyword, text) {
+  console.log('[PNG Export] addTextChunkToPNG called');
+  console.log('[PNG Export] Keyword:', keyword);
+  console.log('[PNG Export] Text length:', text.length, 'characters');
+  console.log('[PNG Export] Text first 200 chars:', text.substring(0, 200));
+
   // Verify PNG signature
   if (!isPNG(pngData)) {
     throw new Error('Invalid PNG file');
@@ -119,8 +167,11 @@ function addTextChunkToPNG(pngData, keyword, text) {
     throw new Error('Invalid PNG: IEND chunk not found');
   }
 
+  console.log('[PNG Export] IEND chunk found at position:', iendPosition);
+
   // Create tEXt chunk
   const textChunk = createTextChunk(keyword, text);
+  console.log('[PNG Export] Text chunk created, size:', textChunk.length, 'bytes');
 
   // Combine: signature + original chunks (before IEND) + tEXt chunk + IEND chunk
   const beforeIEND = pngData.slice(0, iendPosition);
@@ -145,7 +196,10 @@ function extractTextChunkFromPNG(pngData, keyword) {
     throw new Error('Invalid PNG file');
   }
 
+  console.log('[PNG Extract] Starting extraction, looking for keyword:', keyword);
+  const textDecoder = new TextDecoder('utf-8');
   let offset = 8; // Skip PNG signature
+  let chunkCount = 0;
 
   while (offset < pngData.length) {
     // Read chunk length (4 bytes, big-endian)
@@ -156,6 +210,9 @@ function extractTextChunkFromPNG(pngData, keyword) {
     const type = String.fromCharCode(...pngData.slice(offset, offset + 4));
     offset += 4;
 
+    chunkCount++;
+    console.log(`[PNG Extract] Chunk ${chunkCount}: type="${type}", length=${length}`);
+
     // Read chunk data
     const data = pngData.slice(offset, offset + length);
     offset += length;
@@ -165,11 +222,18 @@ function extractTextChunkFromPNG(pngData, keyword) {
 
     // Check if this is a tEXt chunk with our keyword
     if (type === 'tEXt') {
+      console.log('[PNG Extract] Found tEXt chunk, data length:', data.length);
       const nullIndex = data.indexOf(0);
+      console.log('[PNG Extract] Null separator at index:', nullIndex);
       if (nullIndex !== -1) {
-        const chunkKeyword = String.fromCharCode(...data.slice(0, nullIndex));
+        const chunkKeyword = textDecoder.decode(data.slice(0, nullIndex));
+        console.log('[PNG Extract] Chunk keyword:', chunkKeyword);
         if (chunkKeyword === keyword) {
-          const text = String.fromCharCode(...data.slice(nullIndex + 1));
+          const textData = data.slice(nullIndex + 1);
+          console.log('[PNG Extract] ✅ Found matching keyword! Text data length:', textData.length, 'bytes');
+          const text = textDecoder.decode(textData);
+          console.log('[PNG Extract] Decoded text length:', text.length, 'characters');
+          console.log('[PNG Extract] First 200 chars:', text.substring(0, 200));
           return text;
         }
       }
@@ -191,10 +255,19 @@ function extractTextChunkFromPNG(pngData, keyword) {
  * @returns {Uint8Array} - Complete tEXt chunk with length and CRC
  */
 function createTextChunk(keyword, text) {
+  console.log('[PNG Export] createTextChunk called');
+  console.log('[PNG Export] Input text length:', text.length);
+
+  const textEncoder = new TextEncoder();
+
   // Keyword + null separator + text
-  const keywordBytes = stringToBytes(keyword);
-  const textBytes = stringToBytes(text);
+  const keywordBytes = textEncoder.encode(keyword);
+  const textBytes = textEncoder.encode(text);
   const dataLength = keywordBytes.length + 1 + textBytes.length;
+
+  console.log('[PNG Export] Keyword bytes length:', keywordBytes.length);
+  console.log('[PNG Export] Text bytes length:', textBytes.length);
+  console.log('[PNG Export] Total data length:', dataLength);
 
   // Create chunk data: keyword + 0x00 + text
   const chunkData = new Uint8Array(dataLength);
@@ -203,7 +276,7 @@ function createTextChunk(keyword, text) {
   chunkData.set(textBytes, keywordBytes.length + 1);
 
   // Create chunk type
-  const chunkType = stringToBytes('tEXt');
+  const chunkType = textEncoder.encode('tEXt');
 
   // Calculate CRC
   const crcData = new Uint8Array(4 + dataLength);
@@ -336,6 +409,41 @@ function blobToDataURL(blob) {
     reader.onload = () => resolve(reader.result);
     reader.onerror = reject;
     reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Converts data URL to blob
+ * @param {string} dataURL - Data URL to convert
+ * @returns {Promise<Blob>} - Blob
+ */
+function dataURLToBlob(dataURL) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Split the data URL
+      const parts = dataURL.split(',');
+      if (parts.length !== 2) {
+        reject(new Error('Invalid data URL format'));
+        return;
+      }
+
+      // Get the mime type
+      const mimeMatch = parts[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+
+      // Decode base64
+      const bstr = atob(parts[1]);
+      const n = bstr.length;
+      const u8arr = new Uint8Array(n);
+
+      for (let i = 0; i < n; i++) {
+        u8arr[i] = bstr.charCodeAt(i);
+      }
+
+      resolve(new Blob([u8arr], { type: mime }));
+    } catch (error) {
+      reject(new Error('Failed to convert data URL to blob: ' + error.message));
+    }
   });
 }
 
