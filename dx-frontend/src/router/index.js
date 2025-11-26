@@ -32,6 +32,7 @@ import DiceRollerView from "@/views/DiceRoller/DiceRoller.vue";
 import StoryBuilder from "@/views/StoryBuilder/StoryBuilder.vue";
 import TimelineView from "@/components/Timeline/TimelineView.vue";
 import TabletopMapEditor from "@/views/GameMaster/TabletopMapEditor.vue";
+import CharacterTokenPreview from "@/views/CharacterTokenPreview.vue";
 
 const routes = [
     // Public pages
@@ -68,6 +69,7 @@ const routes = [
     {path: '/game', name: 'Game', component: LocationView, meta: {requiresAuth: true, game: true}},
     {path: '/world-map/preview', name: "WorldMapPreview", component: () => import('@/views/WorldMapPreview.vue'), meta: {requiresAuth: false}},
     {path: '/characters/preview', name: 'CharacterPreview', component: () => import('@/views/CharacterPreview.vue'), meta: {requiresAuth: false}},
+    {path: '/preview/character/token', name: 'CharacterTokenPreview', component: CharacterTokenPreview, meta: {requiresAuth: false}},
     {path: '/timeline', name: 'Timeline', component: TimelineView, meta: {requiresAuth: false}},
 
     // Game Master routes

@@ -34,6 +34,7 @@ export default {
       panStartOffsetX: 0,
       panStartOffsetY: 0,
       hoveredCell: null,
+      lastPaintedCell: null,
       canvasWidth: 0,
       canvasHeight: 0,
       offsetX: 0,
@@ -495,6 +496,7 @@ export default {
         if (!cell) return;
 
         this.isDragging = true;
+        this.lastPaintedCell = { x: cell.x, y: cell.y };
         this.handleCellInteraction(cell.x, cell.y);
       }
     },
@@ -519,13 +521,21 @@ export default {
 
       if (cell) {
         this.hoveredCell = cell;
+
+        // Check if this is a different cell from the last painted one
+        const isDifferentCell = !this.lastPaintedCell ||
+                                this.lastPaintedCell.x !== cell.x ||
+                                this.lastPaintedCell.y !== cell.y;
+
         // Brush mode: when Shift is pressed and dragging, continuously paint cells
-        if (this.isDragging && this.isShiftPressed) {
+        if (this.isDragging && this.isShiftPressed && isDifferentCell) {
           this.handleCellInteraction(cell.x, cell.y);
+          this.lastPaintedCell = { x: cell.x, y: cell.y };
         }
         // Legacy drag mode: only for availability and wall tools without Shift
-        else if (this.isDragging && !this.isShiftPressed && (this.selectedTool === 'availability' || this.selectedTool === 'wall')) {
+        else if (this.isDragging && !this.isShiftPressed && (this.selectedTool === 'availability' || this.selectedTool === 'wall') && isDifferentCell) {
           this.handleCellInteraction(cell.x, cell.y);
+          this.lastPaintedCell = { x: cell.x, y: cell.y };
         }
       } else {
         this.hoveredCell = null;
@@ -542,6 +552,7 @@ export default {
       }
 
       this.isDragging = false;
+      this.lastPaintedCell = null;
     },
 
     handleMouseLeave() {
@@ -552,6 +563,7 @@ export default {
       }
 
       this.isDragging = false;
+      this.lastPaintedCell = null;
       this.hoveredCell = null;
       this.render();
     },
