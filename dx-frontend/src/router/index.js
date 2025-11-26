@@ -31,6 +31,7 @@ import PlayerHomeDashboard from "@/views/PlyerHomeDashboard/PlayerHomeDashboard.
 import DiceRollerView from "@/views/DiceRoller/DiceRoller.vue";
 import StoryBuilder from "@/views/StoryBuilder/StoryBuilder.vue";
 import TimelineView from "@/components/Timeline/TimelineView.vue";
+import TabletopMapEditor from "@/views/GameMaster/TabletopMapEditor.vue";
 
 const routes = [
     // Public pages
@@ -76,6 +77,7 @@ const routes = [
     {path: '/game-master/world-editor', name: 'WorldEditor', component: WorldEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/character-template-editor', name: 'CharacterTemplateEditor', component: CharacterTemplateEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/story-builder', name: 'StoryBuilder', component: () => import('@/views/GmJournalScreen.vue'), meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
+    {path: '/game-master/tabletop-map-editor', name: 'TabletopMapEditor', component: TabletopMapEditor, meta: {requiresAuth: true, requiresGameMaster: true, game: true}},
     {path: '/game-master/world-map', name: "WorldMapGameMaster", component: () => import('@/views/WorldMapGameMaster.vue'), meta: {requiresAuth: false}},
     // 404 page - catch all route
     {path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: {requiresAuth: false}},

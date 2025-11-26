@@ -1,7 +1,7 @@
 <template>
   <section class="hero" @mousemove="handleMouseMove">
     <div class="background-layer layer-glow"></div>
-    <div class="background-layer layer-characters"></div>
+    <div class="background-layer layer-characters" :style="charactersLayerStyle"></div>
     <div class="background-layer layer1 blending" :style="layerStyles[0]"></div>
     <div class="background-layer layer2 blending" :style="layerStyles[1]"></div>
     <div class="background-layer layer3 blending" :style="layerStyles[2]"></div>
@@ -25,6 +25,7 @@ import LandingButton from "@/components/btn/LandingButton.vue";
 import LandingButtonGroup from "@/components/btn/LandingButtonGroup.vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
+import {useRandomHeroBackground} from "@/composables/useRandomHeroBackground";
 
 const opacity1 = ref(1);
 const opacity2 = ref(1);
@@ -33,6 +34,7 @@ const saturation4 = ref(100);
 const currentLayer = ref(0);
 const router = useRouter();
 const { t } = useI18n();
+const { backgroundUrl } = useRandomHeroBackground();
 const chatAction = () => {
   window.open('https://chatgpt.com/g/g-VIcO0L3rg-dimension-x-game-architect', '_blank');
 };
@@ -85,6 +87,10 @@ const layerStyles = computed(() => [
   {opacity: opacity3.value, transition: 'opacity 1s ease'},
   {filter: `saturate(${saturation4.value}%)`, transition: 'filter 1s ease'},
 ]);
+
+const charactersLayerStyle = computed(() => ({
+  backgroundImage: backgroundUrl.value ? `url(${backgroundUrl.value})` : 'none'
+}));
 </script>
 
 <style scoped>
@@ -136,7 +142,6 @@ html, body {
 }
 
 .layer-characters {
-  background-image: url('@/assets/images/landing/SiteBackgroud.png');
   z-index: -1;
   background-attachment: fixed;
   background-size: cover;
