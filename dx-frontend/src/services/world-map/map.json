@@ -1,0 +1,444 @@
+{
+  "metadata": {
+    "width": 1920,
+    "height": 1080,
+    "backgroundImage": "",
+    "version": "1.0.0",
+    "created": "2025-09-29T00:00:00Z",
+    "modified": "2025-09-29T00:00:00Z",
+    "worldName": "Zerra Planet"
+  },
+  "continents": [
+    {
+      "id": "mainland-primus",
+      "name": "Mainland Primus",
+      "points": [
+        { "x": 25, "y": 20 },
+        { "x": 75, "y": 15 },
+        { "x": 85, "y": 35 },
+        { "x": 80, "y": 65 },
+        { "x": 70, "y": 80 },
+        { "x": 35, "y": 85 },
+        { "x": 20, "y": 70 },
+        { "x": 18, "y": 45 },
+        { "x": 22, "y": 30 }
+      ],
+      "color": "rgba(42, 42, 62, 0.6)",
+      "visible": true,
+      "borderVisible": true,
+      "fillVisible": true,
+      "borderWidth": 3,
+      "borderColor": "#4a5a6a",
+      "countries": [
+        {
+          "id": "southeastern-region",
+          "name": "Southeastern Region",
+          "points": [
+            { "x": 65, "y": 70 },
+            { "x": 75, "y": 65 },
+            { "x": 78, "y": 75 },
+            { "x": 70, "y": 80 }
+          ],
+          "color": "rgba(58, 58, 78, 0.4)",
+          "visible": true,
+          "borderVisible": true,
+          "fillVisible": false,
+          "borderWidth": 2,
+          "borderColor": "#5a6a7a",
+          "cities": [
+            {
+              "id": "city-of-memories",
+              "name": "City of Memories",
+              "position": { "x": 71, "y": 73 },
+              "type": "major",
+              "cityType": "point",
+              "color": "#fbbf24",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 10
+            }
+          ]
+        },
+        {
+          "id": "central-region",
+          "name": "Central Region",
+          "points": [
+            { "x": 40, "y": 35 },
+            { "x": 60, "y": 32 },
+            { "x": 62, "y": 55 },
+            { "x": 42, "y": 58 }
+          ],
+          "color": "rgba(58, 58, 78, 0.4)",
+          "visible": true,
+          "borderVisible": true,
+          "fillVisible": false,
+          "borderWidth": 2,
+          "borderColor": "#5a6a7a",
+          "cities": [
+            {
+              "id": "crossroads-bastion",
+              "name": "Crossroads Bastion",
+              "position": { "x": 51, "y": 45 },
+              "type": "major",
+              "cityType": "point",
+              "color": "#fbbf24",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 10
+            },
+            {
+              "id": "meteor-end",
+              "name": "Meteor's End",
+              "position": { "x": 58, "y": 38 },
+              "type": "major",
+              "cityType": "point",
+              "color": "#a78bfa",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 9
+            }
+          ]
+        },
+        {
+          "id": "northwestern-region",
+          "name": "Northwestern Region",
+          "points": [
+            { "x": 25, "y": 30 },
+            { "x": 38, "y": 28 },
+            { "x": 40, "y": 42 },
+            { "x": 28, "y": 45 }
+          ],
+          "color": "rgba(58, 58, 78, 0.4)",
+          "visible": true,
+          "borderVisible": true,
+          "fillVisible": false,
+          "borderWidth": 2,
+          "borderColor": "#5a6a7a",
+          "cities": [
+            {
+              "id": "forge-haven",
+              "name": "Forge Haven",
+              "position": { "x": 32, "y": 36 },
+              "type": "medium",
+              "cityType": "point",
+              "color": "#60a5fa",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "technoedge",
+      "name": "TechnoEdge",
+      "points": [
+        { "x": 8, "y": 22 },
+        { "x": 18, "y": 20 },
+        { "x": 20, "y": 32 },
+        { "x": 18, "y": 38 },
+        { "x": 10, "y": 40 },
+        { "x": 6, "y": 32 }
+      ],
+      "color": "rgba(26, 58, 74, 0.7)",
+      "visible": true,
+      "borderVisible": true,
+      "fillVisible": true,
+      "borderWidth": 3,
+      "borderColor": "#3a6a8a",
+      "countries": [
+        {
+          "id": "techno-central",
+          "name": "Techno Central",
+          "points": [
+            { "x": 10, "y": 26 },
+            { "x": 16, "y": 25 },
+            { "x": 16, "y": 35 },
+            { "x": 11, "y": 36 }
+          ],
+          "color": "rgba(36, 68, 84, 0.5)",
+          "visible": true,
+          "borderVisible": true,
+          "fillVisible": false,
+          "borderWidth": 2,
+          "borderColor": "#4a7a9a",
+          "cities": [
+            {
+              "id": "techno-city-prime",
+              "name": "Techno-City Prime",
+              "position": { "x": 13, "y": 30 },
+              "type": "major",
+              "cityType": "point",
+              "color": "#22d3ee",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mystory-heaven",
+      "name": "Mystory Heaven",
+      "points": [
+        { "x": 80, "y": 25 },
+        { "x": 92, "y": 23 },
+        { "x": 95, "y": 35 },
+        { "x": 93, "y": 48 },
+        { "x": 85, "y": 52 },
+        { "x": 78, "y": 45 },
+        { "x": 77, "y": 32 }
+      ],
+      "color": "rgba(42, 74, 42, 0.6)",
+      "visible": true,
+      "borderVisible": true,
+      "fillVisible": true,
+      "borderWidth": 3,
+      "borderColor": "#5a9a5a",
+      "countries": [
+        {
+          "id": "sacred-lands",
+          "name": "Sacred Lands",
+          "points": [
+            { "x": 82, "y": 30 },
+            { "x": 90, "y": 28 },
+            { "x": 91, "y": 42 },
+            { "x": 83, "y": 44 }
+          ],
+          "color": "rgba(52, 84, 52, 0.4)",
+          "visible": true,
+          "borderVisible": true,
+          "fillVisible": false,
+          "borderWidth": 2,
+          "borderColor": "#6aaa6a",
+          "cities": [
+            {
+              "id": "json-sanctuary",
+              "name": "JSon's Sanctuary",
+              "position": { "x": 86, "y": 35 },
+              "type": "major",
+              "cityType": "point",
+              "color": "#4ade80",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 10
+            },
+            {
+              "id": "temple-city",
+              "name": "Temple City",
+              "position": { "x": 88, "y": 42 },
+              "type": "medium",
+              "cityType": "point",
+              "color": "#86efac",
+              "visible": true,
+              "borderVisible": true,
+              "fillVisible": true,
+              "labelVisible": true,
+              "size": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "id": "maritime-route-1",
+      "name": "Ocean Trade Network",
+      "points": [
+        { "x": 71, "y": 73 },
+        { "x": 51, "y": 45 },
+        { "x": 13, "y": 30 }
+      ],
+      "color": "rgba(96, 165, 250, 0.6)",
+      "width": 2,
+      "style": "dashed",
+      "visible": true,
+      "type": "maritime"
+    },
+    {
+      "id": "dimensional-route-1",
+      "name": "Dimensional Shortcut East",
+      "points": [
+        { "x": 51, "y": 45 },
+        { "x": 86, "y": 35 }
+      ],
+      "color": "rgba(147, 51, 234, 0.7)",
+      "width": 2,
+      "style": "dotted",
+      "visible": true,
+      "type": "dimensional"
+    },
+    {
+      "id": "aerial-route-1",
+      "name": "Air Travel Route",
+      "points": [
+        { "x": 13, "y": 30 },
+        { "x": 32, "y": 36 },
+        { "x": 51, "y": 45 },
+        { "x": 71, "y": 73 }
+      ],
+      "color": "rgba(59, 130, 246, 0.5)",
+      "width": 1.5,
+      "style": "solid",
+      "visible": true,
+      "type": "aerial"
+    }
+  ],
+  "markers": [
+    {
+      "id": "death-valley",
+      "name": "Death Valley",
+      "position": { "x": 73, "y": 82 },
+      "type": "hazard",
+      "color": "#ef4444",
+      "icon": "⚠️",
+      "size": 8,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Extreme danger zone with dimensional instability"
+    },
+    {
+      "id": "black-rock-island",
+      "name": "Black Rock Island",
+      "position": { "x": 68, "y": 85 },
+      "type": "landmark",
+      "color": "#6b7280",
+      "icon": "🏝️",
+      "size": 6,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Mysterious island that absorbs Flow energy"
+    },
+    {
+      "id": "corrupted-wasteland-1",
+      "name": "Corrupted Wastes",
+      "position": { "x": 45, "y": 55 },
+      "type": "hazard",
+      "color": "#9333ea",
+      "icon": "☠️",
+      "size": 7,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Void clusters and dimensional corruption"
+    },
+    {
+      "id": "eternal-grove",
+      "name": "The Eternal Grove",
+      "position": { "x": 82, "y": 48 },
+      "type": "landmark",
+      "color": "#22c55e",
+      "icon": "🌳",
+      "size": 7,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Ancient sentient forest rich in Flow energy"
+    },
+    {
+      "id": "mystic-peaks",
+      "name": "The Mystic Peaks",
+      "position": { "x": 87, "y": 30 },
+      "type": "landmark",
+      "color": "#a855f7",
+      "icon": "⛰️",
+      "size": 7,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Sacred mountains with highest Flow concentration"
+    },
+    {
+      "id": "shadowveil-city",
+      "name": "Shadowveil",
+      "position": { "x": 38, "y": 52 },
+      "type": "city",
+      "color": "#8b5cf6",
+      "icon": "🌙",
+      "size": 8,
+      "visible": true,
+      "labelVisible": true,
+      "description": "Dimensional thin spot city"
+    }
+  ],
+  "labels": [
+    {
+      "id": "label-mainland",
+      "text": "MAINLAND PRIMUS",
+      "position": { "x": 50, "y": 48 },
+      "fontSize": 20,
+      "color": "#e5e7eb",
+      "fontWeight": "bold",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 0, 0, 0.6)"
+    },
+    {
+      "id": "label-technoedge",
+      "text": "TECHNOEDGE",
+      "position": { "x": 13, "y": 32 },
+      "fontSize": 16,
+      "color": "#22d3ee",
+      "fontWeight": "bold",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 0, 0, 0.6)"
+    },
+    {
+      "id": "label-mystory",
+      "text": "MYSTORY HEAVEN",
+      "position": { "x": 86, "y": 38 },
+      "fontSize": 16,
+      "color": "#4ade80",
+      "fontWeight": "bold",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 0, 0, 0.6)"
+    },
+    {
+      "id": "label-dark-ocean",
+      "text": "Dark Ocean",
+      "position": { "x": 65, "y": 88 },
+      "fontSize": 14,
+      "color": "#3b82f6",
+      "fontWeight": "normal",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 10, 20, 0.7)"
+    },
+    {
+      "id": "label-tranquil-ocean",
+      "text": "Tranquil Ocean",
+      "position": { "x": 90, "y": 55 },
+      "fontSize": 14,
+      "color": "#60a5fa",
+      "fontWeight": "normal",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 10, 20, 0.7)"
+    },
+    {
+      "id": "label-corrupted",
+      "text": "Corrupted Wastelands",
+      "position": { "x": 45, "y": 60 },
+      "fontSize": 12,
+      "color": "#c084fc",
+      "fontWeight": "normal",
+      "visible": true,
+      "background": true,
+      "backgroundColor": "rgba(0, 0, 0, 0.7)"
+    }
+  ]
+}
