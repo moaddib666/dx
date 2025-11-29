@@ -315,8 +315,8 @@ export default {
         this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
       }
 
-      // Draw movement area shadows for selected player
-      if (this.selectedPlayer) {
+      // Draw movement area shadows for selected player (only if grid is visible)
+      if (this.selectedPlayer && this.gridVisible) {
         this.drawMovementArea();
       }
 
@@ -325,13 +325,13 @@ export default {
         this.drawGrid();
       }
 
-      // Draw path to hovered cell
-      if (this.pathToHovered && this.pathToHovered.length > 0) {
+      // Draw path to hovered cell (only if grid is visible)
+      if (this.pathToHovered && this.pathToHovered.length > 0 && this.gridVisible) {
         this.drawPath(this.pathToHovered);
       }
 
-      // Draw hovered cell shadow
-      if (this.hoveredCell) {
+      // Draw hovered cell shadow (only if grid is visible and cell is passable)
+      if (this.hoveredCell && this.gridVisible && this.isCellPassable(this.hoveredCell.x, this.hoveredCell.y)) {
         this.drawCellShadow(this.hoveredCell.x, this.hoveredCell.y);
       }
 
