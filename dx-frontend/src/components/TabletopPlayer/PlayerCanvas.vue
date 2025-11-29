@@ -5,6 +5,7 @@
       class="player-canvas"
       @mousedown="handleMouseDown"
       @mousemove="handleMouseMove"
+      @mouseup="handleMouseUp"
       @mouseleave="handleMouseLeave"
       @wheel.prevent="handleWheel"
     ></canvas>
@@ -774,6 +775,18 @@ export default {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
 
+      // Middle mouse button (wheel press) - enter pan mode
+      if (event.button === 1) {
+        event.preventDefault();
+        this.isPanning = true;
+        this.panStartX = mouseX;
+        this.panStartY = mouseY;
+        this.panStartOffsetX = this.offsetX;
+        this.panStartOffsetY = this.offsetY;
+        this.canvas.style.cursor = 'grabbing';
+        return;
+      }
+
       const cell = this.getCellFromMouse(mouseX, mouseY);
       if (!cell) return;
 
@@ -812,6 +825,16 @@ export default {
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
 
+      // Handle pan mode
+      if (this.isPanning) {
+        const deltaX = mouseX - this.panStartX;
+        const deltaY = mouseY - this.panStartY;
+        this.offsetX = this.panStartOffsetX + deltaX;
+        this.offsetY = this.panStartOffsetY + deltaY;
+        this.render();
+        return;
+      }
+
       const cell = this.getCellFromMouse(mouseX, mouseY);
 
       if (cell) {
@@ -836,7 +859,21 @@ export default {
       this.render();
     },
 
+    handleMouseUp(event) {
+      // Exit pan mode if middle button was released
+      if (this.isPanning && event.button === 1) {
+        this.isPanning = false;
+        this.canvas.style.cursor = 'pointer';
+      }
+    },
+
     handleMouseLeave() {
+      // Exit pan mode if active
+      if (this.isPanning) {
+        this.isPanning = false;
+        this.canvas.style.cursor = 'pointer';
+      }
+
       this.hoveredCell = null;
       this.pathToHovered = null;
       this.render();
