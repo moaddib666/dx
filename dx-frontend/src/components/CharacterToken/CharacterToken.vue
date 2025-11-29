@@ -80,7 +80,7 @@ const characterImage = computed(() => props.image || placeholderImage);
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 50%;
-  mask-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 5%, rgba(0, 0, 0, 0) 85%);
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 0.2) 95%);
 }
 
 .token-overlay {
