@@ -8,11 +8,19 @@
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseLeave"
+      @wheel.prevent="handleWheel"
     ></canvas>
     <!-- Brush Mode Indicator -->
     <div v-if="isShiftPressed" class="brush-mode-indicator">
       <span class="indicator-icon">🖌️</span>
       <span class="indicator-text">BRUSH MODE</span>
+    </div>
+    <!-- Zoom HUD -->
+    <div class="zoom-hud">
+      <button class="zoom-btn" @click="zoomOut" :disabled="zoom <= minZoom" title="Zoom Out">−</button>
+      <span class="zoom-display">{{ zoomPercentage }}%</span>
+      <button class="zoom-btn" @click="zoomIn" :disabled="zoom >= maxZoom" title="Zoom In">+</button>
+      <button class="zoom-btn zoom-reset" @click="resetZoom" title="Reset Zoom">⟲</button>
     </div>
   </div>
 </template>
@@ -70,8 +78,12 @@ export default {
       canvasHeight: 0,
       offsetX: 0,
       offsetY: 0,
-      scale: 1.0,
-      backgroundImage: null
+      backgroundImage: null,
+      // Zoom state
+      zoom: 1.0,
+      minZoom: 0.5,
+      maxZoom: 3.0,
+      zoomStep: 1.1 // Exponential zoom factor
     };
   },
   computed: {
@@ -89,7 +101,10 @@ export default {
       'currentLayerCells',
       'gridConfig',
       'getCurrentLayerMetadata'
-    ])
+    ]),
+    zoomPercentage() {
+      return Math.round(this.zoom * 100);
+    }
   },
   watch: {
     currentMap: {
@@ -161,6 +176,34 @@ export default {
       this.render();
     },
 
+    // Zoom methods
+    handleWheel(event) {
+      const delta = event.deltaY;
+      if (delta < 0) {
+        this.zoomIn();
+      } else {
+        this.zoomOut();
+      }
+    },
+
+    zoomIn() {
+      this.setZoom(this.zoom * this.zoomStep);
+    },
+
+    zoomOut() {
+      this.setZoom(this.zoom / this.zoomStep);
+    },
+
+    resetZoom() {
+      this.setZoom(1.0);
+    },
+
+    setZoom(newZoom) {
+      // Clamp zoom to min/max range
+      this.zoom = Math.max(this.minZoom, Math.min(this.maxZoom, newZoom));
+      this.render();
+    },
+
     loadBackgroundImage() {
       if (this.currentMap?.backgroundImage) {
         const img = new Image();
@@ -180,6 +223,14 @@ export default {
 
       // Clear canvas
       this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+      // Save context state and apply zoom transformation
+      this.ctx.save();
+
+      // Translate to center, apply zoom, translate back
+      this.ctx.translate(this.canvasWidth / 2, this.canvasHeight / 2);
+      this.ctx.scale(this.zoom, this.zoom);
+      this.ctx.translate(-this.canvasWidth / 2, -this.canvasHeight / 2);
 
       // Draw background
       if (this.backgroundVisible && this.backgroundImage) {
@@ -212,6 +263,9 @@ export default {
       if (this.selectedCell && this.selectedCell.layer === this.currentLayer) {
         this.drawCellHighlight(this.selectedCell.x, this.selectedCell.y, 'rgba(0, 255, 255, 0.5)');
       }
+
+      // Restore context state
+      this.ctx.restore();
     },
 
     getCellStateForMovement(lookup, x, y, layerId) {
@@ -817,6 +871,12 @@ export default {
     getCellFromMousePosition(mouseX, mouseY) {
       if (!this.gridConfig) return null;
 
+      // Apply inverse zoom transformation to mouse coordinates
+      const centerX = this.canvasWidth / 2;
+      const centerY = this.canvasHeight / 2;
+      const zoomedMouseX = centerX + (mouseX - centerX) / this.zoom;
+      const zoomedMouseY = centerY + (mouseY - centerY) / this.zoom;
+
       const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
@@ -824,7 +884,7 @@ export default {
       const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
 
       // Apply inverse morph to convert screen coordinates to grid coordinates
-      const unmorphed = this.inverseMorph(mouseX, mouseY, gridWidth, gridHeight, startX, startY);
+      const unmorphed = this.inverseMorph(zoomedMouseX, zoomedMouseY, gridWidth, gridHeight, startX, startY);
 
       const cellX = Math.floor((unmorphed.x - startX) / cellWidth);
       const cellY = Math.floor((unmorphed.y - startY) / cellHeight);
@@ -1163,5 +1223,69 @@ export default {
   50% {
     box-shadow: 0 4px 25px rgba(0, 212, 255, 0.8);
   }
+}
+
+/* Zoom HUD */
+.zoom-hud {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(20, 20, 30, 0.95);
+  border: 2px solid rgba(0, 212, 255, 0.5);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  z-index: 100;
+}
+
+.zoom-btn {
+  background: rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  border-radius: 4px;
+  color: #00d4ff;
+  font-size: 18px;
+  font-weight: bold;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.zoom-btn:hover:not(:disabled) {
+  background: rgba(0, 212, 255, 0.4);
+  border-color: rgba(0, 212, 255, 0.8);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+  transform: scale(1.05);
+}
+
+.zoom-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.zoom-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.zoom-reset {
+  font-size: 16px;
+  margin-left: 4px;
+}
+
+.zoom-display {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  min-width: 50px;
+  text-align: center;
+  user-select: none;
 }
 </style>
