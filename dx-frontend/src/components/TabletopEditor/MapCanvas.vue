@@ -19,6 +19,35 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { TERRAIN_CONFIGS } from '@/types/tabletop';
+
+const CARDINAL_DELTAS = {
+  north: { dx: 0, dy: -1 },
+  south: { dx: 0, dy: 1 },
+  east: { dx: 1, dy: 0 },
+  west: { dx: -1, dy: 0 }
+};
+
+const OPPOSITE_DIRECTION = {
+  north: 'south',
+  south: 'north',
+  east: 'west',
+  west: 'east'
+};
+
+const DIAGONAL_DELTAS = {
+  northEast: { dx: 1, dy: -1 },
+  northWest: { dx: -1, dy: -1 },
+  southEast: { dx: 1, dy: 1 },
+  southWest: { dx: -1, dy: 1 }
+};
+
+const OPPOSITE_DIAGONAL_DIRECTION = {
+  northEast: 'southWest',
+  southWest: 'northEast',
+  northWest: 'southEast',
+  southEast: 'northWest'
+};
 
 export default {
   name: 'MapCanvas',
@@ -35,6 +64,8 @@ export default {
       panStartOffsetY: 0,
       hoveredCell: null,
       lastPaintedCell: null,
+      // In Path mode, this is the starting cell for click-to-connect edge editing
+      edgeStartCell: null,
       canvasWidth: 0,
       canvasHeight: 0,
       offsetX: 0,
@@ -51,6 +82,10 @@ export default {
       'selectedCell',
       'gridVisible',
       'backgroundVisible',
+      'editorMode',
+      'availabilityVisible',
+      'pathsVisible',
+      'objectsVisible',
       'currentLayerCells',
       'gridConfig',
       'getCurrentLayerMetadata'
@@ -71,6 +106,15 @@ export default {
       this.render();
     },
     backgroundVisible() {
+      this.render();
+    },
+    availabilityVisible() {
+      this.render();
+    },
+    pathsVisible() {
+      this.render();
+    },
+    objectsVisible() {
       this.render();
     }
   },
@@ -154,6 +198,11 @@ export default {
       // Draw cells
       this.drawCells();
 
+      // Draw movement edges/directions for the current layer
+      if (this.pathsVisible) {
+        this.drawMovementEdgesLayer();
+      }
+
       // Draw hovered cell highlight
       if (this.hoveredCell) {
         this.drawCellHighlight(this.hoveredCell.x, this.hoveredCell.y, 'rgba(255, 255, 0, 0.3)');
@@ -163,6 +212,274 @@ export default {
       if (this.selectedCell && this.selectedCell.layer === this.currentLayer) {
         this.drawCellHighlight(this.selectedCell.x, this.selectedCell.y, 'rgba(0, 255, 255, 0.5)');
       }
+    },
+
+    getCellStateForMovement(lookup, x, y, layerId) {
+      if (!this.currentMap || !this.gridConfig) {
+        return {
+          available: false,
+          connections: {
+            north: false,
+            south: false,
+            east: false,
+            west: false,
+            northEast: false,
+            northWest: false,
+            southEast: false,
+            southWest: false
+          }
+        };
+      }
+
+      const { columns, rows } = this.gridConfig;
+
+      if (x < 0 || y < 0 || x >= columns || y >= rows) {
+        return {
+          available: false,
+          connections: {
+            north: false,
+            south: false,
+            east: false,
+            west: false,
+            northEast: false,
+            northWest: false,
+            southEast: false,
+            southWest: false
+          }
+        };
+      }
+
+      const layers = this.currentMap.layers || [];
+      const layerMeta = layers.find(l => l.id === layerId);
+
+      if (!layerMeta || layerMeta.active === false) {
+        return {
+          available: false,
+          connections: {
+            north: false,
+            south: false,
+            east: false,
+            west: false,
+            northEast: false,
+            northWest: false,
+            southEast: false,
+            southWest: false
+          }
+        };
+      }
+
+      const key = `${x},${y},${layerId}`;
+      const cell = lookup.get(key);
+
+      if (!cell) {
+        // No explicit cell data -> treat as a default available cell with all connections open
+        return {
+          available: true,
+          connections: {
+            north: true,
+            south: true,
+            east: true,
+            west: true,
+            // Diagonals default to open unless explicitly blocked
+            northEast: undefined,
+            northWest: undefined,
+            southEast: undefined,
+            southWest: undefined
+          }
+        };
+      }
+
+      const connections = cell.connections || {};
+
+      return {
+        available: cell.available !== false,
+        connections: {
+          north: connections.north !== false,
+          south: connections.south !== false,
+          east: connections.east !== false,
+          west: connections.west !== false,
+          // Diagonal flags are interpreted as: false => blocked, anything else => open
+          northEast: connections.northEast,
+          northWest: connections.northWest,
+          southEast: connections.southEast,
+          southWest: connections.southWest
+        }
+      };
+    },
+
+    canCardinalMoveFrom(lookup, x, y, layerId, direction) {
+      const deltas = CARDINAL_DELTAS[direction];
+      if (!deltas) return false;
+
+      const fromState = this.getCellStateForMovement(lookup, x, y, layerId);
+      if (!fromState.available) return false;
+
+      const targetX = x + deltas.dx;
+      const targetY = y + deltas.dy;
+      const toState = this.getCellStateForMovement(lookup, targetX, targetY, layerId);
+
+      if (!toState.available) return false;
+
+      const opposite = OPPOSITE_DIRECTION[direction];
+      return !!fromState.connections[direction] && !!toState.connections[opposite];
+    },
+
+    canDiagonalMoveFrom(lookup, x, y, layerId, direction) {
+      const deltas = DIAGONAL_DELTAS[direction];
+      if (!deltas) return false;
+
+      const fromState = this.getCellStateForMovement(lookup, x, y, layerId);
+      if (!fromState.available) return false;
+
+      const targetX = x + deltas.dx;
+      const targetY = y + deltas.dy;
+      const toState = this.getCellStateForMovement(lookup, targetX, targetY, layerId);
+      if (!toState.available) return false;
+
+      // Enforce no corner cutting: diagonal move only if both related
+      // cardinal moves are possible from the source cell.
+      const requires = {
+        northEast: ['north', 'east'],
+        northWest: ['north', 'west'],
+        southEast: ['south', 'east'],
+        southWest: ['south', 'west']
+      };
+
+      const deps = requires[direction] || [];
+      if (deps.length === 2) {
+        if (
+          !this.canCardinalMoveFrom(lookup, x, y, layerId, deps[0]) ||
+          !this.canCardinalMoveFrom(lookup, x, y, layerId, deps[1])
+        ) {
+          return false;
+        }
+      }
+
+      // Diagonal flags: if either side explicitly blocks this diagonal,
+      // the move is not allowed. When undefined, it is treated as open.
+      const fromDiag = fromState.connections && fromState.connections[direction];
+      const oppositeDiag = OPPOSITE_DIAGONAL_DIRECTION[direction];
+      const toDiag = oppositeDiag && toState.connections
+        ? toState.connections[oppositeDiag]
+        : undefined;
+
+      if (fromDiag === false || toDiag === false) {
+        return false;
+      }
+
+      return true;
+    },
+
+    buildMovementEdgesForCurrentLayer() {
+      if (!this.currentMap || !this.gridConfig || !this.currentMap.edges) return [];
+
+      const layerId = this.currentLayer;
+      const cells = this.currentMap.cells || [];
+      const allEdges = this.currentMap.edges || [];
+
+      // Build cell lookup for quick access
+      const cellLookup = new Map();
+      cells.forEach(cell => {
+        cellLookup.set(`${cell.x},${cell.y},${cell.layer}`, cell);
+      });
+
+      // Filter edges for current layer and check cell passability
+      const visibleEdges = [];
+
+      allEdges.forEach(edge => {
+        // Only show edges for current layer
+        if (edge.id.layer !== layerId) return;
+
+        // Check if both cells are passable
+        const fromKey = `${edge.id.fromX},${edge.id.fromY},${edge.id.layer}`;
+        const toKey = `${edge.id.toX},${edge.id.toY},${edge.id.layer}`;
+
+        const fromCell = cellLookup.get(fromKey);
+        const toCell = cellLookup.get(toKey);
+
+        // Default to passable if cell doesn't exist (implicit grass terrain)
+        const fromPassable = !fromCell || fromCell.passable !== false;
+        const toPassable = !toCell || toCell.passable !== false;
+
+        // Only show edges between passable cells
+        if (!fromPassable || !toPassable) return;
+
+        // Convert to rendering format
+        visibleEdges.push({
+          from: { x: edge.id.fromX, y: edge.id.fromY, layer: edge.id.layer },
+          to: { x: edge.id.toX, y: edge.id.toY, layer: edge.id.layer },
+          direction: edge.direction,
+          enabled: !edge.blocked  // Edge is enabled if not blocked
+        });
+      });
+
+      return visibleEdges;
+    },
+
+    drawMovementEdgesLayer() {
+      if (!this.gridConfig || !this.currentMap) return;
+
+      const edges = this.buildMovementEdgesForCurrentLayer();
+      if (!edges.length) return;
+
+      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const gridWidth = columns * cellWidth;
+      const gridHeight = rows * cellHeight;
+      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
+      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+
+      edges.forEach(edge => {
+        if (!edge || !edge.from || !edge.to) return;
+
+        const fromCenterX = startX + edge.from.x * cellWidth + cellWidth / 2;
+        const fromCenterY = startY + edge.from.y * cellHeight + cellHeight / 2;
+        const toCenterX = startX + edge.to.x * cellWidth + cellWidth / 2;
+        const toCenterY = startY + edge.to.y * cellHeight + cellHeight / 2;
+
+        const fromPoint = this.applyMorph(fromCenterX, fromCenterY, gridWidth, gridHeight, startX, startY);
+        const toPoint = this.applyMorph(toCenterX, toCenterY, gridWidth, gridHeight, startX, startY);
+
+        // Set color and style based on enabled status
+        if (edge.enabled) {
+          // Enabled connections: bright green, solid line
+          this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
+          this.ctx.lineWidth = 2;
+          this.ctx.fillStyle = 'rgba(0, 255, 0, 0.7)';
+          this.ctx.setLineDash([]);
+        } else {
+          // Disabled connections: red, dashed line
+          this.ctx.strokeStyle = 'rgba(255, 50, 50, 0.5)';
+          this.ctx.lineWidth = 2;
+          this.ctx.fillStyle = 'rgba(255, 50, 50, 0.5)';
+          this.ctx.setLineDash([5, 5]);
+        }
+
+        // Draw main edge line
+        this.ctx.beginPath();
+        this.ctx.moveTo(fromPoint.x, fromPoint.y);
+        this.ctx.lineTo(toPoint.x, toPoint.y);
+        this.ctx.stroke();
+
+        // Draw a small arrow head at the target side to indicate direction
+        const angle = Math.atan2(toPoint.y - fromPoint.y, toPoint.x - fromPoint.x);
+        const arrowSize = edge.enabled ? 6 : 4;
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(toPoint.x, toPoint.y);
+        this.ctx.lineTo(
+          toPoint.x - arrowSize * Math.cos(angle - Math.PI / 6),
+          toPoint.y - arrowSize * Math.sin(angle - Math.PI / 6)
+        );
+        this.ctx.lineTo(
+          toPoint.x - arrowSize * Math.cos(angle + Math.PI / 6),
+          toPoint.y - arrowSize * Math.sin(angle + Math.PI / 6)
+        );
+        this.ctx.closePath();
+        this.ctx.fill();
+      });
+
+      // Reset line dash to solid for other drawing operations
+      this.ctx.setLineDash([]);
     },
 
     drawBackground() {
@@ -301,9 +618,30 @@ export default {
         const bottomLeft = this.applyMorph(x, y + cellHeight, gridWidth, gridHeight, startX, startY);
         const bottomRight = this.applyMorph(x + cellWidth, y + cellHeight, gridWidth, gridHeight, startX, startY);
 
-        // Draw unavailable cells as a morphed quad
-        if (!cell.available) {
-          this.ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+        // Draw terrain-based background color if availability overlay is visible
+        if (this.availabilityVisible && cell.terrain) {
+          const terrainConfig = TERRAIN_CONFIGS[cell.terrain];
+          if (terrainConfig && terrainConfig.visualStyle) {
+            // Convert hex color to rgba with transparency
+            const hexColor = terrainConfig.visualStyle;
+            const r = parseInt(hexColor.slice(1, 3), 16);
+            const g = parseInt(hexColor.slice(3, 5), 16);
+            const b = parseInt(hexColor.slice(5, 7), 16);
+            this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.3)`;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(topLeft.x, topLeft.y);
+            this.ctx.lineTo(topRight.x, topRight.y);
+            this.ctx.lineTo(bottomRight.x, bottomRight.y);
+            this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
+            this.ctx.closePath();
+            this.ctx.fill();
+          }
+        }
+
+        // Draw impassable cells with red overlay (using passable property)
+        if (this.availabilityVisible && cell.passable === false) {
+          this.ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
           this.ctx.beginPath();
           this.ctx.moveTo(topLeft.x, topLeft.y);
           this.ctx.lineTo(topRight.x, topRight.y);
@@ -313,42 +651,13 @@ export default {
           this.ctx.fill();
         }
 
-        // Draw walls (blocked connections) with morph
-        this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
-        this.ctx.lineWidth = 3;
-
-        if (!cell.connections.north) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(topLeft.x, topLeft.y);
-          this.ctx.lineTo(topRight.x, topRight.y);
-          this.ctx.stroke();
-        }
-        if (!cell.connections.south) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(bottomLeft.x, bottomLeft.y);
-          this.ctx.lineTo(bottomRight.x, bottomRight.y);
-          this.ctx.stroke();
-        }
-        if (!cell.connections.west) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(topLeft.x, topLeft.y);
-          this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
-          this.ctx.stroke();
-        }
-        if (!cell.connections.east) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(topRight.x, topRight.y);
-          this.ctx.lineTo(bottomRight.x, bottomRight.y);
-          this.ctx.stroke();
-        }
-
         // Draw spawners with morph
-        if (cell.spawner) {
+        if (this.objectsVisible && cell.spawner) {
           this.drawSpawner(x, y, cellWidth, cellHeight, cell.spawner, gridWidth, gridHeight, startX, startY);
         }
 
         // Draw game objects with morph
-        if (cell.gameObject) {
+        if (this.objectsVisible && cell.gameObject) {
           this.drawGameObject(x, y, cellWidth, cellHeight, cell.gameObject, gridWidth, gridHeight, startX, startY);
         }
       });
@@ -472,6 +781,82 @@ export default {
       return null;
     },
 
+    // Toggle a movement edge between two neighboring cells (cardinal or diagonal)
+    // by flipping the appropriate connection flags on both endpoints.
+    toggleEdgeBetweenCells(from, to, layer) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+
+      // Only support immediate neighbors (including diagonals)
+      if (Math.abs(dx) > 1 || Math.abs(dy) > 1 || (dx === 0 && dy === 0)) {
+        return;
+      }
+
+      // Do not allow editing edges involving unavailable cells
+      if (!this.gridConfig || !this.currentMap) return;
+
+      const { columns, rows } = this.gridConfig;
+
+      // Guard against off-grid coordinates
+      if (
+        from.x < 0 || from.y < 0 || from.x >= columns || from.y >= rows ||
+        to.x < 0 || to.y < 0 || to.x >= columns || to.y >= rows
+      ) {
+        return;
+      }
+
+      const cells = this.currentMap.cells || [];
+      const lookup = new Map();
+      cells.forEach(cell => {
+        lookup.set(`${cell.x},${cell.y},${cell.layer}`, cell);
+      });
+
+      const fromCell = lookup.get(`${from.x},${from.y},${layer}`);
+      const toCell = lookup.get(`${to.x},${to.y},${layer}`);
+
+      const fromAvailable = !fromCell || fromCell.available !== false;
+      const toAvailable = !toCell || toCell.available !== false;
+
+      if (!fromAvailable || !toAvailable) {
+        // Cannot create or edit edges that involve unavailable cells
+        return;
+      }
+
+      const toggleBidirectionalCardinal = (direction) => {
+        const opposite = OPPOSITE_DIRECTION[direction];
+        this.toggleCellConnection({ x: from.x, y: from.y, layer, direction });
+        this.toggleCellConnection({ x: to.x, y: to.y, layer, direction: opposite });
+      };
+
+      const toggleBidirectionalDiagonal = (direction) => {
+        const oppositeDiag = OPPOSITE_DIAGONAL_DIRECTION[direction];
+        this.toggleCellConnection({ x: from.x, y: from.y, layer, direction });
+        if (oppositeDiag) {
+          this.toggleCellConnection({ x: to.x, y: to.y, layer, direction: oppositeDiag });
+        }
+      };
+
+      // Cardinal neighbors
+      if (dx === 1 && dy === 0) {
+        toggleBidirectionalCardinal('east');
+      } else if (dx === -1 && dy === 0) {
+        toggleBidirectionalCardinal('west');
+      } else if (dx === 0 && dy === 1) {
+        toggleBidirectionalCardinal('south');
+      } else if (dx === 0 && dy === -1) {
+        toggleBidirectionalCardinal('north');
+      } else if (dx === 1 && dy === -1) {
+        // Diagonal neighbors
+        toggleBidirectionalDiagonal('northEast');
+      } else if (dx === -1 && dy === -1) {
+        toggleBidirectionalDiagonal('northWest');
+      } else if (dx === 1 && dy === 1) {
+        toggleBidirectionalDiagonal('southEast');
+      } else if (dx === -1 && dy === 1) {
+        toggleBidirectionalDiagonal('southWest');
+      }
+    },
+
     handleMouseDown(event) {
       const rect = this.canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
@@ -497,7 +882,7 @@ export default {
 
         this.isDragging = true;
         this.lastPaintedCell = { x: cell.x, y: cell.y };
-        this.handleCellInteraction(cell.x, cell.y);
+        this.handleCellInteraction(cell.x, cell.y, null);
       }
     },
 
@@ -529,12 +914,12 @@ export default {
 
         // Brush mode: when Shift is pressed and dragging, continuously paint cells
         if (this.isDragging && this.isShiftPressed && isDifferentCell) {
-          this.handleCellInteraction(cell.x, cell.y);
+          this.handleCellInteraction(cell.x, cell.y, this.lastPaintedCell);
           this.lastPaintedCell = { x: cell.x, y: cell.y };
         }
         // Legacy drag mode: only for availability and wall tools without Shift
         else if (this.isDragging && !this.isShiftPressed && (this.selectedTool === 'availability' || this.selectedTool === 'wall') && isDifferentCell) {
-          this.handleCellInteraction(cell.x, cell.y);
+          this.handleCellInteraction(cell.x, cell.y, this.lastPaintedCell);
           this.lastPaintedCell = { x: cell.x, y: cell.y };
         }
       } else {
@@ -565,10 +950,11 @@ export default {
       this.isDragging = false;
       this.lastPaintedCell = null;
       this.hoveredCell = null;
+      this.edgeStartCell = null;
       this.render();
     },
 
-    handleCellInteraction(x, y) {
+    handleCellInteraction(x, y, previousCell) {
       const layer = this.currentLayer;
 
       switch (this.selectedTool) {
@@ -579,11 +965,50 @@ export default {
           this.toggleCellAvailability({ x, y, layer });
           break;
         case 'wall':
-          // Toggle all connections for the cell (block/unblock all walls)
-          this.toggleCellConnection({ x, y, layer, direction: 'north' });
-          this.toggleCellConnection({ x, y, layer, direction: 'south' });
-          this.toggleCellConnection({ x, y, layer, direction: 'east' });
-          this.toggleCellConnection({ x, y, layer, direction: 'west' });
+          if (this.editorMode === 'path') {
+            // In Path mode, the wall tool becomes the Path/Edge editor.
+            // You can drag between neighboring cells or click one cell and
+            // then a neighboring cell to toggle that specific edge.
+
+            const current = { x, y };
+
+            // Drag behavior: when previousCell is provided, toggle the edge
+            // directly between previousCell and the current cell.
+            if (previousCell) {
+              this.toggleEdgeBetweenCells(previousCell, current, layer);
+              break;
+            }
+
+            // Click behavior: first click selects the starting cell; second
+            // click on a neighbor toggles the edge between them.
+            if (!this.edgeStartCell) {
+              this.edgeStartCell = { x, y, layer };
+              this.selectCell({ x, y, layer });
+              break;
+            }
+
+            // If the user clicks the same cell again, clear the start without
+            // changing any edges.
+            if (
+              this.edgeStartCell.x === x &&
+              this.edgeStartCell.y === y &&
+              this.edgeStartCell.layer === layer
+            ) {
+              this.edgeStartCell = null;
+              break;
+            }
+
+            const from = { x: this.edgeStartCell.x, y: this.edgeStartCell.y };
+            const to = current;
+            this.toggleEdgeBetweenCells(from, to, layer);
+            this.edgeStartCell = null;
+          } else {
+            // Map/availability mode legacy behavior: toggle all walls of the cell
+            this.toggleCellConnection({ x, y, layer, direction: 'north' });
+            this.toggleCellConnection({ x, y, layer, direction: 'south' });
+            this.toggleCellConnection({ x, y, layer, direction: 'east' });
+            this.toggleCellConnection({ x, y, layer, direction: 'west' });
+          }
           break;
         case 'erase':
           this.clearCellContent({ x, y, layer });

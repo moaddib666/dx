@@ -2,6 +2,10 @@ import {
   createNewMap,
   createEmptyCell,
   createDefaultGridConfig,
+  createEdge,
+  getEdgeKey,
+  migrateMapToV2,
+  DIRECTION_DELTAS,
   DEFAULT_LAYERS
 } from '@/types/tabletop';
 
@@ -13,6 +17,13 @@ const state = {
     selectedCell: null,
     gridVisible: true,
     backgroundVisible: true,
+    // Editor mode controls which tool set and behaviors are active
+    // 'availability' | 'object' | 'path' | 'config'
+    editorMode: 'availability',
+    // Legend / visibility toggles for overlays
+    availabilityVisible: true,
+    pathsVisible: true,
+    objectsVisible: true,
     isDirty: false
   }
 };
@@ -24,6 +35,10 @@ const getters = {
   selectedCell: (state) => state.editorState.selectedCell,
   gridVisible: (state) => state.editorState.gridVisible,
   backgroundVisible: (state) => state.editorState.backgroundVisible,
+  editorMode: (state) => state.editorState.editorMode,
+  availabilityVisible: (state) => state.editorState.availabilityVisible,
+  pathsVisible: (state) => state.editorState.pathsVisible,
+  objectsVisible: (state) => state.editorState.objectsVisible,
   isDirty: (state) => state.editorState.isDirty,
 
   // Get cells for current layer
@@ -40,6 +55,32 @@ const getters = {
     );
   },
 
+  // Get specific edge
+  getEdge: (state) => (fromX, fromY, toX, toY, layer) => {
+    if (!state.mapData || !state.mapData.edges) return null;
+    return state.mapData.edges.find(
+      edge => edge.id.fromX === fromX &&
+              edge.id.fromY === fromY &&
+              edge.id.toX === toX &&
+              edge.id.toY === toY &&
+              edge.id.layer === layer
+    );
+  },
+
+  // Get all edges from a specific cell
+  getEdgesFromCell: (state) => (x, y, layer) => {
+    if (!state.mapData || !state.mapData.edges) return [];
+    return state.mapData.edges.filter(
+      edge => edge.id.fromX === x && edge.id.fromY === y && edge.id.layer === layer
+    );
+  },
+
+  // Get all edges for current layer
+  currentLayerEdges: (state) => {
+    if (!state.mapData || !state.mapData.edges) return [];
+    return state.mapData.edges.filter(edge => edge.id.layer === state.editorState.currentLayer);
+  },
+
   // Get layer metadata
   getCurrentLayerMetadata: (state) => {
     if (!state.mapData) return null;
@@ -54,6 +95,7 @@ const mutations = {
   SET_MAP_DATA(state, mapData) {
     console.log('[Store] SET_MAP_DATA mutation called');
     console.log('[Store] Incoming mapData:', mapData ? {
+      version: mapData.version,
       hasMetadata: !!mapData.metadata,
       metadataName: mapData.metadata?.name,
       metadataCreated: mapData.metadata?.created,
@@ -63,25 +105,37 @@ const mutations = {
       layersCount: mapData.layers?.length,
       hasCells: !!mapData.cells,
       cellsCount: mapData.cells?.length,
+      hasEdges: !!mapData.edges,
+      edgesCount: mapData.edges?.length,
       hasBackgroundImage: !!mapData.backgroundImage
     } : 'null');
 
     // Deep clone the mapData to ensure we have a fresh copy
     // This prevents mutations from affecting the original imported data
     if (mapData) {
+      // Apply migration if needed (v1.0 -> v2.0)
+      let migratedData = mapData;
+      if (mapData.version !== '2.0' || !mapData.edges) {
+        console.log('[Store] Applying migration to v2.0 format');
+        migratedData = migrateMapToV2(mapData);
+      }
+
       console.log('[Store] Deep cloning map data for reactivity');
       state.mapData = {
-        version: mapData.version,
-        metadata: { ...mapData.metadata },
-        grid: { ...mapData.grid },
-        layers: mapData.layers.map(layer => ({ ...layer })),
-        cells: mapData.cells ? mapData.cells.map(cell => ({
+        version: migratedData.version,
+        metadata: { ...migratedData.metadata },
+        grid: { ...migratedData.grid },
+        layers: migratedData.layers.map(layer => ({ ...layer })),
+        cells: migratedData.cells ? migratedData.cells.map(cell => ({
           ...cell,
-          connections: { ...cell.connections },
           spawner: cell.spawner ? { ...cell.spawner, properties: { ...cell.spawner.properties } } : null,
           gameObject: cell.gameObject ? { ...cell.gameObject, properties: { ...cell.gameObject.properties } } : null
         })) : [],
-        backgroundImage: mapData.backgroundImage
+        edges: migratedData.edges ? migratedData.edges.map(edge => ({
+          ...edge,
+          id: { ...edge.id }
+        })) : [],
+        backgroundImage: migratedData.backgroundImage
       };
     } else {
       state.mapData = null;
@@ -110,6 +164,10 @@ const mutations = {
     state.editorState.selectedTool = tool;
   },
 
+  SET_EDITOR_MODE(state, mode) {
+    state.editorState.editorMode = mode;
+  },
+
   SET_SELECTED_CELL(state, cell) {
     state.editorState.selectedCell = cell;
   },
@@ -120,6 +178,18 @@ const mutations = {
 
   SET_BACKGROUND_VISIBLE(state, visible) {
     state.editorState.backgroundVisible = visible;
+  },
+
+  SET_AVAILABILITY_VISIBLE(state, visible) {
+    state.editorState.availabilityVisible = visible;
+  },
+
+  SET_PATHS_VISIBLE(state, visible) {
+    state.editorState.pathsVisible = visible;
+  },
+
+  SET_OBJECTS_VISIBLE(state, visible) {
+    state.editorState.objectsVisible = visible;
   },
 
   SET_DIRTY(state, dirty) {
@@ -168,56 +238,94 @@ const mutations = {
     );
 
     if (cellIndex !== -1) {
-      // Create a new cells array with the updated cell
+      // Toggle passable and terrain
+      const currentCell = state.mapData.cells[cellIndex];
+      const newPassable = !currentCell.passable;
+      const newTerrain = newPassable ? 'grass' : 'rock';
+
       const updatedCell = {
-        ...state.mapData.cells[cellIndex],
-        available: !state.mapData.cells[cellIndex].available
+        ...currentCell,
+        passable: newPassable,
+        terrain: newTerrain
       };
+
       state.mapData.cells = [
         ...state.mapData.cells.slice(0, cellIndex),
         updatedCell,
         ...state.mapData.cells.slice(cellIndex + 1)
       ];
     } else {
-      // Create new cell with availability set to false
-      const newCell = createEmptyCell(x, y, layer);
-      newCell.available = false;
+      // Create new cell with passable set to false (rock terrain)
+      const newCell = createEmptyCell(x, y, layer, 'rock');
+      newCell.passable = false;
       state.mapData.cells = [...state.mapData.cells, newCell];
     }
 
     state.editorState.isDirty = true;
   },
 
-  TOGGLE_CELL_CONNECTION(state, { x, y, layer, direction }) {
-    if (!state.mapData) return;
+  TOGGLE_EDGE(state, { x, y, layer, direction }) {
+    if (!state.mapData || !state.mapData.edges) return;
 
-    const cellIndex = state.mapData.cells.findIndex(
+    const delta = DIRECTION_DELTAS[direction];
+    if (!delta) return;
+
+    const toX = x + delta.dx;
+    const toY = y + delta.dy;
+
+    // Check if neighbor is within grid bounds
+    const gridConfig = state.mapData.grid;
+    if (!gridConfig) return;
+
+    const { columns, rows } = gridConfig;
+    if (toX < 0 || toY < 0 || toX >= columns || toY >= rows) {
+      // Neighbor is out of bounds, cannot toggle edge
+      return;
+    }
+
+    // Check if both cells are passable
+    const fromCell = state.mapData.cells.find(
       c => c.x === x && c.y === y && c.layer === layer
     );
+    const fromPassable = !fromCell || fromCell.passable !== false;
 
-    if (cellIndex !== -1) {
-      // Create a new cell with updated connections
-      const cell = state.mapData.cells[cellIndex];
-      const updatedCell = {
-        ...cell,
-        connections: {
-          ...cell.connections,
-          [direction]: !cell.connections[direction]
-        }
+    const toCell = state.mapData.cells.find(
+      c => c.x === toX && c.y === toY && c.layer === layer
+    );
+    const toPassable = !toCell || toCell.passable !== false;
+
+    if (!fromPassable || !toPassable) {
+      // Cannot toggle edge if either cell is impassable
+      return;
+    }
+
+    // Find the edge
+    const edgeIndex = state.mapData.edges.findIndex(
+      e => e.id.fromX === x &&
+           e.id.fromY === y &&
+           e.id.toX === toX &&
+           e.id.toY === toY &&
+           e.id.layer === layer
+    );
+
+    if (edgeIndex !== -1) {
+      // Edge exists, toggle its blocked status
+      const edge = state.mapData.edges[edgeIndex];
+      const updatedEdge = {
+        ...edge,
+        id: { ...edge.id },
+        blocked: !edge.blocked
       };
-      state.mapData.cells = [
-        ...state.mapData.cells.slice(0, cellIndex),
-        updatedCell,
-        ...state.mapData.cells.slice(cellIndex + 1)
+
+      state.mapData.edges = [
+        ...state.mapData.edges.slice(0, edgeIndex),
+        updatedEdge,
+        ...state.mapData.edges.slice(edgeIndex + 1)
       ];
     } else {
-      // Create new cell with the specified connection toggled
-      const newCell = createEmptyCell(x, y, layer);
-      newCell.connections = {
-        ...newCell.connections,
-        [direction]: !newCell.connections[direction]
-      };
-      state.mapData.cells = [...state.mapData.cells, newCell];
+      // Edge doesn't exist, create it as blocked
+      const newEdge = createEdge(x, y, toX, toY, layer, direction, true);
+      state.mapData.edges = [...state.mapData.edges, newEdge];
     }
 
     state.editorState.isDirty = true;
@@ -343,6 +451,15 @@ const actions = {
     }
   },
 
+  setEditorMode({ commit }, mode) {
+    if (!['availability', 'object', 'path', 'config'].includes(mode)) return;
+
+    // Change mode and reset tool to a safe default (select) so that
+    // tools from a previous mode don't leak into the new mode.
+    commit('SET_EDITOR_MODE', mode);
+    commit('SET_SELECTED_TOOL', 'select');
+  },
+
   selectTool({ commit }, tool) {
     commit('SET_SELECTED_TOOL', tool);
   },
@@ -359,6 +476,18 @@ const actions = {
     commit('SET_BACKGROUND_VISIBLE', !state.editorState.backgroundVisible);
   },
 
+  toggleAvailabilityVisibility({ commit, state }) {
+    commit('SET_AVAILABILITY_VISIBLE', !state.editorState.availabilityVisible);
+  },
+
+  togglePathsVisibility({ commit, state }) {
+    commit('SET_PATHS_VISIBLE', !state.editorState.pathsVisible);
+  },
+
+  toggleObjectsVisibility({ commit, state }) {
+    commit('SET_OBJECTS_VISIBLE', !state.editorState.objectsVisible);
+  },
+
   updateGridConfig({ commit }, config) {
     commit('UPDATE_GRID_CONFIG', config);
   },
@@ -372,7 +501,7 @@ const actions = {
   },
 
   toggleCellConnection({ commit }, { x, y, layer, direction }) {
-    commit('TOGGLE_CELL_CONNECTION', { x, y, layer, direction });
+    commit('TOGGLE_EDGE', { x, y, layer, direction });
   },
 
   placeCellSpawner({ commit }, { x, y, layer, spawner }) {
@@ -406,6 +535,12 @@ const actions = {
     commit('SET_CURRENT_LAYER', 0);
     commit('SET_SELECTED_TOOL', 'select');
     commit('SET_SELECTED_CELL', null);
+    commit('SET_EDITOR_MODE', 'availability');
+    commit('SET_GRID_VISIBLE', true);
+    commit('SET_BACKGROUND_VISIBLE', true);
+    commit('SET_AVAILABILITY_VISIBLE', true);
+    commit('SET_PATHS_VISIBLE', true);
+    commit('SET_OBJECTS_VISIBLE', true);
   }
 };
 

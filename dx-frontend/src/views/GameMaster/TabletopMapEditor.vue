@@ -57,8 +57,9 @@
 
       <!-- Right Panel -->
       <div class="right-panel">
-        <PropertiesPanel />
-        <GridConfigPanel />
+        <!-- In normal editing modes, show cell Properties; in Map Config mode, show Grid Configuration -->
+        <PropertiesPanel v-if="editorMode !== 'config'" />
+        <GridConfigPanel v-else />
       </div>
     </div>
 
@@ -126,6 +127,261 @@ import PropertiesPanel from '@/components/TabletopEditor/PropertiesPanel.vue';
 import GridConfigPanel from '@/components/TabletopEditor/GridConfigPanel.vue';
 import { embedMetadataInPNG, extractMetadataFromPNG } from '@/utils/pngMetadata.js';
 
+// ----- Movement edge map helpers -----
+const CARDINAL_DELTAS = {
+  north: { dx: 0, dy: -1 },
+  south: { dx: 0, dy: 1 },
+  east: { dx: 1, dy: 0 },
+  west: { dx: -1, dy: 0 }
+};
+
+const OPPOSITE_DIRECTION = {
+  north: 'south',
+  south: 'north',
+  east: 'west',
+  west: 'east'
+};
+
+const DIAGONAL_DELTAS = {
+  northEast: { dx: 1, dy: -1 },
+  northWest: { dx: -1, dy: -1 },
+  southEast: { dx: 1, dy: 1 },
+  southWest: { dx: -1, dy: 1 }
+};
+
+const OPPOSITE_DIAGONAL_DIRECTION = {
+  northEast: 'southWest',
+  southWest: 'northEast',
+  northWest: 'southEast',
+  southEast: 'northWest'
+};
+
+function buildCellLookup(cells) {
+  const lookup = new Map();
+  if (Array.isArray(cells)) {
+    cells.forEach(cell => {
+      lookup.set(`${cell.x},${cell.y},${cell.layer}`, cell);
+    });
+  }
+  return lookup;
+}
+
+function getCellState(mapData, lookup, x, y, layerId) {
+  if (!mapData || !mapData.grid) {
+    return {
+      available: false,
+      connections: {
+        north: false,
+        south: false,
+        east: false,
+        west: false,
+        northEast: false,
+        northWest: false,
+        southEast: false,
+        southWest: false
+      }
+    };
+  }
+
+  const { columns, rows } = mapData.grid;
+
+  // Out of bounds -> treated as unavailable
+  if (x < 0 || y < 0 || x >= columns || y >= rows) {
+    return {
+      available: false,
+      connections: {
+        north: false,
+        south: false,
+        east: false,
+        west: false,
+        northEast: false,
+        northWest: false,
+        southEast: false,
+        southWest: false
+      }
+    };
+  }
+
+  const layerMeta = Array.isArray(mapData.layers)
+    ? mapData.layers.find(l => l.id === layerId)
+    : null;
+
+  if (!layerMeta || layerMeta.active === false) {
+    return {
+      available: false,
+      connections: {
+        north: false,
+        south: false,
+        east: false,
+        west: false,
+        northEast: false,
+        northWest: false,
+        southEast: false,
+        southWest: false
+      }
+    };
+  }
+
+  const key = `${x},${y},${layerId}`;
+  const cell = lookup.get(key);
+
+  if (!cell) {
+    // No explicit cell data -> treat as a default available cell with all connections open
+    return {
+      available: true,
+      connections: {
+        north: true,
+        south: true,
+        east: true,
+        west: true,
+        // Diagonals default to open unless explicitly blocked
+        northEast: undefined,
+        northWest: undefined,
+        southEast: undefined,
+        southWest: undefined
+      }
+    };
+  }
+
+  const connections = cell.connections || {};
+
+  return {
+    available: cell.available !== false,
+    connections: {
+      north: connections.north !== false,
+      south: connections.south !== false,
+      east: connections.east !== false,
+      west: connections.west !== false,
+      // Diagonal flags are interpreted as: false => blocked, anything else => open
+      northEast: connections.northEast,
+      northWest: connections.northWest,
+      southEast: connections.southEast,
+      southWest: connections.southWest
+    }
+  };
+}
+
+function canCardinalMove(mapData, lookup, x, y, layerId, direction) {
+  const deltas = CARDINAL_DELTAS[direction];
+  if (!deltas) return false;
+
+  const fromState = getCellState(mapData, lookup, x, y, layerId);
+  if (!fromState.available) return false;
+
+  const targetX = x + deltas.dx;
+  const targetY = y + deltas.dy;
+  const toState = getCellState(mapData, lookup, targetX, targetY, layerId);
+
+  if (!toState.available) return false;
+
+  const opposite = OPPOSITE_DIRECTION[direction];
+  return !!fromState.connections[direction] && !!toState.connections[opposite];
+}
+
+function canDiagonalMove(mapData, lookup, x, y, layerId, direction) {
+  const deltas = DIAGONAL_DELTAS[direction];
+  if (!deltas) return false;
+
+  const fromState = getCellState(mapData, lookup, x, y, layerId);
+  if (!fromState.available) return false;
+
+  const targetX = x + deltas.dx;
+  const targetY = y + deltas.dy;
+  const toState = getCellState(mapData, lookup, targetX, targetY, layerId);
+  if (!toState.available) return false;
+
+  // Enforce no corner cutting: diagonal move only if both related
+  // cardinal moves are possible from the source cell.
+  const requires = {
+    northEast: ['north', 'east'],
+    northWest: ['north', 'west'],
+    southEast: ['south', 'east'],
+    southWest: ['south', 'west']
+  };
+
+  const deps = requires[direction] || [];
+  if (deps.length === 2) {
+    if (
+      !canCardinalMove(mapData, lookup, x, y, layerId, deps[0]) ||
+      !canCardinalMove(mapData, lookup, x, y, layerId, deps[1])
+    ) {
+      return false;
+    }
+  }
+
+  // Diagonal flags: if either side explicitly blocks this diagonal,
+  // the move is not allowed. When undefined, it is treated as open.
+  const fromDiag = fromState.connections && fromState.connections[direction];
+  const oppositeDiag = OPPOSITE_DIAGONAL_DIRECTION[direction];
+  const toDiag = oppositeDiag && toState.connections
+    ? toState.connections[oppositeDiag]
+    : undefined;
+
+  if (fromDiag === false || toDiag === false) {
+    return false;
+  }
+
+  return true;
+}
+
+function buildMovementEdges(mapData) {
+  if (!mapData || !mapData.grid || !Array.isArray(mapData.layers)) {
+    return [];
+  }
+
+  const { columns, rows } = mapData.grid;
+  const lookup = buildCellLookup(mapData.cells || []);
+  const edges = [];
+
+  mapData.layers.forEach(layerMeta => {
+    if (!layerMeta || layerMeta.active === false) return;
+
+    const layerId = layerMeta.id;
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < columns; x++) {
+        const fromState = getCellState(mapData, lookup, x, y, layerId);
+        if (!fromState.available) continue;
+
+        // Cardinal edges
+        Object.keys(CARDINAL_DELTAS).forEach(direction => {
+          if (canCardinalMove(mapData, lookup, x, y, layerId, direction)) {
+            const { dx, dy } = CARDINAL_DELTAS[direction];
+            edges.push({
+              from: { x, y, layer: layerId },
+              to: { x: x + dx, y: y + dy, layer: layerId },
+              direction
+            });
+          }
+        });
+
+        // Diagonal edges derived from cardinal movement
+        const diagonals = [
+          { direction: 'northEast', dx: 1, dy: -1 },
+          { direction: 'northWest', dx: -1, dy: -1 },
+          { direction: 'southEast', dx: 1, dy: 1 },
+          { direction: 'southWest', dx: -1, dy: 1 }
+        ];
+
+        diagonals.forEach(({ direction, dx, dy }) => {
+          if (canDiagonalMove(mapData, lookup, x, y, layerId, direction)) {
+            const targetState = getCellState(mapData, lookup, x + dx, y + dy, layerId);
+            if (!targetState.available) return;
+
+            edges.push({
+              from: { x, y, layer: layerId },
+              to: { x: x + dx, y: y + dy, layer: layerId },
+              direction
+            });
+          }
+        });
+      }
+    }
+  });
+
+  return edges;
+}
+
 export default {
   name: 'TabletopMapEditor',
   components: {
@@ -145,7 +401,8 @@ export default {
   computed: {
     ...mapGetters('tabletopEditor', [
       'currentMap',
-      'isDirty'
+      'isDirty',
+      'editorMode'
     ])
   },
   methods: {
@@ -295,6 +552,12 @@ export default {
           hasCells: !!mapDataWithoutImage.cells,
           cellsCount: mapDataWithoutImage.cells?.length
         });
+
+        // Rebuild movement edge map before export so it is stored in metadata
+        console.log('[Export] Building movement edges for export...');
+        const edges = buildMovementEdges(mapDataWithoutImage);
+        mapDataWithoutImage.edges = edges;
+        console.log('[Export] Movement edges generated:', Array.isArray(edges) ? edges.length : 0);
 
         // Log detailed cell data to verify changes are captured
         if (mapDataWithoutImage.cells && mapDataWithoutImage.cells.length > 0) {

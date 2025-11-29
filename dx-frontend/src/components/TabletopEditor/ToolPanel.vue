@@ -1,9 +1,42 @@
 <template>
   <div class="tool-panel">
     <h3 class="tool-panel-title">Editor Tools</h3>
+
+    <!-- Mode Switch -->
+    <div class="mode-switch">
+      <button
+        class="mode-button"
+        :class="{ active: editorMode === 'config' }"
+        @click="changeMode('config')"
+      >
+        Map Config
+      </button>
+      <button
+        class="mode-button"
+        :class="{ active: editorMode === 'availability' }"
+        @click="changeMode('availability')"
+      >
+        Availability
+      </button>
+      <button
+        class="mode-button"
+        :class="{ active: editorMode === 'object' }"
+        @click="changeMode('object')"
+      >
+        Objects
+      </button>
+      <button
+        class="mode-button"
+        :class="{ active: editorMode === 'path' }"
+        @click="changeMode('path')"
+      >
+        Paths
+      </button>
+    </div>
+
     <div class="tools-list">
       <button
-        v-for="tool in tools"
+        v-for="tool in visibleTools"
         :key="tool.id"
         :class="['tool-button', { 'active': tool.id === selectedTool }]"
         @click="selectTool(tool.id)"
@@ -15,7 +48,19 @@
     </div>
 
     <div class="tool-options">
-      <h4 class="options-title">View Options</h4>
+      <h4 class="options-title">Legend / View Options</h4>
+      <label class="option-checkbox">
+        <input type="checkbox" :checked="availabilityVisible" @change="toggleAvailability" />
+        <span>Show Availability</span>
+      </label>
+      <label class="option-checkbox">
+        <input type="checkbox" :checked="pathsVisible" @change="togglePaths" />
+        <span>Show Paths</span>
+      </label>
+      <label class="option-checkbox">
+        <input type="checkbox" :checked="objectsVisible" @change="toggleObjects" />
+        <span>Show Objects</span>
+      </label>
       <label class="option-checkbox">
         <input type="checkbox" :checked="gridVisible" @change="toggleGrid" />
         <span>Show Grid</span>
@@ -50,9 +95,11 @@ export default {
         },
         {
           id: 'wall',
-          name: 'Walls',
-          icon: '🧱',
-          description: 'Draw/remove walls (block connections)'
+          // Internally still uses the 'wall' tool id, but in Path mode this
+          // acts as the Path/Edge editing tool.
+          name: 'Path / Edges',
+          icon: '🧭',
+          description: 'Edit movement paths and connections between cells'
         },
         {
           id: 'spawner-player',
@@ -91,20 +138,75 @@ export default {
     ...mapGetters('tabletopEditor', [
       'selectedTool',
       'gridVisible',
-      'backgroundVisible'
-    ])
+      'backgroundVisible',
+      'editorMode',
+      'availabilityVisible',
+      'pathsVisible',
+      'objectsVisible'
+    ]),
+
+    visibleTools() {
+      // Filter tools based on the current editor mode
+      if (this.editorMode === 'config') {
+        // Map Config mode does not need placement tools; keep only Select
+        return this.tools.filter(tool => tool.id === 'select');
+      }
+
+      if (this.editorMode === 'availability') {
+        return this.tools.filter(tool =>
+          tool.id === 'select' || tool.id === 'availability'
+        );
+      }
+
+      if (this.editorMode === 'object') {
+        return this.tools.filter(tool =>
+          tool.id === 'select' ||
+          tool.id === 'spawner-player' ||
+          tool.id === 'spawner-npc' ||
+          tool.id === 'spawner-object' ||
+          tool.id === 'spawner-effect' ||
+          tool.id === 'erase'
+        );
+      }
+
+      // Path mode: select + path/edges tool (internally 'wall')
+      if (this.editorMode === 'path') {
+        return this.tools.filter(tool =>
+          tool.id === 'select' || tool.id === 'wall'
+        );
+      }
+
+      // Fallback: show all tools
+      return this.tools;
+    }
   },
   methods: {
     ...mapActions('tabletopEditor', [
       'selectTool',
       'toggleGridVisibility',
-      'toggleBackgroundVisibility'
+      'toggleBackgroundVisibility',
+      'setEditorMode',
+      'toggleAvailabilityVisibility',
+      'togglePathsVisibility',
+      'toggleObjectsVisibility'
     ]),
+    changeMode(mode) {
+      this.setEditorMode(mode);
+    },
     toggleGrid() {
       this.toggleGridVisibility();
     },
     toggleBackground() {
       this.toggleBackgroundVisibility();
+    },
+    toggleAvailability() {
+      this.toggleAvailabilityVisibility();
+    },
+    togglePaths() {
+      this.togglePathsVisibility();
+    },
+    toggleObjects() {
+      this.toggleObjectsVisibility();
     }
   }
 };
@@ -126,6 +228,31 @@ export default {
   color: #00d4ff;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.mode-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mode-button {
+  flex: 1;
+  background: rgba(40, 40, 60, 0.6);
+  border: 1px solid rgba(100, 100, 150, 0.4);
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #e0e0e0;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mode-button.active {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: #00d4ff;
+  color: #00d4ff;
 }
 
 .tools-list {

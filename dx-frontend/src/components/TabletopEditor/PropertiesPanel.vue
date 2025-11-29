@@ -20,10 +20,35 @@
           <span class="property-value">{{ selectedCell.layer }} ({{ layerName }})</span>
         </div>
         <div class="property-row">
-          <span class="property-label">Available:</span>
-          <span :class="['property-value', cellData?.available ? 'status-yes' : 'status-no']">
-            {{ cellData?.available ? 'Yes' : 'No' }}
+          <span class="property-label">Terrain:</span>
+          <select
+            v-model="cellTerrain"
+            class="terrain-select"
+            @change="updateCellTerrain"
+          >
+            <option value="grass">Grass (1.0x)</option>
+            <option value="road">Road (0.75x)</option>
+            <option value="dirt">Dirt (1.0x)</option>
+            <option value="sand">Sand (1.25x)</option>
+            <option value="swamp">Swamp (2.0x)</option>
+            <option value="water">Water (∞)</option>
+            <option value="lava">Lava (∞)</option>
+            <option value="snow">Snow (1.5x)</option>
+            <option value="rock">Rock (∞)</option>
+            <option value="forest">Forest (1.5x)</option>
+            <option value="mountain">Mountain (∞)</option>
+            <option value="void">Void (∞)</option>
+          </select>
+        </div>
+        <div class="property-row">
+          <span class="property-label">Passable:</span>
+          <span :class="['property-value', cellPassable ? 'status-yes' : 'status-no']">
+            {{ cellPassable ? 'Yes' : 'No' }}
           </span>
+        </div>
+        <div class="property-row">
+          <span class="property-label">Movement Cost:</span>
+          <span class="property-value">{{ movementCost }}</span>
         </div>
       </div>
 
@@ -31,33 +56,75 @@
       <div class="property-section">
         <h4 class="section-title">Connections (Movement)</h4>
         <div class="connections-grid">
+          <!-- Top row: NW, N, NE -->
+          <button
+            class="connection-btn north-west"
+            :class="{ blocked: isEdgeBlocked('northWest') }"
+            :disabled="!isDirectionEditable('northWest')"
+            @click="toggleConnection('northWest')"
+          >
+            ↖ NW
+          </button>
           <button
             class="connection-btn north"
-            :class="{ blocked: cellData && !cellData.connections.north }"
+            :class="{ blocked: isEdgeBlocked('north') }"
+            :disabled="!isDirectionEditable('north')"
             @click="toggleConnection('north')"
           >
             ↑ North
           </button>
           <button
+            class="connection-btn north-east"
+            :class="{ blocked: isEdgeBlocked('northEast') }"
+            :disabled="!isDirectionEditable('northEast')"
+            @click="toggleConnection('northEast')"
+          >
+            ↗ NE
+          </button>
+
+          <!-- Middle row: W, (center spacer), E -->
+          <button
             class="connection-btn west"
-            :class="{ blocked: cellData && !cellData.connections.west }"
+            :class="{ blocked: isEdgeBlocked('west') }"
+            :disabled="!isDirectionEditable('west')"
             @click="toggleConnection('west')"
           >
             ← West
           </button>
+          <div class="connection-center">Cell</div>
           <button
             class="connection-btn east"
-            :class="{ blocked: cellData && !cellData.connections.east }"
+            :class="{ blocked: isEdgeBlocked('east') }"
+            :disabled="!isDirectionEditable('east')"
             @click="toggleConnection('east')"
           >
             → East
           </button>
+
+          <!-- Bottom row: SW, S, SE -->
+          <button
+            class="connection-btn south-west"
+            :class="{ blocked: isEdgeBlocked('southWest') }"
+            :disabled="!isDirectionEditable('southWest')"
+            @click="toggleConnection('southWest')"
+          >
+            ↙ SW
+          </button>
           <button
             class="connection-btn south"
-            :class="{ blocked: cellData && !cellData.connections.south }"
+            :class="{ blocked: isEdgeBlocked('south') }"
+            :disabled="!isDirectionEditable('south')"
             @click="toggleConnection('south')"
           >
             ↓ South
+          </button>
+          <button
+            class="connection-btn south-east"
+            :class="{ blocked: isEdgeBlocked('southEast') }"
+            :disabled="!isDirectionEditable('southEast')"
+            @click="toggleConnection('southEast')"
+          >
+            ↘ SE
           </button>
         </div>
       </div>
@@ -95,6 +162,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { TERRAIN_CONFIGS, DIRECTION_DELTAS } from '@/types/tabletop';
 
 export default {
   name: 'PropertiesPanel',
@@ -102,7 +170,9 @@ export default {
     ...mapGetters('tabletopEditor', [
       'selectedCell',
       'getCell',
-      'currentMap'
+      'getEdge',
+      'currentMap',
+      'gridConfig'
     ]),
     cellData() {
       if (!this.selectedCell) return null;
@@ -112,13 +182,106 @@ export default {
       if (!this.selectedCell || !this.currentMap) return '';
       const layer = this.currentMap.layers.find(l => l.id === this.selectedCell.layer);
       return layer ? layer.name : '';
+    },
+    cellTerrain: {
+      get() {
+        if (!this.cellData) return 'grass';
+        return this.cellData.terrain || 'grass';
+      },
+      set(value) {
+        // This will be handled by updateCellTerrain method
+      }
+    },
+    cellPassable() {
+      if (!this.cellData) return true;
+      return this.cellData.passable !== false;
+    },
+    movementCost() {
+      if (!this.cellData || !this.cellData.terrain) return '1.0';
+      const terrainConfig = TERRAIN_CONFIGS[this.cellData.terrain];
+      if (!terrainConfig) return '1.0';
+      const cost = terrainConfig.movementCost;
+      return cost === Infinity ? '∞' : cost.toFixed(2);
     }
   },
   methods: {
     ...mapActions('tabletopEditor', [
       'toggleCellConnection',
-      'clearCellContent'
+      'clearCellContent',
+      'updateCell'
     ]),
+    updateCellTerrain() {
+      if (!this.selectedCell) return;
+
+      const terrain = this.cellTerrain;
+      const terrainConfig = TERRAIN_CONFIGS[terrain];
+      const passable = terrainConfig.movementCost !== Infinity;
+
+      this.updateCell({
+        x: this.selectedCell.x,
+        y: this.selectedCell.y,
+        layer: this.selectedCell.layer,
+        updates: {
+          terrain,
+          passable
+        }
+      });
+    },
+    isEdgeBlocked(direction) {
+      if (!this.selectedCell || !this.currentMap) return false;
+
+      const delta = DIRECTION_DELTAS[direction];
+      if (!delta) return false;
+
+      const toX = this.selectedCell.x + delta.dx;
+      const toY = this.selectedCell.y + delta.dy;
+
+      const edge = this.getEdge(
+        this.selectedCell.x,
+        this.selectedCell.y,
+        toX,
+        toY,
+        this.selectedCell.layer
+      );
+
+      // If edge doesn't exist, it's not blocked (default open)
+      if (!edge) return false;
+
+      return edge.blocked === true;
+    },
+    isDirectionEditable(direction) {
+      if (!this.selectedCell || !this.gridConfig || !this.currentMap) return false;
+
+      const layer = this.selectedCell.layer;
+
+      // Check layer is active
+      const layerMeta = Array.isArray(this.currentMap.layers)
+        ? this.currentMap.layers.find(l => l.id === layer)
+        : null;
+      if (!layerMeta || layerMeta.active === false) return false;
+
+      const { columns, rows } = this.gridConfig;
+
+      const delta = DIRECTION_DELTAS[direction];
+      if (!delta) return false;
+
+      const fromCell = this.getCell(this.selectedCell.x, this.selectedCell.y, layer);
+      const fromPassable = !fromCell || fromCell.passable !== false;
+      if (!fromPassable) return false;
+
+      const nx = this.selectedCell.x + delta.dx;
+      const ny = this.selectedCell.y + delta.dy;
+
+      // Off-grid neighbors are not editable
+      if (nx < 0 || ny < 0 || nx >= columns || ny >= rows) {
+        return false;
+      }
+
+      const neighborCell = this.getCell(nx, ny, layer);
+      const neighborPassable = !neighborCell || neighborCell.passable !== false;
+
+      return neighborPassable;
+    },
     toggleConnection(direction) {
       if (!this.selectedCell) return;
       this.toggleCellConnection({
@@ -229,6 +392,29 @@ export default {
   font-weight: 600;
 }
 
+.terrain-select {
+  background: rgba(40, 40, 60, 0.8);
+  border: 1px solid rgba(100, 100, 150, 0.5);
+  border-radius: 4px;
+  padding: 4px 8px;
+  color: #00d4ff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.terrain-select:hover {
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.terrain-select:focus {
+  outline: none;
+  border-color: #00d4ff;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
 .status-yes {
   color: #00ff00;
 }
@@ -249,7 +435,7 @@ export default {
 
 .connections-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
@@ -263,6 +449,14 @@ export default {
   transition: all 0.2s ease;
   font-size: 12px;
   font-weight: 600;
+}
+
+.connection-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #aaa;
 }
 
 .connection-btn:hover {
