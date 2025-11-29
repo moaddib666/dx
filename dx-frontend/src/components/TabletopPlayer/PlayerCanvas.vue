@@ -7,6 +7,21 @@
       @mousemove="handleMouseMove"
       @mouseleave="handleMouseLeave"
     ></canvas>
+
+    <!-- Character Tokens Overlay -->
+    <div class="tokens-overlay">
+      <div
+        v-for="player in players"
+        :key="player.id"
+        class="token-wrapper"
+        :class="{ 'token-selected': selectedPlayer && selectedPlayer.id === player.id }"
+        :style="getTokenStyle(player)"
+        @click="handleTokenClick(player.id)"
+      >
+        <CharacterToken :image="player.image" />
+      </div>
+    </div>
+
     <!-- Coordinate Display -->
     <div v-if="hoveredCell" class="coordinate-display">
       <span class="coord-label">Position:</span>
@@ -19,9 +34,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { TERRAIN_CONFIGS } from '@/types/tabletop';
+import CharacterToken from '@/components/CharacterToken/CharacterToken.vue';
 
 export default {
   name: 'PlayerCanvas',
+  components: {
+    CharacterToken
+  },
   data() {
     return {
       canvas: null,
@@ -250,8 +269,8 @@ export default {
         this.drawCellShadow(this.hoveredCell.x, this.hoveredCell.y);
       }
 
-      // Draw all players
-      this.drawPlayers();
+      // Players are now rendered as DOM elements via CharacterToken components
+      // (see tokens-overlay in template)
     },
 
     drawBackground() {
@@ -537,6 +556,9 @@ export default {
       this.ctx.shadowBlur = 0;
     },
 
+    // DEPRECATED: Players are now rendered as DOM elements using CharacterToken components
+    // See tokens-overlay in template and getTokenStyle method
+    /*
     drawPlayers() {
       if (!this.gridConfig || !this.players) return;
 
@@ -585,6 +607,7 @@ export default {
         this.ctx.fillText(`${player.currentActionPoints}/${player.maxActionPoints}`, point.x, point.y + radius + 12);
       });
     },
+    */
 
     getCellFromMouse(mouseX, mouseY) {
       if (!this.gridConfig) return null;
@@ -673,6 +696,43 @@ export default {
       this.hoveredCell = null;
       this.pathToHovered = null;
       this.render();
+    },
+
+    // Calculate token position with morph transformation applied
+    getTokenStyle(player) {
+      if (!this.gridConfig) return { display: 'none' };
+
+      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const gridWidth = columns * cellWidth;
+      const gridHeight = rows * cellHeight;
+      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
+      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+
+      // Calculate center of the cell
+      const centerX = startX + player.x * cellWidth + cellWidth / 2;
+      const centerY = startY + player.y * cellHeight + cellHeight / 2;
+
+      // Apply morph transformation
+      const morphedPoint = this.applyMorph(centerX, centerY, gridWidth, gridHeight, startX, startY);
+
+      // Token size - use the smaller dimension to ensure it fits in the cell
+      const tokenSize = Math.min(cellWidth, cellHeight);
+
+      return {
+        position: 'absolute',
+        left: `${morphedPoint.x}px`,
+        top: `${morphedPoint.y}px`,
+        width: `${tokenSize}px`,
+        height: `${tokenSize}px`,
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'auto',
+        cursor: 'pointer'
+      };
+    },
+
+    // Handle clicking on a token
+    handleTokenClick(playerId) {
+      this.selectPlayer(playerId);
     }
   }
 };
@@ -726,5 +786,40 @@ export default {
   font-size: 11px;
   color: #aaa;
   font-style: italic;
+}
+
+/* Tokens overlay - positioned on top of canvas */
+.tokens-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Individual token wrapper */
+.token-wrapper {
+  position: absolute;
+  pointer-events: auto;
+  transition: transform 0.3s ease, filter 0.2s ease;
+  z-index: 10;
+}
+
+.token-wrapper:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+}
+
+/* Selected token highlight */
+.token-selected {
+  filter: drop-shadow(0 0 12px rgba(255, 255, 0, 0.8));
+  z-index: 11;
+}
+
+.token-selected:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  filter: drop-shadow(0 0 16px rgba(255, 255, 0, 1));
 }
 </style>

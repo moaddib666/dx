@@ -24,6 +24,15 @@
           max="100"
         />
       </div>
+      <div class="form-group">
+        <label>Character Image URL (optional):</label>
+        <input
+          v-model="newPlayerImage"
+          type="text"
+          class="form-input"
+          placeholder="https://example.com/character.png"
+        />
+      </div>
       <div class="spawner-info">
         <p class="info-text">
           <span class="info-icon">ℹ️</span>
@@ -163,7 +172,8 @@ export default {
   data() {
     return {
       newPlayerName: '',
-      newPlayerActionPoints: 10
+      newPlayerActionPoints: 10,
+      newPlayerImage: ''
     };
   },
   computed: {
@@ -243,13 +253,14 @@ export default {
         y: spawner.y,
         layer: spawner.layer,
         name: this.newPlayerName.trim(),
-        image: null,
+        image: this.newPlayerImage.trim() || null,
         actionPoints: this.newPlayerActionPoints
       });
 
       // Reset form
       this.newPlayerName = '';
       this.newPlayerActionPoints = 10;
+      this.newPlayerImage = '';
     },
 
     handleSpawnNPC() {
@@ -280,13 +291,14 @@ export default {
         y: spawner.y,
         layer: spawner.layer,
         name: this.newPlayerName.trim(),
-        image: null,
+        image: this.newPlayerImage.trim() || null,
         actionPoints: this.newPlayerActionPoints
       });
 
       // Reset form
       this.newPlayerName = '';
       this.newPlayerActionPoints = 10;
+      this.newPlayerImage = '';
     },
 
     handleSelectPlayer(playerId) {
