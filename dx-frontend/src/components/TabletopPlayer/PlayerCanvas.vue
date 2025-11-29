@@ -21,6 +21,7 @@
         @click="handleTokenClick(player.id)"
       >
         <CharacterToken :image="player.image" />
+        <div class="token-name">{{ player.name }}</div>
       </div>
     </div>
 
@@ -1159,6 +1160,24 @@ export default {
 .token-selected:hover {
   transform: translate(-50%, -50%) scale(1.1);
   filter: drop-shadow(0 0 16px rgba(255, 255, 0, 1));
+}
+
+/* Token name label */
+.token-name {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 6px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
 /* Zoom HUD */
