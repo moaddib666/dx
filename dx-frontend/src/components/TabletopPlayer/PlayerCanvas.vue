@@ -53,7 +53,13 @@ export default {
       backgroundImage: null,
       // Pathfinding cache
       reachableCells: new Map(), // Map of "x,y,layer" -> { x, y, layer, cost, path }
-      pathToHovered: null
+      pathToHovered: null,
+      // Animation state
+      isAnimating: false,
+      animationPlayerId: null,
+      animationPath: null,
+      animationCurrentStep: 0,
+      animationProgress: 0 // 0 to 1, progress within current step
     };
   },
   computed: {
@@ -637,6 +643,9 @@ export default {
       const cell = this.getCellFromMouse(mouseX, mouseY);
       if (!cell) return;
 
+      // Don't allow new actions during animation
+      if (this.isAnimating) return;
+
       // Check if clicking on a player
       const clickedPlayer = this.players.find(p =>
         p.x === cell.x && p.y === cell.y && p.layer === cell.layer
@@ -651,14 +660,15 @@ export default {
         const reachableCell = this.reachableCells.get(key);
 
         if (reachableCell) {
-          // Move player
-          this.movePlayer({
-            playerId: this.selectedPlayer.id,
-            x: cell.x,
-            y: cell.y,
-            layer: cell.layer,
-            cost: reachableCell.cost
-          });
+          // Animate movement along the path
+          this.animateMovement(
+            this.selectedPlayer.id,
+            reachableCell.path,
+            cell.x,
+            cell.y,
+            cell.layer,
+            reachableCell.cost
+          );
         }
       }
     },
@@ -708,9 +718,32 @@ export default {
       const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
       const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
 
+      let playerX = player.x;
+      let playerY = player.y;
+
+      // If this player is being animated, use interpolated position
+      if (this.isAnimating && this.animationPlayerId === player.id && this.animationPath) {
+        const currentStepIndex = this.animationCurrentStep;
+        const nextStepIndex = currentStepIndex + 1;
+
+        if (nextStepIndex < this.animationPath.length) {
+          const currentCell = this.animationPath[currentStepIndex];
+          const nextCell = this.animationPath[nextStepIndex];
+
+          // Interpolate between current and next cell
+          playerX = currentCell.x + (nextCell.x - currentCell.x) * this.animationProgress;
+          playerY = currentCell.y + (nextCell.y - currentCell.y) * this.animationProgress;
+        } else {
+          // Animation complete, use final position
+          const finalCell = this.animationPath[this.animationPath.length - 1];
+          playerX = finalCell.x;
+          playerY = finalCell.y;
+        }
+      }
+
       // Calculate center of the cell
-      const centerX = startX + player.x * cellWidth + cellWidth / 2;
-      const centerY = startY + player.y * cellHeight + cellHeight / 2;
+      const centerX = startX + playerX * cellWidth + cellWidth / 2;
+      const centerY = startY + playerY * cellHeight + cellHeight / 2;
 
       // Apply morph transformation
       const morphedPoint = this.applyMorph(centerX, centerY, gridWidth, gridHeight, startX, startY);
@@ -726,13 +759,95 @@ export default {
         height: `${tokenSize}px`,
         transform: 'translate(-50%, -50%)',
         pointerEvents: 'auto',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        transition: this.isAnimating && this.animationPlayerId === player.id ? 'none' : 'all 0.3s ease'
       };
     },
 
     // Handle clicking on a token
     handleTokenClick(playerId) {
       this.selectPlayer(playerId);
+    },
+
+    // Easing function for smooth animation (ease-in-out)
+    easeInOutQuad(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    },
+
+    // Animate smooth movement along a path
+    animateMovement(playerId, path, destinationX, destinationY, destinationLayer, movementCost) {
+      if (!path || path.length < 2) {
+        // No path or too short, just move instantly
+        this.movePlayer({
+          playerId,
+          x: destinationX,
+          y: destinationY,
+          layer: destinationLayer,
+          cost: movementCost
+        });
+        return;
+      }
+
+      // Set up animation state
+      this.isAnimating = true;
+      this.animationPlayerId = playerId;
+      this.animationPath = path;
+      this.animationCurrentStep = 0;
+      this.animationProgress = 0;
+
+      const stepDuration = 250; // milliseconds per cell (slightly faster for smoother feel)
+      let lastTimestamp = performance.now();
+
+      const animate = (timestamp) => {
+        if (!this.isAnimating) return; // Animation was cancelled
+
+        const deltaTime = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        // Update progress within current step
+        const rawProgress = this.animationProgress + deltaTime / stepDuration;
+
+        if (rawProgress >= 1.0) {
+          // Move to next step
+          this.animationCurrentStep++;
+          this.animationProgress = 0;
+
+          // Check if we've reached the end of the path
+          if (this.animationCurrentStep >= this.animationPath.length - 1) {
+            // Animation complete
+            this.isAnimating = false;
+            this.animationPlayerId = null;
+            this.animationPath = null;
+            this.animationCurrentStep = 0;
+            this.animationProgress = 0;
+
+            // Update player position in Vuex store
+            this.movePlayer({
+              playerId,
+              x: destinationX,
+              y: destinationY,
+              layer: destinationLayer,
+              cost: movementCost
+            });
+
+            // Re-render to show final position
+            this.render();
+            return;
+          }
+        } else {
+          // Apply easing to progress for smoother movement
+          this.animationProgress = rawProgress;
+        }
+
+        // Trigger re-render to update token position
+        this.$forceUpdate();
+
+        // Continue animation
+        requestAnimationFrame(animate);
+      };
+
+      // Start animation loop
+      requestAnimationFrame(animate);
     }
   }
 };
