@@ -423,6 +423,68 @@ const mutations = {
       state.mapData.metadata.modified = new Date().toISOString();
       state.editorState.isDirty = true;
     }
+  },
+
+  AUTO_GENERATE_EDGES(state) {
+    if (!state.mapData || !state.mapData.grid || !state.mapData.layers) return;
+
+    console.log('[Auto-map] Starting automatic edge generation...');
+
+    const { columns, rows } = state.mapData.grid;
+    const activeLayers = state.mapData.layers.filter(l => l.active).map(l => l.id);
+
+    // Build cell lookup for quick passability checks
+    const cellLookup = new Map();
+    if (state.mapData.cells) {
+      state.mapData.cells.forEach(cell => {
+        cellLookup.set(`${cell.x},${cell.y},${cell.layer}`, cell);
+      });
+    }
+
+    // Helper to check if a cell is passable
+    const isCellPassable = (x, y, layer) => {
+      // Out of bounds = not passable
+      if (x < 0 || y < 0 || x >= columns || y >= rows) return false;
+
+      const key = `${x},${y},${layer}`;
+      const cell = cellLookup.get(key);
+
+      // If cell doesn't exist, it's passable by default (implicit grass)
+      // If cell exists, check passable property (default to true if not explicitly false)
+      return !cell || cell.passable !== false;
+    };
+
+    const newEdges = [];
+    let edgeCount = 0;
+
+    // Generate edges for each active layer
+    activeLayers.forEach(layer => {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
+          // Skip if this cell is not passable
+          if (!isCellPassable(x, y, layer)) continue;
+
+          // Create edges for all 8 directions
+          Object.entries(DIRECTION_DELTAS).forEach(([direction, delta]) => {
+            const toX = x + delta.dx;
+            const toY = y + delta.dy;
+
+            // Check if target is within bounds and passable
+            if (isCellPassable(toX, toY, layer)) {
+              newEdges.push(createEdge(x, y, toX, toY, layer, direction, false));
+              edgeCount++;
+            }
+          });
+        }
+      }
+    });
+
+    // Replace edges array with newly generated edges
+    state.mapData.edges = newEdges;
+    state.editorState.isDirty = true;
+
+    console.log(`[Auto-map] ✅ Generated ${edgeCount} edges for ${activeLayers.length} active layer(s)`);
+    console.log(`[Auto-map] Grid: ${columns}x${rows}, Total edges: ${newEdges.length}`);
   }
 };
 
@@ -522,6 +584,10 @@ const actions = {
 
   updateMapMetadata({ commit }, metadata) {
     commit('UPDATE_MAP_METADATA', metadata);
+  },
+
+  autoGenerateEdges({ commit }) {
+    commit('AUTO_GENERATE_EDGES');
   },
 
   saveMap({ state, commit }) {

@@ -24,6 +24,10 @@
           <span class="btn-icon">🖼️</span>
           Background
         </button>
+        <button class="toolbar-btn automap-btn" @click="handleAutoMap" :disabled="!currentMap">
+          <span class="btn-icon">🗺️</span>
+          Auto-map
+        </button>
         <button
           class="toolbar-btn save-btn"
           @click="handleSaveMap"
@@ -411,7 +415,8 @@ export default {
       'loadMap',
       'saveMap',
       'setBackgroundImage',
-      'updateGridConfig'
+      'updateGridConfig',
+      'autoGenerateEdges'
     ]),
 
     handleCreateNewMap() {
@@ -454,7 +459,8 @@ export default {
               name: mapData.metadata?.name,
               grid: mapData.grid,
               layersCount: mapData.layers?.length,
-              cellsCount: mapData.cells?.length
+              cellsCount: mapData.cells?.length,
+              edgesCount: mapData.edges?.length
             });
             this.loadMap(mapData);
 
@@ -553,11 +559,12 @@ export default {
           cellsCount: mapDataWithoutImage.cells?.length
         });
 
-        // Rebuild movement edge map before export so it is stored in metadata
-        console.log('[Export] Building movement edges for export...');
-        const edges = buildMovementEdges(mapDataWithoutImage);
+        // Use existing edges from store instead of rebuilding
+        // This preserves the exact state of edges including manual edits and auto-generated paths
+        console.log('[Export] Using existing edges from store...');
+        const edges = this.currentMap.edges || [];
         mapDataWithoutImage.edges = edges;
-        console.log('[Export] Movement edges generated:', Array.isArray(edges) ? edges.length : 0);
+        console.log('[Export] Edges count:', Array.isArray(edges) ? edges.length : 0);
 
         // Log detailed cell data to verify changes are captured
         if (mapDataWithoutImage.cells && mapDataWithoutImage.cells.length > 0) {
@@ -642,6 +649,29 @@ export default {
 
     handleSaveMap() {
       this.saveMap();
+    },
+
+    handleAutoMap() {
+      if (!this.currentMap) return;
+
+      const message =
+        'Auto-map will automatically generate movement paths for all passable cells.\n\n' +
+        '⚠️ WARNING: This will REPLACE all existing edges/connections!\n\n' +
+        'The system will:\n' +
+        '• Create edges between all adjacent passable cells\n' +
+        '• Include both cardinal (N, S, E, W) and diagonal (NE, NW, SE, SW) connections\n' +
+        '• Skip impassable cells (rock, water, mountain, etc.)\n' +
+        '• Work on all active layers\n\n' +
+        'Do you want to continue?';
+
+      if (confirm(message)) {
+        console.log('[Auto-map] User confirmed, generating edges...');
+        this.autoGenerateEdges();
+        console.log('[Auto-map] ✅ Edge generation complete! Check console for details.');
+        alert('Auto-map complete! Edges have been generated for all passable cells. Don\'t forget to save your map.');
+      } else {
+        console.log('[Auto-map] User cancelled edge generation');
+      }
     }
   },
   beforeUnmount() {
@@ -737,6 +767,17 @@ export default {
 
 .toolbar-btn.save-btn:hover:not(:disabled) {
   background: rgba(0, 212, 255, 0.3);
+}
+
+.toolbar-btn.automap-btn {
+  background: rgba(255, 165, 0, 0.2);
+  border-color: #ffa500;
+  color: #ffa500;
+}
+
+.toolbar-btn.automap-btn:hover:not(:disabled) {
+  background: rgba(255, 165, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
 }
 
 .btn-icon {
