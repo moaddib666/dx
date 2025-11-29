@@ -467,6 +467,13 @@ export default {
             console.log('[Import] Setting background image...');
             this.setBackgroundImage(imageDataURL);
 
+            // Set reference dimensions from the imported image
+            console.log('[Import] Setting reference dimensions:', imageWidth, 'x', imageHeight);
+            this.updateGridConfig({
+              referenceImageWidth: imageWidth,
+              referenceImageHeight: imageHeight
+            });
+
             console.log('[Import] ✅ Map import completed successfully!');
           } else {
             // PNG has no metadata - create default map based on image size
@@ -492,7 +499,9 @@ export default {
               columns,
               rows,
               cellWidth: defaultCellSize,
-              cellHeight: defaultCellSize
+              cellHeight: defaultCellSize,
+              referenceImageWidth: imageWidth,
+              referenceImageHeight: imageHeight
             });
 
             // Set the PNG as background
@@ -639,7 +648,20 @@ export default {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.setBackgroundImage(e.target.result);
+        const imageDataURL = e.target.result;
+        this.setBackgroundImage(imageDataURL);
+
+        // Load image to get dimensions and set as reference dimensions
+        const img = new Image();
+        img.onload = () => {
+          // Update grid config with reference dimensions
+          this.updateGridConfig({
+            referenceImageWidth: img.width,
+            referenceImageHeight: img.height
+          });
+          console.log('[Background] Set reference dimensions:', img.width, 'x', img.height);
+        };
+        img.src = imageDataURL;
       };
       reader.readAsDataURL(file);
 

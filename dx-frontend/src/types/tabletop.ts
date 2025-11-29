@@ -5,12 +5,16 @@
 
 // Grid Configuration
 export interface GridConfig {
-  cellWidth: number;          // pixels
-  cellHeight: number;         // pixels
+  cellWidth: number;          // pixels (relative to referenceImageWidth)
+  cellHeight: number;         // pixels (relative to referenceImageHeight)
   columns: number;            // horizontal cells
   rows: number;              // vertical cells
   xMorph: number;            // -1.0 to 1.0 for perspective (legacy, kept for compatibility)
   yMorph: number;            // -1.0 to 1.0 for perspective (legacy, kept for compatibility)
+  // Reference image dimensions - used to calculate relative grid sizes
+  // When rendering, actual cell sizes are scaled based on current image size vs reference
+  referenceImageWidth?: number;   // Width of image when grid was configured
+  referenceImageHeight?: number;  // Height of image when grid was configured
   // 4-point morphing for perspective/rhomboid transformations
   // Each corner offset is relative to grid dimensions (0.0 to 1.0 range recommended)
   cornerOffsets?: {

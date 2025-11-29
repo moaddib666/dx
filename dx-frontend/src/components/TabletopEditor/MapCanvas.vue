@@ -104,6 +104,27 @@ export default {
     ]),
     zoomPercentage() {
       return Math.round(this.zoom * 100);
+    },
+    // Scaled grid config - calculates actual cell sizes based on current image dimensions
+    // This ensures grid scales proportionally with the image across different resolutions
+    scaledGridConfig() {
+      if (!this.gridConfig) return null;
+
+      // If no reference dimensions are set, or no background image, use original values
+      if (!this.gridConfig.referenceImageWidth || !this.gridConfig.referenceImageHeight || !this.backgroundImage) {
+        return this.gridConfig;
+      }
+
+      // Calculate scale factors based on current image size vs reference size
+      const scaleX = this.backgroundImage.width / this.gridConfig.referenceImageWidth;
+      const scaleY = this.backgroundImage.height / this.gridConfig.referenceImageHeight;
+
+      // Return scaled grid config
+      return {
+        ...this.gridConfig,
+        cellWidth: this.gridConfig.cellWidth * scaleX,
+        cellHeight: this.gridConfig.cellHeight * scaleY
+      };
     }
   },
   watch: {
@@ -471,16 +492,22 @@ export default {
     },
 
     drawMovementEdgesLayer() {
-      if (!this.gridConfig || !this.currentMap) return;
+      if (!this.currentMap) return;
+
+      const scaledConfig = this.scaledGridConfig;
+      if (!scaledConfig) return;
 
       const edges = this.buildMovementEdgesForCurrentLayer();
       if (!edges.length) return;
 
-      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const { cellWidth, cellHeight, columns, rows } = scaledConfig;
+
+      // Position edges relative to the image, not the canvas
+      const imagePos = this.getImagePosition();
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
-      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
-      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+      const startX = imagePos.x;
+      const startY = imagePos.y;
 
       edges.forEach(edge => {
         if (!edge || !edge.from || !edge.to) return;
@@ -536,28 +563,32 @@ export default {
       this.ctx.setLineDash([]);
     },
 
+    // Calculate the position where the image is drawn in the canvas
+    // This is the reference point for all grid and cell positioning
+    getImagePosition() {
+      if (!this.backgroundImage) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+      }
+
+      const width = this.backgroundImage.width;
+      const height = this.backgroundImage.height;
+
+      // Center the image in the canvas viewport, with pan offset
+      const x = (this.canvasWidth - width) / 2 + this.offsetX;
+      const y = (this.canvasHeight - height) / 2 + this.offsetY;
+
+      return { x, y, width, height };
+    },
+
     drawBackground() {
       if (!this.backgroundImage) return;
 
-      const imgAspect = this.backgroundImage.width / this.backgroundImage.height;
-      const canvasAspect = this.canvasWidth / this.canvasHeight;
-
-      let drawWidth, drawHeight, drawX, drawY;
-
-      if (imgAspect > canvasAspect) {
-        drawHeight = this.canvasHeight;
-        drawWidth = drawHeight * imgAspect;
-        drawX = (this.canvasWidth - drawWidth) / 2 + this.offsetX;
-        drawY = 0 + this.offsetY;
-      } else {
-        drawWidth = this.canvasWidth;
-        drawHeight = drawWidth / imgAspect;
-        drawX = 0 + this.offsetX;
-        drawY = (this.canvasHeight - drawHeight) / 2 + this.offsetY;
-      }
+      // Render image at its native size, independent of canvas size
+      // The canvas acts as a viewport/camera showing part of the image
+      const imagePos = this.getImagePosition();
 
       this.ctx.globalAlpha = 0.5;
-      this.ctx.drawImage(this.backgroundImage, drawX, drawY, drawWidth, drawHeight);
+      this.ctx.drawImage(this.backgroundImage, imagePos.x, imagePos.y, imagePos.width, imagePos.height);
       this.ctx.globalAlpha = 1.0;
     },
 
@@ -668,13 +699,17 @@ export default {
     },
 
     drawGrid() {
-      const { cellWidth, cellHeight, columns, rows, xMorph, yMorph } = this.gridConfig;
+      const scaledConfig = this.scaledGridConfig;
+      if (!scaledConfig) return;
 
-      // Calculate grid offset to center it
+      const { cellWidth, cellHeight, columns, rows, xMorph, yMorph } = scaledConfig;
+
+      // Position grid relative to the image, not the canvas
+      const imagePos = this.getImagePosition();
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
-      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
-      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+      const startX = imagePos.x;
+      const startY = imagePos.y;
 
       this.ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
       this.ctx.lineWidth = 1;
@@ -709,13 +744,19 @@ export default {
     },
 
     drawCells() {
-      if (!this.currentLayerCells || !this.gridConfig) return;
+      if (!this.currentLayerCells) return;
 
-      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const scaledConfig = this.scaledGridConfig;
+      if (!scaledConfig) return;
+
+      const { cellWidth, cellHeight, columns, rows } = scaledConfig;
+
+      // Position cells relative to the image, not the canvas
+      const imagePos = this.getImagePosition();
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
-      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
-      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+      const startX = imagePos.x;
+      const startY = imagePos.y;
 
       this.currentLayerCells.forEach(cell => {
         const x = startX + cell.x * cellWidth;
@@ -840,13 +881,17 @@ export default {
     },
 
     drawCellHighlight(cellX, cellY, color) {
-      if (!this.gridConfig) return;
+      const scaledConfig = this.scaledGridConfig;
+      if (!scaledConfig) return;
 
-      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const { cellWidth, cellHeight, columns, rows } = scaledConfig;
+
+      // Position highlight relative to the image, not the canvas
+      const imagePos = this.getImagePosition();
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
-      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
-      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+      const startX = imagePos.x;
+      const startY = imagePos.y;
 
       const x = startX + cellX * cellWidth;
       const y = startY + cellY * cellHeight;
@@ -869,7 +914,8 @@ export default {
     },
 
     getCellFromMousePosition(mouseX, mouseY) {
-      if (!this.gridConfig) return null;
+      const scaledConfig = this.scaledGridConfig;
+      if (!scaledConfig) return null;
 
       // Apply inverse zoom transformation to mouse coordinates
       const centerX = this.canvasWidth / 2;
@@ -877,11 +923,14 @@ export default {
       const zoomedMouseX = centerX + (mouseX - centerX) / this.zoom;
       const zoomedMouseY = centerY + (mouseY - centerY) / this.zoom;
 
-      const { cellWidth, cellHeight, columns, rows } = this.gridConfig;
+      const { cellWidth, cellHeight, columns, rows } = scaledConfig;
+
+      // Use image position as reference for grid, not canvas dimensions
+      const imagePos = this.getImagePosition();
       const gridWidth = columns * cellWidth;
       const gridHeight = rows * cellHeight;
-      const startX = (this.canvasWidth - gridWidth) / 2 + this.offsetX;
-      const startY = (this.canvasHeight - gridHeight) / 2 + this.offsetY;
+      const startX = imagePos.x;
+      const startY = imagePos.y;
 
       // Apply inverse morph to convert screen coordinates to grid coordinates
       const unmorphed = this.inverseMorph(zoomedMouseX, zoomedMouseY, gridWidth, gridHeight, startX, startY);
