@@ -347,8 +347,8 @@ export default {
         if (cellInfo.cost === 0) {
           // Only draw starting cell if there are NO other reachable cells (no movement possible)
           if (!hasMovementOptions) {
-            // Draw in orange/red to indicate "selected but cannot move"
-            this.ctx.fillStyle = 'rgba(255, 100, 0, 0.65)';
+            // Cyberpunk style: semi-transparent background with glowing border
+            this.ctx.fillStyle = 'rgba(255, 100, 0, 0.15)';
             this.ctx.beginPath();
             this.ctx.moveTo(topLeft.x, topLeft.y);
             this.ctx.lineTo(topRight.x, topRight.y);
@@ -357,18 +357,21 @@ export default {
             this.ctx.closePath();
             this.ctx.fill();
 
-            // Add orange border
-            this.ctx.strokeStyle = 'rgba(255, 100, 0, 0.8)';
-            this.ctx.lineWidth = 3;
+            // Glowing cyan border (cyberpunk style)
+            this.ctx.strokeStyle = 'rgba(255, 150, 50, 0.8)';
+            this.ctx.lineWidth = 2;
+            this.ctx.shadowBlur = 8;
+            this.ctx.shadowColor = 'rgba(255, 150, 50, 0.6)';
             this.ctx.stroke();
+            this.ctx.shadowBlur = 0;
 
             console.warn('[DrawMovement] ⚠️ Player selected but has NO movement options! Check map edges.');
           }
           return; // Skip starting cell for normal movement area
         }
 
-        // Draw shadow/highlight for reachable area - HIGH CONTRAST for visibility
-        this.ctx.fillStyle = 'rgba(0, 255, 0, 0.65)';
+        // Cyberpunk style: semi-transparent background with glowing cyan border
+        this.ctx.fillStyle = 'rgba(6, 14, 24, 0.25)';
         this.ctx.beginPath();
         this.ctx.moveTo(topLeft.x, topLeft.y);
         this.ctx.lineTo(topRight.x, topRight.y);
@@ -377,10 +380,13 @@ export default {
         this.ctx.closePath();
         this.ctx.fill();
 
-        // Add border to make cells more distinct
-        this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.8)';
+        // Glowing cyan border for reachable cells
+        this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.7)';
         this.ctx.lineWidth = 2;
+        this.ctx.shadowBlur = 6;
+        this.ctx.shadowColor = 'rgba(34, 211, 238, 0.5)';
         this.ctx.stroke();
+        this.ctx.shadowBlur = 0;
       });
     },
 
@@ -452,8 +458,8 @@ export default {
         const bottomLeft = this.applyMorph(x, y + cellHeight, gridWidth, gridHeight, startX, startY);
         const bottomRight = this.applyMorph(x + cellWidth, y + cellHeight, gridWidth, gridHeight, startX, startY);
 
-        // Highlight path cells with yellow/orange color - HIGH CONTRAST for visibility
-        this.ctx.fillStyle = 'rgba(255, 200, 0, 0.65)';
+        // Cyberpunk style: semi-transparent background for path cells
+        this.ctx.fillStyle = 'rgba(255, 200, 0, 0.12)';
         this.ctx.beginPath();
         this.ctx.moveTo(topLeft.x, topLeft.y);
         this.ctx.lineTo(topRight.x, topRight.y);
@@ -462,16 +468,21 @@ export default {
         this.ctx.closePath();
         this.ctx.fill();
 
-        // Add border to path cells
-        this.ctx.strokeStyle = 'rgba(255, 200, 0, 0.85)';
-        this.ctx.lineWidth = 3;
+        // Glowing yellow/cyan border for path cells
+        this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.85)';
+        this.ctx.lineWidth = 2.5;
+        this.ctx.shadowBlur = 8;
+        this.ctx.shadowColor = 'rgba(255, 220, 100, 0.6)';
         this.ctx.stroke();
+        this.ctx.shadowBlur = 0;
       });
 
-      // Then, draw the connecting line through cell centers
-      this.ctx.strokeStyle = 'rgba(255, 255, 0, 0.9)';
+      // Then, draw the connecting line through cell centers with cyberpunk glow
+      this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.9)';
       this.ctx.lineWidth = 3;
-      this.ctx.setLineDash([5, 5]);
+      this.ctx.setLineDash([8, 4]);
+      this.ctx.shadowBlur = 10;
+      this.ctx.shadowColor = 'rgba(255, 220, 100, 0.8)';
 
       this.ctx.beginPath();
       path.forEach((cell, index) => {
@@ -487,6 +498,7 @@ export default {
       });
       this.ctx.stroke();
       this.ctx.setLineDash([]);
+      this.ctx.shadowBlur = 0;
     },
 
     drawCellShadow(x, y) {
@@ -506,7 +518,8 @@ export default {
       const bottomLeft = this.applyMorph(cellX, cellY + cellHeight, gridWidth, gridHeight, startX, startY);
       const bottomRight = this.applyMorph(cellX + cellWidth, cellY + cellHeight, gridWidth, gridHeight, startX, startY);
 
-      this.ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      // Cyberpunk style: semi-transparent background with glowing border for hover
+      this.ctx.fillStyle = 'rgba(99, 247, 255, 0.08)';
       this.ctx.beginPath();
       this.ctx.moveTo(topLeft.x, topLeft.y);
       this.ctx.lineTo(topRight.x, topRight.y);
@@ -514,6 +527,14 @@ export default {
       this.ctx.lineTo(bottomLeft.x, bottomLeft.y);
       this.ctx.closePath();
       this.ctx.fill();
+
+      // Glowing cyan border for hover
+      this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.6)';
+      this.ctx.lineWidth = 2;
+      this.ctx.shadowBlur = 10;
+      this.ctx.shadowColor = 'rgba(34, 211, 238, 0.7)';
+      this.ctx.stroke();
+      this.ctx.shadowBlur = 0;
     },
 
     drawPlayers() {
