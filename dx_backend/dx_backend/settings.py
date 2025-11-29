@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'apps.story',
     'apps.knowledge_base',
     'apps.spawner',
+    'apps.integrations.telegram',
 ]
 
 MIDDLEWARE = [
@@ -311,6 +312,15 @@ SIMPLE_JWT = {
 
 CENTRIFUGO_API_URL = ""
 CENTRIFUGO_API_KEY = ""
+
+# Integration settings
+INTEGRATION = {
+    "telegram": {
+        "token": os.getenv("TELEGRAM_BOT_TOKEN", ""),
+        "chat_id": os.getenv("TELEGRAM_CHAT_ID", ""),
+        "welcome_image": os.getenv("TELEGRAM_WELCOME_IMAGE", ""),
+    }
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
