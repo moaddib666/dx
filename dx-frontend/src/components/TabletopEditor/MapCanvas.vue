@@ -508,23 +508,65 @@ export default {
     },
 
     // Apply perspective morph transformation to a point
-    // xMorph and yMorph range from -1.0 to 1.0
-    // Positive xMorph: perspective vanishing to the right
-    // Negative xMorph: perspective vanishing to the left
-    // Positive yMorph: perspective vanishing to the bottom
-    // Negative yMorph: perspective vanishing to the top
+    // Supports both 4-point morphing (cornerOffsets) and legacy 2-axis morphing (xMorph/yMorph)
     applyMorph(x, y, gridWidth, gridHeight, startX, startY) {
-      const { xMorph, yMorph } = this.gridConfig;
+      const { xMorph, yMorph, cornerOffsets } = this.gridConfig;
 
-      // Calculate relative position within grid (0 to 1)
+      // Use 4-point morphing if cornerOffsets are defined
+      if (cornerOffsets) {
+        // Calculate normalized position within the grid (0 to 1)
+        const u = (x - startX) / gridWidth;
+        const v = (y - startY) / gridHeight;
+
+        // Define the four corners of the grid in screen space
+        // Default positions (no morph)
+        const topLeftDefault = { x: startX, y: startY };
+        const topRightDefault = { x: startX + gridWidth, y: startY };
+        const bottomLeftDefault = { x: startX, y: startY + gridHeight };
+        const bottomRightDefault = { x: startX + gridWidth, y: startY + gridHeight };
+
+        // Apply corner offsets (scaled by grid dimensions)
+        const topLeft = {
+          x: topLeftDefault.x + cornerOffsets.topLeft.x * gridWidth,
+          y: topLeftDefault.y + cornerOffsets.topLeft.y * gridHeight
+        };
+        const topRight = {
+          x: topRightDefault.x + cornerOffsets.topRight.x * gridWidth,
+          y: topRightDefault.y + cornerOffsets.topRight.y * gridHeight
+        };
+        const bottomLeft = {
+          x: bottomLeftDefault.x + cornerOffsets.bottomLeft.x * gridWidth,
+          y: bottomLeftDefault.y + cornerOffsets.bottomLeft.y * gridHeight
+        };
+        const bottomRight = {
+          x: bottomRightDefault.x + cornerOffsets.bottomRight.x * gridWidth,
+          y: bottomRightDefault.y + cornerOffsets.bottomRight.y * gridHeight
+        };
+
+        // Bilinear interpolation
+        // Interpolate top edge
+        const topX = topLeft.x * (1 - u) + topRight.x * u;
+        const topY = topLeft.y * (1 - u) + topRight.y * u;
+
+        // Interpolate bottom edge
+        const bottomX = bottomLeft.x * (1 - u) + bottomRight.x * u;
+        const bottomY = bottomLeft.y * (1 - u) + bottomRight.y * u;
+
+        // Interpolate between top and bottom
+        const finalX = topX * (1 - v) + bottomX * v;
+        const finalY = topY * (1 - v) + bottomY * v;
+
+        return {
+          x: finalX,
+          y: finalY
+        };
+      }
+
+      // Legacy behavior: simple axis-based morphing
       const relX = (x - startX) / gridWidth;
       const relY = (y - startY) / gridHeight;
 
-      // Apply perspective transformation
-      // X morph: compress/expand based on Y position
       const xOffset = xMorph * gridWidth * 0.3 * (relY - 0.5);
-
-      // Y morph: compress/expand based on X position
       const yOffset = yMorph * gridHeight * 0.3 * (relX - 0.5);
 
       return {
@@ -535,22 +577,35 @@ export default {
 
     // Inverse morph transformation for mouse position to grid coordinates
     inverseMorph(screenX, screenY, gridWidth, gridHeight, startX, startY) {
-      const { xMorph, yMorph } = this.gridConfig;
+      const { xMorph, yMorph, cornerOffsets } = this.gridConfig;
 
-      // If no morph, return as-is
-      if (Math.abs(xMorph) < 0.001 && Math.abs(yMorph) < 0.001) {
+      // Check if we're using 4-point morphing or legacy morphing
+      const using4Point = cornerOffsets && (
+        cornerOffsets.topLeft.x !== 0 || cornerOffsets.topLeft.y !== 0 ||
+        cornerOffsets.topRight.x !== 0 || cornerOffsets.topRight.y !== 0 ||
+        cornerOffsets.bottomLeft.x !== 0 || cornerOffsets.bottomLeft.y !== 0 ||
+        cornerOffsets.bottomRight.x !== 0 || cornerOffsets.bottomRight.y !== 0
+      );
+
+      // If no morphing is applied, return as-is
+      if (!using4Point && Math.abs(xMorph) < 0.001 && Math.abs(yMorph) < 0.001) {
         return { x: screenX, y: screenY };
       }
 
-      // Iterative approximation to find the unmorphed position
+      // Use iterative Newton's method to find the inverse
       let x = screenX;
       let y = screenY;
 
-      // Newton's method iterations
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 10; i++) {
         const morphed = this.applyMorph(x, y, gridWidth, gridHeight, startX, startY);
         const errorX = morphed.x - screenX;
         const errorY = morphed.y - screenY;
+
+        // If error is small enough, we're done
+        if (Math.abs(errorX) < 0.1 && Math.abs(errorY) < 0.1) {
+          break;
+        }
+
         x -= errorX;
         y -= errorY;
       }

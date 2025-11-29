@@ -9,8 +9,16 @@ export interface GridConfig {
   cellHeight: number;         // pixels
   columns: number;            // horizontal cells
   rows: number;              // vertical cells
-  xMorph: number;            // -1.0 to 1.0 for perspective
-  yMorph: number;            // -1.0 to 1.0 for perspective
+  xMorph: number;            // -1.0 to 1.0 for perspective (legacy, kept for compatibility)
+  yMorph: number;            // -1.0 to 1.0 for perspective (legacy, kept for compatibility)
+  // 4-point morphing for perspective/rhomboid transformations
+  // Each corner offset is relative to grid dimensions (0.0 to 1.0 range recommended)
+  cornerOffsets?: {
+    topLeft: { x: number; y: number };
+    topRight: { x: number; y: number };
+    bottomLeft: { x: number; y: number };
+    bottomRight: { x: number; y: number };
+  };
 }
 
 // Terrain Types (Heroes of Might and Magic style)
@@ -294,7 +302,13 @@ export function createDefaultGridConfig(): GridConfig {
     columns: 30,
     rows: 30,
     xMorph: 0,
-    yMorph: 0
+    yMorph: 0,
+    cornerOffsets: {
+      topLeft: { x: 0, y: 0 },
+      topRight: { x: 0, y: 0 },
+      bottomLeft: { x: 0, y: 0 },
+      bottomRight: { x: 0, y: 0 }
+    }
   };
 }
 
