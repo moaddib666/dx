@@ -2,6 +2,7 @@ import { createStore } from 'vuex';
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode'; // Adjust the import statement
 import tabletopEditor from './modules/tabletopEditor';
+import tabletopPlayer from './modules/tabletopPlayer';
 
 export default createStore({
   state: {
@@ -50,6 +51,7 @@ export default createStore({
     getAuthToken: state => state.token,
   },
   modules: {
-    tabletopEditor
+    tabletopEditor,
+    tabletopPlayer
   }
 });
