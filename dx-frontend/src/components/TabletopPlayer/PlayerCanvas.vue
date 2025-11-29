@@ -347,8 +347,8 @@ export default {
         if (cellInfo.cost === 0) {
           // Only draw starting cell if there are NO other reachable cells (no movement possible)
           if (!hasMovementOptions) {
-            // Cyberpunk style: semi-transparent background with glowing border
-            this.ctx.fillStyle = 'rgba(255, 100, 0, 0.15)';
+            // Cyberpunk style: ultra-lightweight semi-transparent background with subtle glowing border
+            this.ctx.fillStyle = 'rgba(255, 100, 0, 0.06)';
             this.ctx.beginPath();
             this.ctx.moveTo(topLeft.x, topLeft.y);
             this.ctx.lineTo(topRight.x, topRight.y);
@@ -357,11 +357,11 @@ export default {
             this.ctx.closePath();
             this.ctx.fill();
 
-            // Glowing cyan border (cyberpunk style)
-            this.ctx.strokeStyle = 'rgba(255, 150, 50, 0.8)';
-            this.ctx.lineWidth = 2;
-            this.ctx.shadowBlur = 8;
-            this.ctx.shadowColor = 'rgba(255, 150, 50, 0.6)';
+            // Subtle glowing border (cyberpunk style)
+            this.ctx.strokeStyle = 'rgba(255, 150, 50, 0.5)';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.shadowBlur = 4;
+            this.ctx.shadowColor = 'rgba(255, 150, 50, 0.3)';
             this.ctx.stroke();
             this.ctx.shadowBlur = 0;
 
@@ -370,8 +370,8 @@ export default {
           return; // Skip starting cell for normal movement area
         }
 
-        // Cyberpunk style: semi-transparent background with glowing cyan border
-        this.ctx.fillStyle = 'rgba(6, 14, 24, 0.25)';
+        // Cyberpunk style: ultra-lightweight semi-transparent background with subtle glowing cyan border
+        this.ctx.fillStyle = 'rgba(6, 14, 24, 0.12)';
         this.ctx.beginPath();
         this.ctx.moveTo(topLeft.x, topLeft.y);
         this.ctx.lineTo(topRight.x, topRight.y);
@@ -380,11 +380,11 @@ export default {
         this.ctx.closePath();
         this.ctx.fill();
 
-        // Glowing cyan border for reachable cells
-        this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.7)';
-        this.ctx.lineWidth = 2;
-        this.ctx.shadowBlur = 6;
-        this.ctx.shadowColor = 'rgba(34, 211, 238, 0.5)';
+        // Subtle glowing cyan border for reachable cells
+        this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.45)';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.shadowBlur = 4;
+        this.ctx.shadowColor = 'rgba(34, 211, 238, 0.25)';
         this.ctx.stroke();
         this.ctx.shadowBlur = 0;
       });
@@ -458,8 +458,8 @@ export default {
         const bottomLeft = this.applyMorph(x, y + cellHeight, gridWidth, gridHeight, startX, startY);
         const bottomRight = this.applyMorph(x + cellWidth, y + cellHeight, gridWidth, gridHeight, startX, startY);
 
-        // Cyberpunk style: semi-transparent background for path cells
-        this.ctx.fillStyle = 'rgba(255, 200, 0, 0.12)';
+        // Cyberpunk style: ultra-lightweight semi-transparent background for path cells
+        this.ctx.fillStyle = 'rgba(255, 200, 0, 0.05)';
         this.ctx.beginPath();
         this.ctx.moveTo(topLeft.x, topLeft.y);
         this.ctx.lineTo(topRight.x, topRight.y);
@@ -468,21 +468,21 @@ export default {
         this.ctx.closePath();
         this.ctx.fill();
 
-        // Glowing yellow/cyan border for path cells
-        this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.85)';
-        this.ctx.lineWidth = 2.5;
-        this.ctx.shadowBlur = 8;
-        this.ctx.shadowColor = 'rgba(255, 220, 100, 0.6)';
+        // Subtle glowing yellow border for path cells
+        this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.55)';
+        this.ctx.lineWidth = 1.5;
+        this.ctx.shadowBlur = 5;
+        this.ctx.shadowColor = 'rgba(255, 220, 100, 0.3)';
         this.ctx.stroke();
         this.ctx.shadowBlur = 0;
       });
 
-      // Then, draw the connecting line through cell centers with cyberpunk glow
-      this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.9)';
-      this.ctx.lineWidth = 3;
+      // Then, draw the connecting line through cell centers with subtle cyberpunk glow
+      this.ctx.strokeStyle = 'rgba(255, 220, 100, 0.6)';
+      this.ctx.lineWidth = 2;
       this.ctx.setLineDash([8, 4]);
-      this.ctx.shadowBlur = 10;
-      this.ctx.shadowColor = 'rgba(255, 220, 100, 0.8)';
+      this.ctx.shadowBlur = 6;
+      this.ctx.shadowColor = 'rgba(255, 220, 100, 0.4)';
 
       this.ctx.beginPath();
       path.forEach((cell, index) => {
@@ -518,8 +518,8 @@ export default {
       const bottomLeft = this.applyMorph(cellX, cellY + cellHeight, gridWidth, gridHeight, startX, startY);
       const bottomRight = this.applyMorph(cellX + cellWidth, cellY + cellHeight, gridWidth, gridHeight, startX, startY);
 
-      // Cyberpunk style: semi-transparent background with glowing border for hover
-      this.ctx.fillStyle = 'rgba(99, 247, 255, 0.08)';
+      // Cyberpunk style: ultra-lightweight semi-transparent background with subtle glowing border for hover
+      this.ctx.fillStyle = 'rgba(99, 247, 255, 0.04)';
       this.ctx.beginPath();
       this.ctx.moveTo(topLeft.x, topLeft.y);
       this.ctx.lineTo(topRight.x, topRight.y);
@@ -528,11 +528,11 @@ export default {
       this.ctx.closePath();
       this.ctx.fill();
 
-      // Glowing cyan border for hover
-      this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.6)';
-      this.ctx.lineWidth = 2;
-      this.ctx.shadowBlur = 10;
-      this.ctx.shadowColor = 'rgba(34, 211, 238, 0.7)';
+      // Subtle glowing cyan border for hover
+      this.ctx.strokeStyle = 'rgba(99, 247, 255, 0.4)';
+      this.ctx.lineWidth = 1.5;
+      this.ctx.shadowBlur = 6;
+      this.ctx.shadowColor = 'rgba(34, 211, 238, 0.35)';
       this.ctx.stroke();
       this.ctx.shadowBlur = 0;
     },
